@@ -1,0 +1,56 @@
+<?php
+  //ipbans.php - core for new IP ban functions, started 2007-02-19 // blackhole89
+
+  //delete expired IP bans
+  $sql->query('DELETE FROM ipbans WHERE expires<'.ctime().' AND expires>0');
+
+  //actual ban checking
+  $r=$sql->query("SELECT * FROM ipbans WHERE '$userip' LIKE ipmask");
+  if(@mysql_num_rows($r)>0)
+  {
+
+    // report the IP as banned like before
+    if ($loguser) $sql -> query("UPDATE `users` SET `ipbanned` = '1' WHERE `id` = '$loguser[id]'");
+    else $sql -> query("UPDATE  `guests` SET `ipbanned` = '1' WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'");
+
+    //a ban appears to be present. check for type
+    //and restrict user's access if necessary
+    $i=mysql_fetch_array($r);
+    if($i[hard])
+    {
+      //hard IP ban; always restrict access fully
+
+//	  header("Location: http://banned.ytmnd.com/");
+//	  header("Location: http://board.acmlm.org/");
+	  // fuck this shit
+	  
+      pageheader('IP banned');
+      print
+          "$L[TBL1]>
+".        "  $L[TR2]>
+".        "    $L[TD1c]>
+".        "      Sorry, but your IP address appears to be banned from this board.
+".        "$L[TBLend]
+";
+      pagefooter();
+      die();
+	  
+    } else if(!$i[hard] && (!$log || $loguser[power]<0)) {
+      //"soft" IP ban allows non-banned users with existing accounts to log on
+      if(!strstr($_SERVER['PHP_SELF'],"login.php"))
+      {
+        pageheader('IP restricted');
+        print
+          "$L[TBL1]>
+".        "  $L[TR2]>
+".        "    $L[TD1c]>
+".        "      Access from your IP address to this board appears to be limited.<br>
+".        "      <A HREF=login.php>Login</A>
+".        "$L[TBLend]
+";
+        pagefooter();
+        die();
+      }
+    }
+  }
+?>

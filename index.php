@@ -1,0 +1,234 @@
+<?php
+  /* index.php ****************************************
+    Changelog
+    Xkeeper     fixed what blackhole89 broke, which was mostly nothing
+    blackhole89 moved mark forum /all forums read here
+    blackhole89 added consideration of minpower for forum/category display
+    Xkeeper     added support for category ordering
+  ****************************************************/
+
+	// xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula
+  $spatulas = array(
+	"E.T. phone spatula.",
+	"Soylent Green is spatula!",
+	"Madness? This is Spatula!",
+	"You can't handle the spatula!",
+	"A spatula. Shaken, not stirred.",
+	"Go back to the spatula. You shall not pass.",
+	"My mama always said life was like a box of spatula.",
+	"Our spatula can't repel firepower of that magnitude!",
+	"I am the author. You are the spatula. I outrank you!",
+	"Our spatula can't repel firepower of that magnitude!",
+	"I'll get you, my pretty, and your little spatula, too!",
+	"Thank you Mario! But our spatula is in another castle!",
+	"I say we take off and nuke the entire spatula from orbit.",
+	"Fear leads to anger. Anger leads to hate. Hate leads to spatula.",
+	"With the spatula down I can't even see! How am I supposed to fight?",
+	"Watch the spatula, everywhere, keep looking! Keep watching the spatula!",
+	"Logic clearly dictates that the needs of the many outweigh the needs of the spatula.",
+	"When I invite a woman to dinner I expect her to look at my spatula. That's the price she has to pay.",
+	"Spatula? We ain't got no spatula! We don't need no spatula! I don't have to show you any stinking spatula!",
+	"Every time a bell rings, an angel gets his spatula.",
+	);
+	$spaturand	= array_rand($spatulas);
+
+  if($p=$_GET[p]) return header("Location:thread.php?pid=$p#$p");
+  if($t=$_GET[t]) return header("Location:thread.php?id=$t");
+  if($u=$_GET[u]) return header("Location:profile.php?id=$u");
+
+  require 'lib/common.php';
+
+  //mark forum read
+  if($log && $_GET[action]=='markread'){
+    if($fid!='all'){
+      checknumeric($fid);
+      //delete obsolete threadsread entries
+      $sql->query("DELETE r "
+                 ."FROM threadsread r "
+                 ."LEFT JOIN threads t ON t.id=r.tid "
+                 ."WHERE t.forum=$fid "
+                 ."AND r.uid=$loguser[id]");
+      //add new forumsread entry
+      $sql->query("REPLACE INTO forumsread VALUES ($loguser[id],$fid,".ctime().')');
+    } else {
+      //mark all read
+      $sql->query("DELETE FROM threadsread WHERE uid=$loguser[id]");
+      $sql->query("REPLACE INTO forumsread (uid,fid,time) SELECT $loguser[id],f.id,".ctime()." FROM forums f");
+    }
+
+    // remove nasty GET strings so that refreshers like me don't mark things read over and over and burp
+    header('Location: index.php');
+  }
+       
+  // Moved pageheader here so that we can do header()s without fucking everything up again
+  pageheader();
+
+  if($log){
+    //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
+    $pmsgs=$sql->fetchq("SELECT p.id id, p.date date, u.id uid, u.name uname, u.sex usex, u.power upower "
+                       ."FROM pmsgs p "
+                       ."LEFT JOIN users u ON u.id=p.userfrom "
+                       ."WHERE p.userto=$loguser[id] "
+                       ."ORDER BY date DESC LIMIT 1");
+
+    $unreadpms=$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE userto=$loguser[id] AND unread=1 AND del_to=0");
+    $totalpms =$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE userto=$loguser[id] AND del_to=0");
+
+    if($unreadpms){
+      $status='<img src=img/status/new.png>';
+      $unreadpms=" ($unreadpms new)";
+    }else{
+      $status='&nbsp;';
+      $unreadpms='';
+    }
+
+    if($totalpms>0)
+      $lastmsg="<br>
+".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
+    else
+      $lastmsg='';
+
+    $pmsgbox=
+        "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh] colspan=2>Private Messages</td>
+".      "  $L[TR]>
+".      "    $L[TD1] width=17>$status</td>
+".      "    $L[TD2]>
+".      "      <a href=private.php>Private messages</a> -- You have $totalpms private message".($totalpms!=1?'s':'')."$unreadpms.$lastmsg
+".      "  $L[TBLend]
+".      "  <br>
+";
+  }
+
+  $categs=$sql->query("SELECT * "
+                     ."FROM categories "
+                     ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+                     ."ORDER BY ord");
+  while($c=$sql->fetch($categs))
+    $categ[$c[id]]=$c;
+  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.sex usex, u.power upower "
+                     ."FROM forums f "
+                     ."LEFT JOIN users u ON u.id=f.lastuser "
+                     ."LEFT JOIN categories c ON c.id=f.cat "
+               .($log?"LEFT JOIN forumsread r ON r.fid=f.id AND r.uid=$loguser[id] ":'')
+                     ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+                     .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+                     ."ORDER BY c.ord,ord");
+  $cat=-1;
+
+  $count[d]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-86400));
+  $count[h]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-3600));
+  $lastuser=$sql->fetchq('SELECT id,name,sex,power FROM users ORDER BY id DESC LIMIT 1');
+
+  $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic FROM users '
+                      .'WHERE lastview>'.(ctime()-300).' '
+                         .'OR lastpost>'.(ctime()-300).' '
+                      .'ORDER BY name');
+  $onuserlist='';
+  $onusercount=0;
+  while($user=$sql->fetch($onusers)){
+    $user[showminipic]=1;
+    $onuserlog=($user[lastpost]<=$user[lastview]);
+    $«=($onuserlog?'':'(');
+    $»=($onuserlog?'':')');
+    $onuserlist.=($onusercount?', ':'').$«.userlink($user).$»;
+    $onusercount++;
+  }
+
+  $maxpostsday =$sql->resultq('SELECT intval FROM misc WHERE field="maxpostsday"');
+  $maxpostshour=$sql->resultq('SELECT intval FROM misc WHERE field="maxpostshour"');
+  $maxusers    =$sql->resultq('SELECT intval FROM misc WHERE field="maxusers"');
+
+  if($count[d]>$maxpostsday){
+    $sql->query("UPDATE misc SET intval=$count[d] WHERE field='maxpostsday'");
+    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxpostsdaydate'");
+  }
+  if($count[h]>$maxpostshour){
+    $sql->query("UPDATE misc SET intval=$count[h] WHERE field='maxpostshour'");
+    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxpostshourdate'");
+  }
+  if($onusercount>$maxusers){
+    $sql->query("UPDATE misc SET intval=$onusercount WHERE field='maxusers'");
+    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxusersdate'");
+    $sql->query("UPDATE misc SET txtval='".addslashes($onuserlist)."' WHERE field='maxuserstext'");
+  }
+
+  $onuserlist="$onusercount user".($onusercount!=1?'s':'').' online'.($onusercount>0?': ':'').$onuserlist;
+  $numguests=$sql->resultq('SELECT count(*) FROM guests WHERE `bot`=0 AND date>'.(ctime()-300));
+  if($numguests)
+    $onuserlist.=" | $numguests guest".($numguests>1?'s':'');
+  $numbots=$sql->resultq('SELECT count(*) FROM guests WHERE `bot`=1 AND date>'.(ctime()-300));
+  if($numbots)
+    $onuserlist.=" | $numbots bot".($numbots>1?'s':'');
+
+  print "$L[TBL1]>
+".      "  $L[TR]>
+".      "    $L[TD1]>
+".      "      $L[TBL] width=100%>
+".      "        $L[TDn] width=250>
+".      "          &nbsp;
+".      "        </td>
+".      "        $L[TDnc]><nobr>
+".      "          $count[t] threads and $count[p] posts total<br>
+".      "          $count[d] new posts today, $count[h] last hour</nobr>
+".      "        </td>
+".      "        $L[TDnr] width=250>
+".      "          $count[u] registered users<br>
+".      "          Newest: ".userlink($lastuser)."
+".      "        </td>
+".      "      $L[TBLend]
+".      "  $L[TR]>
+".      "    $L[TD2c]>
+".      "      $onuserlist
+".      "$L[TBLend]
+".      "<br>
+".      "$pmsgbox
+".      "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh] width=17>&nbsp;</td>
+".      "    $L[TDh]>Forum</td>
+".      "    $L[TDh] width=50>Threads</td>
+".      "    $L[TDh] width=50>Posts</td>
+".      "    $L[TDh] width=150>Last post</td>
+";
+
+  while($forum=$sql->fetch($forums)){
+    if($forum[cat]!=$cat){
+      $cat=$forum[cat];
+        print "  $L[TRg]>
+".            "    $L[TD] colspan=5>".($categ[$cat][title])."</td>
+";
+    }
+
+    if($forum[posts]>0 && $forum[lastdate]>0)
+      $lastpost='<nobr>'.cdate($dateformat,$forum[lastdate]).'</nobr><br><font class=sfont>by&nbsp;'.userlink($forum,'u')."&nbsp;<a href='thread.php?pid=$forum[lastid]#$forum[lastid]'>&raquo;</a></font>";
+    else
+      $lastpost='None';
+
+    if($forum[lastdate]>($log?$forum[rtime]:ctime()-3600))
+      $status="<img src=img/status/new.png>";
+    else
+      $status='&nbsp;';
+
+    $modstring="";
+    $a=$sql->query("SELECT u.name,u.id,u.sex,u.power FROM forummods f, users u WHERE f.fid=$forum[id] AND u.id=f.uid");
+    while($mod=$sql->fetch($a)) $modstring.=userlink($mod).", ";
+    if($modstring) $modstring=" (moderated by: ".substr($modstring,0,-2).")";
+
+    print
+        "  $L[TRc]>
+".      "    $L[TD1]>$status</td>
+".      "    $L[TD2l]>
+".      "      <a href=forum.php?id=$forum[id]>$forum[title]</a><br>
+".      "      <font class=sfont>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</font>
+".      "    </td>
+".      "    $L[TD1]>$forum[threads]</td>
+".      "    $L[TD1]>$forum[posts]</td>
+".      "    $L[TD2]>$lastpost</td>
+";
+  }
+  print "$L[TBLend]
+";
+  pagefooter();
+?>

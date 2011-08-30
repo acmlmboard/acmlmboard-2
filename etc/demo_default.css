@@ -1,0 +1,121 @@
+/*
+
+ SnowStorm demo page CSS
+ -----------------------
+
+ None of this is needed for the snow effect to work - it's strictly to make the demo/documentation look pretty.
+
+*/
+
+body {
+ background:#333 url(demo_background.gif);
+ color:#eeeeee;
+ font-family:verdana;
+ font-size:0.7em;
+}
+
+a {
+ color:#aaaa00;
+ text-decoration:none;
+}
+
+a:hover {
+ color:#ffff33;
+}
+
+h1, h2, h3 {
+ margin:0px;
+}
+
+h1 {
+ font-size:1.6em;
+}
+
+h2 {
+ font-size:1.2em;
+ margin-top:16px;
+ color:#99ccff;
+}
+
+h3 {
+ font-size:1.0em;
+ margin-top:1em;
+ margin-bottom:0px;
+ color:#999999;
+}
+
+p {
+ margin:1em 0px 0px 0px;
+}
+
+p.first {
+ margin-top:0.25em;
+}
+
+.noTop {
+ margin-top:0px !important;
+ padding-top:0px !important;
+}
+
+pre {
+ font-size:1em;
+ color:#cccc99;
+}
+
+div>pre {
+ font-size:1.2em;
+}
+
+ul {
+ margin-left:16px;
+ padding-left:0px;
+ margin-top:5px;
+ margin-bottom:5px;
+}
+
+.bright {
+ color:#ff6666;
+}
+
+dl {
+ margin-left:1em;
+}
+
+dl dt {
+ font-weight:bold;
+ border-bottom:1px dashed #666;
+ padding-bottom:2px;
+ margin-top:1.5em;
+ margin-right:2%;
+}
+
+dl dd {
+ margin-left:0px;
+ margin-bottom:0.5em;
+}
+
+dl dt code {
+ color:#99ccff;
+ font-weight:bold;
+}
+
+dl dd code {
+ color:#ccc;
+}
+
+dl em {
+ color:#fff;
+ font-weight:normal;
+ padding-top:2px;
+ padding-bottom:0.5em;
+}
+
+code {
+ font-size:1.1em;
+}
+
+#container {
+ background-color:#333;
+ padding:16px;
+ border:1px solid #666;
+}

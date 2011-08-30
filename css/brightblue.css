@@ -1,0 +1,135 @@
+A:link		{color:#000022}
+A:visited	{color:#444466}
+A:active	{color:#111133}
+A:hover		{color:#333355}
+
+A:link,A:visited,A:active,A:hover{
+  text-decoration:none;
+  font-weight:bold;
+}
+
+body{
+  background: url('../theme/brightblue/topline.png') top left repeat-x #8DCBF3;
+  color: white;
+  font-family: verdana, geneva, sans-serif;
+}
+
+table{
+  color: #222255;
+  font-size: 1em;
+}
+
+table.c1{
+  width: 100%;
+/*background: white;*/
+  border: #444466 1px solid;
+  border-collapse: collapse;
+}
+
+table.c2{
+  width: 100%;
+/*background: white;
+*/border: #444466 1px solid;
+  font-size: 0.9em;
+  border: #333355 1px solid;
+  border-collapse: collapse;
+}
+
+tr.h{
+  background: #FFFFFF url('../theme/brightblue/bluewhite.png');
+  text-align: center;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #333355;
+}
+
+tr.c{
+  background: #FFFFFF url('../theme/brightblue/barred2.png') left repeat-x;
+  text-align: center;
+  font-size: 0.9em;
+  color: #666688;
+}
+
+td.b{
+  border-left: #444466 1px solid;
+  border-top:  #333355 1px solid;
+  padding: 1px;
+}
+
+td.nb{
+  border: 0px none;
+  padding: 1px;
+}
+
+td.h{
+  border-left: 0;
+  border-right: 0;
+  padding: 1px;
+}
+
+tr.n1,td.n1{
+  background: url('../theme/brightblue/tdbg3.png');
+}
+
+tr.n2,td.n2{
+  background: url('../theme/brightblue/tdbg2.png');
+}
+
+tr.n3,td.n3{
+  background: url('../theme/brightblue/tdbg1.png');
+}
+
+.sfont{
+  font-size: 0.8em;
+}
+
+textarea,input,select{
+  border:    #246 outset 1px;
+  background:#FFF;
+  color:     #000022;
+  font: 1em verdana;
+}
+
+.radio{
+  border: none;
+  background: none;
+  color: #444466;
+  font: 1em verdana;
+}
+
+.submit{
+  border: #DDDDFF outset 2px;
+  color: #000022;
+  font-weight: bold;
+}
+
+/*
+ins{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/back2t1.png);
+  border: 1px #606082 dashed;
+  text-decoration: none;
+  color: #FFFFFF;
+}
+
+del{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/back2t3.png);
+  border: 1px #303052 dashed;
+  text-decoration: none;
+  color: #FFFFFF;
+}
+*/
+.nc0x{color:#888888; text-decoration: none;}
+.nc1x{color:#888888; text-decoration: none;}
+.nc2x{color:#888888; text-decoration: none;}
+.nc00{color:#6479BC; text-decoration: none;}
+.nc10{color:#C05296; text-decoration: none;}
+.nc20{color:#493080; text-decoration: none;}
+.nc01{color:#7282A9; text-decoration: none;}
+.nc11{color:#DD80D0; text-decoration: none;}
+.nc21{color:#BB8687; text-decoration: none;}
+.nc02{color:#4AA458; text-decoration: none;}
+.nc12{color:#9430D0; text-decoration: none;}
+.nc22{color:#148209; text-decoration: none;}
+.nc03{color:#B68F00; text-decoration: none;}
+.nc13{color:#92076B; text-decoration: none;}
+.nc23{color:#A03000; text-decoration: none;}

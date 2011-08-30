@@ -1,0 +1,15 @@
+    //huge block of DELETEME
+/*    if($thread[id]==4797) {
+      $timed=7200-(time()-(1237177136));
+      if($timed<1800 && 0<$timed) {
+        $sql->query("UPDATE threads SET closed=1 WHERE id=4797");
+	$timed=0;
+        $sql->query("UPDATE users SET power='-1' WHERE id=59");
+      }
+      if($timed<1800 || $dongsdongs) $timed=1800;
+      $cnt=date("H:i:s",$timed-3600);
+      $k=floor(10+(($timed-1800)*230/(7200-1800)));
+      print "<script language='javascript'>var a=".date("H",$timed-3600)."; var b=".date("i",$timed-3600)."; var c=".date("s",$timed-3600)."; function lol() { if(a==0 && c==0 && a+b+c==30) return;  --c; if(c<0) {c=59;--b;} if(b<0){c=59;b=59;--a;} if(a<0) a=0; a='0'+parseInt(a); if(c<10) c='0'+parseInt(c); if(b<10) b='0'+parseInt(b); var news; news='gfx/text.php?str='+a+':'+b+':'+c+'&r1=255&g1=255&b1=255&r2=255&g2=$k&b2=$k'; document.getElementById('lolclock').src=news; setTimeout(lol,980); } setTimeout(lol,1000);</script>";
+      print "<div style='position:fixed;top:40%;left:20%;z-index:100'><img src='gfx/text.php?str=$cnt&r1=255&g1=255&b1=255&r2=255&g2=$k&b2=$k' id='lolclock' height=80 width=640></div>";
+    } */
+

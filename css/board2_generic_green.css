@@ -1,0 +1,135 @@
+A:link		{color:#88ee88}
+A:visited	{color:#8888dd}
+A:active	{color:#77ff77}
+A:hover		{color:#ccffcc}
+
+A:link,A:visited,A:active,A:hover{
+  text-decoration:none;
+  font-weight:bold;
+}
+
+body{
+  background: url('../theme/board2_generic_green/board2_generic_bg_green.png') #001100;
+  color: white;
+  font-family: verdana, geneva, sans-serif;
+}
+
+table{
+  color: #aaaaaa;
+  font-size: 1em;
+}
+
+table.c1{
+  width: 100%;
+/*background: black;*/
+  border: #001100 1px solid;
+  border-collapse: collapse;
+}
+
+table.c2{
+  width: 100%;
+/*background: black;
+*/border: #001100 1px solid;
+  font-size: 0.9em;
+  border: #001100 1px solid;
+  border-collapse: collapse;
+}
+
+tr.h{
+  background: url(../theme/board2_generic_green/smb3_ground.png);
+  text-align: center;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #bbddbb;
+}
+
+tr.c{
+  background: url(../theme/board2_generic_green/smb3_ground2.png);
+  text-align: center;
+  font-size: 0.9em;
+  color: #EEccEE;
+}
+
+td.b{
+  border-left: #001100 1px solid;
+  border-top:  #001100 1px solid;
+  padding: 1px;
+}
+
+td.nb{
+  border: 0px none;
+  padding: 1px;
+}
+
+td.h{
+  border-left: 0;
+  border-right: 0;
+  padding: 1px;
+}
+
+tr.n1,td.n1{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/tdbg3.png);
+}
+
+tr.n2,td.n2{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/tdbg2.png);
+}
+
+tr.n3,td.n3{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/tdbg1.png);
+}
+
+.sfont{
+  font-size: 0.8em;
+}
+
+textarea,input,select{
+  border:    #222 outset 1px;
+  background:#111;
+  color:     #FFFFFF;
+  font: 1em verdana;
+}
+
+.radio{
+  border: none;
+  background: none;
+  color: #DDDDDD;
+  font: 1em verdana;
+}
+
+.submit{
+  border: #444444 outset 2px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/*
+ins{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/back2t1.png);
+  border: 1px #30A050 dashed;
+  text-decoration: none;
+  color: #40FF30;
+}
+
+del{
+  background: url(http://acmlm.kafuka.org/board/theme/desolation/back2t3.png);
+  border: 1px #003010 dashed;
+  text-decoration: none;
+  color: #40ff00;
+}
+*/
+.nc0x{color:#888888; text-decoration: none;}
+.nc1x{color:#888888; text-decoration: none;}
+.nc2x{color:#888888; text-decoration: none;}
+.nc00{color:#97ACEF; text-decoration: none;}
+.nc10{color:#F185C9; text-decoration: none;}
+.nc20{color:#7C60B0; text-decoration: none;}
+.nc01{color:#D8E8FE; text-decoration: none;}
+.nc11{color:#FFB3F3; text-decoration: none;}
+.nc21{color:#EEB9BA; text-decoration: none;}
+.nc02{color:#AFFABE; text-decoration: none;}
+.nc12{color:#C762F2; text-decoration: none;}
+.nc22{color:#47B53C; text-decoration: none;}
+.nc03{color:#FFEA95; text-decoration: none;}
+.nc13{color:#C53A9E; text-decoration: none;}
+.nc23{color:#F0C413; text-decoration: none;}

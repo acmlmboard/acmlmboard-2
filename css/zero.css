@@ -1,0 +1,123 @@
+A:link		{color:#a5a}
+A:visited	{color:#979}
+A:active	{color:#fef}
+A:hover		{color:#fef}
+
+A:link,A:visited,A:active,A:hover{
+  text-decoration:none;
+  font-weight:bold;
+}
+
+body{
+  background: url(../theme/zero/bg.png) #311;
+/*	background: url('../img/fishbg2.png');
+*/  color: #dca;
+  font-family: verdana, geneva, sans-serif;
+/*  background-attachment: fixed; laggy piece of shit */
+}
+
+table{
+  color: #cad;
+  font-size: 1em;
+}
+
+table.c1{
+  width: 100%;
+/*  background: black; */
+  border: #772277 1px solid;
+}
+
+table.c2{
+  width: 100%;
+  border: #442244 1px solid;
+  font-size: 0.9em;
+}
+
+tr.h{
+  background: url(../theme/zero/tdbgh.png);
+  text-align: center;
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #DDDDDD;
+}
+
+tr.c{
+  background: url(../theme/zero/tdbgc.png);
+  text-align: center;
+  font-size: 0.9em;
+  color: #EEEEEE;
+}
+
+td.b{
+  border-left: #000000 1px solid;
+  border-top:  #000000 1px solid;
+  padding: 1px;
+}
+
+td.nb{
+  border: 0px none;
+  padding: 1px;
+}
+
+td.h{
+  border-left: 0;
+  border-right: 0;
+  padding: 1px;
+}
+
+tr.n1,td.n1{
+  background: url('../theme/zero/tdbg3.png');
+}
+
+tr.n2,td.n2{
+  background: url('../theme/zero/tdbg2.png');
+}
+
+tr.n3,td.n3{
+  background: url('../theme/zero/tdbg1.png');
+}
+
+.sfont{
+  font-size: 0.8em;
+}
+
+textarea,input,select{
+  border:    #996699 ridge 2px;
+  background:#000000;
+  color:     #FFFFFF;
+  font: 1em verdana;
+}
+
+.radio{
+  border: none;
+  background: none;
+  color: #DDDDDD;
+  font: 1em verdana;
+}
+
+.submit{
+  border: #b5e ridge 2px;
+  color: #de9;
+  font-weight: bold;
+}
+
+/*
+ins{
+  background: url(../theme/fragment/back2t1.png);
+  border: 1px #30A050 dashed;
+  text-decoration: none;
+  color: #40FF30;
+}
+
+del{
+  background: url(../theme/fragment/back2t3.png);
+  border: 1px #003010 dashed;
+  text-decoration: none;
+  color: #FF4000;
+}
+*/
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

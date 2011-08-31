@@ -1,7 +1,7 @@
 <?php
   require 'lib/common.php';
 
-  $rs=$loguser[etc]; //DELETEME
+  $rs=13; //move to config?
 
   if($_POST[action]=='Edit profile' && $_POST[pass]!='' && $_POST[pass]==$_POST[pass2])
     setcookie('pass',packlcookie(md5($_POST[pass])),2147483647);
@@ -31,9 +31,6 @@
 ".        "$L[TBLend]
 ";
   }elseif(!$act){
-    if($log) $sql->query("UPDATE users SET etc=".($rs=rand(1,21))." WHERE id=$loguser[id]"); //DELETEME
-   
-    
     $listsex=array('Male','Female','N/A');
 
     if($loguser[birth]!=-1){

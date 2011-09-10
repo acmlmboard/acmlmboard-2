@@ -1,6 +1,6 @@
 <?php
   // 2009-07 Sukasa: The entire file.  I tried to conform to what I remembered of the standards.
-  
+  // 2011-09-09 Emuz: Small update to allow for 32 avatars
   require 'lib/common.php';
 
   //Select existing avatar or new one
@@ -14,7 +14,7 @@
     $sql->query("delete from mood where id= ".addslashes($id)." and user= $loguser[id]");
     $avatars = $sql->query("select * from `mood` where `user`=$loguser[id]");
   }
-  if (isset($_POST[a]) && $_POST[a][0]=='S' && ($numavatars < 16 || $activeavatar[existing])) {
+  if (isset($_POST[a]) && $_POST[a][0]=='S' && ($numavatars < 32 || $activeavatar[existing])) {
     //vet the image
     $islocal=($_POST[islocal]!='on'?1:0);
     $avatarid = ($activeavatar[existing] == 1 ? addslashes($id) : $sql->resultq("select (id + 1) nid from `mood` where user = $loguser[id] union select 1 nid order by nid  desc"));
@@ -118,7 +118,7 @@
   while ($row=$sql->fetch($avatars))
     print "<a href=\"?a=e&i=$row[id]\">$row[label]</a><br>";
   
-  if ($numavatars < 16)
+  if ($numavatars < 32)
     print "          <a href=\"usermood.php\">(Add New)</a>";
 
   print "        </td>

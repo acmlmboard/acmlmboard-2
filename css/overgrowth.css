@@ -33,7 +33,7 @@ table.c2{
 }
 
 tr.h{
-  background: url(../theme/overgrowth/tbg0.png) #639465;
+  background: url(../theme/overgrowth/tbg0.png) #042004;
   text-align: center;
   font-size: 0.9em;
   font-weight: bold;
@@ -41,7 +41,7 @@ tr.h{
 }
 
 tr.c{
-  background: url(../theme/overgrowth/tbg1.png) #39bd45;
+  background: url(../theme/overgrowth/tbg1.png) #042004;
   text-align: center;
   font-size: 0.9em;
   color: #EEEEEE;
@@ -65,15 +65,15 @@ td.h{
 }
 
 tr.n1,td.n1{
-  background: url(../theme/overgrowth/tbg2.png) #307836;
+  background: url(../theme/overgrowth/tbg2.png) #042004;
 }
 
 tr.n2,td.n2{
-  background: url(../theme/overgrowth/tbg3.png) #245c28;
+  background: url(../theme/overgrowth/tbg3.png) #042004;
 }
 
 tr.n3,td.n3{
-  background: url(../theme/overgrowth/tbg4.png) #1F4f22;
+  background: url(../theme/overgrowth/tbg4.png) #042004;
 }
 
 .sfont{
@@ -81,7 +81,7 @@ tr.n3,td.n3{
 }
 
 textarea,input,select{
-  border:    #77dd77 ridge 2px;
+  border:    #708800 ridge 2px;
   background:#000000;
   color:     #FFFFFF;
   font: 1em verdana;

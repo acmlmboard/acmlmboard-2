@@ -173,7 +173,7 @@
 //    if((!(rand()%20))||$fid==-1) { $themefile="snow.css"; $lulz=1; $boardlogo="<img src=img/snowbanner.gif title='$randmsg'><script type=text/javascript src=etc/script/snowstorm.js></script>"; }	//[blackhole89] DELETEME
 
     if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
-    if($theme[id]==26) $boardlogo="<img src='theme/gotwood/logo.png'>";
+    if($theme[id]==27) $boardlogo="<img src='theme/gotwood/logo.png'>";
 
     if($pagetitle)
       $pagetitle.=' - ';

@@ -20,7 +20,7 @@
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign');
+  $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign','signsep');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 

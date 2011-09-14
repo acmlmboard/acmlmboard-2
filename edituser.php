@@ -20,6 +20,18 @@
   }elseif(!$act){
     $user=$sql->fetchq("SELECT * FROM users WHERE id='".intval($_GET['id'])."'");
 
+	if($user['power'] == 4 && $user['id'] != $loguser['id'])
+	{
+	    print "$L[TBL1]>
+".        "  $L[TD1c]>
+".        "    Root users cannot be edited.<br>
+".        "    <a href=./>Back to main</a>
+".        "$L[TBLend]
+";
+		pagefooter();
+		die();
+	}
+
     $listsex=array('Male','Female','N/A');
     $listpower=array(-1 => '-1 Banned',0 => ' 0 Normal User',' 1 Local Moderator',' 2 Global Moderator',' 3 Administrator');
     $listpm=array('allow','disallow');
@@ -114,6 +126,22 @@
       pagefooter();
       die();
     }
+    
+    //[KAWA] Copying the whole rootcheck thing here because this page has bad logic.
+    //Gotta check it at this point anyway because the target may have become root while you were still filling out fields.
+	$user=$sql->fetchq("SELECT * FROM users WHERE id='".intval($_GET['id'])."'");
+	if($user['power'] == 4 && $user['id'] != $loguser['id'])
+	{
+		print "$L[TBL1]>
+".        "  $L[TD1c]>
+".        "    Root users cannot be edited.<br>
+".        "    <a href=./>Back to main</a>
+".        "$L[TBLend]
+";
+		pagefooter();
+		die();
+	}
+
 
     $usepic='usepic';
     if($fname=$_FILES[picture][name]){

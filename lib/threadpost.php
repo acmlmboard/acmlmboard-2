@@ -2,7 +2,7 @@
   function threadpost($post,$type,$pthread=''){
     global $L,$dateformat,$loguser,$x_hacks,$sql;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
-  
+
     $post[head]=str_replace("<!--", "&lt;!--", $post[head]);
     $post[uhead]=str_replace("<!--", "&lt;!--", $post[uhead]);
 
@@ -113,7 +113,10 @@
         }
 
 		if ($post[usign]) {
-			$post[usign] = "<br><br><small>____________________<br>". $post['usign'] ."</small>";
+			if($post[usignsep])
+				$post[usign] = "<br><br><small>". $post['usign'] ."</small>";
+			else
+				$post[usign] = "<br><br><small>____________________<br>". $post['usign'] ."</small>";
 		}
 
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant

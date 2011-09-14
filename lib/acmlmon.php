@@ -98,8 +98,10 @@ $monScript = "<script language=\"javascript\">
 
 $dongs = "";
 if(rand(0, 100) < $chance)
-	$dongs = $monScript.$monMarkup;
-
+{
+	$dongs = $monMarkup;
+	$junk .= $monScript;
+}
 
 /** ORIGINAL DODONGO CODE FOLLOWS **/
 /* DELETEME */

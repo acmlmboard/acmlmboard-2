@@ -214,15 +214,16 @@
     }
 
     include("lib/acmlmon.php");
+	$junk .= "<style type=\"text/css\">.nc04{color:#EE4444} .nc14{color:#E63282} .nc24{color:#AA3C3C}</style>";
 
     print "<html>
 ".        "<head>
 ".        "<title>$pagetitle$boardtitle</title>
 ".        "$config[meta]
-".        "</head>
 ".        "<link rel='icon' type='image/png' href='/b2ico4.png'>
 ".        "<link rel='stylesheet' href='css/$themefile'>
 ".        $junk ."
+".        "</head>
 ".        "<body style=font-size:$loguser[fontsize]%>$dongs
 ".        "$L[TBL1]>
 ".        "  $L[TD1c] colspan=3>$boardlogo

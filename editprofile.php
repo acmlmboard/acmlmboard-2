@@ -82,6 +82,7 @@
            catheader('Post layout')."
 ".           fieldrow('Header'          ,fieldtext ( 5, 80,'head'      ))."
 ".           fieldrow('Signature'       ,fieldtext ( 5, 80,'sign'      ))."
+".           fieldrow('Signature line'  ,fieldoption('signsep',$loguser[signsep],array('Display','Hide')))."
 ".
            catheader('Contact information')."
 ".           fieldrow('Email address'   ,fieldinput(40, 60,'email'     ))."
@@ -247,6 +248,7 @@
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
+	       . setfield('signsep').','
 	       . setfield('longpages').','
 	       . setfield('rankset') .','
                . (checkctitle()?(setfield('title')   .','):'')

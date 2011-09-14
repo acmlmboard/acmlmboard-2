@@ -173,6 +173,7 @@
 //    if((!(rand()%20))||$fid==-1) { $themefile="snow.css"; $lulz=1; $boardlogo="<img src=img/snowbanner.gif title='$randmsg'><script type=text/javascript src=etc/script/snowstorm.js></script>"; }	//[blackhole89] DELETEME
 
     if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
+    if($theme[id]==26) $boardlogo="<img src='theme/gotwood/logo.png'>";
 
     if($pagetitle)
       $pagetitle.=' - ';
@@ -212,26 +213,7 @@
       $ssllnk="<a href='$config[sslbase]$url' title='View in SSL mode'><img border='0' src='img/ssloff.gif'></a>";
     }
 
-    /* DELETEME */
-    $dongs="<script language='javascript'>function bomb(l,x,y) {  var k=document.getElementById(l); var d=document.getElementById(l+'d'); k.src='img/dongbomb.png'; d.style.top-=120; d.style.left-=40; setTimeout(function() { remv(l); },1000); d.innerHTML=d.innerHTML+\"<embed id='bombsnd' src='etc/LTTP_Bomb_Blow.wav' loop='false' autostart='true' type='audio/wav' hidden='true'>\"; dongsc-=1; } function remv(l) { document.getElementById(l+'d').style.top=-300; if(dongsc==0) { document.getElementById(l+'d').innerHTML=\"<embed id='bombsnd' src='etc/LTTP_ItemFanfare.wav' loop='false' type='audio/wav' autostart='true' hidden='true'>\"; dongsc-=1; } }</script>";
-    
-    $did=0;
-    while(rand(0,1)==0) {
-      $x=rand(0,900);
-      $y=rand(0,600);
-      $k="";
-      if(rand(0,1)) $k="2";
-      ++$did;
-      $dongs.="<div id='dongs{$did}d' style='filter:Alpha(opacity=75,finishopacity=75,style=1);opacity:0.75;-moz-opacity:0.75;position:fixed;top:{$x}px;left:{$y}px;z-index:999'><img src='img/dodongo$k.gif' title=\"BOMB?\" id=\"dongs$did\" onclick=\"bomb('dongs$did',$x,$y)\"></div>";
-    }
-    $dongs.="<script language='javascript'>var dongsc=$did;</script>";
-    if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false) $dongs="";
-    if(rand(0,100)) $dongs="";
-
-/*    if(getenv('SCRIPT_NAME')=="/board/index.php") {
-      $themefile="subSilver.css";
-      $boardlogo="<img style=float:left src=css/images/logo_phpBB.gif><br><br><span class=maintitle>phpBBoard2</span><br><span class=gen>Acmlmboard2 kind of sucks. ENTERPRISE QUALITY board software is the future.</span><br><br><br>";
-    } */
+    include("lib/acmlmon.php");
 
     print "<html>
 ".        "<head>

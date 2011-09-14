@@ -1,0 +1,151 @@
+/*
+ * Got Wood?
+ *
+ * A completely original theme by Kawa for Board2, who'd have thunk it?
+ */
+
+body
+{
+	background: url("../theme/gotwood/wood.jpg") #643007;
+	color: #FFF;
+	font-family: "Verdana", "Geneva", sans-serif;
+	text-shadow: 2px 2px 2px black;
+	
+}
+
+a:link		{ color: #FFC040; }
+a:visited	{ color: #C09030; }
+a:active	{ color: #FFEA60; }
+a:hover		{ color: #FFFFFF; }
+
+a:link, a:visited, a:active, a:hover
+{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+table
+{
+	color: #FFF;
+	font-size: 1em;
+}
+
+table.c1
+{
+	width: 100%;
+	border: #000 1px solid;
+	border-left: 0;
+	border-top: 0;
+	text-shadow: 0 0 0 black;
+}
+
+table.c2
+{
+	width: 100%;
+	border: #000 1px solid;
+	border-left: 0;
+	border-top: 0;
+	font-size: 0.9em;
+	text-shadow: 0 0 0 black;
+}
+
+tr.h
+{
+	background: #361B08;
+	background: rgba(0, 0, 0, 0.75);
+	text-align: center;
+	font-size: 0.9em;
+	font-weight: bold;
+	color: #FFF;
+}
+
+tr.c
+{
+	background: #361B08;
+	background: rgba(25, 0, 0, 0.65);
+	text-align: center;
+	font-size: 0.9em;
+	color: #FFF;
+}
+
+td.b
+{
+	border-left: #000 1px solid;
+	border-top: #000 1px solid;
+	padding: 1px;
+}
+
+td.nb
+{
+	border: 0px none;
+	padding: 1px;
+}
+
+td.h
+{
+	padding: 1px;
+}
+
+tr.n1,td.n1
+{
+	background: #462208;
+	background: rgba(0, 0, 0, .60);
+}
+
+
+tr.n2,td.n2
+{
+	background: #3B1E09;
+	background: rgba(0, 0, 0, .40);
+}
+
+tr.n3,td.n3
+{
+	background: #934003;
+	background: rgba(0, 0, 0, .20);
+}
+
+.sfont
+{
+	font-size: 0.8em;
+}
+
+
+textarea, input, select
+{
+	border: #643007 inset 2px;
+	color: #FFFFFF;
+	background: #24150A;
+	background: rgba(0, 0, 0, 0.25); 
+	font: 1em verdana;
+}
+
+select
+{
+	border: #643007 inset 2px;
+	color: #FFFFFF;
+	background: #24150A;
+	font: 1em verdana;
+}
+
+.radio
+{
+	border: none;
+	background: none;
+	color: #DDDDDD;
+	font: 1em verdana;
+}
+
+.submit
+{
+	border: #643007 outset 2px;
+	color: #FFF;
+	background: url("../theme/gotwood/wood.jpg") #643007;
+	font-weight: bold;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

@@ -10,7 +10,11 @@
 
     $syn="";
 
-    $post[utitle]=getrank($post[urankset],$post[uposts]).$syn.(($post[urankset]&&strlen($post[utitle]))?"<br>":"").$post[utitle];
+    $post[utitle]= gettokenstring($post[uid])
+                  .getrank($post[urankset],$post[uposts])
+                  .$syn
+                  .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
+                  .$post[utitle];
 
     //opaque goggles
     if ($x_hacks['opaques']) {

@@ -1,4 +1,5 @@
 <?php
+
   function threadpost($post,$type,$pthread=''){
     global $L,$dateformat,$loguser,$x_hacks,$sql;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);

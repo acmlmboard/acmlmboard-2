@@ -36,7 +36,9 @@ function present_token($tid) {
 
 /* Return a presentation of all tokens for a user. */
 function gettokenstring($uid) {
+  global $sql;
   static $cache;
+
   if(isset($cache[$uid])) return $cache[$uid];
   else {
     $q=$sql->query("SELECT t FROM usertokens WHERE u='$uid'");

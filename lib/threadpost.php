@@ -138,15 +138,9 @@
 ".        "      Posts: $post[num]/$post[uposts]
 ";
 
-      if($x_hacks['powerlevel']) {
-        $pl=((int)($exp/1000)+$post[uposts]*2+(int)((time()-$post[uregdate])/86400));
-        if($pl>9000) $pl="<font color='red' title='OVER NINE THOUSAAAAAND!!!'>$pl</font>";
-        $text.="<br>Powerlevel: $pl"; 
-      }
-
       $text.=
           "    </td>
-".        "    $L[TD2]>".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']))."</td>
+".        "    <td class=\"b n2 mainbar".$post['uid']."\">".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']))."</td>
 ".        "$L[TBLend]
 ";
     }

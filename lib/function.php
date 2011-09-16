@@ -174,6 +174,15 @@
 
   function getrank($set,$posts){
     global $ranks,$sql;
+
+    //[KAWA] Climbing the Ranks Again
+    if($posts > 5100)
+    {
+    	$posts %= 5000;
+    	if($posts < 10)
+    		$posts = 10;
+    }
+
     if($set) {
       $d=$sql->fetchq("SELECT str FROM ranks WHERE rs=$set AND p<=$posts ORDER BY p DESC LIMIT 1");
       return $d[0];

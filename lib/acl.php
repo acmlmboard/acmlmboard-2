@@ -33,7 +33,7 @@ function present_token($tid) {
 
   if($tokens[$tid][img]=="") return "";
   
-  return "<img src='".$tokens[$tid][img]."' title='".$tokens[$tid][name]."' style='vertical-align:text-bottom'>";
+  return "<img src='".$tokens[$tid][img]."' title='".$tokens[$tid][name]."' style='vertical-align:text-bottom;padding-right:2px'>";
 }
 
 /* Return a presentation of all tokens for a user. */

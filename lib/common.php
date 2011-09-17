@@ -57,7 +57,7 @@
   }
 
   //load ACL
-  $loguser[acl]=get_acl($loguser[id]); 
+  $loguser[acl]=load_acl($loguser[id]); 
 
   if($loguser[ppp]<1) $loguser[ppp]=20;
   if($loguser[tpp]<1) $loguser[tpp]=20;

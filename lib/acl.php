@@ -3,14 +3,14 @@
 /* Populate default Access Control List. */
 $default_acl = array();
 $q=$sql->query("SELECT r FROM tokenrights WHERE t=0");
-while($d=$sql->fetchq($q)) {
+while($d=$sql->fetch($q)) {
   $default_acl[$d[r]]=1;
 }
 
 /* Populate token info. */
 $tokens = array();
 $q=$sql->query("SELECT * FROM tokens");
-while($d=$sql->fetchq($q)) {
+while($d=$sql->fetch($q)) {
   $tokens[$d[id]]=$d;
 }
 
@@ -20,7 +20,7 @@ function load_acl($uid) {
   
   $acl=$default_acl;
   $q=$sql->query("SELECT tr.r FROM usertokens ut JOIN tokenrights tr ON tr.t=ut.t WHERE ut.u='$uid'");
-  while($d=$sql->fetchq($q)) {
+  while($d=$sql->fetch($q)) {
     $acl[$d[r]]=1;
   }
 
@@ -41,7 +41,7 @@ function gettokenstring($uid) {
   else {
     $q=$sql->query("SELECT t FROM usertokens WHERE u='$uid'");
     $str="";
-    while($d=$sql->fetchq($q)) $str.=present_token($d[t]);
+    while($d=$sql->fetch($q)) $str.=present_token($d[t]);
     if($str!="") $str.="<br>";
     return ($cache[$uid]=$str);
   }

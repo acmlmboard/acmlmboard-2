@@ -245,10 +245,38 @@
 ";
     }
 
+//[KAWA] Thread +1
+if(isset($_GET['thumbsup']))
+{
+	$sql->query("INSERT IGNORE INTO threadthumbs VALUES (".$loguser['id'].", ".$tid.")");
+	$isThumbed = true;
+}
+else if(isset($_GET['thumbsdown']))
+{
+	$sql->query("DELETE FROM threadthumbs WHERE uid = ".$loguser['id']." AND tid = ".$tid);
+	$isThumbed = false;
+}
+else
+{
+	$isThumbed = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE uid=".$loguser['id']." AND tid=".$tid) == 1;
+}
+$thumbsUp = "";
+if(!$isThumbed)
+	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup\">+1</a>";
+else
+	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown\">-1</a>";
+if($loguser['power'] > 0)
+{
+	$thumbCount = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE tid=".$tid);
+	$thumbsUp .= " (".$thumbCount.")";
+}
+
+
     $topbot=
           "$L[TBL] width=100%>$L[TR]>
 ".        "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread[title])."</td>
 ".        "  $L[TDnr]>
+".        "    $thumbsUp |
 ".        "    <a href=newthread.php?id=$thread[forum]>New thread</a> |
 ".        "    $newreply
 ".        "  </td>

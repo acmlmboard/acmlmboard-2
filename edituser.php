@@ -34,6 +34,8 @@
 
     $listsex=array('Male','Female','N/A');
     $listpower=array(-1 => '-1 Banned',0 => ' 0 Normal User',' 1 Local Moderator',' 2 Global Moderator',' 3 Administrator');
+    if($user['power'] == 4)
+    	$listpower[4] = " 4 Root";
     $listpm=array('allow','disallow');
     $listrename=array('disallow','allow');
    
@@ -130,16 +132,23 @@
     //[KAWA] Copying the whole rootcheck thing here because this page has bad logic.
     //Gotta check it at this point anyway because the target may have become root while you were still filling out fields.
 	$user=$sql->fetchq("SELECT * FROM users WHERE id='".intval($_GET['id'])."'");
-	if($user['power'] == 4 && $user['id'] != $loguser['id'])
+	if($user['power'] == 4)
 	{
-		print "$L[TBL1]>
+		if($user['id'] != $loguser['id'])
+		{
+			print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    Root users cannot be edited.<br>
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
-		pagefooter();
-		die();
+			pagefooter();
+			die();
+		}
+		if($_POST['power'] < 4)
+		{
+			$_POST['power'] = 4; //[KAWA] Prevent taking away root. Hackish, I know. ABXD disables the select.
+		}
 	}
 
 
@@ -227,6 +236,10 @@
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);
 
     $_POST[name]=trim($_POST[name]);	// deleteme?
+    
+    //[KAWA] Prevent editing the <select> to have a "Root" entry from working.
+    if($user['power'] < 4 && $_POST['power'] >= 4)
+    	$_POST['power'] = $user['power'];
 
     $sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass).'",':'')

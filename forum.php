@@ -48,6 +48,41 @@
       die();
     }
 
+//[KAWA] Copypasting a chunk from ABXD, with some edits to make it work here.
+$isIgnored = $sql->resultq("select count(*) from ignoredforums where uid=".$loguser['id']." and fid=".$fid) == 1;
+if(isset($_GET['ignore']))
+{
+	if(!$isIgnored)
+	{
+		$sql->query("insert into ignoredforums values (".$loguser['id'].", ".$fid.")");
+		$isIgnored = true;
+  	    print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
+".      "      Forum ignored. You will no longer see any \"New\" markers for this forum.
+".      "$L[TBLend]
+";
+	}
+}
+else if(isset($_GET['unignore']))
+{
+	if($isIgnored)
+	{
+		$sql->query("delete from ignoredforums where uid=".$loguser['id']." and fid=".$fid);
+		$isIgnored = false;
+  	    print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
+".      "      Forum unignored.
+".      "$L[TBLend]
+";
+	}
+}
+$ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore forum</a> | "
+						 : "<a href=forum.php?id=$fid&amp;ignore>Ignore forum</a> | ";
+
     $threads=$sql->query("SELECT $fieldlist t.*, (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<'$forum[rtime]') isread":'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
@@ -60,7 +95,7 @@
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
-".      "  $L[TDnr]><a href=newthread.php?id=$fid>New thread</a> | <a href=newthread.php?id=$fid&ispoll=1>New poll</a></td>
+".      "  $L[TDnr]>".$ignoreLink."<a href=newthread.php?id=$fid>New thread</a> | <a href=newthread.php?id=$fid&ispoll=1>New poll</a></td>
 ".      "$L[TBLend]
 ";
   }elseif($uid=$_GET[user]){
@@ -224,7 +259,7 @@
     for($k=0;$k<sizeof($tags);++$k) {
       $t=$tags[$k];
       if($thread[tags] & (1<<$t[bit])) {
-        sscanf($t[color],"%02X%02X%02X",&$r,&$g,&$b);
+        sscanf($t[color],"%02X%02X%02X",$r,$g,$b); //[KAWA] Removed & from RGB vars because "Warning: Call-time pass-by-reference has been deprecated."
 	if($r<128 && $g<128) { $r+=32; $g+=32; }
         $t[color2]=sprintf("%02X%02X%02X",$r,$g,$b);
         $taglist.=" <span style=\"background-repeat:repeat;background:url('gfx/tpng.php?c=$t[color]&t=105');font-size:7pt;font-family:Small Fonts,sans-serif;padding:1px 1px\">"

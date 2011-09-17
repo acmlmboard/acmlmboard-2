@@ -62,6 +62,7 @@
 ".      "      ".mlink($sort,$sex, '1',$ppp)."Local moderator</a> |
 ".      "      ".mlink($sort,$sex, '2',$ppp)."Full moderator</a> |
 ".      "      ".mlink($sort,$sex, '3',$ppp)."Administrator</a> |
+".      "      ".mlink($sort,$sex, '4',$ppp)."Root</a> |
 ".      "      ".mlink($sort,$sex, '9',$ppp)."All staff</a> |
 ".      "      ".mlink($sort,$sex,  '',$ppp)."All</a>
 ".      "      

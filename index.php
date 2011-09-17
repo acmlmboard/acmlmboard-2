@@ -107,6 +107,14 @@
                      ."ORDER BY ord");
   while($c=$sql->fetch($categs))
     $categ[$c[id]]=$c;
+
+	//[KAWA] ABXD does ignores with a very nice SQL trick that I think Mega-Mario came up with one day.
+	//Unfortunately, this place is too hairy to add the trick to so I'll have to use a third query to collect the ignores. The first is categories. The second is the forum list itself.
+	$ignores = array();
+	$ignoreQ = $sql->query("SELECT * FROM ignoredforums WHERE uid = ".$loguser['id']);
+	while($i = $sql->fetch($ignoreQ))
+		$ignores[$i['fid']] = true;
+
   $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.sex usex, u.power upower "
                      ."FROM forums f "
                      ."LEFT JOIN users u ON u.id=f.lastuser "
@@ -211,6 +219,14 @@
     else
       $status='&nbsp;';
 
+	if($ignores[$forum['id']])
+	{
+		$status = "&nbsp;";
+		$ignoreFX = "style=\"opacity: 0.5;\"";
+	}
+	else
+		$ignoreFX = "";
+
     $modstring="";
     $a=$sql->query("SELECT u.name,u.id,u.sex,u.power FROM forummods f, users u WHERE f.fid=$forum[id] AND u.id=f.uid");
     while($mod=$sql->fetch($a)) $modstring.=userlink($mod).", ";
@@ -220,8 +236,8 @@
         "  $L[TRc]>
 ".      "    $L[TD1]>$status</td>
 ".      "    $L[TD2l]>
-".      "      <a href=forum.php?id=$forum[id]>$forum[title]</a><br>
-".      "      <font class=sfont>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</font>
+".      "      <a href=forum.php?id=$forum[id] $ignoreFX>$forum[title]</a><br>
+".      "      <font class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</font>
 ".      "    </td>
 ".      "    $L[TD1]>$forum[threads]</td>
 ".      "    $L[TD1]>$forum[posts]</td>

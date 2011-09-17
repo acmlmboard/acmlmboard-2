@@ -417,6 +417,7 @@
   }
 
   function userdisp($user,$u=''){
+    global $sql;
     if($user[$u.power]<0)
       $user[$u.power]='x';
 
@@ -455,10 +456,13 @@
 
 	//global $loguser;
 //	if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 
+  static $nccache;
+  if(isset($nccache[$user[$u.id]])) $nc=$nccache[$user[$u.id]];
+  else $nc=$nccache[$user[$u.id]]=$sql->resultq("SELECT t.nc".$user[$u.sex]." FROM usertokens ut, tokens t WHERE ut.u='".$user[$u.id]."' AND ut.t=t.id ORDER BY t.nc_prio DESC LIMIT 1");
 
   if($user[$u.minipic] && $user[showminipic]) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.minipic]."' border=0> ";
   else $minipic="";
-  return "$minipic<font class=nc".$user[$u.sex].$user[$u.power].'>'
+  return "$minipic<font color='#$nc'>" //class=nc".$user[$u.sex].$user[$u.power].'>'
         .str_replace(" ","&nbsp;",htmlval($user[$u.name]))
         .'</font>';
 /*	return '<font color=#'. $c .'>'

@@ -29,9 +29,11 @@ function load_acl($uid) {
 
 /* Render a presentation of a token, if available. */
 function present_token($tid) {
+  global $tokens;
+
   if($tokens[$tid][img]=="") return "";
   
-  return "<img src='".$tokens[$tid][img]."' title='".$tokens[$tid][name]."'>";
+  return "<img src='".$tokens[$tid][img]."' title='".$tokens[$tid][name]."' style='vertical-align:text-bottom'>";
 }
 
 /* Return a presentation of all tokens for a user. */

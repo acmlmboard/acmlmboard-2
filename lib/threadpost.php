@@ -11,8 +11,7 @@
 
     $syn="";
 
-    $post[utitle]= gettokenstring($post[uid])
-                  .getrank($post[urankset],$post[uposts])
+    $post[utitle]= getrank($post[urankset],$post[uposts])
                   .$syn
                   .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
                   .$post[utitle];
@@ -93,7 +92,7 @@
 ".        "$L[TBL1]>
 ".        "  $L[TR]>
 ".        "    $L[TD1] style=border-bottom:0;border-right:0 height=17>
-".        "      ".userlink($post,'u')."</td>
+".        "      ".userlink($post,'u')." ".gettokenstring($post[uid])."</td>
 ".        "    </td>
 ".        "    $L[TD1] style=border-left:0 width=100%>
 ".        "      $L[TBL] width=100%>

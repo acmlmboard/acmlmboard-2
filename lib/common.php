@@ -1,5 +1,6 @@
 <?php
   require 'lib/function.php';
+  require 'lib/acl.php';
 
   header ('Content-type: text/html; charset=utf-8');
 
@@ -54,9 +55,10 @@
     $modf=$sql->query("SELECT fid FROM forummods WHERE uid=$loguser[id]");
     while($m=$sql->fetch($modf)) $loguser[modforums][$m[fid]]=1;
   }
-  //DELETEME
-  $sql->query("UPDATE forums SET threads=-1,posts=-1 WHERE id=-1");
-  
+
+  //load ACL
+  $loguser[acl]=load_acl($loguser[id]); 
+
   if($loguser[ppp]<1) $loguser[ppp]=20;
   if($loguser[tpp]<1) $loguser[tpp]=20;
 

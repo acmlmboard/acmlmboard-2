@@ -1,4 +1,5 @@
 <?php
+
   function threadpost($post,$type,$pthread=''){
     global $L,$dateformat,$loguser,$x_hacks,$sql;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
@@ -10,7 +11,10 @@
 
     $syn="";
 
-    $post[utitle]=getrank($post[urankset],$post[uposts]).$syn.(($post[urankset]&&strlen($post[utitle]))?"<br>":"").$post[utitle];
+    $post[utitle]= getrank($post[urankset],$post[uposts])
+                  .$syn
+                  .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
+                  .$post[utitle];
 
     //opaque goggles
     if ($x_hacks['opaques']) {
@@ -88,7 +92,7 @@
 ".        "$L[TBL1]>
 ".        "  $L[TR]>
 ".        "    $L[TD1] style=border-bottom:0;border-right:0 height=17>
-".        "      ".userlink($post,'u')."</td>
+".        "      ".userlink($post,'u')." ".gettokenstring($post[uid])."</td>
 ".        "    </td>
 ".        "    $L[TD1] style=border-left:0 width=100%>
 ".        "      $L[TBL] width=100%>

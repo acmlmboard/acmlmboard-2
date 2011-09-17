@@ -67,4 +67,10 @@ function acl_for_user($uid,$key) {
   return 0;
 }
 
+function acl($key) {
+  global $loguser;
+  if($loguser[acl][$key]) return 1;
+  return 0;
+}
+
 ?>

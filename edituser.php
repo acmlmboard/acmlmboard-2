@@ -10,27 +10,28 @@
 ".        "    <a href=./>Back to main</a> or <a href=login.php>login</a>
 ".        "$L[TBLend]
 ";
-  }elseif($loguser[power]<3){
+  }elseif(!acl_for_user(intval($_GET['id']),"edit-user")){
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
-".        "    This function is restricted to administrators.<br>
+".        "    You do not have the permissions to do this.<br>
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
   }elseif(!$act){
     $user=$sql->fetchq("SELECT * FROM users WHERE id='".intval($_GET['id'])."'");
 
-	if($user['power'] == 4 && $user['id'] != $loguser['id'])
-	{
-	    print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    Root users cannot be edited.<br>
-".        "    <a href=./>Back to main</a>
-".        "$L[TBLend]
+    /* This must now be handled differently. --blackhole89 */
+    if($user['power']==4 && $user['id'] != $loguser['id'])
+    {
+      print "$L[TBL1]>
+".          "  $L[TD1c]>
+".          "    Root users cannot be edited.<br>
+".          "    <a href=./>Back to main</a>
+".          "$L[TBLend]
 ";
-		pagefooter();
-		die();
-	}
+      pagefooter();
+      die();
+    } 
 
     $listsex=array('Male','Female','N/A');
     $listpower=array(-1 => '-1 Banned',0 => ' 0 Normal User',' 1 Local Moderator',' 2 Global Moderator',' 3 Administrator');

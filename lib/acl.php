@@ -33,7 +33,7 @@ function present_token($tid) {
 
   if($tokens[$tid][img]=="") return "";
   
-  return "<img src='".$tokens[$tid][img]."' title='".$tokens[$tid][name]."' style='vertical-align:text-bottom;padding-right:2px'>";
+  return "<img src='".$tokens[$tid][img]."' title='".$tokens[$tid][name]."' style='vertical-align:text-bottom;padding-right:3px'>";
 }
 
 /* Return a presentation of all tokens for a user. */
@@ -57,6 +57,14 @@ function acl_for_thread($tid,$key) {
   if($loguser[acl][$key]) return 1;
   else if($loguser[acl]["$key t$tid"]) return 1;
   else if($loguser[acl]["$key f".getforumbythread($tid)]) return 1;
+  return 0;
+}
+
+function acl_for_user($uid,$key) {
+  global $loguser;
+  if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["$key u$uid"]) return 1;
+  return 0;
 }
 
 ?>

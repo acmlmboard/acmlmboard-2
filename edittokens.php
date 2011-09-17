@@ -5,6 +5,8 @@
     checknumeric($id);
   else $id=0;
 
+  pageheader("Edit Tokens");
+
   if(!acl("edit-tokens")) {
      print "$L[TBL1]>
 ".        "  $L[TD1c]>

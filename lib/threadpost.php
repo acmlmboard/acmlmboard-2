@@ -76,10 +76,11 @@
       if($post[id])
         $postlinks.=" | ID: $post[id]";
 
-      if(isadmin())
+      if(acl_for_thread($post[thread],"show-ips"))
         $postlinks.=($postlinks?' | ':'')."IP: $post[ip]";
 
-      if(ismod(getforumbythread($post[thread])) && $post[maxrevision]>1) {
+      if(   acl_for_thread($post[thread],"see-history")
+         && $post[maxrevision]>1) {
         $revisionstr.=" | Go to revision: ";
         for($i=1;$i<=$post[maxrevision];++$i)
           $revisionstr.="<a href=thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]>$i</a> ";

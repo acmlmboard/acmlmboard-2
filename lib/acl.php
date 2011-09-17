@@ -51,4 +51,12 @@ function gettokenstring($uid) {
   }
 }
 
+/* specific ACL resolution functions */
+function acl_for_thread($tid,$key) {
+  global $loguser;
+  if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["$key t$tid"]) return 1;
+  else if($loguser[acl]["$key f".getforumbythread($tid)]) return 1;
+}
+
 ?>

@@ -17,8 +17,8 @@
      die();  
   }
 
-  if($action="") {
-    $r=$sql->fetchq("SELECT * FROM tokens");
+  if($action=="") {
+    $r=$sql->query("SELECT * FROM tokens");
       
     $print="<a href=./>Main</a> - Edit Tokens<br><br>
 ".         "$L[TBL1]>
@@ -31,12 +31,13 @@
 ".         "    $L[TDh]>&nbsp;
 ".         "  </tr>";
 
+    $i=0;
     while($t=$sql->fetch($r)) {
       $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
 ".              "  $L[TDc]>$t[id]
-".              "  $L[TDc]>".$t[img]==""?"":"<img src='$t[img]'>"."
+".              "  $L[TDc]>".($t[img]==""?"":"<img src='$t[img]'>")."
 ".              "  $L[TDc]>$t[name]
-".              "  $L[TDc]><a href=#><font color='#$t[nc0]'>Masculine</font></a> <a href=#>font color='#$t[nc1]'>Feminine</font></a> <a href=#><font color='#$t[nc2]'>Neuter</font></a>
+".              "  $L[TDc]><a href=#><font color='#$t[nc0]'>Masculine</font></a> <a href=#><font color='#$t[nc1]'>Feminine</font></a> <a href=#><font color='#$t[nc2]'>Neuter</font></a>
 ".              "  $L[TDc]>$t[nc_prio]
 ".              "  $L[TDc]><a href='edittokens.php?action=edit&id=$t[id]'>Edit</a>
 ".              "</tr>";
@@ -45,6 +46,9 @@
     $print.="$L[TBLend]";
     
     echo $print;
+  } else if($action=="edit") {
+    $t=$sql->fetchq("SELECT * FROM tokens WHERE id=$id");
+    
   }
   
   pagefooter();

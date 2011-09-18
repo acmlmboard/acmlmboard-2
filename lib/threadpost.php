@@ -15,15 +15,13 @@
                   .$syn
                   .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
                   .$post[utitle];
-
 	//[KAWA] TODO: replace with token effect, or preferably just a profile switch
 	/*
     //opaque goggles
     if ($x_hacks['opaques']) {
       $post['usign'] = $post['uhead'] = "";
     }
-    */
-
+	*/
     if($post[nolayout]) {
       $post['usign'] = $post['uhead'] = "";
     }
@@ -79,10 +77,11 @@
       if($post[id])
         $postlinks.=" | ID: $post[id]";
 
-      if(isadmin())
+      if(acl_for_thread($post[thread],"show-ips"))
         $postlinks.=($postlinks?' | ':'')."IP: $post[ip]";
 
-      if(ismod(getforumbythread($post[thread])) && $post[maxrevision]>1) {
+      if(   acl_for_thread($post[thread],"see-history")
+         && $post[maxrevision]>1) {
         $revisionstr.=" | Go to revision: ";
         for($i=1;$i<=$post[maxrevision];++$i)
           $revisionstr.="<a href=thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]>$i</a> ";

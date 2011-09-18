@@ -86,7 +86,7 @@
   if($log) {
     //AB-SPECIFIC
     if($loguser[power]>=1 && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
-      $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator');
+      $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator','Root');
       sendirc("S\x0314{$listpower[$loguser[power]]} \x0309$loguser[name]\x0314 changed IPs from \x0307$oldip\x0314 to \x0307$userip\x0314");
     }
 
@@ -251,6 +251,7 @@
 ".    //2009/07 Sukasa: Added header link for it.
           "    | <a href=usermood.php>Edit mood avatars</a>
 ".        "    | <a href=shop.php>Item shop</a>
+".        "    | <a href=acmlmon2.php>Sprites</a>
 ".        "    | $markread
 ";
     }else{
@@ -320,7 +321,7 @@
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center>
-".        "  Acmlmboard 2.1+&delta; (2011-08-24)<br>
+".        "  Acmlmboard 2.<i>?</i> (<font color='#AFFABE'>Development</font>); (2011-09-18)<br>
 ".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper et al.
 ".        "$L[TBLend]";
     pagestats();

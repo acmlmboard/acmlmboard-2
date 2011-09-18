@@ -2,3 +2,5 @@ lib/config.php
 userpic/
 mathres/
 temp
+*~
+.DS_Store

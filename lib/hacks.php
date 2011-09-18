@@ -29,6 +29,8 @@
 				$sql -> query("UPDATE `users` SET `sex` = '1', `title` = 'Beauty Queen' WHERE `id` = '". $loguser['id'] ."'");
 
 //			if ($_GET['lol'] == 13) print_r($eq);
+	//[KAWA] TODO: remove this block when token effects are in to replace them
+	/*
 			if ($eq['eq6'] == 122)
 				$x_hacks['goggles']	= true;
 
@@ -40,11 +42,7 @@
 
 			if ($eq['eq4'] == 123)
 				$x_hacks['opaques']	= true;
-
-		}
-
-		if (!strpos($_SERVER['PHP_SELF'], "private.php") && $loguser['power'] < 1) {
-			//$x_hacks['anonymous'] = true;
+	*/
 		}
 
 		if ($loguser['theme'] == 13) $boardlogo		= "<img src=\"theme/desolation/specialtitle.jpg\">";

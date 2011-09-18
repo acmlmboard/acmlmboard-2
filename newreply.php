@@ -124,10 +124,6 @@
 		      ."LEFT JOIN threads t ON t.id=p.thread "
 		      ."LEFT JOIN forums f ON f.id=t.forum "
                       ."WHERE p.id=$pid AND ISNULL(pt2.id)");
-
-	if ($x_hacks['anonymous']) {
-		$post['name']	= "?";
-	}
 	
 	//does the user have reading access to the quoted post?
 	if($loguser[power]<$post[minpower]) $post[text]="--- restricted post ---";
@@ -262,15 +258,6 @@
 
     //2007-02-21 //blackhole89 - nuke entries of this thread in the "threadsread" table
     $sql->query("DELETE FROM threadsread WHERE tid='$thread[id]' AND NOT (uid='$userid')");
-
-    //DELETEME
-/*    if($thread[forum]==-1) {
-      $i=$user[name];
-      for($a=strlen($i)-1;$a>=0;--$a)
-        $t.=$i[$a];
-      $user[name]=$t;
-      $sql->query("UPDATE users SET name='".addslashes($t)."' WHERE id=$user[id]");
-    } */
 
 	// bonus shit
     $c = rand(100, 500);

@@ -1,7 +1,7 @@
 <?php
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$x_hacks,$sql;
+    global $L,$dateformat,$loguser,$sql;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
 
     $post[head]=str_replace("<!--", "&lt;!--", $post[head]);
@@ -16,10 +16,13 @@
                   .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
                   .$post[utitle];
 
+	//[KAWA] TODO: replace with token effect, or preferably just a profile switch
+	/*
     //opaque goggles
     if ($x_hacks['opaques']) {
       $post['usign'] = $post['uhead'] = "";
     }
+    */
 
     if($post[nolayout]) {
       $post['usign'] = $post['uhead'] = "";
@@ -76,11 +79,10 @@
       if($post[id])
         $postlinks.=" | ID: $post[id]";
 
-      if(acl_for_thread($post[thread],"show-ips"))
+      if(isadmin())
         $postlinks.=($postlinks?' | ':'')."IP: $post[ip]";
 
-      if(   acl_for_thread($post[thread],"see-history")
-         && $post[maxrevision]>1) {
+      if(ismod(getforumbythread($post[thread])) && $post[maxrevision]>1) {
         $revisionstr.=" | Go to revision: ";
         for($i=1;$i<=$post[maxrevision];++$i)
           $revisionstr.="<a href=thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]>$i</a> ";

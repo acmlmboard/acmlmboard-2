@@ -165,7 +165,6 @@
   function checkctitle(){
     global $loguser;
     if(!$loguser[id]) return 0;
-    if($loguser[name]=="Emuz") return 1; //DELETEME
     if($loguser[posts]>1200) return 1;
     if($loguser[posts]>800 && $loguser[regdate]<(time()-3600*24*365)) return 1;
     if($loguser[power]>0) return 1;
@@ -215,7 +214,7 @@
   }
 
   function postfilter($msg, $nosmilies=0){
-    global $smilies, $x_hacks, $L, $config;
+    global $smilies, $L, $config;
 
     //[blackhole89] - [code] tag
     $list = array("<","\\\"" ,"\\\\" ,"\\'","\r\n","[",":",")","_");
@@ -305,10 +304,13 @@
        '\''."$L[TBL]>$L[TR]>$L[TD3] width=\\1 height='.(\\2+4).' style=\"text-align:center\"><div style=\"padding:0px\" id=swf'.".'(++$swfid)'.".'></div><div style=\"font-size:50px\" id=swf'.".'($swfid)'.".'play><a href=\"#\" onclick=\"document.getElementById(\'swf'.".'$swfid'.".'\').innerHTML=\'<embed src=\\3 width=\\1 height=\\2></embed>\';document.getElementById(\'swf'.".'$swfid'.".'stop\').style.display=\'block\';document.getElementById(\'swf'.".'$swfid'.".'play\').style.display=\'none\';return false;\">&#x25BA;</a></div></td><td style=\"vertical-align:bottom\"><div style=\"display:none\" id=swf'.".'($swfid)'.".'stop><a href=\"#\" onclick=\"document.getElementById(\'swf'.".'$swfid'.".'\').innerHTML=\'\';document.getElementById(\'swf'.".'$swfid'.".'stop\').style.display=\'none\';document.getElementById(\'swf'.".'$swfid'.".'play\').style.display=\'block\';return false;\">&#x25A0;</a></div></td></tr></table>"
        .'\'',$msg);
 
+	//[KAWA] TODO: replace with token effect
+	/*
     if ($x_hacks['goggles']) {
       $msg=str_replace('<!--','<font color="#66ff66">&lt;!--',$msg);
       $msg=str_replace('-->','--></font>',$msg);
     }
+    */
 
     return $msg;
   }
@@ -387,29 +389,10 @@
   }
 
   function userlink($user,$u=''){
-    global $x_hacks,$loguser;
+    global $loguser;
 
     if(!$user[$u.name])
       $user[$u.name]='&nbsp;';
-
-    if ($x_hacks['anonymous']) {
-      if ($user[$u.power] >= 3) {
-        $user[$u.power] = 3;
-        $user[$u.sex]	= 2;
-        $user[$u.name]	= "Ghostly Spectre"; // "Administration", Administrators
-      } elseif ($user[$u.power] >= 1) {
-        $user[$u.sex]	= 2;
-        $user[$u.name]	= "Zombie"; //Added, Fullmods+LMods
-      }  elseif ($user[$u.power] <= -1) {
-        $user[$u.power] = -1;
-        $user[$u.sex]	= 2;
-        $user[$u.name]	= "Pumpkin"; //"Moron", Banned Idiots
-      } else {
-        $user[$u.name]	= "Rabid Crow"; //"Anonymous", Normal Users
-        $user[$u.sex]	= 2;
-        $user[$u.power] = 0;
-      }
-    }
 
     return '<a href=profile.php?id='.$user[$u.id].'>'
           .userdisp($user,$u)
@@ -417,7 +400,6 @@
   }
 
   function userdisp($user,$u=''){
-    global $sql;
     if($user[$u.power]<0)
       $user[$u.power]='x';
 
@@ -456,13 +438,10 @@
 
 	//global $loguser;
 //	if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 
-  static $nccache;
-  if(isset($nccache[$user[$u.id]])) $nc=$nccache[$user[$u.id]];
-  else $nc=$nccache[$user[$u.id]]=$sql->resultq("SELECT t.nc".$user[$u.sex]." FROM usertokens ut, tokens t WHERE ut.u='".$user[$u.id]."' AND ut.t=t.id ORDER BY t.nc_prio DESC LIMIT 1");
 
   if($user[$u.minipic] && $user[showminipic]) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.minipic]."' border=0> ";
   else $minipic="";
-  return "$minipic<font color='#$nc'>" //class=nc".$user[$u.sex].$user[$u.power].'>'
+  return "$minipic<font class=nc".$user[$u.sex].$user[$u.power].'>'
         .str_replace(" ","&nbsp;",htmlval($user[$u.name]))
         .'</font>';
 /*	return '<font color=#'. $c .'>'

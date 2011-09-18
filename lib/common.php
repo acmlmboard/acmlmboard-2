@@ -93,13 +93,6 @@
     $sql->query("UPDATE users SET lastview=".ctime().",ip='$userip',ipfwd='$userfwd',url='".(isssl()?'!':'').addslashes($url)."', ipbanned=0 WHERE id=$loguser[id]");
   } else
     $sql->query('INSERT INTO guests (date,ip,url,useragent,bot) VALUES ('.ctime().",'$userip','".(isssl()?'!':'').addslashes($url)."', '". addslashes($_SERVER['HTTP_USER_AGENT']) ."', '$bot')");
-  //DELETEME
-  function sciencelog() {
-    global $sql,$REMOTE_ADDR;
-    if(strlen($_SERVER['HTTP_X_IMSI'])) {
-      $sql->query("INSERT INTO sciencelog VALUES('$loguser[id]','$REMOTE_ADDR','X_IMSI=$_SERVER[HTTP_X_IMSI]')");
-    }
-  }
 
   //[blackhole89]
   if($config[log]) {
@@ -109,7 +102,6 @@
       $postvars.="$k=$v ";
     }
     @$sql->query("INSERT DELAYED INTO log VALUES(UNIX_TIMESTAMP(),'$REMOTE_ADDR','$loguser[id]','".addslashes($_SERVER['HTTP_USER_AGENT'])." :: ".addslashes($url)." :: $postvars')");
-    sciencelog();
   }
 
   $ref=$HTTP_REFERER;
@@ -161,18 +153,14 @@
   // also changed the title to be "pagetitle - boardname" and not vice-versa
   function pageheader($pagetitle='',$fid=0){
     global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$theme,$url,$config,$feedicons;
-    global $lulz; //DELETEME
 
     // this is the only common.php location where we reliably know $fid.
     if($log) $sql->query("UPDATE users SET lastforum='$fid' WHERE id=$loguser[id]");
     else $sql->query("UPDATE guests SET lastforum='$fid' WHERE ip='$_SERVER[REMOTE_ADDR]'");
 
+	//[KAWA] This sucks and should be replaced.
     $themefile = $theme['cssfile'];		// 3/11/2007 xkeeper - themes again
     $themefile.="?tz=$loguser[tzoff]&minover=$_GET[minover]";
-
-//    $randmsgs=array('Welcome to Silent Hill.','UBOAAAAAAAAAAAAA','MOTHER','WAKE UP','The Awesome White Hole... is leaking...');
- //   $randmsg=$randmsgs[rand()%5];
-//    if((!(rand()%20))||$fid==-1) { $themefile="snow.css"; $lulz=1; $boardlogo="<img src=img/snowbanner.gif title='$randmsg'><script type=text/javascript src=etc/script/snowstorm.js></script>"; }	//[blackhole89] DELETEME
 
     if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
     if($theme[id]==27) $boardlogo="<img src='theme/gotwood/logo.png'>";
@@ -329,7 +317,6 @@
 
   function pagefooter(){
     global $L;
-    global $lulz,$REMOTE_ADDR; //DELETEME
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center>
@@ -337,7 +324,6 @@
 ".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper et al.
 ".        "$L[TBLend]";
     pagestats();
-    if($lulz==1 || isssl()) die();
     print "<br>
 ".        "$L[TBL2]>$L[TD1]><center>
 ";

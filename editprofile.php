@@ -146,11 +146,14 @@
       $dimys=60;
       $size=2*30720;
 
+	//[KAWA] TODO: replace with token effect
+	/*
       if($x_hacks["180px"]) {
         $dimx=180;
 	$dimy=180;
 	$size=2*61440;
       }
+	*/
 
       $validext=false;
       $extlist='';

@@ -11,11 +11,6 @@
     else
       $pass=md5($_POST[pass]);
 
-//    if($_POST[message] == ":)"){	//DELETEME this might wind up banning some innocent user. :|
-//      $err="    Sorry, but no.";
-//      $sql->query("INSERT INTO ipbans VALUES ('$REMOTE_ADDR',1,'','automatic','Smileyface')");
-//    }
-
     if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     else

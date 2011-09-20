@@ -250,6 +250,7 @@
 ".        "    | <a href=editprofile.php>Edit profile</a>
 ".    //2009/07 Sukasa: Added header link for it.
           "    | <a href=usermood.php>Edit mood avatars</a>
+".        "    | <a href=b2sprites.php>Sprites</a>
 ".        "    | <a href=shop.php>Item shop</a>
 ".        "    | $markread
 ";

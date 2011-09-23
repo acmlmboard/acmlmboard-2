@@ -63,6 +63,33 @@
   // Moved pageheader here so that we can do header()s without fucking everything up again
   pageheader();
 
+
+	//[KAWA] Copypastadaption from ABXD, with added activity limiter.
+	$birthdayLimit = 86400 * 30; //should be 30 days. Adjust if you want.
+	$rBirthdays = $sql->query("select birth, id, name, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
+	$birthdays = array();
+	while($user = $sql->fetch($rBirthdays))
+	{
+		$b = $user['birth'];
+		if(gmdate("m-d", $b) == gmdate("m-d"))
+		{
+			$y = gmdate("Y") - gmdate("Y", $b);
+			$birthdays[] = UserLink($user)." (".$y.")";
+		}
+	}
+	if(count($birthdays))
+	{
+		$birthdaysToday = implode(", ", $birthdays);
+		$birthdaybox =
+        "$L[TBL1]>
+".      "  $L[TR1c]>
+".      "    $L[TD2c]>
+".      "      Birthdays today: $birthdaysToday
+".      "  $L[TBLend]
+".      "  <br>
+";
+}
+
   if($log){
     //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
     $pmsgs=$sql->fetchq("SELECT p.id id, p.date date, u.id uid, u.name uname, u.sex usex, u.power upower "
@@ -191,6 +218,7 @@
 ".      "      $onuserlist
 ".      "$L[TBLend]
 ".      "<br>
+".		"$birthdaybox
 ".      "$pmsgbox
 ".      "$L[TBL1]>
 ".      "  $L[TRh]>

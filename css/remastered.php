@@ -1,4 +1,9 @@
 <?php
+/* META
+Remastered Cycle (Nikolaj)
+
+*/
+
 //Remastered Cycle theme.
 header("Content-type: text/css");
 header("Cache-Control: no-cache");

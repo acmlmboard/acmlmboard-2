@@ -1,5 +1,5 @@
 /* META
-Emerald Envy (KP9000)
+Standard
 
 */
 
@@ -14,7 +14,7 @@ A:link,A:visited,A:active,A:hover{
 }
 
 body{
-  background: url(../theme/emeraldenvy/back2c.jpg) #042004;
+  background: url(../img/back2c.jpg) #040420;
   color: white;
   font-family: verdana, geneva, sans-serif;
 }
@@ -27,18 +27,18 @@ table{
 table.c1{
   width: 100%;
   background: black;
-  border: #669966 1px solid;
+  border: #666699 1px solid;
 }
 
 table.c2{
   width: 100%;
   background: black;
-  border: #335533 1px solid;
+  border: #333355 1px solid;
   font-size: 0.9em;
 }
 
 tr.h{
-  background: url(../theme/emeraldenvy/backh.png) #636594;
+  background: url(../img/backh.png) #636594;
   text-align: center;
   font-size: 0.9em;
   font-weight: bold;
@@ -46,7 +46,7 @@ tr.h{
 }
 
 tr.c{
-  background: url(../theme/emeraldenvy/backc2.png) #39BD45;
+  background: url(../img/backc2.png) #3945BD;
   text-align: center;
   font-size: 0.9em;
   color: #EEEEEE;
@@ -70,15 +70,15 @@ td.h{
 }
 
 tr.n1,td.n1{
-  background: url(../theme/emeraldenvy/back2t1.png) #307836;
+  background: url(../img/back2t1.png) #303678;
 }
 
 tr.n2,td.n2{
-  background: url(../theme/emeraldenvy/back2t2.png) #245C28;
+  background: url(../img/back2t2.png) #24285C;
 }
 
 tr.n3,td.n3{
-  background: url(../theme/emeraldenvy/back2t3.png) #1F4F22;
+  background: url(../img/back2t3.png) #1F224F;
 }
 
 .sfont{
@@ -86,7 +86,7 @@ tr.n3,td.n3{
 }
 
 textarea,input,select{
-  border:    #77DD77 ridge 2px;
+  border:    #7777DD ridge 2px;
   background:#000000;
   color:     #FFFFFF;
   font: 1em verdana;
@@ -106,15 +106,15 @@ textarea,input,select{
 }
 
 ins{
-  background: url(../theme/emeraldenvy/back2t1.png);
-  border: 1px #30A050 dashed;
+  background: url(../img/back2t1.png);
+  border: 1px #3050A0 dashed;
   text-decoration: none;
   color: #40FF30;
 }
 
 del{
-  background: url(../theme/emeraldenvy/back2t3.png);
-  border: 1px #003010 dashed;
+  background: url(../img/back2t3.png);
+  border: 1px #001030 dashed;
   text-decoration: none;
   color: #FF4000;
 }

@@ -339,6 +339,7 @@
 
   function themelist() {
 		global $sql, $loguser;
+/*
 		$s	= $sql -> query("SELECT `id`, `name` FROM `themes` WHERE `ord` >= '0' OR `id` = '$loguser[theme]' ORDER BY `ord`");		// it'd be grand if I knew how to get the usercounts easily too .'D
 
 		$t	= $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
@@ -347,6 +348,18 @@
 //		print_r($themeuser);
 
 		while ($x = $sql -> fetch($s)) $themelist[$x['id']] = $x['name'] ." (". $themeuser[$x['id']] .")";
+
+		return $themelist;
+*/
+
+		$t	= $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
+		while ($x = $sql -> fetch($t)) $themeuser[$x['theme']] = intval($x['count']);
+
+		$themes = unserialize(file_get_contents("themes_serial.txt"));
+		$themelist = array();
+		foreach($themes as $t)
+			$themelist[$t[1]] = $t[0] . " (".$themeuser[$t[1]].")";
+
 		return $themelist;
   }
 

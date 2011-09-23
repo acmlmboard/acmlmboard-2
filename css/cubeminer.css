@@ -1,11 +1,12 @@
-/* META
-Got Wood?
-A completely original theme by Kawa for Board2, who'd have thunk it?
-*/
+/*
+ * Cubeminer
+ *
+ * A not quite original theme by Kawa for Board2, ported from ABXD
+ */
 
 body
 {
-	background: url("../theme/gotwood/wood.jpg") #643007;
+	background: url("../theme/cubeminer/back.png") #000;
 	color: #FFF;
 	font-family: "Verdana", "Geneva", sans-serif;
 	text-shadow: 2px 2px 2px black;
@@ -36,7 +37,6 @@ table.c1
 	border-left: 0;
 	border-top: 0;
 	text-shadow: 0 0 0 black;
-	box-shadow: 2px 2px 4px black;
 }
 
 table.c2
@@ -47,13 +47,12 @@ table.c2
 	border-top: 0;
 	font-size: 0.9em;
 	text-shadow: 0 0 0 black;
-	box-shadow: 2px 2px 4px black;
 }
 
 tr.h
 {
-	background: #361B08;
-	background: rgba(0, 0, 0, 0.75);
+	background: gray url("../theme/cubeminer/header.png");
+	background-color: rgba(0, 0, 0, 0.60);
 	text-align: center;
 	font-size: 0.9em;
 	font-weight: bold;
@@ -62,8 +61,8 @@ tr.h
 
 tr.c
 {
-	background: #361B08;
-	background: rgba(25, 0, 0, 0.65);
+	background: gray url("../theme/cubeminer/header.png");
+	background-color: rgba(0, 0, 0, 0.60);
 	text-align: center;
 	font-size: 0.9em;
 	color: #FFF;
@@ -85,17 +84,16 @@ td.nb
 td.h
 {
 	padding: 1px;
-	box-shadow: inset 0px 1px 1px rgba(255,255,255,0.25);
 }
 
-tr.n1, td.n1
+tr.n1,td.n1
 {
 	background: #462208;
 	background: rgba(0, 0, 0, .60);
 }
 
 
-tr.n2, td.n2
+tr.n2,td.n2
 {
 	background: #3B1E09;
 	background: rgba(0, 0, 0, .40);

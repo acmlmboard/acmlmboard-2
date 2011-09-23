@@ -46,9 +46,9 @@
     $loguser[dateformat]='m-d-y';
     $loguser[timeformat]='h:i A';
     $loguser[signsep]=0;
-    $loguser[theme]=20;				// adding schemes
+    $loguser[theme]="dailycycle2";
     if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false)
-      $loguser[theme]=4;
+      $loguser[theme]="minerslament";
   }
   if($loguser[power]==1) {
     $loguser[modforums]=array();
@@ -139,8 +139,22 @@
 
   }
 
-  $theme=$sql->fetchq("SELECT * FROM themes WHERE id='$loguser[theme]'");		// 3/11/2007 xkeeper - themes! whee
-  if(!$theme) $theme=$sql->fetchq("SELECT * FROM themes WHERE id=0");			// generic falback
+	//[KAWA] ABXD-style theme system
+	$themelist = unserialize(file_get_contents("themes_serial.txt"));
+	$theme = $loguser['theme'];
+	if(is_file("css/".$theme.".css")) //try CSS first
+		$themefile = $theme.".css";
+	elseif(is_file("css/".$theme.".php")) //then try PHP
+		$themefile = $theme.".php";
+	else //then fall back to Standard
+	{
+		$theme = $themelist[0][1];
+		$themefile = $theme.".css";
+	}
+	if(is_file("theme/".$theme."/logo.png"))
+		$logofile = "theme/".$theme."/logo.png";
+	else
+		$logofile = "theme/logo.png";
 
   $feedicons="";
 
@@ -152,18 +166,15 @@
   // also added number_format to views
   // also changed the title to be "pagetitle - boardname" and not vice-versa
   function pageheader($pagetitle='',$fid=0){
-    global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$theme,$url,$config,$feedicons;
+    global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$themefile,$logofile,$url,$config,$feedicons;
 
     // this is the only common.php location where we reliably know $fid.
     if($log) $sql->query("UPDATE users SET lastforum='$fid' WHERE id=$loguser[id]");
     else $sql->query("UPDATE guests SET lastforum='$fid' WHERE ip='$_SERVER[REMOTE_ADDR]'");
 
-	//[KAWA] This sucks and should be replaced.
-    $themefile = $theme['cssfile'];		// 3/11/2007 xkeeper - themes again
     $themefile.="?tz=$loguser[tzoff]&minover=$_GET[minover]";
-
-    if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
-    if($theme[id]==27) $boardlogo="<img src='theme/gotwood/logo.png'>";
+    //if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
+    //if($theme[id]==27) $boardlogo="<img src='theme/gotwood/logo.png'>";
 
     if($pagetitle)
       $pagetitle.=' - ';
@@ -187,7 +198,7 @@
         "
 ".      "    $L[TBL] width=100%>
 ".      "      $L[TRc]>
-".      "        $L[TD] style=border:none!important valign=center><a href='http://www.kafuka.org'>$boardlogo</a><!--- <span style=position:relative;left:-165px;top:10px;width:0px;display:inline-block><img src=img/rsi.png></span>--></td>
+".      "        $L[TD] style=border:none!important valign=center><a href='http://www.kafuka.org'><img src='$logofile'></a></td>
 ".      "        $L[TD] style=border:none!important valign=center width=300>
 ".      "          $extratitle
 ".      "        </td>

@@ -1,4 +1,9 @@
 <?php
+/* META
+Daily Cycle (Boom.dk)
+
+*/
+
 $tzoff = isset($_GET['tz']) ? floatval($_GET['tz']) : 0;
 
 function srgb($r, $g, $b) {

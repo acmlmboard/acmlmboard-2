@@ -1,4 +1,9 @@
 <?php
+/* META
+Daily Cycle 2.0 (beta&trade;) (blackhole89)
+
+*/
+
 $tzoff = isset($_GET['tz']) ? floatval($_GET['tz']) : 0;
 
 function srgb($r, $g, $b, $f=1.0) {

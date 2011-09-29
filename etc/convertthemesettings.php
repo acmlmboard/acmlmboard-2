@@ -1,6 +1,6 @@
 <?php
 
-require("lib/common.php");
+require("..lib/common.php");
 pageheader();
 
 if(!is_file("themes_serial.txt"))

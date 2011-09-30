@@ -1,23 +1,38 @@
 <?php
   // 2009-07 Sukasa: The entire file.  I tried to conform to what I remembered of the standards.
   // 2011-09-09 Emuz: Small update to allow for <s>32</s> 64 avatars
+  // 2011-09-29 Sukasa: Fine, I'll timestamp it that way then.  Updated to allow administrators to modify anyone's mood avatars
   require 'lib/common.php';
+
+
+  $targetuserid = $loguser[id];
+  $target = false;
+  $targetget = "";
+  $targetgeta = "";
+
+  if (CanAlterAll() && isset($_GET[uid]) && $_GET[uid] != $loguser[id]) {
+    $targetuserid = addslashes($_GET[uid]);
+    $target = true;
+    $targetget = "&uid=".$targetuserid;
+    $targetgeta = "?uid=".$targetuserid;
+  }
 
   //Select existing avatar or new one
   $id = (isset($_GET[i]) ? $_GET[i] : (isset($_POST[aid]) ? $_POST[aid] : -1 ));
 
-  $activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user`=$loguser[id] and `id`=".addslashes($id)." union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
-  $avatars = $sql->query("select * from `mood` where `user`=$loguser[id]");
-  $numavatars = $sql->resultq("select count(*) from `mood` where `user`=$loguser[id]");
+  $activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user` = $targetuserid and `id`=".addslashes($id)." union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
+  $avatars = $sql->query("select * from `mood` where `user`= ".$targetuserid." ");
+  $numavatars = $sql->resultq("select count(*) from `mood` where `user` = ".$targetuserid);
 
   if (isset($_POST[a]) && $_POST[a][0]=='D' && $activeavatar[existing]) {
-    $sql->query("delete from mood where id= ".addslashes($id)." and user= $loguser[id]");
-    $avatars = $sql->query("select * from `mood` where `user`=$loguser[id]");
+    $sql->query("delete from mood where id= ".addslashes($id)." and user = ".$targetuserid);
+    $avatars = $sql->query("select * from `mood` where `user` = ".$targetuserid);
   }
+
   if (isset($_POST[a]) && $_POST[a][0]=='S' && ($numavatars < 64 || $activeavatar[existing])) {
     //vet the image
     $islocal=($_POST[islocal]!='on'?1:0);
-    $avatarid = ($activeavatar[existing] == 1 ? addslashes($id) : $sql->resultq("select (id + 1) nid from `mood` where user = $loguser[id] union select 1 nid order by nid  desc"));
+    $avatarid = ($activeavatar[existing] == 1 ? addslashes($id) : $sql->resultq("select (id + 1) nid from `mood` where user = ".$targetuserid." union select 1 nid order by nid  desc"));
     if($islocal&&$fname=$_FILES[picture][name]){
       $fext=strtolower(substr($fname,-4));
       $error='';
@@ -52,8 +67,8 @@
 
       if(!$error){
         $tmpfile=$_FILES[picture][tmp_name];
-        $file="userpic/$loguser[id]_$avatarid";
-        $file2="userpic/s$loguser[id]_$avatarid";
+        $file="userpic/".$targetuserid."_$avatarid";
+        $file2="userpic/s".$targetuserid."_$avatarid";
 
         list($width,$height,$type)=getimagesize($tmpfile);
 
@@ -74,7 +89,7 @@
         }
 
         if($width<=$dimx && $height<=$dimy && $type<=3)
-          copy($tmpfile,"userpic/$loguser[id]_$avatarid");
+          copy($tmpfile,"userpic/".$targetuserid."_$avatarid");
         elseif($type<=3){
           if($r>1){
             $img2=imagecreatetruecolor($dimx,$dimy/$r);
@@ -89,7 +104,7 @@
           print "<br>- Bad image format";
         }
         //Save the mood avatar
-        $sql->query("INSERT INTO mood (id,user,url,local,label) VALUES ($avatarid,$loguser[id],'$_POST[url]', $islocal,'$_POST[label]') ON DUPLICATE KEY UPDATE url='$_POST[url]', local=$islocal, label='$_POST[label]'");
+        $sql->query("INSERT INTO mood (id,user,url,local,label) VALUES ($avatarid, ".$targetuserid." ,'$_POST[url]', $islocal,'$_POST[label]') ON DUPLICATE KEY UPDATE url='$_POST[url]', local=$islocal, label='$_POST[label]'");
         //and reload it
         $id=-1;
         
@@ -98,19 +113,22 @@
     }
  }  
 
-  $activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user`=$loguser[id] and `id`=".addslashes($id)." union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
-  $numavatars = $sql->resultq("select count(*) from `mood` where `user`=$loguser[id]");
-  $avatars = $sql->query("select * from `mood` where `user`=$loguser[id]");
+  $activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`, 1 `existing` from `mood` where `user`= ".$targetuserid." and `id`=".addslashes($id)." union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
+  $numavatars = $sql->resultq("select count(*) from `mood` where `user`= ".$targetuserid." ");
+  $avatars = $sql->query("select * from `mood` where `user`=".$targetuserid);
+  if ($target) {
+    $targetname = $sql->resultq("select `name` from `users` where `id`='$targetuserid'");
+  }
 
   // Moved pageheader here so that I can do header()s without fucking everything up again
   pageheader();
 
 
-  print "<form id=\"f\" action=\"usermood.php\" enctype=\"multipart/form-data\" method=\"post\">
+  print "<form id=\"f\" action=\"usermood.php$targetgeta\" enctype=\"multipart/form-data\" method=\"post\">
 ".      "$L[TBL1]>
 ".      "  $L[TRh]>
 ".      "    $L[TDh] width=250>
-".      "      Your current mood avatars ($numavatars)
+".      "      ". ($target ? $targetname."'s" : "Your") ." current mood avatars ($numavatars)
 ".      "    </td>
 ".      "  $L[TDhc] colspan='2'><nobr>
 ".      "    Add/change a mood avatar
@@ -119,10 +137,10 @@
 ".      "    $L[TD1] style=\"vertical-align: top\" rowspan='3'>";
 
   while ($row=$sql->fetch($avatars))
-    print "<a href=\"?a=e&i=$row[id]\">$row[label]</a><br>";
+    print "<a href=\"?a=e&i=$row[id]$targetget\">$row[label]</a><br>";
   
   if ($numavatars < 64)
-    print "          <a href=\"usermood.php\">(Add New)</a>";
+    print "          <a href=\"usermood.php$targetgeta\">(Add New)</a>";
 
   print "        </td>
 ".      "        $L[TD2]><nobr>
@@ -145,4 +163,11 @@
 ".      "<br>";
 
   pagefooter();
-?>
+
+  
+  function CanAlterAll() {
+    global $loguser;
+    return ($loguser[power] >= 3);
+  }
+
+  ?>

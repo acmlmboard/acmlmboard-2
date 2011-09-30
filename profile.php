@@ -199,6 +199,7 @@
 ".      "            | <a href=postsbyuser.php?id=$user[id]>List posts</a>
 ".      "            ". ($log?"| <a href=sendprivate.php?uid=$user[id]>Send Private Message</a>":"") ."
 ".      "            ". (isadmin()?"| <a href=private.php?id=$user[id]>View Private Messages</a>":"") ."
+".      "            ". (isadmin()?"| <a href=usermood.php?uid=$user[id]>Edit mood avatars</a>":"") ."
 ".      "            ". (isadmin()?"| <a href=edituser.php?id=$user[id]>Edit user</a>":"") ."
 ".      "$L[TBLend]
 ";

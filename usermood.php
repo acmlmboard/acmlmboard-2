@@ -105,9 +105,8 @@
         }
         //Save the mood avatar
         $sql->query("INSERT INTO mood (id,user,url,local,label) VALUES ($avatarid, ".$targetuserid." ,'$_POST[url]', $islocal,'$_POST[label]') ON DUPLICATE KEY UPDATE url='$_POST[url]', local=$islocal, label='$_POST[label]'");
-        //and reload it
-        $id=-1;
-        
+        //and give it focus
+        $id = $avatarid;
       }else
         print $error;
     }
@@ -134,7 +133,7 @@
 ".      "    Add/change a mood avatar
 ".      "  </td>
 ".      "  $L[TR]>
-".      "    $L[TD1] style=\"vertical-align: top\" rowspan='3'>";
+".      "    $L[TD1] style=\"vertical-align: top\" rowspan='4'>";
 
   while ($row=$sql->fetch($avatars))
     print "<a href=\"?a=e&i=$row[id]$targetget\">$row[label]</a><br>";
@@ -159,6 +158,8 @@
 ".($id>0?"           <input type=\"submit\" name='a' value=\"Delete\">
 ":"").  "<input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\"></td>
 ".      "        $L[TD2]><small>Limits: 100x100px, 30KB</small></td>
+".      "     $L[TR]>
+".      "        $L[TD2] colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"$activeavatar[label]\">" : "&nbsp;") ."
 ".      "$L[TBLend]</form>
 ".      "<br>";
 

@@ -24,7 +24,7 @@
 ".        "    $L[TD]>
 ";
       $b=$sql->query("SELECT * FROM mood WHERE user=$m[id]");
-      while($n=$sql->fetch($b)) echo "<img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'>";
+      while($n=$sql->fetch($b)) echo isadmin() ? "<a href='usermood.php?a=e&i=$n[id]&uid=$n[user]'><img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'></a>" : "<img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'>";
     }
     print "$L[TBLend]
 ";

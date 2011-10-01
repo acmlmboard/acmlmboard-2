@@ -73,6 +73,7 @@
     $stats[GP]=coins($p,$d)-$u[spent];
     $stats[exp]=calcexp($p,$d);
     $stats[lvl]=calclvl($stats[exp]);
+    $stats[FC]=$u[gcoins];
     return $stats;
   }
   function coins($p,$d){

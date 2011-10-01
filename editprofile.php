@@ -8,6 +8,13 @@
 
   pageheader('Edit profile');
 
+  global $userrpg;
+
+  $userrpg = getstats($sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
+                                  .'FROM users u '
+                                  .'LEFT JOIN usersrpg r ON u.id=r.id '
+                                  ."WHERE u.id=$loguser[id]"));
+
   $act=$_POST[action];
   if(!$log){
     print "$L[TBL1]>
@@ -71,6 +78,10 @@
 ".           (checkctitle()?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within 100x100.</font>')."
 ".           fieldrow('MAXIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$rs.'x'.$rs.'.</font>')."
+".
+           catheader('RPG Stats')."
+".           fieldrow('Coins'           ,fieldinputrpg('coinstotal', 7, 'GP'))."
+".           fieldrow('Frog Coins'      ,fieldinputrpg('fcoins', 7, 'FC' ))."
 ".
            catheader('Personal information')."
 ".           fieldrow('Sex'             ,fieldoption('sex',$loguser[sex],$listsex))."
@@ -251,9 +262,9 @@
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
-	       . setfield('signsep').','
-	       . setfield('longpages').','
-	       . setfield('rankset') .','
+	             . setfield('signsep').','
+	             . setfield('longpages').','
+	             . setfield('rankset') .','
                . (checkctitle()?(setfield('title')   .','):'')
                . setfield('realname').','
                . setfield('location').','
@@ -300,6 +311,12 @@
   function fieldinput($size,$max,$field){
     global $L,$loguser;
     return "$L[INPt]=$field size=$size maxlength=$max value=\"".str_replace("\"", "&quot;", $loguser[$field])."\">";
+//  return "$L[INPt]=$field size=$size maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+  }
+
+  function fieldinputrpg($size,$max,$field){
+    global $L,$userrpg;
+    return "$L[INPt]=$field size=$size maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
 //  return "$L[INPt]=$field size=$size maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 

@@ -1,7 +1,18 @@
 <?php
+//[KAWA] Blocklayouts
+function LoadBlocklayouts()
+{
+	global $blocklayouts, $loguser, $log, $sql;
+	if(isset($blocklayouts) || !$log)
+		return;
+	$rBlocks = $sql->query("select * from blockedlayouts where blockee = ".$loguser['id']);
+	while($block = $sql->fetch($rBlocks))
+		$blocklayouts[$block['user']] = 1;
+
+}
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
 
     $post[head]=str_replace("<!--", "&lt;!--", $post[head]);
@@ -15,6 +26,7 @@
                   .$syn
                   .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
                   .$post[utitle];
+
 	//[KAWA] TODO: replace with token effect, or preferably just a profile switch
 	/*
     //opaque goggles
@@ -22,9 +34,13 @@
       $post['usign'] = $post['uhead'] = "";
     }
 	*/
-    if($post[nolayout]) {
+    //if($post[nolayout]) {
+    //[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and already checks for user/world though that's not reimplemented yet ($loguser[blocklayouts]).
+	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
+	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || $loguser['blocklayouts'];
+    if($isBlocked)
       $post['usign'] = $post['uhead'] = "";
-    }
+    //}
 
     //post has been deleted, display placeholder
     if($post[deleted]) {

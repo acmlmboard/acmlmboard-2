@@ -96,6 +96,42 @@
 
 	$shoplist	.= "</table>";
 
+//[KAWA] Blocklayout ported from ABXD
+$qBlock = "select * from blockedlayouts where user=".$uid." and blockee=".$loguser['id'];
+$rBlock = $sql->query($qBlock);
+$isBlocked = $sql->numrows($rBlock);
+if($isBlocked)
+	$blockLayoutLink = "| <a href=\"profile.php?id=".$uid."&amp;block=0\">Unblock layout</a>";
+else
+	$blockLayoutLink = "| <a href=\"profile.php?id=".$uid."&amp;block=1\">Block layout</a>";
+if(isset($_GET['block']) && $log)
+{
+	$block = (int)$_GET['block'];
+
+	if($block && !$isBlocked)
+	{
+		$qBlock = "insert into blockedlayouts (user, blockee) values (".$uid.", ".$loguser['id'].")";
+		$rBlock = $sql->query($qBlock);
+		$blockMessage = "Layout blocked.";
+	}
+	elseif(!$block && $isBlocked)
+	{
+		$qBlock = "delete from blockedlayouts where user=".$uid." and blockee=".$loguser['id']." limit 1";
+		$rBlock = $sql->query($qBlock);
+		$blockMessage = "Layout unblocked.";
+	}
+	if($blockMessage)
+	{
+		print "
+		$L[TBL1]>
+			$L[TD1c]>
+				$blockMessage
+		$L[TBLend]
+	";
+	}
+}
+
+
   $user[showminipic]=1;
   print "<a href=./>Main</a> - Profile for ".userdisp($user)."
 ".      "<br><br>
@@ -197,10 +233,11 @@
 ".      "    $L[TD2]><a href=forum.php?user=$user[id]>View threads</a>
 ".      "            | <a href=thread.php?user=$user[id]>Show posts</a>
 ".      "            | <a href=postsbyuser.php?id=$user[id]>List posts</a>
+".		"			 $blockLayoutLink
 ".      "            ". ($log?"| <a href=sendprivate.php?uid=$user[id]>Send Private Message</a>":"") ."
 ".      "            ". (isadmin()?"| <a href=private.php?id=$user[id]>View Private Messages</a>":"") ."
 ".      "            ". (isadmin()?"| <a href=usermood.php?uid=$user[id]>Edit mood avatars</a>":"") ."
-".      "            ". (isadmin()?"| <a href=editprofile.php?id=$user[id]>Edit user</a>":"") ."
+".      "            ". (isadmin()?"| <a href=edituser.php?id=$user[id]>Edit user</a>":"") ."
 ".      "$L[TBLend]
 ";
 

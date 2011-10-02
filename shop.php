@@ -11,7 +11,7 @@
         $stype.=(preg_match('/^x/', $_POST[$stat[$i]])?'m':'a');
         $set.="`s".$stat[$i]."`=".preg_replace('/[+x\.]/','',(strlen($_POST[$stat[$i]])?$_POST[$stat[$i]]:'0')).", ";
       }
-      $set.="`name`='$_POST[name]', `desc`='$_POST[desc]', `stype`='$stype', `coins`='$_POST[coins]', `coins2`='$_POST[coins2]', `cat`='$_POST[cat]'";
+      $set.="`name`='$_POST[name]', `desc`='$_POST[desc]', `stype`='$stype', `coins`='$_POST[coins]', `coins2`='$_POST[coins2]', `cat`='$_POST[cat]', `hidden`=".($_POST['hidden'] ? "1" : "0");
       $sql->query("UPDATE items SET $set WHERE id='$_GET[id]'");
 
     } else {
@@ -21,8 +21,8 @@
         $names.="`s$stat[$i]`, ";
         $vals.="'".preg_replace('/[x+-\.]/','',$_POST[$stat[$i]])."', ";
       }
-      $names.="`name`, `desc`, `stype`, `coins`, `coins2`, `cat`";
-      $vals.="'$_POST[name]', '$_POST[desc]', '$stype', '$_POST[coins]', '$_POST[coins2]', '$_POST[cat]'";
+      $names.="`name`, `desc`, `stype`, `coins`, `coins2`, `cat`, `hidden`";
+      $vals.="'$_POST[name]', '$_POST[desc]', '$stype', '$_POST[coins]', '$_POST[coins2]', '$_POST[cat]', ".($_POST['hidden'] ? "1" : "0")."";
       $sql->query("INSERT INTO items ($names) VALUES ($vals)");
       $id = mysql_insert_id();
     }
@@ -152,7 +152,7 @@ fclose($f);
 ".            "  $L[TRh] align=left>
 ".            "    $L[TDh] colspan=9>$L[INPt]='name' size='40' value=\"".str_replace("\"","&quot;",$item[name])."\"> <img src='img/coin.gif'> 
 ".            "      $L[INPt]='coins' size='7' value=\"".str_replace("\"","&quot;",$item[coins])."\"> <img src='img/coin2.gif'> 
-".            "      $L[INPt]='coins2' size='7' value=\"".str_replace("\"","&quot;",$item[coins2])."\"></td>
+".            "      $L[INPt]='coins2' size='7' value=\"".str_replace("\"","&quot;",$item[coins2])."\">$L[INPc]='hidden' id='hidden' ".($item[hidden]?"checked":"")."><label for='hidden'>Hidden Item</label></td>
 ".            "  $L[TR]>
 ".            "    $stathdr
 ".            "  $L[TR]>
@@ -263,9 +263,14 @@ fclose($f);
           $atrlist.="    $L[TDh] width=6%>$stat[$i]</td>
 ";
 
+        $seehidden = 0;
+        if (isadmin())
+          $seehidden = 1;
+
         $items=$sql->query('SELECT * FROM items '
-                          ."WHERE cat=$cat OR cat=0 "
+                          ."WHERE (cat=$cat OR cat=0) AND `hidden` <= $seehidden "
                           .'ORDER BY type,coins');
+
         print "$L[TBL1]>
 ".            "  $L[TRh]>
 ".            "    $L[TDh] width=100>Commands</td>

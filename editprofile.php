@@ -95,7 +95,7 @@
 ".        " <form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
 ".
            catheader('Login information')."
-".           fieldrow('Username'        ,$user[name]                 )."
+".           (isadmin() ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
@@ -271,14 +271,12 @@ if (isadmin())
     //check for table breach
     if(tvalidate($_POST['head'].$_POST['sign'])!=0)
     {
-      $error.="<br>- Table tag count mismatch in post layout; wiped.";
-      print $error;
+      $error.="- Table tag count mismatch in post layout; layout wiped.<br />";
       $_POST['head']=$_POST['sign']="";
     }
     if(tvalidate($_POST['title'])!=0)
     {
-      $error.="<br>- Table tag count mismatch in custom title.";
-      print $error;
+      $error.="- Table tag count mismatch in custom title; title erased<br />";
       $_POST['title']="";
     }
 
@@ -316,15 +314,25 @@ if (isadmin())
                . setfield('gcoins')
                . " WHERE `id` = $user[id]"
                );
+
       //Update admin bells and whistles
       $targetpower = $_POST['power'];
       $targetpower = min($targetpower, $loguser[power]);
+      $targetname = $user['name'];
+      if (isadmin())
+        $targetname = $_POST['name'];
+
+      if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE `name` = '$targetname' AND `id` != $user[id]")) {
+        $targetname = $user[name];
+        $error.="- Name already in use, will not change<br />";
+      }
 
       $sql->query("UPDATE users SET "
 	               . setfield('renamethread').","
 	               . setfield('pmblocked').","
-                 . "`power` = $targetpower"
-                 . " WHERE id=$user[id]"
+                 . "`power` = $targetpower, "
+                 . "`name` = '$targetname'"
+                 . " WHERE `id`=$user[id]"
                  );
 
     }
@@ -354,11 +362,12 @@ if (isadmin())
                . "minipic=$minipic,"
                . "dateformat='$dateformat',"
                . "timeformat='$timeformat' "
-               . "WHERE id=$user[id]"
+               . "WHERE `id`=$user[id]"
                );
 
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
+".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
 ".        "    Profile changes saved!<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]

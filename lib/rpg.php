@@ -70,10 +70,10 @@
     for($i=0;$i<9;$i++){
       $stats[$stat[$i]]=max(1,floor(basestat($p,$d,$i)*$m[$i])+$a[$i]);
     }
-    $stats[GP]=coins($p,$d)-$u[spent];
-    $stats[exp]=calcexp($p,$d);
-    $stats[lvl]=calclvl($stats[exp]);
-    $stats[FC]=$u[gcoins];
+    $stats['GP']=coins($p,$d)-$u[spent];
+    $stats['exp']=calcexp($p,$d);
+    $stats['lvl']=calclvl($stats[exp]);
+    $stats['gcoins']=$u[gcoins];
     return $stats;
   }
   function coins($p,$d){

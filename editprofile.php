@@ -8,13 +8,24 @@
 
   pageheader('Edit profile');
 
-  global $userrpg;
+  $targetuserid = $loguser['id'];
 
-  $userrpg = getstats($sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
-                                  .'FROM users u '
-                                  .'LEFT JOIN usersrpg r ON u.id=r.id '
-                                  ."WHERE u.id=$loguser[id]"));
+  if (isset($_GET['id']) && isadmin()) {
+    $temp = $_GET['id'];
+    if (checknumeric($temp))
+      $targetuserid = $temp;
+  }
 
+  global $user, $userrpg;
+
+  $user = $sql->fetchq("SELECT * FROM users WHERE `id` = $targetuserid");
+  $userrpg = getstats($userrpgdata = $sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
+                                                 .'FROM users u '
+                                                 .'LEFT JOIN usersrpg r ON u.id=r.id '
+                                                 ."WHERE u.id=$user[id]"));
+
+
+  echo $userrpg['eq1'];
   $act=$_POST[action];
   if(!$log){
     print "$L[TBL1]>
@@ -30,6 +41,13 @@
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
+  }elseif($loguser[power] < 4 && $user[power] == 4){
+    print "$L[TBL1]>
+".        "  $L[TD1c]>
+".        "    Root user profiles cannot be edited by non-root users.<br>
+".        "    <a href=./>Back to main</a>
+".        "$L[TBLend]
+";
   }elseif($_POST[pass] && $_POST[pass2] && $_POST[pass]!=$_POST[pass2]){
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
@@ -38,10 +56,17 @@
 ".        "$L[TBLend]
 ";
   }elseif(!$act){
-    $listsex=array('Male','Female','N/A');
+    
 
-    if($loguser[birth]!=-1){
-      $birthday=getdate($loguser[birth]);
+    $listsex=array('Male','Female','N/A');
+    $listpower=array(-1 => '-1 Banned',0 => ' 0 Normal User',' 1 Local Moderator',' 2 Global Moderator',' 3 Administrator');
+    if($loguser['power'] == 4)
+    	$listpower[4] = " 4 Root";
+    $listpm=array('allow','disallow');
+    $listrename=array('disallow','allow');
+
+    if($user[birth]!=-1){
+      $birthday=getdate($user[birth]);
       $birthM=$birthday[mon];
       $birthD=$birthday[mday];
       $birthY=$birthday[year];
@@ -62,29 +87,49 @@
 ".        "      Year:  $L[INPt]=birthY size=4 maxlength=4 value=$birthY>
 ".        "    ";
     $tzoffinput="
-".        "      $L[INPt]=tzoffH size=3 maxlength=3 value=".(int)($loguser[tzoff]/3600)."> :
-".        "      $L[INPt]=tzoffM size=2 maxlength=2 value=".floor(abs($loguser[tzoff]/60)%60).">
+".        "      $L[INPt]=tzoffH size=3 maxlength=3 value=".(int)($user[tzoff]/3600)."> :
+".        "      $L[INPt]=tzoffM size=2 maxlength=2 value=".floor(abs($user[tzoff]/60)%60).">
 ".        "    ";
 
     print "$L[TBL1]>
-".        " <form action=editprofile.php method=post enctype=multipart/form-data>
+".        " <form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
 ".
            catheader('Login information')."
-".           fieldrow('Username'        ,$loguser[name]                 )."
+".           fieldrow('Username'        ,$user[name]                 )."
 ".           fieldrow('Password'        ,$passinput                     )."
-".
+";
+
+if (isadmin())
+  print
+           catheader('Administrative bells and whistles')."
+".           fieldrow('Powerlevel'      ,fieldselect('power',$user[power],$listpower))."
+".           fieldrow('PM sending'      ,fieldselect('pmblocked',$user[pmblocked],$listpm))."
+".           fieldrow('Thread Retitling',fieldselect('renamethread',$user[renamethread],$listrename))."
+";
+
+  print
            catheader('Appearance')."
-".           fieldrow('Rankset'		,fieldselect('rankset', $loguser['rankset'], ranklist()))."
+".           fieldrow('Rankset'		,fieldselect('rankset', $user['rankset'], ranklist()))."
 ".           (checkctitle()?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within 100x100.</font>')."
 ".           fieldrow('MAXIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$rs.'x'.$rs.'.</font>')."
-".
-           catheader('RPG Stats')."
-".           fieldrow('Coins'           ,fieldinputrpg('coinstotal', 7, 'GP'))."
-".           fieldrow('Frog Coins'      ,fieldinputrpg('fcoins', 7, 'FC' ))."
-".
+";
+
+if (isadmin())
+  print    catheader('RPG Stats')."
+  ".           fieldrow('Coins'       ,fieldinputrpg(9, 7, 'GP'))."
+  ".           fieldrow('Frog Coins'  ,fieldinputrpg(9, 7, 'gcoins' ))."
+  ".           fieldrow('Weapon'      ,itemselect('eq1', $userrpgdata['eq1'], 1))."
+  ".           fieldrow('Armour'      ,itemselect('eq2', $userrpgdata['eq2'], 2))."
+  ".           fieldrow('Shield'      ,itemselect('eq3', $userrpgdata['eq3'], 3))."
+  ".           fieldrow('Helmet'      ,itemselect('eq4', $userrpgdata['eq4'], 4))."
+  ".           fieldrow('Boots'      ,itemselect('eq5', $userrpgdata['eq5'], 5))."
+  ".           fieldrow('Accessory'      ,itemselect('eq6', $userrpgdata['eq6'], 6))."
+  ";
+
+  print
            catheader('Personal information')."
-".           fieldrow('Sex'             ,fieldoption('sex',$loguser[sex],$listsex))."
+".           fieldrow('Sex'             ,fieldoption('sex',$user[sex],$listsex))."
 ".           fieldrow('Real name'       ,fieldinput(40, 60,'realname'  ))."
 ".           fieldrow('Location'        ,fieldinput(40, 60,'location'  ))."
 ".           fieldrow('Birthday'        ,$birthinput                    )."
@@ -93,7 +138,7 @@
            catheader('Post layout')."
 ".           fieldrow('Header'          ,fieldtext ( 5, 80,'head'      ))."
 ".           fieldrow('Signature'       ,fieldtext ( 5, 80,'sign'      ))."
-".           fieldrow('Signature line'  ,fieldoption('signsep',$loguser[signsep],array('Display','Hide')))."
+".           fieldrow('Signature line'  ,fieldoption('signsep',$user[signsep],array('Display','Hide')))."
 ".
            catheader('Contact information')."
 ".           fieldrow('Email address'   ,fieldinput(40, 60,'email'     ))."
@@ -101,11 +146,11 @@
 ".           fieldrow('Homepage name'   ,fieldinput(40, 60,'homename'  ))."
 ".
            catheader('Options')."
-".           fieldrow('Theme'           ,fieldselect('theme', $loguser['theme'], themelist()))."
+".           fieldrow('Theme'           ,fieldselect('theme', $user['theme'], themelist()))."
 ".           fieldrow('Timezone offset' ,$tzoffinput                    )."
 ".           fieldrow('Posts per page'  ,fieldinput( 3,  3,'ppp'       ))."
 ".           fieldrow('Threads per page',fieldinput( 3,  3,'tpp'       ))."
-".           fieldrow('Long pagelists'  ,fieldoption('longpages',$loguser[longpages],array('Abbreviate as needed','Always display in entirety')))."
+".           fieldrow('Long pagelists'  ,fieldoption('longpages',$user[longpages],array('Abbreviate as needed','Always display in entirety')))."
 ".           fieldrow('Font size'       ,fieldinput( 3,  3,'fontsize'  ))."
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
@@ -181,8 +226,8 @@
 
       if(!$error){
         $tmpfile=$_FILES[picture][tmp_name];
-        $file="userpic/$loguser[id]";
-        $file2="userpic/s$loguser[id]";
+        $file="userpic/$user[id]";
+        $file2="userpic/s$user[id]";
 
         list($width,$height,$type)=getimagesize($tmpfile);
 
@@ -203,7 +248,7 @@
         }
 
         if($width<=$dimx && $height<=$dimy && $type<=3)
-          copy($tmpfile,"userpic/$loguser[id]");
+          copy($tmpfile,"userpic/$user[id]");
         elseif($type<=3){
           if($r>1){
             $img2=imagecreatetruecolor($dimx,$dimy/$r);
@@ -257,6 +302,33 @@
     $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);
 
+    if (isadmin()) {
+      
+      $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
+      $sql->query("UPDATE usersrpg SET "
+	             . setfield('eq1').","
+	             . setfield('eq2').","
+	             . setfield('eq3').","
+	             . setfield('eq4').","
+	             . setfield('eq5').","
+	             . setfield('eq6').","
+               . "`spent` = $spent,"
+               . setfield('gcoins')
+               . " WHERE `id` = $user[id]"
+               );
+      //Update admin bells and whistles
+      $targetpower = $_POST['power'];
+      $targetpower = min($targetpower, $loguser[power]);
+
+      $sql->query("UPDATE users SET "
+	               . setfield('renamethread').","
+	               . setfield('pmblocked').","
+                 . "`power` = $targetpower"
+                 . " WHERE id=$user[id]"
+                 );
+
+    }
+
     $sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass).'",':'')
                . setfield('sex')     .','
@@ -282,18 +354,22 @@
                . "minipic=$minipic,"
                . "dateformat='$dateformat',"
                . "timeformat='$timeformat' "
-               ."WHERE id=$loguser[id]"
+               . "WHERE id=$user[id]"
                );
 
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    Profile changes saved!<br>
-".        "    ".redirect("profile.php?id=$loguser[id]",'your profile')."
+".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]
 ";
   }
 
   pagefooter();
+
+  function setfield($field){
+    return "$field='$_POST[$field]'";
+  }
 
   function catheader($title){
     global $L;
@@ -309,8 +385,8 @@
   }
 
   function fieldinput($size,$max,$field){
-    global $L,$loguser;
-    return "$L[INPt]=$field size=$size maxlength=$max value=\"".str_replace("\"", "&quot;", $loguser[$field])."\">";
+    global $L,$user;
+    return "$L[INPt]=$field size=$size maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
 //  return "$L[INPt]=$field size=$size maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
@@ -321,8 +397,8 @@
   }
 
   function fieldtext($rows,$cols,$field){
-    global $L,$loguser;
-    return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($loguser[$field]).'</textarea>';
+    global $L,$user;
+    return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($user[$field]).'</textarea>';
 //  return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($loguser[$field]).'</textarea>';
   }
 
@@ -350,26 +426,34 @@
 ".         "    ";
   }
 
-  function setfield($field){
-    return "$field='$_POST[$field]'";
+  function itemselect($field,$current,$cat) {
+    global $sql, $L;
+
+    $viewhidden = 0;
+
+    if (isadmin())
+      $viewhidden = 1;
+
+    $items = $sql->query("SELECT * FROM items WHERE `cat` = 0 UNION SELECT * FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden");
+
+    $text="
+".        "$L[SEL]=$field>";
+
+    while ($item = $sql->fetch($items)) {
+      $text.="
+".           "      $L[OPT]=\"$item[id]\"";
+      if ($current == $item['id'])
+        $text.=" selected";
+
+      $text.="> $item[name]</option>";
+    }
+    return "$text    ";
   }
 
   function themelist() {
 		global $sql, $loguser;
-/*
-		$s	= $sql -> query("SELECT `id`, `name` FROM `themes` WHERE `ord` >= '0' OR `id` = '$loguser[theme]' ORDER BY `ord`");		// it'd be grand if I knew how to get the usercounts easily too .'D
 
-		$t	= $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
-		while ($x = $sql -> fetch($t)) $themeuser[$x['theme']] = intval($x['count']);
-
-//		print_r($themeuser);
-
-		while ($x = $sql -> fetch($s)) $themelist[$x['id']] = $x['name'] ." (". $themeuser[$x['id']] .")";
-
-		return $themelist;
-*/
-
-		$t	= $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
+		$t = $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
 		while ($x = $sql -> fetch($t)) $themeuser[$x['theme']] = intval($x['count']);
 
 		$themes = unserialize(file_get_contents("themes_serial.txt"));

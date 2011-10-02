@@ -18,8 +18,11 @@
   $sql->selectdb($sqldb) or die("Couldn't find MySQL database");
 
   function checknumeric(&$var){
-    if(!is_numeric($var))
+    if(!is_numeric($var)) {
       $var=0;
+      return false;
+    }
+    return true;
   }
 
   function ctime(){

@@ -37,6 +37,7 @@
       setcookie('pass','');
     }
   }
+
   if(!$log){
     $loguser = array();
     $loguser[id]=0;	
@@ -76,6 +77,9 @@
     "Yeti",
     "Twiceler"
     );
+
+  $bot = 0;
+
   if (str_replace($bots, "x", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT']) {
     $bot = 1;
   }

@@ -2,24 +2,33 @@
   
   require 'lib/common.php';
 
-  if (isset($_GET[a])&&$_GET[a]=='s'&&(isadmin()||$loguser[id]==4)) {
+  if (isset($_GET[a]) && $_GET[a] == 's' && isadmin()) {
 
     $id = $_POST[id];
-    checknumeric($id);
+    if (!checknumeric($id))
+      die();
 
     //save
     switch ($_POST[t]) {
       case 'f':
-        if (isset($_POST[save])) {
+        if (isset($_POST['save'])) {
           $min=$_POST[minpower];
           if ($min < 0) $min = 0;
-          if ($id==-2)
-            $id = $sql->resultq("select (id+1) nid from forums where id <> 99 order by nid desc");
-          $sql->query("insert into `forums` (id, title, descr, minpower, cat, ord, minpowerthread, minpowerreply) values ($id, '".$_POST[title]."', '$_POST[descr]
-            ', $_POST[minpower], $_POST[cat], $_POST[ord], $_POST[minpowerthread], $_POST[minpowerreply]) on duplicate key update
+          if ($id == -2)
+            $id = $sql->resultq("select (id+1) nid from forums where id <> 99 order by nid desc limit 1");
+          $sql->query("insert into `forums` (id, title, descr, minpower, cat, ord, minpowerthread, minpowerreply, lastid, posts, lastdate) values ($id, '".$_POST[title]."', '$_POST[descr]
+            ', $_POST[minpower], $_POST[cat], $_POST[ord], $_POST[minpowerthread], $_POST[minpowerreply], 0, 0, 0) on duplicate key update
              title='$_POST[title]', descr='".$_POST[descr]."', minpower=$_POST[minpower], minpowerreply=$_POST[minpowerreply]
             , minpowerthread=$_POST[minpowerthread], cat=$_POST[cat], ord=$_POST[ord]");
-        } else {
+
+            $lmods = explode(",", $_POST['localmods']);
+            $sql->query("DELETE FROM `forummods` WHERE `fid`=$id");
+            foreach ($lmods as $modid)
+              if (strlen($modid)) {
+                $sql->query("INSERT INTO `forummods` (`uid`, `fid`) VALUES ($modid, $id)");
+              }
+
+        } elseif (isset($_POST['delete'])) {
           if ($id==99) { //Don't delete the 'lost threads' forum!
             break;
           }
@@ -45,9 +54,10 @@
 
 
 
-  pageheader("Forum Admin");
+  pageheader("Forums Administration");
 
-  if (!isadmin() && $loguser[id]!=4) {
+
+  if (!isadmin()) {
     print "$L[TBL1]>
 ".        "  $L[TR]>
 ".        "    $L[TDhc]>
@@ -59,121 +69,164 @@
     pagefooter();
     die();
   }
-  if (isset($_GET[t])&&($_GET[t]=='f'||$_GET[t]=='c')) {
-    if ($_GET[t]=='f') {
-      $data = $sql->fetchq("select id,title,descr,ord,cat,minpower,minpowerthread,minpowerreply from forums where id=".addslashes($_GET[i])." union select -2 id, '' title, '' descr, 0 ord, 1 cat, 0 minpower, 0 minpowerthread, 0 minpowerreply");
-    } else {
-      $data = $sql->fetchq("select id,title,minpower,ord from categories where id=".addslashes($_GET[i])." union select -2 id, '' title, 0 minpower, 0 ord");
-    }
+
+  $i = 1;
+  if (isset($_GET[t])&&$_GET[t]=='f') {
+    print "<script type=\"text/javascript\" src=\"manageforum.js\"></script>";
+    $data = $sql->fetchq("select id,title,descr,ord,cat,minpower,minpowerthread,minpowerreply from forums where id=".addslashes($_GET[i])." union select -2 id, '' title, '' descr, 0 ord, 1 cat, 0 minpower, 0 minpowerthread, 0 minpowerreply");
     $data[title] = str_replace("\"","'",$data[title]);
     $data[descr] = str_replace("\"","'",$data[descr]);
-    $i = 1;
-    print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s\">".$L['TBL'.$i]." width=\"100%\">    
+
+    print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=f\">".$L['TBL'.$i]." width=\"100%\">    
 ".        "  $L[TRh]>
-".        "    $L[TDhc] colspan=2> ".($_GET[i]>=0?"Edit":"Create")." ".($_GET[t]=='f'?"Forum":"Category")."
+".        "    $L[TDhc] colspan=4> ".($_GET[i]>=0?"Edit":"Create")." Forum
 ".        "    </td>
 ".        "  </tr>
-".           $L['TR'.$i].">
-".           $L['TD'.$i].">
+".           $L['TR1'].">
+".           $L['TD1'].">
 ".        "      Title
 ".        "    </td>
-".            $L['TD'.$i].">
+".            $L['TD1'].">
 ".        "      $L[INPt]=\"title\" value=\"$data[title]\" style=\"width: 220px\">
-".        "    </td>";
-  $i = 3 - $i;
-
-
-  if ($_GET[t]=='f') {
-
-
-    print    $L['TR'.$i].">
-".            $L['TD'.$i].">
+".        "    </td>
+".            $L['TD1'].">
 ".        "      Description
 ".        "    </td>
-".        "  ".$L['TD'.$i].">
-".        "      $L[INPt]=\"descr\" value=\"$data[descr]\" style=\"width: 700px\">
+".            $L['TD1'].">
+".        "      $L[INPt]=\"descr\" value=\"$data[descr]\" style=\"width: 520px\">
 ".        "    </td>
-".        "  </tr>";
-    $i = 3 - $i;
-
-    print    $L['TR'.$i].">
-".            $L['TD'.$i].">
+".            $L['TR2'].">
+".            $L['TD2'].">
 ".        "      Category:
 ".        "    </td>
-".        "  ".$L['TD'.$i].">
+".        "  ".$L['TD2'].">
 ".        "      ".categorylist($data[cat])."
 ".        "    </td>
-".        "  </tr>";
-    $i = 3 - $i;
-
-  }
-
-  print    $L['TR'.$i].">
-".            $L['TD'.$i].">
+".            $L['TD2'].">
 ".        "      Order:
 ".        "    </td>
-".        "  ".$L['TD'.$i].">
+".        "  ".$L['TD2'].">
 ".        "      $L[INPt]=\"ord\" value=\"$data[ord]\" style=\"width: 40px\">
 ".        "    </td>
-".        "  </tr>";
-  $i = 3 - $i;
-
-  print    $L['TR'.$i].">
-".            $L['TD'.$i].">
+".        "  </tr>
+".            $L['TR1'].">
+".            $L['TD1'].">
 ".        "      Minimum powerlevel to view:
 ".        "    </td>
-".        "  ".$L['TD'.$i].">
+".        "  ".$L['TD1'].">
 ".        "      $L[INPt]=\"minpower\" value=\"$data[minpower]\" style=\"width: 40px\">
 ".        "    </td>
-".        "  </tr>";
-  $i = 3 - $i;
-
-  if($_GET[t]=='f') {
-    print   $L['TR'.$i].">
-".            $L['TD'.$i].">
-".        "      Minimum powerlevel to reply to threads:
+".            $L['TD1'].">
+".        "      Minimum powerlevel to post:
 ".        "    </td>
-".        "  ".$L['TD'.$i].">
+".        "  ".$L['TD1'].">
 ".        "      $L[INPt]=\"minpowerreply\" value=\"$data[minpowerreply]\" style=\"width: 40px\">
 ".        "    </td>
-".        "  </tr>";
-    $i = 3 - $i;
-
-    print   $L['TR'.$i].">
-".            $L['TD'.$i].">
+".        "  </tr>
+".            $L['TR2'].">
+".            $L['TD2'].">
 ".        "      Minimum powerlevel to post new threads:
 ".        "    </td>
-".        "  ".$L['TD'.$i].">
+".        "  ".$L['TD2']." colspan='3'>
 ".        "      $L[INPt]=\"minpowerthread\" value=\"$data[minpowerthread]\" style=\"width: 40px\">
 ".        "    </td>
-".        "  </tr>";
-    $i = 3 - $i;
-
-  }
-
-  print      $L['TR'.$i].">
-".             $L['TD'.$i.'c']." colspan=2>
-".        "      $L[INPs]=save value=\"Save ".($_GET[t]=='f'?"forum":"category")."\">";
+".            $L[TRh].">
+".        "    $L[TDhc] colspan=4> Select Moderators
+".        "    </td>
+".            $L['TR1'].">
+".            $L['TD1'].">
+".        "      Search string: $L[INPt]=\"srchstr\" id=\"srchnm\" value=\"\" style=\"width: 140px\">
+".        "    </td>
+".            $L['TD1'].">
+".        "      Matches:<select name=\"slctnm\" id=\"slctnm\" style=\"min-width: 240px\"></select>
+".        "    $L[BTTn]=\"btnadd\">&gt;&gt;</button>
+".        "    </td>
+".            $L['TD1']." COLSPAN=\"2\">
+".        "      Local Moderators: 
+".        "      ".moderatorlist($data[id])."
+".        "    $L[BTTn]=\"btnrmv\">X</button>
+".        "    </td>
+".            $L[TRh].">
+".        "    $L[TDhc] colspan=4> Manage Tags
+".        "    </td>
+".            $L['TR2'].">
+".            $L['TD2'].">
+".        "      $L[INPl]=\"tglst\" id=\"tglst\" size=\"4\" style=\"min-width: 240px;\"></select>
+".        "    </td>
+".            $L['TD2'].">
+".        "    $L[BTTn]=\"addtg\">Add New</button> <br />
+".        "    $L[BTTn]=\"modtg\">Edit</button> <br />
+".        "    $L[BTTn]=\"deltg\">Delete</button>
+".        "    </td>
+".            $L['TD2']." colspan=\"2\">
+".        "      Short Form: $L[INPt]=\"tgshrt\" size=5 maxlength=5 value=\"\"> <br />
+".        "      &nbsp;Long Form: $L[INPt]=\"tglong\" value=\"\" style=\"width: 200px\"> <br />
+".        "      $L[BTTn]=\"savtg\">Save</button> $L[BTTn]=\"clrtg\">Clear</button>
+".        "    </td>
+".            $L[TRh].">
+".        "    $L[TDhc] colspan=4> Actions
+".        "    </td>
+".            $L['TR1'].">
+".             $L['TD1c']." colspan=4>
+".        "      $L[INPs]=save value=\"Save Forum\">";
 
   if ($data[id] > 0)
-    print " $L[INPs]=delete value=\"Delete ".($_GET[t]=='f'?"forum":"category")."\">";
+    print " $L[INPs]=delete value=\"Delete Forum\" onclick=\"return confirm('Are you sure you wish to delete $data[title]?  This action cannot be undone!')\">";
 
-
-
-  $i = 3 - $i;
-
-  print   $L['TR'.$i].">
-".             $L['TD'.$i.'c']." colspan=2>
+  print   $L['TR2'].">
+".             $L['TD2c']." colspan=4> <br />
 ".        "      <a href=manageforums.php>Back</a>
 ".        "$L[TBLend]
 ".        "$L[INPh]=\"id\" value=\"$data[id]\">$L[INPh]=\"t\" value=\"$_GET[t]\"></form><br>";
 
+  } elseif (isset($_GET[t])&&$_GET[t]=='c') {
+    $data = $sql->fetchq("select id,title,minpower,ord from categories where id=".addslashes($_GET[i])." union select -2 id, '' title, 0 minpower, 0 ord");
+    $data[title] = str_replace("\"","'",$data[title]);
 
+        print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=c\">".$L['TBL'.$i]." width=\"100%\">    
+".        "  $L[TRh]>
+".        "    $L[TDhc] colspan=2> ".($_GET[i]>=0?"Edit":"Create")." Category
+".        "    </td>
+".        "  </tr>
+".           $L['TR1'].">
+".           $L['TD1'].">
+".        "      Title
+".        "    </td>
+".            $L['TD1'].">
+".        "      $L[INPt]=\"title\" value=\"$data[title]\" style=\"width: 220px\">
+".        "    </td>
+".            $L['TR2'].">
+".            $L['TD2'].">
+".        "      Order:
+".        "    </td>
+".        "  ".$L['TD2'].">
+".        "      $L[INPt]=\"ord\" value=\"$data[ord]\" style=\"width: 40px\">
+".        "    </td>
+".        "  </tr>
+".            $L['TR1'].">
+".            $L['TD1'].">
+".        "      Minimum powerlevel to view:
+".        "    </td>
+".        "  ".$L['TD1'].">
+".        "      $L[INPt]=\"minpower\" value=\"$data[minpower]\" style=\"width: 40px\">
+".        "    </td>
+".        "  </tr>
+".            $L[TRh].">
+".        "    $L[TDhc] colspan=4> Actions
+".        "    </td>
+".            $L['TR1'].">
+".             $L['TD1c']." colspan=4>
+".        "      $L[INPs]=save value=\"Save Forum\">";
+
+  if ($data[id] > 0)
+    print " $L[INPs]=delete value=\"Delete Category\" onclick=\"return confirm('Are you sure you wish to delete $data[title]?  This action cannot be undone!')\">";
+
+  print   $L['TR2'].">
+".             $L['TD2c']." colspan=4>
+".        "      <a href=manageforums.php>Back</a>
+".        "$L[TBLend]
+".        "$L[INPh]=\"id\" value=\"$data[id]\">$L[INPh]=\"t\" value=\"$_GET[t]\"></form><br>";
   } else {
-
-
-
-
 
     $forums = $sql->query("select f.id, f.title, f.cat, f.ord, f.descr from forums f  left join categories c on c.id = f.cat order by c.ord, f.cat, f.ord");
     $cats = $sql->query("select id, title from categories order by ord");
@@ -235,11 +288,22 @@
   pagefooter();
 
   function categorylist($id=-1) {
-    global $sql;
+    global $sql,$L;
     $cats = $sql->query("select title, id from categories");
-    $catst="<select name=\"cat\">";
+    $catst = $L[INPl]."=\"cat\">";
     while ($cat=$sql->fetch($cats))
       $catst.="<option value=\"$cat[id]\"".($id==$cat[id]?"selected=\"selected\"":"").">$cat[title]</option>";
     return $catst."</select>";
+  }
+
+  function moderatorlist($fid=-1) {
+    global $sql,$L;
+    $mods = $sql->query("SELECT `f`.`uid`, `u`.`name` FROM `forummods` `f` JOIN `users` `u` ON `u`.`id` = `f`.`uid` WHERE `f`.`fid`=$fid");
+    $st = $L[INPl]."\"mods\" id=\"lmods\" style=\"min-width: 240px;\">";
+    while ($mod=$sql->fetch($mods)) {
+      $st.="<option value=\"$mod[uid]\">$mod[name]</option>";
+      $hst.="$mod[uid],";
+    }
+    return $st."</select>$L[INPh]=\"localmods\" id=\"localmods\" value=\"$hst\" />";
   }
 ?>

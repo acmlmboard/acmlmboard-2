@@ -36,6 +36,7 @@
   $L[INPp]='<input type=password name';
   $L[INPh]='<input type=hidden name';
   $L[INPs]='<input type=submit class=submit name';
+  $L[BTTn]='<button type=button class=submit id'; // 
   $L[INPr]='<input type=radio class=radio name';
   $L[INPc]='<input type=checkbox name';
   $L[INPl]='<select name'; // 2009-07 Sukasa: I needed it for the mood selector

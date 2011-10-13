@@ -108,49 +108,4 @@ RenderTable($data, $headers);
 
 pagefooter();
 
-
-//When comparing overall code size, please imagine this function is in lib/layout.php or summin'.
-
-function RenderTable($data, $headers)
-{
-	$zebra = 0;
-	$cols = count($header);
-	
-	print "<table cellspacing=\"0\" class=\"c1\">\n";
-	print "\t<tr class=\"h\">\n";
-	foreach($headers as $headerID => $headerCell)
-	{
-		if($headerCell['hidden'])
-			continue;
-	
-		if(isset($headerCell['width']))
-			$width = " style=\"width: ".$headerCell['width']."\"";
-		else
-			$width = "";
-			
-		print "\t\t<td class=\"b h\"".$width.">".$headerCell['caption']."</td>\n";
-	}
-	print "\t</tr>\n";
-	foreach($data as $dataCell)
-	{
-		print "\t<tr>\n";
-		foreach($dataCell as $id => $value)
-		{
-			if($headers[$id]['hidden'])
-				continue;
-
-			$color = $zebra + 1;
-			$align = "";
-			if(isset($headers[$id]['color']))
-				$color = $headers[$id]['color'];
-			if(isset($headers[$id]['align']))
-				$align = " style=\"text-align: ".$headers[$id]['align']."\"";
-			print "\t\t<td class=\"b n".$color."\"".$align.">".$value."</td>\n";
-		}
-		print "\t</tr>\n";
-		$zebra = ($zebra + 1) % 2;
-	}
-	print "</table>\n"; 
-}
-
 ?>

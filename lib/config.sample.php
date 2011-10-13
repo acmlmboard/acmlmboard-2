@@ -13,6 +13,8 @@
   $sqlhost='localhost';
   $sqluser='sqlusername';
 
+  $spritesalt='please change me!';
+
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';
 

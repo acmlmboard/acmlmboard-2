@@ -14,7 +14,7 @@ A:link,A:visited,A:active,A:hover{
 }
 
 body{
-  background: url(./theme/arhd/bg5.gif) #6e0000;
+  background: url(../theme/arhd/bg5.gif) #6e0000;
   color: white;
   font-family: verdana, geneva, sans-serif;
 }
@@ -38,7 +38,7 @@ table.c2{
 }
 
 tr.h{
-  background: url(./theme/arhd/bg1.gif) #00269d;
+  background: url(../theme/arhd/bg1.gif) #00269d;
   text-align: center;
   font-size: 0.9em;
   font-weight: bold;
@@ -46,7 +46,7 @@ tr.h{
 }
 
 tr.c{
-  background: url(./theme/arhd/bg2.gif) #000015;
+  background: url(../theme/arhd/bg2.gif) #000015;
   text-align: center;
   font-size: 0.9em;
   color: #EEEEEE;
@@ -70,15 +70,15 @@ td.h{
 }
 
 tr.n1,td.n1{
-  background: url(./theme/arhd/bg4.gif) #000046;
+  background: url(../theme/arhd/bg4.gif) #000046;
 }
 
 tr.n2,td.n2{
-  background: url(./theme/arhd/bg3.gif) #00003e;
+  background: url(../theme/arhd/bg3.gif) #00003e;
 }
 
 tr.n3,td.n3{
-  background: url(./theme/arhd/bg2.gif) #000000;
+  background: url(../theme/arhd/bg2.gif) #000000;
 }
 
 .sfont{
@@ -106,14 +106,14 @@ textarea,input,select,button{
 }
 
 ins{
-  background: url(./theme/arhd/bg3.png);
+  background: url(../theme/arhd/bg3.gif);
   border: 1px #668899 dashed;
   text-decoration: none;
   color: #40FF30;
 }
 
 del{
-  background: url(./theme/arhd/bg3.gif);
+  background: url(../theme/arhd/bg3.gif);
   border: 1px #FFEA95 dashed;
   text-decoration: none;
   color: #FF4000;

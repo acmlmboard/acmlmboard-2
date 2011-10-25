@@ -33,8 +33,8 @@
 ".         "    $L[TDh]>ID
 ".         "    $L[TDh]>Icon
 ".         "    $L[TDh]>Name
-".         "    $L[TDh]>Colours
-".         "    $L[TDh]>Colour precedence
+".         "    $L[TDh]>Colors
+".         "    $L[TDh]>Color precedence
 ".         "    $L[TDh]>&nbsp;
 ".         "  </tr>";
 
@@ -44,7 +44,7 @@
 ".              "  $L[TDc]>$t[id]
 ".              "  $L[TDc]>".($t[img]==""?"":"<img src='$t[img]'>")."
 ".              "  $L[TDc]>$t[name]
-".              "  $L[TDc]><a href=#><font color='#$t[nc0]'>Masculine</font></a> <a href=#><font color='#$t[nc1]'>Feminine</font></a> <a href=#><font color='#$t[nc2]'>Neuter</font></a>
+".              "  $L[TDc]><a href=#><font color='#$t[nc0]'>Male</font></a> <a href=#><font color='#$t[nc1]'>Female</font></a> <a href=#><font color='#$t[nc2]'>N/A</font></a>
 ".              "  $L[TDc]>$t[nc_prio]
 ".              "  $L[TDc]><a href='edittokens.php?action=edit&id=$t[id]'>Edit</a>
 ".              "</tr>";
@@ -75,10 +75,10 @@
 ".        fieldrow("ID",fieldinput(4,4,"id",$t))."
 ".        fieldrow("Name",fieldinput(40,60,"name",$t))."
 ".        fieldrow("Image",fieldinput(40,60,"img",$t))."
-".        fieldrow("Masculine(0) namecolour",fieldinput(6,6,"nc0",$t))."
-".        fieldrow("Feminine(1) namecolour",fieldinput(6,6,"nc1",$t))."
-".        fieldrow("Neuter(2) namecolour",fieldinput(6,6,"nc2",$t))."
-".        fieldrow("Namecolour precedence",fieldinput(6,6,"nc_prio",$t))."
+".        fieldrow("Male(0) namecolour",fieldinput(6,6,"nc0",$t))."
+".        fieldrow("Female(1) namecolour",fieldinput(6,6,"nc1",$t))."
+".        fieldrow("N/A(2) namecolour",fieldinput(6,6,"nc2",$t))."
+".        fieldrow("Namecolor precedence",fieldinput(6,6,"nc_prio",$t))."
 ".        catheader("&nbsp;")."
 ".        "$L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>

@@ -67,5 +67,6 @@ function RenderTable($data, $headers)
   }
   print "</table>\n";
 }
+//[KAWA] i LoVe AlL oF yOu MoThErFuCkErS :o)
 
 ?>

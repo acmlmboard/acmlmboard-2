@@ -154,6 +154,8 @@ if (isadmin())
 ".           fieldrow('Font size'       ,fieldinput( 3,  3,'fontsize'  ))."
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
+".           fieldrow('Post layouts', fieldoption('blocklayouts',acl('block-layouts'),array('Show everything in general', 'Block everything')))."
+".           fieldrow('Board2 Sprites', fieldoption('sprites',acl('disable-sprites'),array('Show them', 'Disable sprite layer')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>
@@ -365,6 +367,17 @@ if (isadmin())
                . "WHERE `id`=$user[id]"
                );
 
+	$trainingHelmetTokenID = 200; //CHANGEME
+	$disableSpritesTokenID = 201; //CHANGEME
+	if($_POST['blocklayouts'] == 1)
+		$sql->query('INSERT IGNORE INTO usertokens VALUES('.$user[id].', '.$trainingHelmetTokenID.')');
+	else
+		$sql->query('DELETE FROM usertokens WHERE u='.$user[id].' AND t='.$trainingHelmetTokenID);
+	if($_POST['sprites'] == 1)
+		$sql->query('INSERT IGNORE INTO usertokens VALUES('.$user[id].', '.$disableSpritesTokenID.')');
+	else
+		$sql->query('DELETE FROM usertokens WHERE u='.$user[id].' AND t='.$disableSpritesTokenID);
+	
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
@@ -415,9 +428,10 @@ if (isadmin())
     global $L;
     $text='';
     $sel[$checked]=' checked=1';
+    //[KAWA] Added <label> so the text is clickable.
     foreach($choices as $key=>$val)
       $text.="
-".           "      $L[INPr]=$field value=$key$sel[$key]>$val &nbsp;";
+".           "      <label>$L[INPr]=$field value=$key$sel[$key]>$val &nbsp;</label>";
     return "$text
 ".         "    ";
   }

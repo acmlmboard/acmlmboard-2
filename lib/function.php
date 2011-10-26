@@ -321,6 +321,7 @@
   function amptags($post,$s){
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
     $s=str_replace("&postnum&",$post[num],$s);
+    $s=str_replace("&numdays&",floor((time()-$post[uregdate])/86400),$s);
     $s=str_replace("&postcount&",$post[uposts],$s);
     $s=str_replace("&level&",$lvl=calclvl($exp),$s);
     $s=str_replace("&exp&",$exp,$s);
@@ -334,6 +335,8 @@
     $s=str_replace("&exppct2&",sprintf("%d",$eleft*100/lvlexp($lvl)),$s);
     $s=str_replace("&rank&",getrank($post[urankset],$post[uposts]),$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",getrank($post[urankset],$post[uposts])),$s);
+    //This one's from ABXD
+    $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post[num].', 0)', $s);
     return $s;
   }
 

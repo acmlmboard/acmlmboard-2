@@ -25,10 +25,15 @@
  * 
  */
 
+
 require_once("lib/spritelib.php");
 $chance = 50;
 $roll = 100;
 
+//Always fail to roll if disabled, effectively never appearing at all.
+if(acl('disable-sprites'))
+	$chance = 0;
+	
 $monRequest = mysql_query("SELECT * FROM sprites WHERE id <= ".$roll);
 $monData = array();
 while($mon = mysql_fetch_assoc($monRequest))

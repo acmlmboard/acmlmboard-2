@@ -5,7 +5,8 @@
             "show-ips" => "See IP addresses in threads and profiles. (utf)",
             "see-history" => "Can view past revisions of posts. (tf)",
             "edit-user" => "Can edit other users. (u)",
-            "edit-tokens" => "Can edit token names and associated rights."
+            "edit-tokens" => "Can edit token names and associated rights.",
+            "edit-sprites" => "Boo yah motherfucker.",
           );
 
   if($id=$_GET[id])

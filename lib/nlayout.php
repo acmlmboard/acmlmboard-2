@@ -1,5 +1,9 @@
 <?php 
 
+function urlcreate($url,$query) {
+  return $url.'?'.http_build_query($query);
+}
+
 /** Our first step to sanity, brought to us by Kawa **
  *
  * function RenderTable(data, headers) 
@@ -68,5 +72,94 @@ function RenderTable($data, $headers)
   print "</table>\n";
 }
 //[KAWA] i LoVe AlL oF yOu MoThErFuCkErS :o)
+
+
+// insanity ensues
+
+function RenderForm($form) {
+  if ($form) {
+    $formp = '<form action=%s method=%s>%s</form>';
+    $table = '<table cellspacing=0 class=c1>%s</table>';
+    $row = '<tr>%s</tr>';
+    $rowhead = '<tr class="h">%s</tr>';
+    $cell = '<td class="b n2">%s</td>';
+    $cellhead = '<td class="b h" colspan="2">%s</td>';
+    $celltitle = '<td align="center" class="b n1">%s</td>';
+    $cellaction = '<td class="b">%s</td>';
+    $input = '<input id=%s name=%s type=%s %s />';
+    $formout = '';
+
+    if (isset($form['categories'])) {
+      foreach ($form['categories'] as $catid => $cat) {
+
+        $title = (isset($cat['title'])) ? $cat['title'] : '&nbsp;';
+        $catout = sprintf($rowhead,sprintf($cellhead,$title));
+        foreach ($cat['fields'] as $fieldid => $field) {
+          $type = $field['type'];
+          if ($type != 'submit') {
+            $title = (isset($field['title'])) ? $field['title'].':' : '&nbsp;';
+            $fieldout = sprintf($celltitle,$title);
+          }
+          else {
+            $fieldout = sprintf($celltitle,'&nbsp;');
+          }
+          switch ($type) {
+            case 'color':
+              $size = 6; $length = 6;
+              $valuestring = (isset($field['value'])) ?
+                ' value="'.$field['value'].'" ' : '';
+              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
+                'text',"size=$size maxlength=$length $valuestring"));
+              break;
+            case 'imgref':
+              $size = 40;
+              $length = 60;
+              $valuestring = (isset($field['value'])) ?
+                ' value="'.$field['value'].'" ' : '';
+              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
+                'text',"size=$size maxlength=$length $valuestring"));
+              break;
+            case 'numeric':
+            case 'text':
+              $length = (isset($field['length'])) ? $field['length'] : 60;
+              if (!isset($field['size']) && !isset($field['length'])) {
+                $size = 40;
+              }
+              elseif (!isset($field['size'])) {
+                $size = $length;
+              }
+              else {
+                $size = $field['size'];
+              }
+              $valuestring = (isset($field['value'])) ?
+                ' value="'.$field['value'].'" ' : '';
+              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
+                'text',"size=$size maxlength=$length $valuestring"));
+
+              break;
+            case 'submit':
+              $title = (isset($field['title'])) ? $field['title'] : 'Submit';
+              $fieldout .= sprintf($cellaction,sprintf($input,$fieldid,$fieldid,
+                'submit','class=submit value="'.$title.'"'));
+              break;
+            default:
+              $fieldout .= sprintf($cell,'&nbsp;');
+              break;            
+          }
+          $catout .= sprintf($row,$fieldout);
+        }
+        $formout .= $catout;
+      }
+    }
+
+    $method = (isset($form['method'])) ? $form['method'] : 'POST';
+    $action = (isset($form['action'])) ? $form['action'] : '#';
+    $out = 
+sprintf($formp,'"'.$action.'"','"'.$method.'"',sprintf($table,$formout));
+    echo $out;
+  }
+}
+
+
 
 ?>

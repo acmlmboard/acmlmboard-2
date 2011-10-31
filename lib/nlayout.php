@@ -76,6 +76,12 @@ function RenderTable($data, $headers)
 
 // insanity ensues
 
+function HTMLAttribEncode($string) {
+ $pass1 = str_replace('\\','\\\\',$string);
+ $pass1 = str_replace('"','\\"',$pass1);
+ return '"'.$pass1.'"';
+}
+
 function RenderForm($form) {
   if ($form) {
     $formp = '<form action=%s method=%s>%s</form>';
@@ -86,6 +92,8 @@ function RenderForm($form) {
     $cellhead = '<td class="b h" colspan="2">%s</td>';
     $celltitle = '<td align="center" class="b n1">%s</td>';
     $cellaction = '<td class="b">%s</td>';
+    $select = '<select id=%s name=%s>%s</select>';
+    $option = '<option value=%s %s>%s</option>';
     $input = '<input id=%s name=%s type=%s %s />';
     $formout = '';
 
@@ -107,7 +115,7 @@ function RenderForm($form) {
             case 'color':
               $size = 6; $length = 6;
               $valuestring = (isset($field['value'])) ?
-                ' value="'.$field['value'].'" ' : '';
+                ' value='.HTMLAttribEncode($field['value']).' ' : '';
               $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
                 'text',"size=$size maxlength=$length $valuestring"));
               break;
@@ -115,8 +123,10 @@ function RenderForm($form) {
               $size = 40;
               $length = 60;
               $valuestring = (isset($field['value'])) ?
-                ' value="'.$field['value'].'" ' : '';
-              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
+                ' value='.HTMLAttribEncode($field['value']).' ' : '';
+              
+$fieldout 
+.= sprintf($cell,sprintf($input,$fieldid,$fieldid,
                 'text',"size=$size maxlength=$length $valuestring"));
               break;
             case 'numeric':
@@ -132,15 +142,29 @@ function RenderForm($form) {
                 $size = $field['size'];
               }
               $valuestring = (isset($field['value'])) ?
-                ' value="'.$field['value'].'" ' : '';
-              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
+                ' value='.HTMLAttribEncode($field['value']).' ' : '';
+              
+$fieldout 
+.= sprintf($cell,sprintf($input,$fieldid,$fieldid,
                 'text',"size=$size maxlength=$length $valuestring"));
 
               break;
+            case 'dropdown':
+              $optout = '';
+              foreach($field['choices'] as $choiceid => $choice) {
+                $selected = ($field['value'] == $choiceid) ? ' 
+selected="selected" ' : '';
+                $optout .= 
+sprintf($option,HTMLAttribEncode($choiceid),$selected,$choice);
+              }
+              $fieldout .= 
+sprintf($cell,sprintf($select,$fieldid,$fieldid,$optout));
+              
+              break;              
             case 'submit':
               $title = (isset($field['title'])) ? $field['title'] : 'Submit';
               $fieldout .= sprintf($cellaction,sprintf($input,$fieldid,$fieldid,
-                'submit','class=submit value="'.$title.'"'));
+                'submit','class=submit value='.HTMLAttribEncode($title)));
               break;
             default:
               $fieldout .= sprintf($cell,'&nbsp;');

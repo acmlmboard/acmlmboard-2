@@ -1,15 +1,23 @@
 <?php
 
-/*Returns associative array of specified request values, slashed, regardless
+/*Returns associative array of specified request values, unslashed, regardless
  *of PHP.ini setting
 */
+
+function request_id() {
+ if($id=$_GET[id])
+    checknumeric($id);
+  else $id=0;
+  return $id;
+}
+
 function request_variables($varlist) {
   $quoted = get_magic_quotes_gpc();
   $out = array();
   foreach ($varlist as $key) {
     if (isset($_REQUEST[$key])) {
       $out[$key] = ($quoted) ? 
-      ($_REQUEST[$key]) : (addslashes($_REQUEST[$key]));
+      (stripslashes($_REQUEST[$key])) : ($_REQUEST[$key]);
     }
   }
   return $out;

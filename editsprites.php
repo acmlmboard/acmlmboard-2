@@ -9,15 +9,7 @@ require("lib/common.php");
 
   pageheader("Edit Sprites");
 
-  if(!acl("edit-sprites")) {
-     print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    You do not have the permissions to do this.<br>
-".        "    <a href=./>Back to main</a>
-".        "$L[TBLend]
-";
-     die();
-  }
+  acl_or_die("edit-sprites");
 
   if(empty($r['action']) || $r['id'] == 0) {
 

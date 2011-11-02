@@ -2,9 +2,10 @@
 
 require("lib/spritelib.php");
 require("lib/common.php");
-  if($id=$_GET[id])
-    checknumeric($id);
-  else $id=0;
+
+  $r = request_variables(array('id','action','act'));
+
+  checknumeric($r['id']);
 
   pageheader("Edit Sprites");
 
@@ -18,7 +19,7 @@ require("lib/common.php");
      die();
   }
 
-  if($action=="") {
+  if(empty($r['action']) || $r['id'] == 0) {
 
 
 $headers = array
@@ -56,23 +57,29 @@ RenderTable($data, $headers);
 
 
 }
-elseif ($action=="edit") {
-if (isset($_POST['act'])) {
+elseif ($r['action']=="edit") {
 
-      $sql->query("UPDATE sprites SET 
-      name='".addslashes($name)."', 
-      franchiseid='".addslashes($franchiseid)."',
-      pic='".addslashes($pic)."', 
-      alt='".addslashes($alt)."', 
-      anchor='".addslashes($anchor)."', 
-      title='".addslashes($title)."', 
-      flavor='".addslashes($flavor)."'
-      WHERE id='".addslashes($id)."'");
+if (!empty($r['act'])) {
 
+      $s = 
+request_variables(array('name','franchiseid','pic','alt','anchor','title','flavor'));
+
+      $sql->prepare('UPDATE sprites SET 
+name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=? WHERE id=?;', array(
+$s['name'],
+$s['franchiseid'],
+$s['pic'],
+$s['alt'],
+$s['anchor'],
+$s['title'],
+$s['flavor'],
+$r['id'],
+)
+);
 
 }
 
-    $t=$sql->fetchq("SELECT * FROM sprites WHERE id=$id");
+    $t=$sql->fetchp('SELECT * FROM sprites WHERE id=?',array($r['id']));
 
     print "<a href=./>Main</a> - <a href='editsprites.php'>Edit Sprites</a> - 
 $t[name]<br><br>";

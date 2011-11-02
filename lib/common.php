@@ -1,6 +1,5 @@
 <?php
   require 'lib/function.php';
-  require 'lib/acl.php';
 
   header ('Content-type: text/html; charset=utf-8');
 

@@ -7,9 +7,9 @@ function request_variables($varlist) {
   $quoted = get_magic_quotes_gpc();
   $out = array();
   foreach ($varlist as $key) {
-    if (isset($_REQUEST[$key]) {
+    if (isset($_REQUEST[$key])) {
       $out[$key] = ($quoted) ? 
-      ($_REQUEST[$key]) : (addslahes($_REQUEST[$key]);
+      ($_REQUEST[$key]) : (addslashes($_REQUEST[$key]));
     }
   }
   return $out;

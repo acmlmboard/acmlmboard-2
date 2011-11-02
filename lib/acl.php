@@ -73,6 +73,25 @@ function acl($key) {
   return 0;
 }
 
+function acl_or_die($key) {
+  global $L;
+  global $sql;
+  if (acl($key)) {
+	return true;
+ }
+ else {
+     $r = $sql->fetchp('SELECT title FROM rights WHERE r=?',array($key));
+     $name = $r['title'];
+     print "$L[TBL1]>
+".        "  $L[TD1c]>
+".        "    You do not have the permissions to $name.<br>
+".        "    <a href=./>Back to main</a>
+".        "$L[TBLend]
+";
+     die();
+}
+}
+
 /* Legacy */
 
   function isadmin(){

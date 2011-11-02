@@ -73,4 +73,24 @@ function acl($key) {
   return 0;
 }
 
+/* Legacy */
+
+  function isadmin(){
+    global $loguser;
+    return $loguser[power]>=3;
+  }
+
+  function ismod($fid=0){
+    global $loguser;
+    if($loguser[power]==1) return isset($loguser[modforums][$fid]);
+    return $loguser[power]>=2;
+  }
+
+  function isbanned(){
+    global $loguser;
+    return $loguser[power]<0;
+  }
+
+/* End Legacy */
+
 ?>

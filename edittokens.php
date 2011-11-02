@@ -1,14 +1,6 @@
 <?php
   require 'lib/common.php';
 
-  $desc = array(
-            "show-ips" => "See IP addresses in threads and profiles. (utf)",
-            "see-history" => "Can view past revisions of posts. (tf)",
-            "edit-user" => "Can edit other users. (u)",
-            "edit-tokens" => "Can edit token names and associated rights.",
-            "edit-sprites" => "Boo yah motherfucker.",
-          );
-
   if($id=$_GET[id])
     checknumeric($id);
   else $id=0;
@@ -87,7 +79,9 @@
 ".        "$L[TBLend]</form>
 ";       
 
-    $r=$sql->query("SELECT * FROM tokenrights WHERE t=$id");
+    $r=$sql->prepare('SELECT tr.r AS r, r.title AS t, r.description AS d  FROM 
+tokenrights AS tr LEFT JOIN rights AS r ON tr.r=r.r WHERE 
+tr.t=?',array($id));
 
     print "<form action='edittokens.php?action=edit&id=$id' method=post> $L[TBL1]>
 ".        "  $L[TRh]>
@@ -98,8 +92,8 @@
     $i=0;
     while($d=$sql->fetch($r)) {
       print " ".(($i=!$i)?$L[TR3]:$L[TR2]).">
-".          "  $L[TDc]>$d[r]
-".          "  $L[TDc]>{$desc[$d[r]]}
+".          "  $L[TDc]>$d[t] ($d[r])
+".          "  $L[TDc]>{$d[d]}
 ".          "  $L[TDc]><a href='edittokens.php?action=edit&id=$id&act=del&right=".urlencode($d[r])."'>revoke</a>
 ";
     }

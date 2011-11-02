@@ -28,16 +28,7 @@
     }
 
 
-   // mysql_query() wrapper. takes two arguments. first
-   // is the query with '?' placeholders in it. second argument
-   // is an array containing the values to substitute in place
-   // of the placeholders (in order, of course).
-   // Pass NULL constant in array to get unquoted word NULL
-   function prepare ($query, $phs = array()) {
-      if(0 && $_GET[sqldebug])
-        print "$query<br>";
-
-      $start=usectime();
+   static function preparesql ($query, $phs = array()) {
     $phs = array_map(create_function('$ph',
                      'return "\'".mysql_real_escape_string($ph)."\'";'), $phs);
 
@@ -55,14 +46,16 @@
       $curph--;
     }
     unset($curpos, $curph, $phs);
-      if($res=mysql_query($query,$this->conid)){
-        $this->queries++;
-        $this->rowst+=@mysql_num_rows($res,$this->conid);
-      }else
-        print mysql_error($this->conid);
+    return $query;
+   }
 
-      $this->time+=usectime()-$start;
-      return $res;
+   // mysql_query() wrapper. takes two arguments. first
+   // is the query with '?' placeholders in it. second argument
+   // is an array containing the values to substitute in place
+   // of the placeholders (in order, of course).
+   // Pass NULL constant in array to get unquoted word NULL
+   function prepare ($query, $phs = array()) {
+     return $this->query(self::preparesql($query,$phs));
    }
 
 
@@ -93,9 +86,7 @@
     }
 
     function fetchp($query,$phs,$row=0,$col=0){
-      $res=$this->prepare($query,$phs);
-      $res=$this->fetch($res);
-      return $res;
+      return $this->fetchq(self::preparesql($query,$phs),$row,$col);
     }
 
 
@@ -105,9 +96,7 @@
       return $res;
     }
     function resultp($query,$phs,$row=0,$col=0){
-      $res=$this->prepare($query,$phs);
-      $res=$this->result($res,$row,$col);
-      return $res;
+      return $this->resultq(self::preparesql($query,$phs),$row,$col);
     }
 
   }

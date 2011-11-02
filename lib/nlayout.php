@@ -77,9 +77,8 @@ function RenderTable($data, $headers)
 // insanity ensues
 
 function HTMLAttribEncode($string) {
- $pass1 = str_replace('\\','\\\\',$string);
- $pass1 = str_replace('"','\\"',$pass1);
- return '"'.$pass1.'"';
+ $pass1 = htmlentities($string, ENT_QUOTES);
+ return "'$pass1'";
 }
 
 function RenderForm($form) {

@@ -27,6 +27,45 @@
       return $res;
     }
 
+
+   // mysql_query() wrapper. takes two arguments. first
+   // is the query with '?' placeholders in it. second argument
+   // is an array containing the values to substitute in place
+   // of the placeholders (in order, of course).
+   // Pass NULL constant in array to get unquoted word NULL
+   function prepare ($query, $phs = array()) {
+      if(0 && $_GET[sqldebug])
+        print "$query<br>";
+
+      $start=usectime();
+    $phs = array_map(create_function('$ph',
+                     'return "\'".mysql_real_escape_string($ph)."\'";'), $phs);
+
+    $curpos = 0;
+    $curph  = count($phs)-1;
+
+    for ($i=strlen($query)-1; $i>0; $i--) {
+
+      if ($query[$i] !== '?')  continue;
+      if ($curph < 0 || !isset($phs[$curph]))
+    $query = substr_replace($query, 'NULL', $i, 1);
+      else
+    $query = substr_replace($query, $phs[$curph], $i, 1);
+
+      $curph--;
+    }
+    unset($curpos, $curph, $phs);
+      if($res=mysql_query($query,$this->conid)){
+        $this->queries++;
+        $this->rowst+=@mysql_num_rows($res,$this->conid);
+      }else
+        print mysql_error($this->conid);
+
+      $this->time+=usectime()-$start;
+      return $res;
+   }
+
+
     function fetch($result){
       $start=usectime();
 
@@ -53,10 +92,23 @@
       return $res;
     }
 
+    function fetchp($query,$phs,$row=0,$col=0){
+      $res=$this->prepare($query,$phs);
+      $res=$this->fetch($res);
+      return $res;
+    }
+
+
     function resultq($query,$row=0,$col=0){
       $res=$this->query($query);
       $res=$this->result($res,$row,$col);
       return $res;
     }
+    function resultp($query,$phs,$row=0,$col=0){
+      $res=$this->prepare($query,$phs);
+      $res=$this->result($res,$row,$col);
+      return $res;
+    }
+
   }
 ?>

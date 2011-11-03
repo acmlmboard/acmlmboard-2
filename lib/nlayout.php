@@ -183,6 +183,47 @@ sprintf($formp,'"'.$action.'"','"'.$method.'"',sprintf($table,$formout));
   }
 }
 
+function RenderActions($actions,$ret = false) {
+  $out = '';
+  $i = 0;
+  foreach ($actions as $action) {
+    if ($action['confirm'] == true) {
+      $href = "javascript:if(confirm('Are you sure you want to 
+".$action['title']."?')){window.location.href='".$action['href']."';} else 
+{void('');};";
+    }
+    else {
+      $href = $action['href'];
+    }
+    if ($i++) $out.= ' | ';
+    $out .= sprintf('<a 
+href=%s>%s</a>',HTMLAttribEncode($href),$action['title']);
+  }
+if ($ret) return $out;
+else echo $out;
+}
 
+function RenderBreadcrumb($breadcrumb) {
+  foreach ($breadcrumb as $action) {
+    echo sprintf('<a href=%s>%s</a> - 
+',HTMLAttribEncode($action['href']),$action['title']);
+  }
+}
+
+function RenderPageBar($pagebar) {
+  echo "<table cellspacing=0 width=100%>";
+  echo "<td class=nb>";
+  if (!empty($pagebar['breadcrumb'])) RenderBreadcrumb($pagebar['breadcrumb']);
+  echo $pagebar['title'];
+  echo "</td><td align=right class=nb>";
+  if (!empty($pagebar['actions'])) RenderActions($pagebar['actions']);
+  else echo "&nbsp;";
+  echo "</td></table><br/>";
+  if (!empty($pagebar['message'])) {
+    echo "<table cellspacing=0 width=100% class=c1><tr><td class='center'>";
+    echo $pagebar['message'];
+    echo "</td></tr></table><br/>";
+  }
+}
 
 ?>

@@ -4,14 +4,28 @@ require("lib/spritelib.php");
 require("lib/common.php");
 
   $r = request_variables(array('id','action','act'));
-
+  $pagebar = array();
   checknumeric($r['id']);
 
   pageheader("Edit Sprites");
 
   acl_or_die("edit-sprites");
 
-  if(empty($r['action']) || $r['id'] == 0) {
+  $id = $r['id'];
+
+  if ($r['action'] == "del") {
+    unset($r['action']);
+    if ($id > 0) {
+      if ($sql->prepare('DELETE FROM sprites WHERE id=?',array($id))) {
+      $pagebar['message'] = "Sprite successfully deleted.";
+ }
+else {
+ $pagebar['message'] = "Unable to delete sprite.";
+}
+    }
+  }
+
+  if(empty($r['action'])) {
 
 
 $headers = array
@@ -35,28 +49,41 @@ while($mon = $sql->fetch($monReq))
 {
 		$pics = explode("|", $mon['pic']);
 		$pic = $pics[0];
-		$data[] = array
+$actions = array(
+  array('title' => 'Edit','href' => 
+'editsprites.php?action=edit&id='.$mon['id']),
+  array('title' => 'Delete','href' => 
+'editsprites.php?action=del&id='.$mon['id'], 
+confirm => true),
+);
+		
+$data[] = array
 		(
 			"id" => $mon['id'],
 			"img" => "<img src=\"img/b2sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
 			"name" => $mon['name'],
 			"flavor" => $mon['flavor'],
-      "edit" => '<a href="?action=edit&id='.$mon['id'].'">Edit</a>',
+      "edit" => RenderActions($actions,1),
 		);
 }
-
+$pagebar['title'] = 'Edit Sprites';
+$pagebar['actions'] = array(
+    array('title' => 'New Sprite','href' => 'editsprites.php?action=new'),
+);
+RenderPageBar($pagebar);
 RenderTable($data, $headers);
 
 
 }
-elseif ($r['action']=="edit") {
-
+elseif ($r['action']=="edit" || $r['action']=="new") {
 if (!empty($r['act'])) {
-
-      $s = 
+      $s =
 request_variables(array('name','franchiseid','pic','alt','anchor','title','flavor'));
 
-      $sql->prepare('UPDATE sprites SET 
+
+if ($r['action']=="edit" && $id > 0) {
+
+if(      $sql->prepare('UPDATE sprites SET 
 name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=? WHERE id=?;', array(
 $s['name'],
 $s['franchiseid'],
@@ -65,21 +92,73 @@ $s['alt'],
 $s['anchor'],
 $s['title'],
 $s['flavor'],
-$r['id'],
+$id,
 )
+)){
+      $pagebar['message'] = "Sprite successfully updated.";
+
+}
+else {
+ $pagebar['message'] = "Unable to update  sprite.";
+
+}
+}
+
+elseif ($r['action']=="new"){
+if (      $sql->prepare('INSERT INTO sprites SET
+name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=? ;', array(
+$s['name'],
+$s['franchiseid'],
+$s['pic'],
+$s['alt'],
+$s['anchor'],
+$s['title'],
+$s['flavor'],
+)
+)) {
+$id = mysql_insert_id();
+$r['action'] = "edit";
+      $pagebar['message'] = "Sprite successfully created.";
+}
+else {
+ $pagebar['message'] = "Unable to create sprite.";
+}
+}
+}
+$pagebar['breadcrumb'] = array(
+    array('title' => 'Edit Sprites','href' => 'editsprites.php'),
+    );
+
+
+if ($id > 0) {
+    $t=$sql->fetchp('SELECT * FROM sprites WHERE id=?',array($id));
+$pagebar['title'] = $t['name'];
+$pagebar['actions'] = array(
+    array('title' => 'Delete Sprite','href' => 
+'editsprites.php?action=del&id='.$id, 
+'confirm' 
+=> 
+true),
 );
 
 }
-
-    $t=$sql->fetchp('SELECT * FROM sprites WHERE id=?',array($r['id']));
-
-    print "<a href=./>Main</a> - <a href='editsprites.php'>Edit Sprites</a> - 
-$t[name]<br><br>";
-
+else {
+$pagebar['title'] = 'New Sprite';
+$t = array(
+  'id' => 0,
+  'name' => '',
+  'franchiseid' => 1,
+  'pic' => '',
+  'alt' => '',
+  'anchor' => 'free',
+  'flavor' => '',  
+);
+}
+RenderPageBar($pagebar);
 $form = array(
   'action' =>
     urlcreate('editsprites.php', array(
-      'action' => 'edit',
+      'action' => $r['action'],
       'id' => $t['id'],
     )
     ),
@@ -140,7 +219,7 @@ $form = array(
     'actions' => array(
       'fields' => array(
         'act' => array(
-          'title' => 'Update metadata',
+          'title' => ($id>0)?'Update metadata':'Create sprite',
           'type' => 'submit',
         ),
       ),

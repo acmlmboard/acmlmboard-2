@@ -1,5 +1,5 @@
 <?php
- require '../lib/function.php';
+ require 'gfxlib.php';
 
  if(!$u) die();
 

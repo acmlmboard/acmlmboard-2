@@ -22,6 +22,7 @@
   while($d=$sql->fetch($q)) $rights[$d[r]]=$d;
 
   function get_right_info($r) {
+    global $rights;
     $re=explode(' ',$r);
     while($re[0]=="not"||$re[0][0]=='+') $re=array_slice($re,1);
     $ret=$rights[$re[0]];

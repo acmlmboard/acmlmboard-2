@@ -93,7 +93,7 @@ function LoadBlocklayouts()
       if($post[id])
         $postlinks.=" | ID: $post[id]";
 
-      if(acl_for_thread($post[thread],"show-ips"))
+      if(acl_for_user($post[uid],"show-ips"))
         $postlinks.=($postlinks?' | ':'')."IP: $post[ip]";
 
       if(   acl_for_thread($post[thread],"see-history")

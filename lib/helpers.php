@@ -16,7 +16,7 @@
   function getcategorybyforum($fid){
     global $sql;
     static $cache;
-    return isset($cache[$fid])?$cache[$fid]:$cache[$fid]=$sql->resultq("SELECT cat FROM forumss WHERE id='$fid'");
+    return isset($cache[$fid])?$cache[$fid]:$cache[$fid]=$sql->resultq("SELECT cat FROM forums WHERE id='$fid'");
   }
 
   function getcategorybythread($tid){

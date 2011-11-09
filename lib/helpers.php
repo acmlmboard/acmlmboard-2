@@ -7,4 +7,20 @@
     return true;
   }
 
+  function getforumbythread($tid){
+    global $sql;
+    static $cache;
+    return isset($cache[$tid])?$cache[$tid]:$cache[$tid]=$sql->resultq("SELECT forum FROM threads WHERE id='$tid'");
+  }
+
+  function getcategorybyforum($fid){
+    global $sql;
+    static $cache;
+    return isset($cache[$fid])?$cache[$fid]:$cache[$fid]=$sql->resultq("SELECT cat FROM forumss WHERE id='$fid'");
+  }
+
+  function getcategorybythread($tid){
+    return getcategorybyforum(getforumbythread($tid));
+  }
+
 ?>

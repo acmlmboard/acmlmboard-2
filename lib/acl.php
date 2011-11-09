@@ -54,37 +54,41 @@ function gettokenstring($uid) {
 /* specific ACL resolution functions */
 function acl_for_thread($tid,$key) {
   global $loguser;
-  if($loguser[acl]["not $key t$tid"]) return 0;
-  else if($loguser[acl]["$key t$tid"]) return 1;
-  else if($loguser[acl]["not $key f".getforumbythread($tid)]) return 0;
+  if($loguser[acl]["$key t$tid"]) return 1;
+  else if($loguser[acl]["not $key t$tid"]) return 0;
   else if($loguser[acl]["$key f".getforumbythread($tid)]) return 1;
-  else if($loguser[acl]["not $key"]) return 0;
+  else if($loguser[acl]["not $key f".getforumbythread($tid)]) return 0;
+  else if($loguser[acl]["$key c".getcategorybythread($tid)]) return 1;
+  else if($loguser[acl]["not $key c".getcategorybythread($tid)]) return 0;
   else if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 
 function acl_for_forum($fid,$key) {
   global $loguser;
-  if($loguser[acl]["not $key f$fid"]) return 0;
-  else if($loguser[acl]["$key f$fid"]) return 1;
-  else if($loguser[acl]["not $key"]) return 0;
+  if($loguser[acl]["$key f$fid"]) return 1;
+  else if($loguser[acl]["not $key f$fid"]) return 0;
+  else if($loguser[acl]["$key c".getcategorybyforum($fid)]) return 1;
+  else if($loguser[acl]["not $key c".getcategorybyforum($fid)]) return 0;
   else if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 
 function acl_for_user($uid,$key) {
   global $loguser;
-  if($loguser[acl]["not $key u$uid"]) return 0;
-  else if($loguser[acl]["$key u$uid"]) return 1;
-  else if($loguser[acl]["not $key"]) return 0;
+  if($loguser[acl]["$key u$uid"]) return 1;
+  else if($loguser[acl]["not $key u$uid"]) return 0;
   else if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 
 function acl($key) {
   global $loguser;
-  if($loguser[acl]["not $key"]) return 0;
-  else if($loguser[acl][$key]) return 1;
+  if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 

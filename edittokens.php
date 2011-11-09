@@ -27,7 +27,7 @@
     while($re[0]=="not"||$re[0][0]=='+') $re=array_slice($re,1);
     $ret=$rights[$re[0]];
     if($re[1]) {
-      $desc=array( "u" => "User ", "t" => "Thread ", "f" => "Forum " );
+      $desc=array( "u" => "User ", "t" => "Thread ", "f" => "Forum ", "c" => "Category" );
       $ret[title].=" for ";
       $ret[title].=$desc[$re[1][0]].substr($re[1],1);
     }

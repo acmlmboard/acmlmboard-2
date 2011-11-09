@@ -36,7 +36,7 @@
     pageheader($forum[title],$fid);
 
     //forum access control // 2007-02-19 blackhole89 // 2011-11-09 blackhole89 tokenisation (more than 4.5 years...)
-    if(!acl_for_forum("list",$fid)){
+    if(!acl_for_forum($fid,"list")){
       print
         "$L[TBL1]>
 ".      "  $L[TR2]>

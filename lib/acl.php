@@ -54,22 +54,37 @@ function gettokenstring($uid) {
 /* specific ACL resolution functions */
 function acl_for_thread($tid,$key) {
   global $loguser;
-  if($loguser[acl][$key]) return 1;
+  if($loguser[acl]["not $key t$tid"]) return 0;
   else if($loguser[acl]["$key t$tid"]) return 1;
+  else if($loguser[acl]["not $key f".getforumbythread($tid)]) return 0;
   else if($loguser[acl]["$key f".getforumbythread($tid)]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
+  else if($loguser[acl][$key]) return 1;
+  return 0;
+}
+
+function acl_for_forum($fid,$key) {
+  global $loguser;
+  if($loguser[acl]["not $key f$fid"]) return 0;
+  else if($loguser[acl]["$key f$fid"]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
+  else if($loguser[acl][$key]) return 1;
   return 0;
 }
 
 function acl_for_user($uid,$key) {
   global $loguser;
-  if($loguser[acl][$key]) return 1;
+  if($loguser[acl]["not $key u$uid"]) return 0;
   else if($loguser[acl]["$key u$uid"]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
+  else if($loguser[acl][$key]) return 1;
   return 0;
 }
 
 function acl($key) {
   global $loguser;
-  if($loguser[acl][$key]) return 1;
+  if($loguser[acl]["not $key"]) return 0;
+  else if($loguser[acl][$key]) return 1;
   return 0;
 }
 
@@ -94,21 +109,21 @@ function acl_or_die($key) {
 
 /* Legacy */
 
-  function isadmin(){
-    global $loguser;
-    return $loguser[power]>=3;
-  }
+function isadmin(){
+  global $loguser;
+  return $loguser[power]>=3;
+}
 
-  function ismod($fid=0){
-    global $loguser;
-    if($loguser[power]==1) return isset($loguser[modforums][$fid]);
-    return $loguser[power]>=2;
-  }
+function ismod($fid=0){
+  global $loguser;
+  if($loguser[power]==1) return isset($loguser[modforums][$fid]);
+  return $loguser[power]>=2;
+}
 
-  function isbanned(){
-    global $loguser;
-    return $loguser[power]<0;
-  }
+function isbanned(){
+  global $loguser;
+  return $loguser[power]<0;
+}
 
 /* End Legacy */
 

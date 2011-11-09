@@ -35,13 +35,13 @@
     //append the forum's title to the site title
     pageheader($forum[title],$fid);
 
-    //forum access control // 2007-02-19 blackhole89
-    if($loguser[power]<$forum[minpower]){
+    //forum access control // 2007-02-19 blackhole89 // 2011-11-09 blackhole89 tokenisation (more than 4.5 years...)
+    if(!acl_for_forum("list",$fid)){
       print
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
-".      "      You may not access a forum restricted to users with a powerlevel higher than yours.
+".      "      You lack the permissions to access this forum.
 ".      "$L[TBLend]
 ";
       pagefooter();

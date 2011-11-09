@@ -97,22 +97,35 @@ function acl_or_die($key) {
   global $sql;
   if (acl($key)) {
 	return true;
- }
- else {
-     $r = $sql->fetchp('SELECT title FROM rights WHERE r=?',array($key));
-     $name = $r['title'];
-     print "$L[TBL1]>
+  }
+  else {
+    $r = $sql->fetchp('SELECT title FROM rights WHERE r=?',array($key));
+    $name = $r['title'];
+    print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    You do not have the permissions to $name.<br>
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
-     die();
+    die();
+  }
 }
+
+/* Lists for replacement of minpower conditions - make more efficient e.g. by filling forum->cat caches */
+function forums_with_right($key) {
+  global $loguser,$sql;
+  static $cache;
+  if($cache) return $cache;
+  $cache="(";
+  $r=$sql->query("SELECT id FROM forums");
+  while($f=$sql->result($r)) {
+    if(acl_for_forum($f,$key)) $cache.="$f,";
+  }
+  $cache.="NULL)";
+  return $cache;
 }
 
 /* Legacy */
-
 function isadmin(){
   global $loguser;
   return $loguser[power]>=3;

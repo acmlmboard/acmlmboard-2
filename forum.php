@@ -114,8 +114,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
 		        ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
                         ."LEFT JOIN categories c ON f.cat=c.id "
                         ."WHERE t.user=$uid "
-                        .  "AND f.minpower<=$loguser[power] "
-                        .  "AND c.minpower<=$loguser[power] "
+                        .  "AND f.id IN ".forums_with_right("list")." "
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
@@ -124,8 +123,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
                                  ."WHERE t.user=$uid "
-                                 .  "AND f.minpower<=$loguser[power] "
-                                 .  "AND c.minpower<=$loguser[power]");
+                                 .  "AND f.id IN ".forums_with_right("list")." ");
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - Threads by $user[name]</td>
@@ -147,17 +145,15 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                   .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
                         ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
                         ."WHERE t.lastdate>$mintime "
-                        .  "AND f.minpower<=$loguser[power] "
-                        .  "AND c.minpower<=$loguser[power] "
-                        ."ORDER BY t.sticky DESC, t.lastdate DESC "
+                        .  "AND f.id IN ".forums_with_right("list")." "
+			."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
     $forum[threads]=$sql->resultq("SELECT count(*) "
                                  ."FROM threads t "
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
                                  ."WHERE t.lastdate>$mintime "
-                                 .  "AND f.minpower<=$loguser[power] "
-                                 .  "AND c.minpower<=$loguser[power]");
+                                 .  "AND f.id IN ".forums_with_right("list")." ");
 
     function timelink($time){
       return " <a href=forum.php?time=$time>".timeunits2($time).'</a> ';

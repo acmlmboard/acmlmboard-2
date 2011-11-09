@@ -17,6 +17,22 @@
      die();  
   }
 
+  $rights=array();
+  $q=$sql->query("SELECT * FROM rights");
+  while($d=$sql->fetch($q)) $rights[$d[r]]=$d;
+
+  function get_right_info($r) {
+    $re=explode(' ',$r);
+    while($re[0]=="not"||$re[0][0]=='+') $re=array_slice($re,1);
+    $ret=$rights[$re[0]];
+    if($re[1]) {
+      $desc=array( "u" => "User ", "t" => "Thread ", "f" => "Forum " );
+      $ret[description].=" for ";
+      $ret[description].=$desc[$re[1][0]].substr($re[1],1);
+    }
+    return $ret;
+  }
+
   if($action=="") {
     $r=$sql->query("SELECT * FROM tokens");
       
@@ -79,9 +95,7 @@
 ".        "$L[TBLend]</form>
 ";       
 
-    $r=$sql->prepare('SELECT tr.r AS r, r.title AS t, r.description AS d  FROM 
-tokenrights AS tr LEFT JOIN rights AS r ON tr.r=r.r WHERE 
-tr.t=?',array($id));
+    $r=$sql->query("SELECT r FROM tokenrights tr WHERE tr.t='$id'");
 
     print "<form action='edittokens.php?action=edit&id=$id' method=post> $L[TBL1]>
 ".        "  $L[TRh]>
@@ -91,9 +105,10 @@ tr.t=?',array($id));
 "; 
     $i=0;
     while($d=$sql->fetch($r)) {
+      $info=get_right_info($d[r]);
       print " ".(($i=!$i)?$L[TR3]:$L[TR2]).">
-".          "  $L[TDc]>$d[t] ($d[r])
-".          "  $L[TDc]>{$d[d]}
+".          "  $L[TDc]>$info[title] ($d[r])
+".          "  $L[TDc]>{$info[description]}
 ".          "  $L[TDc]><a href='edittokens.php?action=edit&id=$id&act=del&right=".urlencode($d[r])."'>revoke</a>
 ";
     }

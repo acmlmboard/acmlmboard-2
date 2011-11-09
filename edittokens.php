@@ -28,8 +28,8 @@
     $ret=$rights[$re[0]];
     if($re[1]) {
       $desc=array( "u" => "User ", "t" => "Thread ", "f" => "Forum " );
-      $ret[description].=" for ";
-      $ret[description].=$desc[$re[1][0]].substr($re[1],1);
+      $ret[title].=" for ";
+      $ret[title].=$desc[$re[1][0]].substr($re[1],1);
     }
     return $ret;
   }

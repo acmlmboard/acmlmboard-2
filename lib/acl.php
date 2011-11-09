@@ -118,8 +118,8 @@ function forums_with_right($key) {
   if($cache) return $cache;
   $cache="(";
   $r=$sql->query("SELECT id FROM forums");
-  while($f=$sql->result($r)) {
-    if(acl_for_forum($f,$key)) $cache.="$f,";
+  while($d=$sql->fetch($r)) {
+    if(acl_for_forum($d[id],$key)) $cache.="$d[id],";
   }
   $cache.="NULL)";
   return $cache;

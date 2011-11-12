@@ -1,8 +1,8 @@
 <?php
   require 'lib/common.php';
 
-  function sslicon($a) {
-    if(ismod() && $a) {
+  function sslicon($a,$uid=0) {
+    if(acl_for_user($uid,"show-ips") && $a) {
       return "<img src='img/ssloff.gif'>";
     }
     return "";
@@ -39,7 +39,7 @@
 ".      "    $L[TDh] width=90>Last view</td>
 ".      "    $L[TDh] width=140>Last post</td>
 ".      "    $L[TDh]>URL</td>
-".(ismod()?
+".(acl_for_user(0,"show-ips")?
         "    $L[TDh] width=120>IP</td>":'')."
 ".      "    $L[TDh] width=50>Posts</td>
 ";
@@ -54,8 +54,8 @@
 ".        "    $L[TDl]>".userlink($user)."</td>
 ".        "    $L[TD]>".cdate($loguser[timeformat],$user[lastview])."</td>
 ".        "    $L[TD]>".($user[lastpost]?cdate($dateformat,$user[lastpost]):'-')."</td>
-".        "    $L[TDl]><span style='float:right'>".sslicon($user[ssl])."</span".($user[url]?"><a href=$user[url]>".str_replace(array("%20", "_")," ",$user[url])."</a>":'>-').($user['ipbanned'] ? " (IP banned)":"")."</td>
-".(ismod()?
+".        "    $L[TDl]><span style='float:right'>".sslicon($user[ssl],$user[id])."</span".($user[url]?"><a href=$user[url]>".str_replace(array("%20", "_")," ",$user[url])."</a>":'>-').($user['ipbanned'] ? " (IP banned)":"")."</td>
+".(acl_for_user($user[id],"show-ips")?
           "    $L[TD]>".flagip($user[ip])."</td>":'')."
 ".        "    $L[TD]>$user[posts]</td>
 ";

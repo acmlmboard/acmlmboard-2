@@ -1,11 +1,5 @@
 <?php
 
-  function getforumbythread($tid){
-    global $sql;
-    static $cache;
-    return isset($cache[$tid])?$cache[$tid]:$cache[$tid]=$sql->resultq("SELECT forum FROM threads WHERE id='$tid'");
-  }
-
   function editthread($id,$title='',$forum=0,$icon='',$closed=-1,$sticky=-1,$delete=-1){
     global $sql;
 

@@ -54,22 +54,41 @@ function gettokenstring($uid) {
 /* specific ACL resolution functions */
 function acl_for_thread($tid,$key) {
   global $loguser;
-  if($loguser[acl][$key]) return 1;
-  else if($loguser[acl]["$key t$tid"]) return 1;
+  if($loguser[acl]["$key t$tid"]) return 1;
+  else if($loguser[acl]["not $key t$tid"]) return 0;
   else if($loguser[acl]["$key f".getforumbythread($tid)]) return 1;
+  else if($loguser[acl]["not $key f".getforumbythread($tid)]) return 0;
+  else if($loguser[acl]["$key c".getcategorybythread($tid)]) return 1;
+  else if($loguser[acl]["not $key c".getcategorybythread($tid)]) return 0;
+  else if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
+  return 0;
+}
+
+function acl_for_forum($fid,$key) {
+  global $loguser;
+  if($loguser[acl]["$key f$fid"]) return 1;
+  else if($loguser[acl]["not $key f$fid"]) return 0;
+  else if($loguser[acl]["$key c".getcategorybyforum($fid)]) return 1;
+  else if($loguser[acl]["not $key c".getcategorybyforum($fid)]) return 0;
+  else if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 
 function acl_for_user($uid,$key) {
   global $loguser;
-  if($loguser[acl][$key]) return 1;
-  else if($loguser[acl]["$key u$uid"]) return 1;
+  if($loguser[acl]["$key u$uid"]) return 1;
+  else if($loguser[acl]["not $key u$uid"]) return 0;
+  else if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 
 function acl($key) {
   global $loguser;
   if($loguser[acl][$key]) return 1;
+  else if($loguser[acl]["not $key"]) return 0;
   return 0;
 }
 
@@ -78,37 +97,50 @@ function acl_or_die($key) {
   global $sql;
   if (acl($key)) {
 	return true;
- }
- else {
-     $r = $sql->fetchp('SELECT title FROM rights WHERE r=?',array($key));
-     $name = $r['title'];
-     print "$L[TBL1]>
+  }
+  else {
+    $r = $sql->fetchp('SELECT title FROM rights WHERE r=?',array($key));
+    $name = $r['title'];
+    print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    You do not have the permissions to $name.<br>
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
-     die();
+    die();
+  }
 }
+
+/* Lists for replacement of minpower conditions - make more efficient e.g. by filling forum->cat caches */
+function forums_with_right($key) {
+  global $loguser,$sql;
+  static $cache;
+  if($cache) return $cache;
+  $cache="(";
+  $r=$sql->query("SELECT id FROM forums");
+  while($d=$sql->fetch($r)) {
+    if(acl_for_forum($d[id],$key)) $cache.="$d[id],";
+  }
+  $cache.="NULL)";
+  return $cache;
 }
 
 /* Legacy */
+function isadmin(){
+  global $loguser;
+  return $loguser[power]>=3;
+}
 
-  function isadmin(){
-    global $loguser;
-    return $loguser[power]>=3;
-  }
+function ismod($fid=0){
+  global $loguser;
+  if($loguser[power]==1) return isset($loguser[modforums][$fid]);
+  return $loguser[power]>=2;
+}
 
-  function ismod($fid=0){
-    global $loguser;
-    if($loguser[power]==1) return isset($loguser[modforums][$fid]);
-    return $loguser[power]>=2;
-  }
-
-  function isbanned(){
-    global $loguser;
-    return $loguser[power]<0;
-  }
+function isbanned(){
+  global $loguser;
+  return $loguser[power]<0;
+}
 
 /* End Legacy */
 

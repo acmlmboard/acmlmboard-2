@@ -159,7 +159,7 @@ if(isset($_GET['block']) && $log)
 ".      "        $L[TD2]>
 ".      "          ".cdate($dateformat,$user[lastview])." (".timeunits(ctime()-$user[lastview])." ago)
 ".      "          ".($user[url]?"<br>at <a href=$user[url]>$user[url]</a>":'')."
-".      "          ".($user[ip]&&isadmin()?"<br>from IP: $user[ip]":'')."
+".      "          ".($user[ip]&&acl_for_user($user[id],"show-ips")?"<br>from IP: $user[ip]":'')."
 ".      "    $L[TBLend]
 ".      "    <br>
 ".      "    $L[TBL1]>
@@ -237,7 +237,7 @@ if(isset($_GET['block']) && $log)
 ".      "            ". ($log?"| <a href=sendprivate.php?uid=$user[id]>Send Private Message</a>":"") ."
 ".      "            ". (isadmin()?"| <a href=private.php?id=$user[id]>View Private Messages</a>":"") ."
 ".      "            ". (isadmin()?"| <a href=usermood.php?uid=$user[id]>Edit mood avatars</a>":"") ."
-".      "            ". (isadmin()?"| <a href=editprofile.php?id=$user[id]>Edit user</a>":"") ."
+".      "            ". (acl_for_user($_GET[id],"edit-user")?"| <a href=editprofile.php?id=$user[id]>Edit user</a>":"") ."
 ".      "$L[TBLend]
 ";
 

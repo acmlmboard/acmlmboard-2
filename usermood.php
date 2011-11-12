@@ -1,7 +1,7 @@
 <?php
   // 2009-07 Sukasa: The entire file.  I tried to conform to what I remembered of the standards.
   // 2011-09-09 Emuz: Small update to allow for <s>32</s> 64 avatars
-  // 2011-09-29 Sukasa: Fine, I'll timestamp it that way then.  Updated to allow administrators to modify anyone's mood avatars
+  // 2011-10-01 Sukasa: Okay, I'll timestamp it that way then :P.  Updated to allow administrators to modify anyone's mood avatars, and some UI tweaks
   require 'lib/common.php';
 
 
@@ -37,7 +37,7 @@
       $fext=strtolower(substr($fname,-4));
       $error='';
       $exts=array('.png','.jpg','.gif');
-      $dimx=100; //My test used much larger sizes.  IIRC, these were the defaults on board2
+      $dimx=100;
       $dimy=100;
       $dimxs=60;
       $dimys=60;
@@ -47,8 +47,8 @@
 	/*
       if($x_hacks["180px"]) {
         $dimx=180;
-	$dimy=180;
-	$size=61440;
+      	$dimy=180;
+	      $size=61440;
       }
       */
 
@@ -119,7 +119,7 @@
     $targetname = $sql->resultq("select `name` from `users` where `id`='$targetuserid'");
   }
 
-  // Moved pageheader here so that I can do header()s without fucking everything up again
+  // Moved pageheader here so that I can do header()s without everything going haywire up again
   pageheader();
 
 
@@ -166,7 +166,7 @@
   pagefooter();
 
   
-  function CanAlterAll() {
+  function CanAlterAll() { //TODO replace with token support when that feature is complete
     global $loguser;
     return ($loguser[power] >= 3);
   }

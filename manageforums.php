@@ -10,18 +10,18 @@
 
     //save
     switch ($_POST[t]) {
-      case 'f':
+      case 'f': //Saving forum
         if (isset($_POST['save'])) {
           $min=$_POST[minpower];
           if ($min < 0) $min = 0;
-          if ($id == -2)
+          if ($id == -2) //If it's a new forum, get the next available fid
             $id = $sql->resultq("select (id+1) nid from forums where id <> 99 order by nid desc limit 1");
           $sql->query("insert into `forums` (id, title, descr, minpower, cat, ord, minpowerthread, minpowerreply, lastid, posts, lastdate) values ($id, '".$_POST[title]."', '$_POST[descr]
             ', $_POST[minpower], $_POST[cat], $_POST[ord], $_POST[minpowerthread], $_POST[minpowerreply], 0, 0, 0) on duplicate key update
              title='$_POST[title]', descr='".$_POST[descr]."', minpower=$_POST[minpower], minpowerreply=$_POST[minpowerreply]
             , minpowerthread=$_POST[minpowerthread], cat=$_POST[cat], ord=$_POST[ord]");
 
-            $lmods = explode(",", $_POST['localmods']);
+            $lmods = explode(",", $_POST['localmods']); //All $_POST values are filtered as part of the board framework, so no need to re-filter here.
             $sql->query("DELETE FROM `forummods` WHERE `fid`=$id");
             foreach ($lmods as $modid)
               if (strlen($modid)) {
@@ -29,17 +29,17 @@
               }
 
         } elseif (isset($_POST['delete'])) {
-          if ($id==99) { //Don't delete the 'lost threads' forum!
+          if ($id==99) { //Don't delete the 'lost threads' forum, since it's a special-case
             break;
           }
           $sql->query("delete from `forums` where `id`=$id");
-          $sql->query("update `threads` set `forum`=99 where `forum`=$id"); //And then if you're deleting the forum, move the threads to a valid one
+          $sql->query("update `threads` set `forum`=99 where `forum`=$id"); //And then if you're deleting the forum, move the orphaned threads to Lost Threads
         }
         break;
-      case 'c':
+      case 'c': //Save Category
         if (isset($_POST[save])) {
           if ($id==-2)
-            $id = $sql->resultq("select (id+1) nid from categories order by nid desc");
+            $id = $sql->resultq("select (id+1) nid from categories order by nid desc limit 1");
           $sql->query("replace into `categories` (id, ord, title, minpower) values ($id, ".addslashes($_POST[ord]).", '".$_POST[title]."', ".$_POST[minpower].")");
         } else {
           $sql->query("delete from `categories` where `id`=$id");
@@ -51,11 +51,7 @@
     die();
   }
 
-
-
-
   pageheader("Forums Administration");
-
 
   if (!isadmin()) {
     print "$L[TBL1]>
@@ -70,16 +66,15 @@
     die();
   }
 
-  $i = 1;
-  if (isset($_GET[t])&&$_GET[t]=='f') {
+  if (isset($_GET[t]) && $_GET[t]=='f') { //Edit Forum
     print "<script type=\"text/javascript\" src=\"manageforum.js\"></script>";
     $data = $sql->fetchq("select id,title,descr,ord,cat,minpower,minpowerthread,minpowerreply from forums where id=".addslashes($_GET[i])." union select -2 id, '' title, '' descr, 0 ord, 1 cat, 0 minpower, 0 minpowerthread, 0 minpowerreply");
     $data[title] = str_replace("\"","'",$data[title]);
     $data[descr] = str_replace("\"","'",$data[descr]);
 
-    print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=f\">".$L['TBL'.$i]." width=\"100%\">    
+    print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=f\">".$L['TBL1']." width=\"100%\">    
 ".        "  $L[TRh]>
-".        "    $L[TDhc] colspan=4> ".($_GET[i]>=0?"Edit":"Create")." Forum
+".        "    $L[TDhc] colspan=4> ".($_GET[i]>=0 ? "Edit" : "Create")." Forum
 ".        "    </td>
 ".        "  </tr>
 ".           $L['TR1'].">
@@ -130,9 +125,13 @@
 ".        "  ".$L['TD2']." colspan='3'>
 ".        "      $L[INPt]=\"minpowerthread\" value=\"$data[minpowerthread]\" style=\"width: 40px\">
 ".        "    </td>
+".        "  </tr>
+".        "</table> <br />
+".         $L['TBL1'].">
 ".            $L[TRh].">
 ".        "    $L[TDhc] colspan=4> Select Moderators
 ".        "    </td>
+".        "  </tr>
 ".            $L['TR1'].">
 ".            $L['TD1'].">
 ".        "      Search string: $L[INPt]=\"srchstr\" id=\"srchnm\" value=\"\" style=\"width: 140px\">
@@ -146,12 +145,16 @@
 ".        "      ".moderatorlist($data[id])."
 ".        "    $L[BTTn]=\"btnrmv\">X</button>
 ".        "    </td>
+".        "  </tr>
+".        "</table> <br />
+".         $L['TBL1'].">
 ".            $L[TRh].">
 ".        "    $L[TDhc] colspan=4> Manage Tags
 ".        "    </td>
+".        "  </tr>
 ".            $L['TR2'].">
 ".            $L['TD2'].">
-".        "      $L[INPl]=\"tglst\" id=\"tglst\" size=\"4\" style=\"min-width: 240px;\"></select>
+".               taglist($data[id])."
 ".        "    </td>
 ".            $L['TD2'].">
 ".        "    $L[BTTn]=\"addtg\">Add New</button> <br />
@@ -162,18 +165,24 @@
 ".        "      Short Form: $L[INPt]=\"tgshrt\" size=5 maxlength=5 value=\"\"> <br />
 ".        "      &nbsp;Long Form: $L[INPt]=\"tglong\" value=\"\" style=\"width: 200px\"> <br />
 ".        "      $L[BTTn]=\"savtg\">Save</button> $L[BTTn]=\"clrtg\">Clear</button>
+".        "      $L[INPh]=\"tagops\" id=\"tagops\" value=\"\" />
 ".        "    </td>
+".        "  </tr>
+".        "</table> <br />
+".         $L['TBL1'].">
 ".            $L[TRh].">
 ".        "    $L[TDhc] colspan=4> Actions
 ".        "    </td>
+".        "  </tr>
 ".            $L['TR1'].">
 ".             $L['TD1c']." colspan=4>
 ".        "      $L[INPs]=save value=\"Save Forum\">";
 
-  if ($data[id] > 0)
-    print " $L[INPs]=delete value=\"Delete Forum\" onclick=\"return confirm('Are you sure you wish to delete $data[title]?  This action cannot be undone!')\">";
+  if ($data[id] > 0) //If not creating a new forum, give the option to delete it
+    print " $L[INPs]=delete value=\"Delete Forum\" onclick=\"return confirm('Are you sure you wish to delete ".str_replace("'","\\'", $data[title])."?  This action cannot be undone!')\">";
 
-  print   $L['TR2'].">
+  print   "  </tr>
+".           $L['TR2'].">
 ".             $L['TD2c']." colspan=4> <br />
 ".        "      <a href=manageforums.php>Back</a>
 ".        "$L[TBLend]
@@ -183,7 +192,7 @@
     $data = $sql->fetchq("select id,title,minpower,ord from categories where id=".addslashes($_GET[i])." union select -2 id, '' title, 0 minpower, 0 ord");
     $data[title] = str_replace("\"","'",$data[title]);
 
-        print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=c\">".$L['TBL'.$i]." width=\"100%\">    
+        print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=c\">".$L['TBL1']." width=\"100%\">    
 ".        "  $L[TRh]>
 ".        "    $L[TDhc] colspan=2> ".($_GET[i]>=0?"Edit":"Create")." Category
 ".        "    </td>
@@ -230,7 +239,7 @@
 
     $forums = $sql->query("select f.id, f.title, f.cat, f.ord, f.descr from forums f  left join categories c on c.id = f.cat order by c.ord, f.cat, f.ord");
     $cats = $sql->query("select id, title from categories order by ord");
-    print "$L[TBL2] style=\"border:0px\">
+    print "$L[TBL] style=\"border:0px; font-size: 0.9em; width: 100%\">
 ".        "  $L[TR] style=\"border:0px\">
 ".        "    $L[TDc] style=\"border:0px; vertical-align: top\" width=\"50%\">
 ".        "      $L[TBL1] style=\"width: 95%\">
@@ -305,5 +314,15 @@
       $hst.="$mod[uid],";
     }
     return $st."</select>$L[INPh]=\"localmods\" id=\"localmods\" value=\"$hst\" />";
+  }
+
+  function taglist($fid=-1) {
+    global $sql,$L;
+    $tags = $sql->query("SELECT `t`.`bit`, `t`.`fid`,  `t`.`name`, `t`.`tag` FROM `tags` `t` WHERE `t`.`fid`=$fid");
+    $st = $L[INPl]."\"tglst\" id=\"tglst\" size=\"5\" style=\"min-width: 280px;\">";
+    while ($tag=$sql->fetch($tags)) {
+      $st.="<option value=\"[$tag[bit]:$tag[name]:$tag[tag]]\">$tag[name] ($tag[tag])</option>";
+    }
+    return $st."</select>";
   }
 ?>

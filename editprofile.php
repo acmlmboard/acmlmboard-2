@@ -3,11 +3,6 @@
 
   $rs=13; //move to config?
 
-  if($_POST[action]=='Edit profile' && $_POST[pass]!='' && $_POST[pass]==$_POST[pass2])
-    setcookie('pass',packlcookie(md5($_POST[pass])),2147483647);
-
-  pageheader('Edit profile');
-
   $targetuserid = $loguser['id'];
 
   if (isset($_GET['id']) && isadmin()) {
@@ -15,6 +10,14 @@
     if (checknumeric($temp))
       $targetuserid = $temp;
   }
+
+  if($_POST[action]=='Edit profile' && $_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
+    setcookie('pass',packlcookie(md5($_POST[pass])),2147483647);
+
+  
+
+  pageheader('Edit profile');
+
 
   global $user, $userrpg;
 

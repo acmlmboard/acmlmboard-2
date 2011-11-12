@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿<?PHP
   require 'lib/common.php';  
   if(isset($_GET['a'])) {

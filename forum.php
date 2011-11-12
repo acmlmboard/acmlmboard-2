@@ -35,13 +35,13 @@
     //append the forum's title to the site title
     pageheader($forum[title],$fid);
 
-    //forum access control // 2007-02-19 blackhole89
-    if($loguser[power]<$forum[minpower]){
+    //forum access control // 2007-02-19 blackhole89 // 2011-11-09 blackhole89 tokenisation (more than 4.5 years...)
+    if(!acl_for_forum($fid,"list")){
       print
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
-".      "      You may not access a forum restricted to users with a powerlevel higher than yours.
+".      "      You lack the permissions to access this forum.
 ".      "$L[TBLend]
 ";
       pagefooter();
@@ -114,8 +114,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
 		        ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
                         ."LEFT JOIN categories c ON f.cat=c.id "
                         ."WHERE t.user=$uid "
-                        .  "AND f.minpower<=$loguser[power] "
-                        .  "AND c.minpower<=$loguser[power] "
+                        .  "AND f.id IN ".forums_with_right("list")." "
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
@@ -124,8 +123,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
                                  ."WHERE t.user=$uid "
-                                 .  "AND f.minpower<=$loguser[power] "
-                                 .  "AND c.minpower<=$loguser[power]");
+                                 .  "AND f.id IN ".forums_with_right("list")." ");
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - Threads by $user[name]</td>
@@ -147,17 +145,15 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                   .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
                         ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
                         ."WHERE t.lastdate>$mintime "
-                        .  "AND f.minpower<=$loguser[power] "
-                        .  "AND c.minpower<=$loguser[power] "
-                        ."ORDER BY t.sticky DESC, t.lastdate DESC "
+                        .  "AND f.id IN ".forums_with_right("list")." "
+			."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
     $forum[threads]=$sql->resultq("SELECT count(*) "
                                  ."FROM threads t "
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
                                  ."WHERE t.lastdate>$mintime "
-                                 .  "AND f.minpower<=$loguser[power] "
-                                 .  "AND c.minpower<=$loguser[power]");
+                                 .  "AND f.id IN ".forums_with_right("list")." ");
 
     function timelink($time){
       return " <a href=forum.php?time=$time>".timeunits2($time).'</a> ';

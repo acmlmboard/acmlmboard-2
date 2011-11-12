@@ -25,9 +25,15 @@
  * 
  */
 
+
+require_once("lib/spritelib.php");
 $chance = 50;
 $roll = 100;
 
+//Always fail to roll if disabled, effectively never appearing at all.
+if(acl('disable-sprites'))
+	$chance = 0;
+	
 $monRequest = mysql_query("SELECT * FROM sprites WHERE id <= ".$roll);
 $monData = array();
 while($mon = mysql_fetch_assoc($monRequest))
@@ -80,6 +86,8 @@ switch($monData['anchor'])
 
 $monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999\" src=\"img/b2sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
 
+$spritehash = generate_sprite_hash($loguser['id'],$monData['id']);
+
 $monScript = "<script language=\"javascript\">
 	function capture()
 	{
@@ -94,7 +102,8 @@ $monScript = "<script language=\"javascript\">
 					alert(x.responseText);
 			}
 		};
-		x.open('GET', 'b2sprites.php?catch=".$monData['id']."', true);
+		x.open('GET', 'b2sprites.php?catch=".$monData['id']."&t=".$spritehash."', 
+true);
 		x.send(null);
 	}
 </script>";

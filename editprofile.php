@@ -5,7 +5,7 @@
 
   $targetuserid = $loguser['id'];
 
-  if (isset($_GET['id']) && isadmin()) {
+  if (isset($_GET['id']) && acl_for_user($_GET[id],"edit-user")) {
     $temp = $_GET['id'];
     if (checknumeric($temp))
       $targetuserid = $temp;
@@ -98,11 +98,11 @@
 ".        " <form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
 ".
            catheader('Login information')."
-".           (isadmin() ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
+".           (acl_for_user($targetuserid,"edit-user") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
-if (isadmin())
+if (acl_for_user($_GET[id],"edit-user"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Powerlevel'      ,fieldselect('power',$user[power],$listpower))."
@@ -118,7 +118,7 @@ if (isadmin())
 ".           fieldrow('MAXIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$rs.'x'.$rs.'.</font>')."
 ";
 
-if (isadmin())
+if (acl_for_user($_GET[id],"edit-user"))
   print    catheader('RPG Stats')."
   ".           fieldrow('Coins'       ,fieldinputrpg(9, 7, 'GP'))."
   ".           fieldrow('Frog Coins'  ,fieldinputrpg(9, 7, 'gcoins' ))."
@@ -157,6 +157,8 @@ if (isadmin())
 ".           fieldrow('Font size'       ,fieldinput( 3,  3,'fontsize'  ))."
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
+".           fieldrow('Post layouts', fieldoption('blocklayouts',acl('block-layouts'),array('Show everything in general', 'Block everything')))."
+".           fieldrow('Board2 Sprites', fieldoption('sprites',acl('disable-sprites'),array('Show them', 'Disable sprite layer')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>
@@ -303,7 +305,7 @@ if (isadmin())
     $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);
 
-    if (isadmin()) {
+    if (acl_for_user($_GET[id],"edit-user")) {
       
       $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
       $sql->query("UPDATE usersrpg SET "
@@ -321,9 +323,7 @@ if (isadmin())
       //Update admin bells and whistles
       $targetpower = $_POST['power'];
       $targetpower = min($targetpower, $loguser[power]);
-      $targetname = $user['name'];
-      if (isadmin())
-        $targetname = $_POST['name'];
+      $targetname = $_POST['name'];
 
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE `name` = '$targetname' AND `id` != $user[id]")) {
         $targetname = $user[name];
@@ -345,9 +345,9 @@ if (isadmin())
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
-	             . setfield('signsep').','
-	             . setfield('longpages').','
-	             . setfield('rankset') .','
+               . setfield('signsep').','
+               . setfield('longpages').','
+               . setfield('rankset') .','
                . (checkctitle()?(setfield('title')   .','):'')
                . setfield('realname').','
                . setfield('location').','
@@ -368,6 +368,17 @@ if (isadmin())
                . "WHERE `id`=$user[id]"
                );
 
+    $trainingHelmetTokenID = 200; //CHANGEME
+    $disableSpritesTokenID = 201; //CHANGEME
+    if($_POST['blocklayouts'] == 1)
+      $sql->query('INSERT IGNORE INTO usertokens VALUES('.$user[id].', '.$trainingHelmetTokenID.')');
+    else
+      $sql->query('DELETE FROM usertokens WHERE u='.$user[id].' AND t='.$trainingHelmetTokenID);
+    if($_POST['sprites'] == 1)
+      $sql->query('INSERT IGNORE INTO usertokens VALUES('.$user[id].', '.$disableSpritesTokenID.')');
+    else
+      $sql->query('DELETE FROM usertokens WHERE u='.$user[id].' AND t='.$disableSpritesTokenID);
+	
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
@@ -418,9 +429,10 @@ if (isadmin())
     global $L;
     $text='';
     $sel[$checked]=' checked=1';
+    //[KAWA] Added <label> so the text is clickable.
     foreach($choices as $key=>$val)
       $text.="
-".           "      $L[INPr]=$field value=$key$sel[$key]>$val &nbsp;";
+".           "      <label>$L[INPr]=$field value=$key$sel[$key]>$val &nbsp;</label>";
     return "$text
 ".         "    ";
   }

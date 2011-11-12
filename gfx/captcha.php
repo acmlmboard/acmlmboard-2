@@ -1,6 +1,6 @@
 <?php
 
-include '../lib/function.php';
+include 'gfxlib.php';
 include 'fontlib.php';
 
 header('Content-type: image/gif');

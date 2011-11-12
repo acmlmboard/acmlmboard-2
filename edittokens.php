@@ -1,13 +1,6 @@
 <?php
   require 'lib/common.php';
 
-  $desc = array(
-            "show-ips" => "See IP addresses in threads and profiles. (utf)",
-            "see-history" => "Can view past revisions of posts. (tf)",
-            "edit-user" => "Can edit other users. (u)",
-            "edit-tokens" => "Can edit token names and associated rights."
-          );
-
   if($id=$_GET[id])
     checknumeric($id);
   else $id=0;
@@ -24,6 +17,23 @@
      die();  
   }
 
+  $rights=array();
+  $q=$sql->query("SELECT * FROM rights");
+  while($d=$sql->fetch($q)) $rights[$d[r]]=$d;
+
+  function get_right_info($r) {
+    global $rights;
+    $re=explode(' ',$r);
+    while($re[0]=="not"||$re[0][0]=='+') $re=array_slice($re,1);
+    $ret=$rights[$re[0]];
+    if($re[1]) {
+      $desc=array( "u" => "User ", "t" => "Thread ", "f" => "Forum ", "c" => "Category " );
+      $ret[title].=" for ";
+      $ret[title].=$desc[$re[1][0]].substr($re[1],1);
+    }
+    return $ret;
+  }
+
   if($action=="") {
     $r=$sql->query("SELECT * FROM tokens");
       
@@ -33,8 +43,8 @@
 ".         "    $L[TDh]>ID
 ".         "    $L[TDh]>Icon
 ".         "    $L[TDh]>Name
-".         "    $L[TDh]>Colours
-".         "    $L[TDh]>Colour precedence
+".         "    $L[TDh]>Colors
+".         "    $L[TDh]>Color precedence
 ".         "    $L[TDh]>&nbsp;
 ".         "  </tr>";
 
@@ -44,7 +54,7 @@
 ".              "  $L[TDc]>$t[id]
 ".              "  $L[TDc]>".($t[img]==""?"":"<img src='$t[img]'>")."
 ".              "  $L[TDc]>$t[name]
-".              "  $L[TDc]><a href=#><font color='#$t[nc0]'>Masculine</font></a> <a href=#><font color='#$t[nc1]'>Feminine</font></a> <a href=#><font color='#$t[nc2]'>Neuter</font></a>
+".              "  $L[TDc]><a href=#><font color='#$t[nc0]'>Male</font></a> <a href=#><font color='#$t[nc1]'>Female</font></a> <a href=#><font color='#$t[nc2]'>N/A</font></a>
 ".              "  $L[TDc]>$t[nc_prio]
 ".              "  $L[TDc]><a href='edittokens.php?action=edit&id=$t[id]'>Edit</a>
 ".              "</tr>";
@@ -75,10 +85,10 @@
 ".        fieldrow("ID",fieldinput(4,4,"id",$t))."
 ".        fieldrow("Name",fieldinput(40,60,"name",$t))."
 ".        fieldrow("Image",fieldinput(40,60,"img",$t))."
-".        fieldrow("Masculine(0) namecolour",fieldinput(6,6,"nc0",$t))."
-".        fieldrow("Feminine(1) namecolour",fieldinput(6,6,"nc1",$t))."
-".        fieldrow("Neuter(2) namecolour",fieldinput(6,6,"nc2",$t))."
-".        fieldrow("Namecolour precedence",fieldinput(6,6,"nc_prio",$t))."
+".        fieldrow("Male(0) namecolour",fieldinput(6,6,"nc0",$t))."
+".        fieldrow("Female(1) namecolour",fieldinput(6,6,"nc1",$t))."
+".        fieldrow("N/A(2) namecolour",fieldinput(6,6,"nc2",$t))."
+".        fieldrow("Namecolor precedence",fieldinput(6,6,"nc_prio",$t))."
 ".        catheader("&nbsp;")."
 ".        "$L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
@@ -86,7 +96,7 @@
 ".        "$L[TBLend]</form>
 ";       
 
-    $r=$sql->query("SELECT * FROM tokenrights WHERE t=$id");
+    $r=$sql->query("SELECT r FROM tokenrights tr WHERE tr.t='$id'");
 
     print "<form action='edittokens.php?action=edit&id=$id' method=post> $L[TBL1]>
 ".        "  $L[TRh]>
@@ -96,9 +106,10 @@
 "; 
     $i=0;
     while($d=$sql->fetch($r)) {
+      $info=get_right_info($d[r]);
       print " ".(($i=!$i)?$L[TR3]:$L[TR2]).">
-".          "  $L[TDc]>$d[r]
-".          "  $L[TDc]>{$desc[$d[r]]}
+".          "  $L[TDc]>$info[title] ($d[r])
+".          "  $L[TDc]>{$info[description]}
 ".          "  $L[TDc]><a href='edittokens.php?action=edit&id=$id&act=del&right=".urlencode($d[r])."'>revoke</a>
 ";
     }

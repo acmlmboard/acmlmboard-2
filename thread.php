@@ -314,12 +314,20 @@ if($loguser['power'] > 0)
       $retag=sizeof($tags)?"<a href=javascript:showtbox()>Tag</a> | ":"";
       $edit="<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
     
-      $fmovelinks="";
-      $r=$sql->query("SELECT id,title FROM forums ORDER BY id ASC");
-      while($d=$sql->fetch($r))
-        $fmovelinks.="<a href=javascript:submitmove('$d[id]') onmouseover=\"javascript:document.getElementById('tn').innerHTML='".addslashes($d[title])."'\">$d[id]</a> ";
-      $fmovelinks.="<span id=tn></span>";
-      $fmovelinks=addslashes($fmovelinks);
+		//KAWA: Made it a dropdown list. The change isn't alone in this file, but it's clear where it starts and ends if you want to put this on 2.1+delta.
+      //$fmovelinks="";
+      //$r=$sql->query("SELECT id,title FROM forums ORDER BY id ASC");
+      //while($d=$sql->fetch($r))
+      //  $fmovelinks.="<a href=javascript:submitmove('$d[id]') onmouseover=\"javascript:document.getElementById('tn').innerHTML='".addslashes($d[title])."'\">$d[id]</a> ";
+      //$fmovelinks.="<span id=tn></span>";
+      //$fmovelinks=addslashes($fmovelinks);
+		$r=$sql->query("SELECT id,title FROM forums ORDER BY id ASC");
+		$fmovelinks="<select onchange=\"submitmove(this.options[this.selectedIndex].value);\">";
+		while($d=$sql->fetch($r))
+			$fmovelinks.="<option value=\"".$d[0]."\"".($d[0]==$thread['forum']?" selected=\"selected\"":"").">".$d[1]."</option>";
+		$fmovelinks.="</select>";
+		$fmovelinks=addslashes($fmovelinks);
+
       $opt="Moderating";
     } else {
       $fmovelinks="";

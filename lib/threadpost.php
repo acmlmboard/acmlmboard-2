@@ -35,9 +35,9 @@ function LoadBlocklayouts()
     }
 	*/
     //if($post[nolayout]) {
-    //[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and already checks for user/world though that's not reimplemented yet ($loguser[blocklayouts]).
+    //[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || $loguser['blocklayouts'];
+	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || acl("block-layouts");
     if($isBlocked)
       $post['usign'] = $post['uhead'] = "";
     //}
@@ -93,7 +93,7 @@ function LoadBlocklayouts()
       if($post[id])
         $postlinks.=" | ID: $post[id]";
 
-      if(acl_for_thread($post[thread],"show-ips"))
+      if(acl_for_user($post[uid],"show-ips"))
         $postlinks.=($postlinks?' | ':'')."IP: $post[ip]";
 
       if(   acl_for_thread($post[thread],"see-history")
@@ -106,8 +106,9 @@ function LoadBlocklayouts()
       // if quote enabled then if $postlink2 then postlink2 .= | [quote]
 
       // 2/22/2007 xkeeper - guess which moron forgot to close the </a>
-      $text="<a name=$post[id]></a>
-".        "$L[TBL1]>
+      //[KAWA] Fun fact: <a name> is deprecated in favor of using IDs.
+      //       That's right, you can use <anything id="foo"> in place of <a name="foo">!
+      $text="$L[TBL1] id=".$post['id'].">
 ".        "  $L[TR]>
 ".        "    $L[TD1] style=border-bottom:0;border-right:0 height=17>
 ".        "      ".userlink($post,'u')." ".gettokenstring($post[uid])."</td>

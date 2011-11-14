@@ -336,7 +336,7 @@
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center>
-".        "  Acmlmboard 2.<i>?</i> (<font color='#AFFABE'>Development</font>); (2011-11-12)<br>
+".        "  Acmlmboard2 v2.5 (11/13/2011 <font color='#AFFABE'>Development</font>)<br>
 ".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

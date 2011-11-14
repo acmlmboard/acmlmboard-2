@@ -14,26 +14,86 @@
         if (isset($_POST['save'])) {
           $min=$_POST[minpower];
           if ($min < 0) $min = 0;
-          if ($id == -2) //If it's a new forum, get the next available fid
-            $id = $sql->resultq("select (id+1) nid from forums where id <> 99 order by nid desc limit 1");
-          $sql->query("insert into `forums` (id, title, descr, minpower, cat, ord, minpowerthread, minpowerreply, lastid, posts, lastdate) values ($id, '".$_POST[title]."', '$_POST[descr]
-            ', $_POST[minpower], $_POST[cat], $_POST[ord], $_POST[minpowerthread], $_POST[minpowerreply], 0, 0, 0) on duplicate key update
-             title='$_POST[title]', descr='".$_POST[descr]."', minpower=$_POST[minpower], minpowerreply=$_POST[minpowerreply]
-            , minpowerthread=$_POST[minpowerthread], cat=$_POST[cat], ord=$_POST[ord]");
+          if ($id == -2) //If it's a new forum, get the next available fid (-2 is a flag value)
+            $id = $sql->resultq("select (id+1) nid from forums order by nid desc limit 1");
+			$sql->query("insert into `forums` (id, title, descr, minpower, cat, ord, minpowerthread, minpowerreply, lastid, posts, lastdate) values ($id, '".$_POST[title]."', '$_POST[descr]
+						', $_POST[minpower], $_POST[cat], $_POST[ord], $_POST[minpowerthread], $_POST[minpowerreply], 0, 0, 0) on duplicate key update
+						title='$_POST[title]', descr='".$_POST[descr]."', minpower=$_POST[minpower], minpowerreply=$_POST[minpowerreply]
+						, minpowerthread=$_POST[minpowerthread], cat=$_POST[cat], ord=$_POST[ord]");
+			$lmods = explode(",", $_POST['localmods']); //All $_POST values are filtered as part of the board framework, so no need to re-filter here.
+			$sql->query("DELETE FROM `forummods` WHERE `fid`=$id");
+			foreach ($lmods as $modid)
+				if (strlen($modid))
+					$sql->query("INSERT INTO `forummods` (`uid`, `fid`) VALUES ($modid, $id)");
+			
+			// Read $_POST[tagops] and sort into delete and add/update queues.  Run through all the deletions, THEN process add/removes.
 
-            $lmods = explode(",", $_POST['localmods']); //All $_POST values are filtered as part of the board framework, so no need to re-filter here.
-            $sql->query("DELETE FROM `forummods` WHERE `fid`=$id");
-            foreach ($lmods as $modid)
-              if (strlen($modid)) {
-                $sql->query("INSERT INTO `forummods` (`uid`, `fid`) VALUES ($modid, $id)");
-              }
+
+			/*
+				Particularly observant coders, upon seeing manageforum.js, might notice that normally all the deletion entries will come first from the client-side code
+				and that sorting the entries so deletions can be handled first isn't necessary. I've chosen NOT to take that optimization in order to handle the potential
+				case of someone deliberately trying to mess with the server by sending malformed (or badly-ordered) tag change entries.  Of course, it's also possible that
+				the order will change due to future revisions so I might as well cover that case too.
+			*/
+			
+			$deletions = array();
+			$modifications = array();
+			$additions = array();
+			$operations = explode(";", $_POST[tagops]);
+
+			for ($x = 0; $x < count($operations) - 2; $x++) {
+				switch ($operations[$x]) {
+					case "a":
+						array_push($additions, array($operations[$x + 1], $operations[$x + 2]));
+						$x += 2;
+						break;
+					case "d":
+						array_push($deletions, array($operations[$x + 1]));
+						$x++;
+						break;
+					case "u":
+						array_push($modifications, array($operations[$x + 1], $operations[$x + 2], $operations[$x + 3]));
+						$x += 3;
+						break;
+					default:
+						//If an entry is malformed, immediately stop sorting/processing tag changes.  Since this is the last step of saving a forum, simply stop and redirect the user.
+						//I thought of using a goto down to the normal redirect part to avoid code duplication, but gotos can present maintenance headaches...
+						header("location: manageforums.php");
+						die();
+				}
+			}
+			
+			$tagcount = $sql->resultq("select count(`bit`) from `tags` where `fid`=$id");
+			$tagcount += count($additions) - count($deletions);
+			if ($tagcount <= 32) {
+				foreach ($deletions as $deletion) {
+					$sql->query("update `threads` set `tags` = `tags` & ~".(1 << $deletion[0])." WHERE `forum`=$id");
+					$sql->query("delete from `tags` where `fid`=$id and `bit` = $deletion[0]");
+				}
+				foreach ($modifications as $modification)
+					$sql->query("update `tags` set `tag`='$modification[1]', `name`='$modification[2]' where `fid`=$id and `bit`=$modification[0]");
+				
+				//I wish I could have come up with a cleaner solution...
+				$sql->query("CREATE TEMPORARY TABLE TempTable(FreeId INT)");
+				$sql->query("INSERT INTO `TempTable` VALUES(0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28),(29),(30),(31)");
+				$FreeIds = $sql->query("SELECT `T`.`FreeId` FROM `TempTable` `T` LEFT JOIN `Tags` ON `Tags`.`bit` = `T`.`FreeId` and `Tags`.`fid`=$id WHERE `Tags`.`bit` IS NULL");
+				$sql->query("DROP TEMPORARY TABLE `TempTable`");
+				
+				foreach ($additions as $addition) {
+					$FreeId = $sql->fetch($FreeIds);
+					$FreeId = $FreeId['FreeId'];
+					$sql->query("insert into `Tags` (`fid`, `bit`, `tag`, `name`) values ($id, $FreeId, '$addition[0]', '$addition[1]')");
+				}
+			}
 
         } elseif (isset($_POST['delete'])) {
-          if ($id==99) { //Don't delete the 'lost threads' forum, since it's a special-case
+          if ($id <= 0) //Refuse to delete "utility" forums
             break;
-          }
           $sql->query("delete from `forums` where `id`=$id");
-          $sql->query("update `threads` set `forum`=99 where `forum`=$id"); //And then if you're deleting the forum, move the orphaned threads to Lost Threads
+		  $sql->query("delete from `tags` where `fid`=$id");
+		  $sql->query("delete from `localmods` where `fid`=$id");
+          $sql->query("update `threads` set `forum`=-3, tags=0 where `forum`=$id"); //And then if you're deleting the forum, move the orphaned threads to the correct forum, and strip all tags.
+		  //NOTE: the "correct forum" is forum -3, the "orphanage" utility forum.  It's a magic number.
         }
         break;
       case 'c': //Save Category
@@ -41,7 +101,7 @@
           if ($id==-2)
             $id = $sql->resultq("select (id+1) nid from categories order by nid desc limit 1");
           $sql->query("replace into `categories` (id, ord, title, minpower) values ($id, ".addslashes($_POST[ord]).", '".$_POST[title]."', ".$_POST[minpower].")");
-        } else {
+        } elseif (isset($_POST['delete'])) {
           $sql->query("delete from `categories` where `id`=$id");
           $sql->query("update `forums` set `cat`=0 where `cat`=$id");
         }
@@ -68,6 +128,7 @@
 
   if (isset($_GET[t]) && $_GET[t]=='f') { //Edit Forum
     print "<script type=\"text/javascript\" src=\"manageforum.js\"></script>";
+	//Unplanned "feature": Insert a row for forum id -2 into the database, and it'll be treated as a "template" forum.
     $data = $sql->fetchq("select id,title,descr,ord,cat,minpower,minpowerthread,minpowerreply from forums where id=".addslashes($_GET[i])." union select -2 id, '' title, '' descr, 0 ord, 1 cat, 0 minpower, 0 minpowerthread, 0 minpowerreply");
     $data[title] = str_replace("\"","'",$data[title]);
     $data[descr] = str_replace("\"","'",$data[descr]);
@@ -157,13 +218,12 @@
 ".               taglist($data[id])."
 ".        "    </td>
 ".            $L['TD2'].">
-".        "    $L[BTTn]=\"addtg\">Add New</button> <br />
 ".        "    $L[BTTn]=\"modtg\">Edit</button> <br />
 ".        "    $L[BTTn]=\"deltg\">Delete</button>
 ".        "    </td>
 ".            $L['TD2']." colspan=\"2\">
-".        "      Short Form: $L[INPt]=\"tgshrt\" size=5 maxlength=5 value=\"\"> <br />
-".        "      &nbsp;Long Form: $L[INPt]=\"tglong\" value=\"\" style=\"width: 200px\"> <br />
+".        "      Inline Form: $L[INPt]=\"tgshrt\" id=\"tgshrt\" size=5 maxlength=5 value=\"\"> <br />
+".        "      &nbsp;Descriptive Form: $L[INPt]=\"tglong\" id=\"tglong\" value=\"\" style=\"width: 200px\"> <br />
 ".        "      $L[BTTn]=\"savtg\">Save</button> $L[BTTn]=\"clrtg\">Clear</button>
 ".        "      $L[INPh]=\"tagops\" id=\"tagops\" value=\"\" />
 ".        "    </td>
@@ -176,7 +236,7 @@
 ".        "  </tr>
 ".            $L['TR1'].">
 ".             $L['TD1c']." colspan=4>
-".        "      $L[INPs]=save value=\"Save Forum\">";
+".        "      $L[INPs]=save id=\"svefm\" value=\"Save Forum\">";
 
   if ($data[id] > 0) //If not creating a new forum, give the option to delete it
     print " $L[INPs]=delete value=\"Delete Forum\" onclick=\"return confirm('Are you sure you wish to delete ".str_replace("'","\\'", $data[title])."?  This action cannot be undone!')\">";
@@ -225,7 +285,7 @@
 ".        "    </td>
 ".            $L['TR1'].">
 ".             $L['TD1c']." colspan=4>
-".        "      $L[INPs]=save value=\"Save Forum\">";
+".        "      $L[INPs]=save value=\"Save Category\">";
 
   if ($data[id] > 0)
     print " $L[INPs]=delete value=\"Delete Category\" onclick=\"return confirm('Are you sure you wish to delete $data[title]?  This action cannot be undone!')\">";
@@ -237,7 +297,7 @@
 ".        "$L[INPh]=\"id\" value=\"$data[id]\">$L[INPh]=\"t\" value=\"$_GET[t]\"></form><br>";
   } else {
 
-    $forums = $sql->query("select f.id, f.title, f.cat, f.ord, f.descr from forums f  left join categories c on c.id = f.cat order by c.ord, f.cat, f.ord");
+    $forums = $sql->query("select f.id, f.title, f.cat, f.ord, f.descr from forums f left join categories c on c.id = f.cat where f.id > 0 order by c.ord, f.cat, f.ord");
     $cats = $sql->query("select id, title from categories order by ord");
     print "$L[TBL] style=\"border:0px; font-size: 0.9em; width: 100%\">
 ".        "  $L[TR] style=\"border:0px\">
@@ -320,8 +380,9 @@
     global $sql,$L;
     $tags = $sql->query("SELECT `t`.`bit`, `t`.`fid`,  `t`.`name`, `t`.`tag` FROM `tags` `t` WHERE `t`.`fid`=$fid");
     $st = $L[INPl]."\"tglst\" id=\"tglst\" size=\"5\" style=\"min-width: 280px;\">";
+	$count = 0;
     while ($tag=$sql->fetch($tags)) {
-      $st.="<option value=\"[$tag[bit]:$tag[name]:$tag[tag]]\">$tag[name] ($tag[tag])</option>";
+		$st.="<option value=\"[&quot;$tag[name]&quot;, &quot;$tag[tag]&quot;, true, ".$count++.", true, 0, $tag[bit]]\">$tag[name] ($tag[tag])</option>";
     }
     return $st."</select>";
   }

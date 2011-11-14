@@ -6,13 +6,10 @@ function RenderText($Text, $WidthPixels = 1048576) {
 	$CharacterSheets = array(Image::LoadPNG("./gfx/fonts/defaultf.png"), Image::LoadPNG("./gfx/fonts/tempredf.png"), 
 							 Image::LoadPNG("./gfx/fonts/large.png"));
 
-	$DippedCharacters = array(44, 95, 103, 106, 112, 113); //ASCII values for the characters that 'dip' down slightly.
-	$TwoCharCharacters = array("\x92\x93", "\x94\x95", "\x9B\x9C"); //ASCII character pairs for the L/R/Start N64 buttons
-	$PreWrapCharacters = array("\x92", "\x94", "\x9B"); //ASCII characters which wrap if another character cannot fit on the same line after them
-	$SheetCodes = array("\x01", "\x02", "\x03");
+	$CharacterWidths = array(loadvwfdata("./gfx/fonts/defaultfw.txt"), loadvwfdata("./gfx/fonts/defaultfw.txt"), loadvwfdata("./gfx/fonts/defaultfw.txt"));
 
-	$Text = str_replace($TwoCharCharacters, $PreWrapCharacters, $Text);
-	$Text = str_replace($PreWrapCharacters, $TwoCharCharacters, $Text);
+	$DippedCharacters = array(44, 95, 103, 106, 112, 113); //ASCII values for the characters that 'dip' down slightly.
+	$SheetCodes = array("\x01", "\x02", "\x03");
 
 	$Sheet = $CharacterSheets[0];
 
@@ -42,45 +39,60 @@ function RenderText($Text, $WidthPixels = 1048576) {
 
 	$Words = explode(" ", $Text);
 
+	$DrawY = $DrawX = 0;
+
 	for ($WordIndex = 0; $WordIndex < count($Words); $WordIndex++) {
 		$Word = $Words[$WordIndex];
+
+		$WordWidth = 0;
+
+		for ($StringIndex = 0; $StringIndex < strlen($Word); $StringIndex++) {
+			$WordWidth += $CharacterWidths[$CurrentSheet][ord($Word{$StringIndex})];
+		}
+
+		if ($DrawX + $WordWidth >= $WidthPixels) {
+			$DrawY += $SheetSize[1];
+			$DrawX = 0;
+		}
 
 		if (($DrawIndex % $CharsPerLine) + strlen($Word) > $CharsPerLine) {
 			$DrawIndex = ceil($DrawIndex / $CharsPerLine) * $CharsPerLine;
 		}
 
 		for ($StringIndex = 0; $StringIndex < strlen($Word); $StringIndex++) {
-			if (($DrawIndex + 1) % $CharsPerLine == 0 && in_array($Word{$StringIndex}, $PreWrapCharacters))
-				$DrawIndex++;
 	
 			if (in_array($Word{$StringIndex}, $SheetCodes)) {
 				$CurrentSheet = ord($Word{$StringIndex}) - ord($SheetCodes[0]);
 				continue;
 			}
 	
-			if (ord($Word{$StringIndex}) == 10) {
-				$DrawIndex = ceil($DrawIndex / $CharsPerLine) * $CharsPerLine;
+			if (ord($Word{$StringIndex}) == 10 || $DrawX >= $WidthPixels) {
+				$DrawX = 0;
+				$DrawY += $SheetSize[1];
 				continue;
-			}
-	
-			$DrawX = ($DrawIndex % $CharsPerLine) * $SheetSize[0];
-			$DrawY = floor($DrawIndex / $CharsPerLine) * $SheetSize[1];
-	
+			}	
+
+			$UseDrawY = $DrawY;
+
 			if (in_array(ord($Word{$StringIndex}), $DippedCharacters)) {
-				$DrawY += 2;
+				$UseDrawY += 2;
 			}
 	
-			if ($DrawY + $SheetSize[1] + 2 >= $ImageHeight) {
-				$ImageHeight = $DrawY + $SheetSize[1] + 2;
+			if ($UseDrawY + $SheetSize[1] + 2 >= $ImageHeight) {
+				$ImageHeight = $UseDrawY + $SheetSize[1] + 2;
 				$Image->ResizeCanvas($ImageWidth, $ImageHeight);
 			}
 	
-			CharacterCodeTo($Image, $CharacterSheets[$CurrentSheet], ord($Word{$StringIndex}), $DrawX, $DrawY);
-	
+			CharacterCodeTo($Image, $CharacterSheets[$CurrentSheet], ord($Word{$StringIndex}), $DrawX, $UseDrawY, $CharacterWidths[$CurrentSheet][ord($Word{$StringIndex})]);
+			
+			$DrawX += $CharacterWidths[$CurrentSheet][ord($Word{$StringIndex})];
+
 			$DrawIndex++;
 		}
 		if (($DrawIndex % $CharsPerLine) != 0)
 			$DrawIndex++;
+
+		if ($DrawX > 0) $DrawX += $CharacterWidths[$CurrentSheet][0x20]; //Add Space
 	}
 
 	if ((ceil($DrawIndex / $CharsPerLine) * $SheetSize[1]) + 2 < $ImageHeight) {
@@ -90,7 +102,7 @@ function RenderText($Text, $WidthPixels = 1048576) {
 	return $Image;
 }
 
-function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY) {
+function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY, $CharWidth) {
 	$SheetSize = $Sheet->Size;
 
 	$UseSize = array($SheetSize[0] / 16, $SheetSize[1] / 16);
@@ -98,7 +110,15 @@ function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY) {
 	$SourceX = ($ASCII % 16) * ($UseSize[0]);
 	$SourceY = floor($ASCII / 16) * ($UseSize[1]);
 
-	imagecopy($TargetImage->Image, $Sheet->Image, $DestX, $DestY, $SourceX, $SourceY, $UseSize[0], $UseSize[1]);
+	imagecopy($TargetImage->Image, $Sheet->Image, $DestX, $DestY, $SourceX, $SourceY, $CharWidth, $UseSize[1]);
+}
+
+function loadvwfdata($Filename) {
+	$Data = array();
+	$Str = file_get_contents($Filename);
+	for ($x = 0; $x < strlen($Str); $x++)
+		$Data[$x] = ord($Str{$x}) - ord("A");
+	return $Data;
 }
 
 ?>

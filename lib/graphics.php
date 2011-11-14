@@ -31,7 +31,10 @@ class Image {
 		ob_clean();
 		header ('Content-Type: image/png');
 		imagepng($this->Image);
-		if ($StopProcessing) die();
+		if ($StopProcessing) { 
+			$this->Dispose();
+			die();
+		}
 	}
 
 	public function Dispose() {
@@ -78,7 +81,7 @@ class Image {
 
 		imagealphablending($Image, true);
 		imagesavealpha($Image, true);
-		imagefill($Image, 1, 1, imagecolorallocatealpha($Image, 0, 0, 0, 127));
+		imagefill($Image, 0, 0, imagecolorallocatealpha($Image, 0, 0, 0, 127));
 
 		return $Image;
 	}

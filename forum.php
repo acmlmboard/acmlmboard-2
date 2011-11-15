@@ -255,11 +255,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     for($k=0;$k<sizeof($tags);++$k) {
       $t=$tags[$k];
       if($thread[tags] & (1<<$t[bit])) {
-        sscanf($t[color],"%02X%02X%02X",$r,$g,$b); //[KAWA] Removed & from RGB vars because "Warning: Call-time pass-by-reference has been deprecated."
-	if($r<128 && $g<128) { $r+=32; $g+=32; }
-        $t[color2]=sprintf("%02X%02X%02X",$r,$g,$b);
-        $taglist.=" <span style=\"background-repeat:repeat;background:url('gfx/tpng.php?c=$t[color]&t=105');font-size:7pt;font-family:Small Fonts,sans-serif;padding:1px 1px\">"
-	         ."<span style=\"background-repeat:repeat;background:url('gfx/tpng.php?c=$t[color]&t=105');font-size:7pt;font-family:Small Fonts,sans-serif;color:$t[color2];padding:2px 3px\" alt=\"$t[name]\">$t[tag]</span></span>";
+		  $taglist.=" <img src=\"./gfx/tags/tag".$t[fid]."-".$t[bit].".png\" alt=\"$t[name]\" title=\"$t[name]\" style=\"position: relative; top: 3px;\"/>";
       }
     }
 

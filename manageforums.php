@@ -70,8 +70,10 @@
 					$sql->query("update `threads` set `tags` = `tags` & ~".(1 << $deletion[0])." WHERE `forum`=$id");
 					$sql->query("delete from `tags` where `fid`=$id and `bit` = $deletion[0]");
 				}
-				foreach ($modifications as $modification)
+				foreach ($modifications as $modification) {
 					$sql->query("update `tags` set `tag`='$modification[1]', `name`='$modification[2]' where `fid`=$id and `bit`=$modification[0]");
+					renderTag($modification[1], $id, $modification[0]);
+				}
 				
 				//I wish I could have come up with a cleaner solution...
 				$sql->query("CREATE TEMPORARY TABLE TempTable(FreeId INT)");
@@ -83,6 +85,7 @@
 					$FreeId = $sql->fetch($FreeIds);
 					$FreeId = $FreeId['FreeId'];
 					$sql->query("insert into `Tags` (`fid`, `bit`, `tag`, `name`) values ($id, $FreeId, '$addition[0]', '$addition[1]')");
+					renderTag($addition[0], $id, $FreeId);
 				}
 			}
 
@@ -385,5 +388,27 @@
 		$st.="<option value=\"[&quot;$tag[name]&quot;, &quot;$tag[tag]&quot;, true, ".$count++.", true, 0, $tag[bit]]\">$tag[name] ($tag[tag])</option>";
     }
     return $st."</select>";
+  }
+
+  function renderTag($TagText, $ForumID, $TagBit) {
+		
+		$TagTextImage = RenderText($TagText);
+
+		$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
+
+		$LeftImage = Image::LoadPNG("./gfx/tagleft.png");
+		$RightImage = Image::LoadPNG("./gfx/tagright.png");
+		$Tag->DrawImageDirect($LeftImage, 0, 0);
+		
+		for ($X = 7; $X < $Tag->Size[0] - 7; $X += 4)
+			$Tag->DrawImageDirect($RightImage, $X, 0);
+
+		$Tag->DrawImageDirect($RightImage, $Tag->Size[0] - 8, 0);
+
+		$Tag->DrawImageDirect($TagTextImage, 8, 2);
+		$Tag->SavePNG("./gfx/tags/tag$ForumID-$TagBit.png");
+
+		$LeftImage->Dispose();
+		$RightImage->Dispose();
   }
 ?>

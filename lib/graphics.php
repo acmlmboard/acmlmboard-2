@@ -11,6 +11,8 @@ class Image {
 	public $Size;
 
 	public function SavePNG($Filename) {
+		if (file_exists($Filename))
+			unlink($Filename);
 		imagepng($this->Image, $Filename);
 	}
 
@@ -42,7 +44,7 @@ class Image {
 	}
 
 	public function DrawImageDirect($SrcImage, $DestX, $DestY) {
-		imagecopy($this->Image, $SrcImage->Image, $DestX, $DestY, 0, 0, $Width, $Height);
+		imagecopy($this->Image, $SrcImage->Image, $DestX, $DestY, 0, 0, $SrcImage->Size[0],  $SrcImage->Size[1]);
 	}
 
 	public function DrawImageSection($SrcImage, $DestX, $DestY, $Width, $Height) {

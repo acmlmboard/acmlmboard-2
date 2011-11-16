@@ -46,7 +46,7 @@ function RenderText($Text, $WidthPixels = 1048576) {
 		}
 	}
 
-	$ImageWidth = $WidthPixels;
+	$ImageWidth = min($WidthPixels, 512);
 	$ImageHeight = 1;
 	$Image = Image::Create($ImageWidth, $ImageHeight);
 
@@ -186,20 +186,25 @@ function RenderText($Text, $WidthPixels = 1048576) {
 			}
 
 			$DrawnHeight = max($DrawnHeight, $DrawY + $DrawHeightAdd + $CharacterSheets[$CurrentSheet]->Size[1] / 16);
+			$DrawnWidth = max($DrawnWidth, $DrawX + $CharacterWidths[$CurrentSheet][$CharacterCode]);
 
-			if ($DrawnHeight > $ImageHeight) {
-				$ImageHeight = $DrawnHeight;
+			if ($DrawnHeight > $ImageHeight || $DrawnWidth > $ImageWidth) {
+				$ImageHeight = max($ImageHeight, $DrawnHeight);
+				$ImageWidth = max($ImageWidth, $DrawnWidth);
 				$Image->ResizeCanvas($ImageWidth, $ImageHeight);
 			}
 	
 			CharacterCodeTo($Image, $CharacterSheets[$CurrentSheet], $CharacterCode, $DrawX, $UseDrawY, $CharacterWidths[$CurrentSheet][$CharacterCode]);
 			$DrawX += $CharacterWidths[$CurrentSheet][$CharacterCode];
-			$DrawnWidth = max($DrawnWidth, $DrawX);
 		}
 		if ($DrawX > 0)
 			$DrawX += $CharacterWidths[$CurrentSheet][0x20]; //Add Spaces as necessary
 	}
 	$Image->ResizeCanvas($DrawnWidth, $DrawnHeight);
+
+	foreach($CharacterSheets as $Sheet)
+		$Sheet->Dispose();
+
 	return $Image;
 }
 

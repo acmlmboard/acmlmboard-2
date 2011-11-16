@@ -1,6 +1,6 @@
 <?php
 	//if($_SERVER['HTTP_USER_AGENT']=="Mozilla/4.0")die();
-	$sql->query("UPDATE users SET sex=1 WHERE id='208'");
+	//$sql->query("UPDATE users SET sex=1 WHERE id='208'");
 	// Xkeeper's Nifty Page-o-Hacks
 	// Shit that makes no sense and exists only to be funny/witty/hilarious goes here, to keep it out of the rest of the board software.
 

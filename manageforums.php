@@ -390,7 +390,7 @@
     return $st."</select>";
   }
 
-  function renderTag($TagText, $ForumID, $TagBit, $TintColour) {
+	function renderTag($TagText, $ForumID, $TagBit, $TintColour) {
 		
 		$TagTextImage = RenderText($TagText);
 		$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
@@ -410,5 +410,7 @@
 
 		$LeftImage->Dispose();
 		$RightImage->Dispose();
-  }
+		$Tag->Dispose();
+		$TagTextImage->Dispose();
+	}
 ?>

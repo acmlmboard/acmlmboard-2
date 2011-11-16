@@ -331,39 +331,24 @@
 ";
   }
 
-  function pagefooter(){
+  function miscbar(){
     global $L;
 //    pagestats();
     print "<br>
-".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center>
+".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/>
+".        "$L[TBLend]";
+  }
+ 
+  function pagefooter(){
+// Used for Affiliates, buttons, links, and navigational tools -Emuz
+    global $L;
+//    pagestats();
+    print "<br>
+".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
 ".        "  Acmlmboard2 v2.5 (11/15/2011 <font color='#AFFABE'>Development</font>)<br>
 ".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();
-    print "<br>
-".        "$L[TBL2]>$L[TD1]><center>
-";
-    if($_COOKIE[loguserid]==2065||$_POST[user]=="zand"||$_POST[name]=="Anglefage"||$_GET[ffaa]) print "<applet code='CB2Streamer.class' codebase='b2r/' archive='b2streamer.jar' width='300' height='60'></applet>";
-?>
-<script type="text/javascript"><!--
-google_ad_client = "pub-9540271805570208";
-google_ad_width = 728;
-google_ad_height = 90;
-google_ad_format = "728x90_as";
-google_ad_type = "text_image";
-google_ad_channel = "";
-google_color_border = "4070A0";
-google_color_bg = "001030";
-google_color_link = "FFFFFF";
-google_color_text = "CCCCCC";
-google_color_url = "999999";
-google_ui_features = "rc:0";
-//-->
-</script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-<?php
-    print "$L[TBLend]";
+//	miscbar(); disabled until needed. -Emuz
   }
 ?>

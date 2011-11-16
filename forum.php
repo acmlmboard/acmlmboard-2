@@ -255,7 +255,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     for($k=0;$k<sizeof($tags);++$k) {
       $t=$tags[$k];
       if($thread[tags] & (1<<$t[bit])) {
-		  $taglist.=" <img src=\"./gfx/tags/tag".$t[fid]."-".$t[bit].".png\" alt=\"$t[name]\" title=\"$t[name]\" style=\"position: relative; top: 3px;\"/>";
+		  $taglist.=" <img src=\"./gfx/tags/tag$t[fid]-$t[bit].png\" alt=\"$t[name]\" title=\"$t[name]\" style=\"position: relative; top: 3px;\"/>";
       }
     }
 

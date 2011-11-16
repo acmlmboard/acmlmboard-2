@@ -78,13 +78,12 @@
 				//I wish I could have come up with a cleaner solution...
 				$sql->query("CREATE TEMPORARY TABLE TempTable(FreeId INT)");
 				$sql->query("INSERT INTO `TempTable` VALUES(0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28),(29),(30),(31)");
-				$FreeIds = $sql->query("SELECT `T`.`FreeId` FROM `TempTable` `T` LEFT JOIN `Tags` ON `Tags`.`bit` = `T`.`FreeId` and `Tags`.`fid`=$id WHERE `Tags`.`bit` IS NULL");
+				$FreeIds = $sql->query("SELECT `T`.`FreeId` FROM `TempTable` `T` LEFT JOIN `tags` ON `tags`.`bit` = `T`.`FreeId` and `tags`.`fid`=$id WHERE `tags`.`bit` IS NULL");
 				$sql->query("DROP TEMPORARY TABLE `TempTable`");
-				
 				foreach ($additions as $addition) {
 					$FreeId = $sql->fetch($FreeIds);
 					$FreeId = $FreeId['FreeId'];
-					$sql->query("insert into `Tags` (`fid`, `bit`, `tag`, `name`) values ($id, $FreeId, '$addition[0]', '$addition[1]')");
+					$sql->query("insert into `tags` (`fid`, `bit`, `tag`, `name`) values ($id, $FreeId, '$addition[0]', '$addition[1]')");
 					renderTag($addition[0], $id, $FreeId);
 				}
 			}
@@ -393,7 +392,6 @@
   function renderTag($TagText, $ForumID, $TagBit) {
 		
 		$TagTextImage = RenderText($TagText);
-
 		$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
 
 		$LeftImage = Image::LoadPNG("./gfx/tagleft.png");

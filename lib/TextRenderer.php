@@ -195,8 +195,6 @@ function RenderText($Text, $WidthPixels = 1048576) {
 			CharacterCodeTo($Image, $CharacterSheets[$CurrentSheet], $CharacterCode, $DrawX, $UseDrawY, $CharacterWidths[$CurrentSheet][$CharacterCode]);
 			$DrawX += $CharacterWidths[$CurrentSheet][$CharacterCode];
 			$DrawnWidth = max($DrawnWidth, $DrawX);
-
-
 		}
 		if ($DrawX > 0)
 			$DrawX += $CharacterWidths[$CurrentSheet][0x20]; //Add Spaces as necessary

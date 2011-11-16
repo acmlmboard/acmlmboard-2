@@ -16,6 +16,7 @@
     this.TAG_INDB = 4;
     this.TAG_ACTION = 5;
     this.TAG_BIT = 6;
+    this.TAG_COLOUR = 7;
 
     this.ACT_NOTHING = 0; //Ignore this entry when saving
     this.ACT_DELETE = 1;  //Notify the server to delete this tag when saving
@@ -23,7 +24,7 @@
     this.ACT_UPDATE = 3;  //Notify the server to update this tag when saving
 
     this.NewTag = function() {
-        return Array("", "", false, ++this.NextTagId, false, this.ACT_NOTHING, -1);
+        return Array("", "", false, ++this.NextTagId, false, this.ACT_NOTHING, -1, "808080");
     }
 
     this.Searcher.onreadystatechange = function() {
@@ -104,6 +105,7 @@
             this.CurrentTag = eval(Tag);
             document.getElementById("tglong").value = this.CurrentTag[this.TAG_DESCRIPTION];
             document.getElementById("tgshrt").value = this.CurrentTag[this.TAG_INLINE];
+            document.getElementById("tgcol").color.fromString(this.CurrentTag[this.TAG_COLOUR]);
         }
     };
 
@@ -111,6 +113,7 @@
     this.UpdateCurrentTag = function() {
         this.CurrentTag[this.TAG_INLINE] = document.getElementById("tgshrt").value.replace("\"", "\\\"");
         this.CurrentTag[this.TAG_DESCRIPTION] = document.getElementById("tglong").value.replace("\"", "\\\"");
+        this.CurrentTag[this.TAG_COLOUR] = document.getElementById("tgcol").color.toString();
     };
 
     this.TagDataIndexFromTagId = function(TagId) {
@@ -124,6 +127,7 @@
         this.CurrentTag = this.NewTag();
         document.getElementById("tgshrt").value = "";
         document.getElementById("tglong").value = "";
+        document.getElementById("tgcol").color.fromString("808080");
     };
 
     this.SaveTag = function() {
@@ -156,7 +160,7 @@
     };
 
     this.TagToString = function(Tag) {
-        return "[\"" + Tag[this.TAG_DESCRIPTION] + "\", \"" + Tag[this.TAG_INLINE] + "\", " + Tag[this.TAG_EXISTS] + ", \"" + Tag[this.TAG_ID] + "\", " + Tag[this.TAG_INDB] + ", " + Tag[this.TAG_ACTION] + ", " + Tag[this.TAG_BIT] + "]";
+        return "[\"" + Tag[this.TAG_DESCRIPTION] + "\", \"" + Tag[this.TAG_INLINE] + "\", " + Tag[this.TAG_EXISTS] + ", \"" + Tag[this.TAG_ID] + "\", " + Tag[this.TAG_INDB] + ", " + Tag[this.TAG_ACTION] + ", " + Tag[this.TAG_BIT] + ", \"" + Tag[this.TAG_COLOR] + "\"]";
     };
 
     this.DeleteTag = function() {
@@ -184,13 +188,13 @@
             var Tag = this.TagData[x];
             switch (Tag[this.TAG_ACTION]) {
                 case this.ACT_CREATE:
-                    Changes += "a;" + Tag[this.TAG_INLINE] + ";" + Tag[this.TAG_DESCRIPTION] + ";";
+                    Changes += "a;" + Tag[this.TAG_INLINE] + ";" + Tag[this.TAG_DESCRIPTION] + ";" + Tag[this.TAG_COLOUR] + ";";
                     break;
                 case this.ACT_DELETE:
                     Changes += "d;" + Tag[this.TAG_BIT] + ";";
                     break;
                 case this.ACT_UPDATE:
-                    Changes += "u;" + Tag[this.TAG_BIT] + ";" + Tag[this.TAG_INLINE] + ";" + Tag[this.TAG_DESCRIPTION] + ";";
+                    Changes += "u;" + Tag[this.TAG_BIT] + ";" + Tag[this.TAG_INLINE] + ";" + Tag[this.TAG_DESCRIPTION] + ";" + Tag[this.TAG_COLOUR] + ";";
                     break;
             }
         }

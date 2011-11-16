@@ -55,6 +55,10 @@ class Image {
 		imagecopy($this->Image, $SrcImage->Image, $DestX, $DestY, $SourceX, $SourceY, $Width, $Height);
 	}
 
+	public function Colourize($Red, $Blue, $Green, $Amt) {
+		imagefilter($this->Image, IMG_FILTER_COLORIZE, $Red, $Blue, $Green, (255 - $Amt) >> 1);
+	}
+
 	public function ResizeCanvas($NewWidth, $NewHeight) {
 		$OldSize = array($this->Size[0], $this->Size[1]);
 		$this->Size = array($NewWidth, $NewHeight);

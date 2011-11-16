@@ -44,16 +44,16 @@
 			for ($x = 0; $x < count($operations) - 2; $x++) {
 				switch ($operations[$x]) {
 					case "a":
-						array_push($additions, array($operations[$x + 1], $operations[$x + 2]));
-						$x += 2;
+						array_push($additions, array($operations[$x + 1], $operations[$x + 2], $operations[$x + 3]));
+						$x += 3;
 						break;
 					case "d":
 						array_push($deletions, array($operations[$x + 1]));
 						$x++;
 						break;
 					case "u":
-						array_push($modifications, array($operations[$x + 1], $operations[$x + 2], $operations[$x + 3]));
-						$x += 3;
+						array_push($modifications, array($operations[$x + 1], $operations[$x + 2], $operations[$x + 3], $operations[$x + 4]));
+						$x += 4;
 						break;
 					default:
 						//If an entry is malformed, immediately stop sorting/processing tag changes.  Since this is the last step of saving a forum, simply stop and redirect the user.
@@ -71,8 +71,8 @@
 					$sql->query("delete from `tags` where `fid`=$id and `bit` = $deletion[0]");
 				}
 				foreach ($modifications as $modification) {
-					$sql->query("update `tags` set `tag`='$modification[1]', `name`='$modification[2]' where `fid`=$id and `bit`=$modification[0]");
-					renderTag($modification[1], $id, $modification[0]);
+					$sql->query("update `tags` set `tag`='$modification[1]', `name`='$modification[2]', `color`='$modification[3]' where `fid`=$id and `bit`=$modification[0]");
+					renderTag($modification[1], $id, $modification[0], $modification[3]);
 				}
 				
 				//I wish I could have come up with a cleaner solution...
@@ -83,8 +83,8 @@
 				foreach ($additions as $addition) {
 					$FreeId = $sql->fetch($FreeIds);
 					$FreeId = $FreeId['FreeId'];
-					$sql->query("insert into `tags` (`fid`, `bit`, `tag`, `name`) values ($id, $FreeId, '$addition[0]', '$addition[1]')");
-					renderTag($addition[0], $id, $FreeId);
+					$sql->query("insert into `tags` (`fid`, `bit`, `tag`, `name`, `color`) values ($id, $FreeId, '$addition[0]', '$addition[1]', '$addition[2]')");
+					renderTag($addition[0], $id, $FreeId, $addition[2]);
 				}
 			}
 
@@ -223,8 +223,9 @@
 ".        "    $L[BTTn]=\"modtg\">Edit</button> <br />
 ".        "    $L[BTTn]=\"deltg\">Delete</button>
 ".        "    </td>
-".            $L['TD2']." colspan=\"2\">
-".        "      Inline Form: $L[INPt]=\"tgshrt\" id=\"tgshrt\" size=5 maxlength=5 value=\"\"> <br />
+".            $L['TD2']." colspan=\"2\"><script type=\"text/javascript\" src=\"jscolor/jscolor.js\"></script>
+".        "      Colour: <input class=\"color {pickerFaceColor:'transparent',pickerBorder:0,pickerInsetColor:'black'}\" value=\"808080\" name=\"color\" id=\"tgcol\"> <br />
+".        "      Inline Form: $L[INPt]=\"tgshrt\" id=\"tgshrt\" size=5 maxlength=20 value=\"\"> <br />
 ".        "      &nbsp;Descriptive Form: $L[INPt]=\"tglong\" id=\"tglong\" value=\"\" style=\"width: 200px\"> <br />
 ".        "      $L[BTTn]=\"savtg\">Save</button> $L[BTTn]=\"clrtg\">Clear</button>
 ".        "      $L[INPh]=\"tagops\" id=\"tagops\" value=\"\" />
@@ -380,16 +381,16 @@
 
   function taglist($fid=-1) {
     global $sql,$L;
-    $tags = $sql->query("SELECT `t`.`bit`, `t`.`fid`,  `t`.`name`, `t`.`tag` FROM `tags` `t` WHERE `t`.`fid`=$fid");
+    $tags = $sql->query("SELECT `t`.`bit`, `t`.`fid`,  `t`.`name`, `t`.`tag`, `t`.`color` FROM `tags` `t` WHERE `t`.`fid`=$fid");
     $st = $L[INPl]."\"tglst\" id=\"tglst\" size=\"5\" style=\"min-width: 280px;\">";
 	$count = 0;
     while ($tag=$sql->fetch($tags)) {
-		$st.="<option value=\"[&quot;$tag[name]&quot;, &quot;$tag[tag]&quot;, true, ".$count++.", true, 0, $tag[bit]]\">$tag[name] ($tag[tag])</option>";
+		$st.="<option value=\"[&quot;$tag[name]&quot;, &quot;$tag[tag]&quot;, true, ".$count++.", true, 0, $tag[bit], &quot;$tag[color]&quot;]\">$tag[name] ($tag[tag])</option>";
     }
     return $st."</select>";
   }
 
-  function renderTag($TagText, $ForumID, $TagBit) {
+  function renderTag($TagText, $ForumID, $TagBit, $TintColour) {
 		
 		$TagTextImage = RenderText($TagText);
 		$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
@@ -402,6 +403,7 @@
 			$Tag->DrawImageDirect($RightImage, $X, 0);
 
 		$Tag->DrawImageDirect($RightImage, $Tag->Size[0] - 8, 0);
+		$Tag->Colourize(hexdec(substr($TintColour, 0, 2)), hexdec(substr($TintColour, 2, 2)), hexdec(substr($TintColour, 4, 2)), 0xFF);
 
 		$Tag->DrawImageDirect($TagTextImage, 8, 2);
 		$Tag->SavePNG("./gfx/tags/tag$ForumID-$TagBit.png");

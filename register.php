@@ -9,10 +9,30 @@
 	  die();
   }
 
+	//[KAWA] Lame. Personally, I'd be inclined to agree but objectively...
+	/*
   if($ref == "http://jul.rustedlogic.net/register.php") {
     header("Location: http://jul.rustedlogic.net/register.php?with+best+wishes+from+board2");
     die();
   }
+  */
+
+  	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
+  	$puzzleAnswer = 42;
+  	$puzzleVariations = array(
+  		"What is twenty four times two?",
+  		"What is two times twenty four?",
+  		"What is twelve times four?",
+  		"What is four times twelve?",
+  		"What is eighty-four divided by two?",
+  		"What is twelve plus twelve?",
+  		"What is six times seven?",
+  		"What is seven times six?",
+  		"What is fourteen times three?",
+  		"What is three times fourteen?",
+  		"What is a hundred and twenty six divided by three?",
+  	);
+  	$puzzle = $puzzleVariations[array_rand($puzzleVariations)];
 
   require 'lib/common.php';
 
@@ -61,10 +81,8 @@
 ".         "    $L[TD1c]>Password (again):</td>
 ".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
 ".         "  $L[TR]>
-".         "    $L[TD1c] rowspan=2>Captcha:</td>
-".         "    $L[TD2]><input type=hidden name=captcha1 value='$cap'><img border=0 style='margin:3px;margin-right:0px' src='gfx/captcha.php?l=1&a=".urlencode($cap)."'><img style='margin:3px;margin-left:0px' border=0 src='gfx/captcha.php?a=".urlencode($cap)."'></td>
-".         "  $L[TR]>
-".         "    $L[TD2]>$L[INPt]=captcha2 size=13 maxlength=6></td>
+".         "    $L[TD1c] width=120>$puzzle</td>
+".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
 ".         "  $L[TR1]>
 ".         "    $L[TD]>&nbsp;</td>
 ".         "    $L[TD]>$L[INPs]=action value=Register></td>
@@ -88,8 +106,6 @@
 
     chkproxy();
 
-    $captcha=explode(",",decryptpwd($_POST[captcha1]));
-
     if($uname==$cname)
       $err='This username is already taken, please choose another.';
     elseif($name=='' || $cname=='')
@@ -100,10 +116,8 @@
       $err='Your password must be at least 4 characters long.';
     elseif($_POST[pass]!=$_POST[pass2])
       $err="The two passwords you entered don't match.";
-    elseif($captcha[0]!=$_SERVER['REMOTE_ADDR'])
-      $err="You appear to have switched IPs since loading register.php. $captcha[0]";
-    elseif($captcha[1]!=$_POST[captcha2])
-      $err="Wrong captcha entered. Try again.";
+    elseif($_POST[puzzle]!=$puzzleAnswer)
+      $err="You are either a bot or very bad at simple mathematics.";
 
     if($err){
       $print="  $err<br>
@@ -115,6 +129,11 @@
                  .ctime().",".ctime().",'$userip')");
       $id=mysql_insert_id();
       $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
+      
+      //[KAWA] Give tokens. WHY WASN'T THIS IN HERE SOONER XD
+      $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 1)");
+      if ($id == 1)
+      	$sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 5)"); //[KAWA] First gets root. Is that okay or should it be Admin (3)?
 
       /* count matches for IP and hash */
       //hash

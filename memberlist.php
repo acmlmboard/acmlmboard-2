@@ -67,37 +67,42 @@
 ".      "      ".mlink($sort,$sex,  '',$ppp)."All</a>
 ".      "      
 ".      "$L[TBLend]
-".      "<br>
-".      "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] width=30>#</td>
-".      "    $L[TDh] width=62>Picture</td>
-".      "    $L[TDh]>Name</td>
-".      "    $L[TDh] width=130>Registered on</td>
-".      "    $L[TDh] width=50>Posts</td>
-".      "    $L[TDh] width=40>Level</td>
-".      "    $L[TDh] width=80>EXP</td>
-";
+".      "<br>";
 
-  for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++){
+//[KAWA] Rebuilt this to use my new renderer. Not sure what to do about the part above though X3
+$headers = array
+(
+	"id" => array("caption"=>"#", "width"=>"32px", "align"=>"center"),
+	"pic" => array("caption"=>"Picture", "width"=>"64px"),
+	"name" => array("caption"=>"Name"),
+	"reg" => array("caption"=>"Registered on", "width"=>"130px"),
+	"posts" => array("caption"=>"Posts", "width"=>"50px"),
+	"lvl" => array("caption"=>"Level", "width"=>"40px"),
+	"exp" => array("caption"=>"EXP", "width"=>"80px"),
+);
+$data = array();
+for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++)
+{
     $user[exp]=floor($user[exp]);
     $user[level]=calclvl($user[exp]);
     $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id]&s=1 width=60 height=60>"
                            :'<img src=img/_.png width=60 height=60>');
 
-    $tr=($i%2?'TR2':'TR3').'c';
-    print "  $L[$tr]>
-".        "    $L[TD1]>$i.</td>
-".        "    $L[TD]>$picture</td>
-".        "    $L[TDl]>".userlink($user)."</td>
-".        "    $L[TD]>".cdate($dateformat,$user[regdate])."</td>
-".        "    $L[TD]>$user[posts]</td>
-".        "    $L[TD]>$user[level]</td>
-".        "    $L[TD]>$user[exp]</td>
-";
-  }
-  print "$L[TBLend]
-".      "<br>
+	$data[] = array
+	(
+		"id" => $user['id'].'.',
+		"pic" => $picture,
+		"name" => userlink($user),
+		"reg" => cdate($dateformat,$user[regdate]),
+		"posts" => $user[posts],
+		"lvl" => $user[level],
+		"exp" => $user[exp],
+	);
+}
+
+RenderTable($data, $headers);
+
+  print "<br>
 ".      "$pagelist
 ".      "<br>
 ";

@@ -19,7 +19,8 @@
   $sqldb  ='sqldatabase';
 
   $boardtitle="Insert title here";
-  $boardlogo="<img style='border: 0px' src='img/board2_banner_generic3_green.png' title=\"ABANDON THE POST\nGET A DRINK\">";
+  $boardlogo="<img style='border: 0px' src='img/logo.png' title=\"ABANDON THE POST\nGET A DRINK\">";
+  $favicon="/fav.png"; //Replace with your favicon of choice
 
   $config[log]    = 0;
   $config[ckey]   = "configckey";

@@ -169,7 +169,7 @@
   // also added number_format to views
   // also changed the title to be "pagetitle - boardname" and not vice-versa
   function pageheader($pagetitle='',$fid=0){
-    global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$themefile,$logofile,$url,$config,$feedicons;
+    global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$themefile,$logofile,$url,$config,$feedicons,$favicon;
 
     // this is the only common.php location where we reliably know $fid.
     if($log) $sql->query("UPDATE users SET lastforum='$fid' WHERE id=$loguser[id]");
@@ -224,7 +224,7 @@
 ".        "<head>
 ".        "<title>$pagetitle$boardtitle</title>
 ".        "$config[meta]
-".        "<link rel='icon' type='image/png' href='/b2ico4.png'>
+".        "<link rel='icon' type='image/png' href='$favicon'>
 ".        "<link rel='stylesheet' href='css/$themefile'>
 ".        $junk ."
 ".        "</head>
@@ -238,7 +238,6 @@
 ".        "    | <a href=faq.php>FAQ</a>
 ".        "    | <a href=\"/uploader\">Uploader</a>
 ".        "    | <a href=\"irc.php\">IRC chat</a>
-".        "    | <a href=\"http://www.kafuka.org:8000/stream.ogg.m3u\">Radio</a>
 ".        "    | <a href=memberlist.php>Memberlist</a>
 ".        "    | <a href=activeusers.php>Active users</a>
 ".        "    | <a href=forum.php?time=86400>Latest posts</a>

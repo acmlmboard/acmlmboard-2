@@ -264,7 +264,7 @@
 ".
           (isadmin() ? "    | <a href=manageforums.php>Manage Forums</a>
 " : "").        "    | <a href=usermood.php>Edit mood avatars</a>
-".        "    | <a href=b2sprites.php>Sprites</a>
+".        "    | <a href=sprites.php>Sprites</a>
 ".        "    | <a href=shop.php>Item shop</a>
 ".        "    | $markread
 ";

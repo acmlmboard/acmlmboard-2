@@ -1,7 +1,6 @@
 <?php
   require 'lib/common.php';
 
-  $rs=13; //move to config?
 
   $targetuserid = $loguser['id'];
 
@@ -114,8 +113,8 @@ if (acl_for_user($_GET[id],"edit-user"))
            catheader('Appearance')."
 ".           fieldrow('Rankset'		,fieldselect('rankset', $user['rankset'], ranklist()))."
 ".           (checkctitle()?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
-".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within 100x100.</font>')."
-".           fieldrow('MAXIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$rs.'x'.$rs.'.</font>')."
+".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
+".           fieldrow('MAXIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
 ";
 
 if (acl_for_user($_GET[id],"edit-user"))
@@ -182,8 +181,8 @@ if (acl_for_user($_GET[id],"edit-user"))
       if(!$error){
         $tmpfile=$_FILES[minipic][tmp_name];
         list($width,$height,$type)=getimagesize($tmpfile);
-        if($width!=$rs || $height!=$rs) {
-          $error.="<br>- Minipic size must be {$rs}x$rs.";
+        if($width!=$minipicsize || $height!=$minipicsize) {
+          $error.="<br>- Minipic size must be {$minipicsize}x$minipicsize.";
         } else if($type!=3 && $type!=1) {
           $error.="<br>- Minipic file broken or not a valid PNG or GIF image!";
         } else {
@@ -201,11 +200,6 @@ if (acl_for_user($_GET[id],"edit-user"))
       $error='';
 
       $exts=array('.png','.jpg','.gif');
-      $dimx=100;
-      $dimy=100;
-      $dimxs=60;
-      $dimys=60;
-      $size=2*30720;
 
 	//[KAWA] TODO: replace with token effect
 	/*
@@ -226,8 +220,8 @@ if (acl_for_user($_GET[id],"edit-user"))
       if(!$validext)
         $error.="<br>- Invalid file type, must be either: $extlist";
 
-      if(($fsize=$_FILES[picture][size])>$size)
-        $error.="<br>- File size is too high, limit is $size bytes";
+      if(($fsize=$_FILES[picture][size])>$avatarsize)
+        $error.="<br>- File size is too high, limit is $avatarsize bytes";
 
       if(!$error){
         $tmpfile=$_FILES[picture][tmp_name];
@@ -242,25 +236,25 @@ if (acl_for_user($_GET[id],"edit-user"))
 
         if($type<=3){
           $r=imagesx($img1)/imagesy($img1);
-          $img2=imagecreatetruecolor($dimxs,$dimys);
+          $img2=imagecreatetruecolor($avatardimxs,$avatardimys);
           imagecolorallocate($img2,0,0,0);
 
           if($r>1)
-            imagecopyresampled($img2,$img1,0,round($dimys*(1-1/$r)/2),0,0,$dimxs,$dimys/$r,imagesx($img1),imagesy($img1));
+            imagecopyresampled($img2,$img1,0,round($avatardimys*(1-1/$r)/2),0,0,$avatardimxs,$avatardimys/$r,imagesx($img1),imagesy($img1));
           else
-            imagecopyresampled($img2,$img1,round($dimxs*(1-$r)/2),0,0,0,$dimxs*$r,$dimys,imagesx($img1),imagesy($img1));
+            imagecopyresampled($img2,$img1,round($avatardimxs*(1-$r)/2),0,0,0,$avatardimxs*$r,$avatardimys,imagesx($img1),imagesy($img1));
           imagepng($img2,$file2);
         }
 
-        if($width<=$dimx && $height<=$dimy && $type<=3)
+        if($width<=$avatardimx && $height<=$avatardimy && $type<=3)
           copy($tmpfile,"userpic/$user[id]");
         elseif($type<=3){
           if($r>1){
-            $img2=imagecreatetruecolor($dimx,$dimy/$r);
-            imagecopyresampled($img2,$img1,0,0,0,0,$dimx,$dimy/$r,imagesx($img1),imagesy($img1));
+            $img2=imagecreatetruecolor($avatardimx,$avatardimy/$r);
+            imagecopyresampled($img2,$img1,0,0,0,0,$avatardimx,$avatardimy/$r,imagesx($img1),imagesy($img1));
           }else{
-            $img2=imagecreatetruecolor($dimx*$r,$dimy);
-            imagecopyresampled($img2,$img1,0,0,0,0,$dimx*$r,$dimy,imagesx($img1),imagesy($img1));
+            $img2=imagecreatetruecolor($avatardimx*$r,$avatardimy);
+            imagecopyresampled($img2,$img1,0,0,0,0,$avatardimx*$r,$avatardimy,imagesx($img1),imagesy($img1));
           }
           imagepng($img2,$file);
         }else{
@@ -407,16 +401,16 @@ if (acl_for_user($_GET[id],"edit-user"))
 ".         "    $L[TD2]>$input</td>";
   }
 
-  function fieldinput($size,$max,$field){
+  function fieldinput($avatarsize,$max,$field){
     global $L,$user;
-    return "$L[INPt]=$field size=$size maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
-//  return "$L[INPt]=$field size=$size maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
+//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
-  function fieldinputrpg($size,$max,$field){
+  function fieldinputrpg($avatarsize,$max,$field){
     global $L,$userrpg;
-    return "$L[INPt]=$field size=$size maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
-//  return "$L[INPt]=$field size=$size maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
+//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
   function fieldtext($rows,$cols,$field){

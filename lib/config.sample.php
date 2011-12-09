@@ -29,6 +29,13 @@
   $config[path]   = "/";
   $config[meta]   = "<meta name='description' content=\"A forum about ROM hacking, video gaming, life, the universe, maths and everything else. Successor-of-sorts of Acmlm's Board.\">";
 
+// User GFX limits
+ $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize
+ $avatardimx=100; // Avatar X Scale
+ $avatardimy=100; // Avatar Y Scale
+ $avatardimxs=60;
+ $avatardimys=60;
+ $avatarsize=2*30720;
 
   function sendirc($text){
 	//provide code for post reporting here

@@ -21,7 +21,8 @@
   $boardtitle="Insert title here";
   $boardlogo="<img style='border: 0px' src='img/logo.png' title=\"ABANDON THE POST\nGET A DRINK\">";
   $favicon="/fav.png"; //Replace with your favicon of choice
-
+  $defaulttheme="dailycycle2";
+  
   $config[log]    = 0;
   $config[ckey]   = "configckey";
   $config[base]   = "http://url";

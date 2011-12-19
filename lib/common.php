@@ -46,7 +46,8 @@
     $loguser[dateformat]='m-d-y';
     $loguser[timeformat]='h:i A';
     $loguser[signsep]=0;
-    $loguser[theme]="dailycycle2";
+    //$loguser[theme]="dailycycle2"; Default for stock ABII -Emuz
+    $loguser[theme]=$defaulttheme;
     if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false)
       $loguser[theme]="minerslament";
   }

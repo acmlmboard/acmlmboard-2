@@ -12,12 +12,6 @@
     die();
   }
 
-  $a=$sql->fetchq("SELECT intval FROM misc WHERE field='lockdown'");
-  if($a[intval]) {
-    //lock down
-    include 'lib/locked.php';
-    die();
-  }
 
   $userip=$REMOTE_ADDR;
   $userfwd=addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -35,6 +29,18 @@
       setcookie('user',0);
       setcookie('pass','');
     }
+  }
+  $a=$sql->fetchq("SELECT intval FROM misc WHERE field='lockdown'");
+  
+  if($a[intval]) {
+    //lock down
+    //Altered to test for user power level. -Emuz
+    if ($loguser[power] == 3 || $loguser[power] == 4 ) print"<h1><font color=red><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>"; //If the user is either an Administrator or Root Administrator you just get h1 with "Lockdown"
+    else //Everyone else gets the wonderful lockdown page.
+    {
+      include 'lib/locked.php';
+      die();
+    };
   }
 
   if(!$log){
@@ -348,7 +354,7 @@
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard2 v2.5 (12/19/2011 <font color='#AFFABE'>Development</font>)<br>
+".        "  Acmlmboard v2.5 (12/19/2011 <font color='#AFFABE'>Development</font>)<br>
 ".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

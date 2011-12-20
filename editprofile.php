@@ -157,7 +157,7 @@ if (acl_for_user($_GET[id],"edit-user"))
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
 ".           fieldrow('Post layouts', fieldoption('blocklayouts',acl('block-layouts'),array('Show everything in general', 'Block everything')))."
-".           fieldrow('Board2 Sprites', fieldoption('sprites',acl('disable-sprites'),array('Show them', 'Disable sprite layer')))."
+".           fieldrow('Sprites', fieldoption('sprites',acl('disable-sprites'),array('Show them', 'Disable sprite layer')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>

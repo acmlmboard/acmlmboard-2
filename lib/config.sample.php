@@ -25,10 +25,11 @@
   
   $config[log]    = 0;
   $config[ckey]   = "configckey";
-  $config[base]   = "http://url";
-  $config[sslbase]= "https://url";
+  $config[address]   = "url";  //Hostname or IP address of your server (this will be public)
+  $config[base]   = "http://$config[address]"; //Replace if you need fine control of the address
+  $config[sslbase]= "https://$config[address]"; //Replace if you need fine control of the address
   $config[path]   = "/";
-  $config[meta]   = "<meta name='description' content=\"A forum about ROM hacking, video gaming, life, the universe, maths and everything else. Successor-of-sorts of Acmlm's Board.\">";
+  $config[meta]   = "<meta name='description' content=\"Stuff goes here!\">";
 
 // User GFX limits
  $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize

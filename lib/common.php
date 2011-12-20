@@ -46,7 +46,6 @@
     $loguser[dateformat]='m-d-y';
     $loguser[timeformat]='h:i A';
     $loguser[signsep]=0;
-    //$loguser[theme]="dailycycle2"; Default for stock ABII -Emuz
     $loguser[theme]=$defaulttheme;
     if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false)
       $loguser[theme]="minerslament";
@@ -75,7 +74,11 @@
     "Googlebot",
     "Mediapartners-Google",
     "Yeti",
-    "Twiceler"
+    "Twiceler",
+    "Sogou web spider",
+    "Bing Bot",
+    "Baidu Spider",
+    "Speedy Spider"
     );
 
   $bot = 0;
@@ -110,7 +113,7 @@
 
   $ref=$HTTP_REFERER;
   $ref2	= substr($ref,0,25);
-  if($ref && !strpos($ref2, "acmlm.no-ip.org") && !strpos($ref2, "acmlm.kafuka.org")) {
+  if($ref && !strpos($ref2, $config[address])) {
 	  $sql -> query("INSERT INTO `ref` SET `time` = '". ctime() ."', `userid` = '$loguser[id]', `urlfrom` = '". addslashes($ref) ."', `urlto` = '".addslashes($url)."', `ipaddr` = '". $_SERVER['REMOTE_ADDR'] ."'");
   }
 
@@ -345,7 +348,7 @@
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard2 v2.5 (11/15/2011 <font color='#AFFABE'>Development</font>)<br>
+".        "  Acmlmboard2 v2.5 (12/19/2011 <font color='#AFFABE'>Development</font>)<br>
 ".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

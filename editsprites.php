@@ -60,7 +60,7 @@ confirm => true),
 $data[] = array
 		(
 			"id" => $mon['id'],
-			"img" => "<img src=\"img/b2sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
+			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
 			"name" => $mon['name'],
 			"flavor" => $mon['flavor'],
       "edit" => RenderActions($actions,1),

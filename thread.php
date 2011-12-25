@@ -39,7 +39,7 @@
   else $threadcreator=0;
   $action='';
   //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
-  if($tid && $_POST[c]==md5($loguser[pass]) && (ismod(getforumbythread($tid)) ||
+  if($tid && $_POST[c]==md5($loguser[pass].$pwdsalt) && (ismod(getforumbythread($tid)) ||
      ($loguser[id] == $threadcreator && $_POST[action] == "rename" && $loguser[renamethread] == 1))){
     $act=$_POST[action];
     if($act=='stick'  ) $action=',sticky=1';
@@ -402,7 +402,7 @@ if($loguser['power'] > 0)
 ".        "    <input type=hidden name=arg value=''>
 ".        "    <input type=hidden name=id value=$tid>
 ".        "    <input type=hidden name=action value=''>
-".        "    <input type=hidden name=c value=".md5($loguser[pass]).">
+".        "    <input type=hidden name=c value=".md5($loguser[pass].$pwdsalt).">
 ".        "  </td>
 ".        "  </form>
 ".        "$L[TBLend]

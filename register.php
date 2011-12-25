@@ -125,7 +125,7 @@
 ";
     }else{
       $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip) VALUES "
-                 ."('$_POST[name]','".md5($_POST[pass])."',"
+                 ."('$_POST[name]','".md5($_POST[pass].$pwdsalt)."',"
                  .ctime().",".ctime().",'$userip')");
       $id=mysql_insert_id();
       $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
@@ -137,7 +137,7 @@
 
       /* count matches for IP and hash */
       //hash
-      $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($_POST[pass])."'");
+      $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($_POST[pass].$pwdsalt)."'");
       $m_hash=$a[c]-1;
       //split the IP
       $ipparts=explode(".",$userip);

@@ -17,7 +17,7 @@
     if($_POST[passenc])
       $pass=$_POST[passenc];
     else
-      $pass=md5($_POST[pass]);
+      $pass=md5($_POST[pass].$pwdsalt);
 
     if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");

@@ -14,6 +14,7 @@
   $sqluser='sqlusername';
 
   $spritesalt='please change me!';
+  $pwdsalt='Please change me!';
 
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';

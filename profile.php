@@ -41,7 +41,18 @@
   if($lastpostlink!='' && $loguser[power]<$thread[minpower]) $lastpostlink="<br>in <i>(restricted forum)</i>";
 
   // 3/11/2007 xkeeper ~ This can probably be added to the starting query but I'd rather not risk fucking everything up, someone else probably knows how to fix it
-  $themename	= $sql -> resultq("SELECT `name` FROM `themes` WHERE `id` = '$user[theme]'");
+  //$themename	= $sql -> resultq("SELECT `name` FROM `themes` WHERE `id` = '$user[theme]'");
+  //[KAWA] Adapting to new theme system...
+  	$themes = unserialize(file_get_contents("themes_serial.txt"));
+  	$themename = $themes[0][0];
+  	foreach($themes as $theme)
+  	{
+  		if($theme[1] == $user['theme'])
+  		{
+  			$themename = $theme[0];
+  			break;
+  		}
+  	}
 
   if($user[birth]!=-1){
     $birthday=date('l, F j, Y',$user[birth]);
@@ -93,8 +104,39 @@
 ".		"    $L[TD1] width=70>$shop[name]</td>
 ".		"    $L[TD2]><a href='shop.php?action=desc&id=".$eq['eq'.$shop[id]]."'>".$items[$eq['eq'.$shop[id]]][name]."</a>&nbsp;</td>
 ".		"  </tr>";
-
 	$shoplist	.= "</table>";
+
+	$badgers = "
+".		"  $L[TBL1] width=100%>
+".		"    $L[TRh]>
+".		"      $L[TDh] colspan=3>Badges</td></tr>";
+	$q=$sql->query("SELECT * FROM tokens RIGHT JOIN usertokens ON tokens.id = usertokens.t WHERE usertokens.u='$uid' AND tokens.img != '' ORDER BY nc_prio DESC LIMIT 9");
+	if($sql->numrows($q) == 0)
+		$badgers.="
+".		"  $L[TR] class=\"sfont\">
+".		"    $L[TD1] colspan=3>None</td>
+".		"  </tr>";
+	else
+	{
+		$numbadges = 0;
+		$badgers.="$L[TR]>";
+		while($badge = $sql -> fetch($q))
+		{
+			$badgers.= "$L[TD2c]><img src=\"".$badge['img']."\" alt=\"\" title=\"".$badge['name']."\" /></td>";
+			$numbadges++;
+			if ($numbadges % 3 == 0)
+				$badgers .= "</tr>$L[TR]>";
+		}
+		while($numbadges < 9)
+		{
+			$badgers.= "$L[TD1c]>&nbsp;</td>";
+			$numbadges++;
+			if ($numbadges % 3 == 0)
+				$badgers .= "</tr>$L[TR]>";
+		}
+	}
+	$badgers .= "</table>";
+
 
 //[KAWA] Blocklayout ported from ABXD
 $qBlock = "select * from blockedlayouts where user=".$uid." and blockee=".$loguser['id'];
@@ -190,9 +232,29 @@ if(isset($_GET['block']) && $log)
 ".      "        $L[TD1]><b>Items per page</b></td>
 ".      "        $L[TD2]>$user[ppp] posts, $user[tpp] threads
 ".      "    $L[TBLend]
+
+".      "    <br>
+".      "    $L[TBL1]>
+".      "      $L[TRh]>
+".      "        $L[TDh] colspan=2>Personal information</td>
+".      "      $L[TR]>
+".      "        $L[TD1] width=110><b>Real name</b></td>
+".      "        $L[TD2]>".($user[realname]?postfilter2($user[realname]):'&nbsp;')."
+".      "      $L[TR]>
+".      "        $L[TD1]><b>Location</b></td>
+".      "        $L[TD2]>".($user[location]?postfilter2($user[location]):'&nbsp;')."
+".      "      $L[TR]>
+".      "        $L[TD1]><b>Birthday</b></td>
+".      "        $L[TD2]>$birthday $age
+".      "      $L[TR]>
+".      "        $L[TD1]><b>Bio</b></td>
+".      "        $L[TD2]>".($user[bio]?postfilter($user[bio]):'&nbsp;')."
+".      "    $L[TBLend]
 ".      "  </td>
 ".      "  $L[TDn] width=15>&nbsp;</td>
 ".      "  $L[TDn] width=256 valign=top>
+".		"    $badgers
+".      "    <br>
 ".      "    $L[TBL1]>
 ".      "      $L[TRh]>
 ".      "        $L[TDh] colspan=2>RPG status</td>
@@ -202,23 +264,6 @@ if(isset($_GET['block']) && $log)
 ".      "    <br>
 ".		"    $shoplist
 ".      "  </td>
-".      "$L[TBLend]
-".      "<br>
-".      "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] colspan=2>Personal information</td>
-".      "  $L[TR]>
-".      "    $L[TD1] width=110><b>Real name</b></td>
-".      "    $L[TD2]>".($user[realname]?postfilter2($user[realname]):'&nbsp;')."
-".      "  $L[TR]>
-".      "    $L[TD1]><b>Location</b></td>
-".      "    $L[TD2]>".($user[location]?postfilter2($user[location]):'&nbsp;')."
-".      "  $L[TR]>
-".      "    $L[TD1]><b>Birthday</b></td>
-".      "    $L[TD2]>$birthday $age
-".      "  $L[TR]>
-".      "    $L[TD1]><b>Bio</b></td>
-".      "    $L[TD2]>".($user[bio]?postfilter($user[bio]):'&nbsp;')."
 ".      "$L[TBLend]
 ".      "<br>
 ".      "$L[TBL1]>

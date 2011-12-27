@@ -111,8 +111,8 @@ function LoadBlocklayouts()
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $L[TR]>
 ".        "    $L[TD1] style=border-bottom:0;border-right:0 height=17>
-".        "      ".userlink($post,'u')." ".gettokenstring($post[uid])."</td>
-".        "    </td>
+".        "      ".userlink($post,'u')./*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
+".*/        "    </td>
 ".        "    $L[TD1] style=border-left:0 width=100%>
 ".        "      $L[TBL] width=100%>
 ".        "        $L[TDns]>Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>

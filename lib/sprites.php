@@ -27,7 +27,7 @@
 
 
 require_once("lib/spritelib.php");
-$chance = 50;
+$chance = 5;
 $roll = 100;
 
 //Always fail to roll if disabled, effectively never appearing at all.

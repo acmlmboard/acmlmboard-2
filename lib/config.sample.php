@@ -40,6 +40,13 @@
  $avatardimys=60;
  $avatarsize=2*30720;
 
+   // xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula
+  $spatulas = array(
+  "Value1",
+  "Value2",
+  );
+  $spaturand  = array_rand($spatulas);
+
   function sendirc($text){
 	//provide code for post reporting here
   }

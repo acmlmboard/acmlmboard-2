@@ -7,30 +7,6 @@
     Xkeeper     added support for category ordering
   ****************************************************/
 
-	// xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula
-  $spatulas = array(
-	"E.T. phone spatula.",
-	"Soylent Green is spatula!",
-	"Madness? This is Spatula!",
-	"You can't handle the spatula!",
-	"A spatula. Shaken, not stirred.",
-	"Go back to the spatula. You shall not pass.",
-	"My mama always said life was like a box of spatula.",
-	"Our spatula can't repel firepower of that magnitude!",
-	"I am the author. You are the spatula. I outrank you!",
-	"Our spatula can't repel firepower of that magnitude!",
-	"I'll get you, my pretty, and your little spatula, too!",
-	"Thank you Mario! But our spatula is in another castle!",
-	"I say we take off and nuke the entire spatula from orbit.",
-	"Fear leads to anger. Anger leads to hate. Hate leads to spatula.",
-	"With the spatula down I can't even see! How am I supposed to fight?",
-	"Watch the spatula, everywhere, keep looking! Keep watching the spatula!",
-	"Logic clearly dictates that the needs of the many outweigh the needs of the spatula.",
-	"When I invite a woman to dinner I expect her to look at my spatula. That's the price she has to pay.",
-	"Spatula? We ain't got no spatula! We don't need no spatula! I don't have to show you any stinking spatula!",
-	"Every time a bell rings, an angel gets his spatula.",
-	);
-	$spaturand	= array_rand($spatulas);
 
   if($p=$_GET[p]) return header("Location:thread.php?pid=$p#$p");
   if($t=$_GET[t]) return header("Location:thread.php?id=$t");

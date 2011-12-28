@@ -171,7 +171,7 @@
 
   $feedicons="";
 
-  //it's a secret to evryone.
+  //it's a secret to everyone.
   $pageohacks	= true;
   include 'lib/hacks.php';
 
@@ -354,8 +354,8 @@
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (12/19/2011 <font color='#AFFABE'>Development</font>)<br>
-".        "  &copy; 2005-2011 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
+".        "  Acmlmboard v2.5 (12/28/2011 <font color='#AFFABE'>Development</font>)<br>
+".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();
 //	miscbar(); disabled until needed. -Emuz

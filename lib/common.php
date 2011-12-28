@@ -286,7 +286,7 @@
     print "    </td>
 ".        "    <form action=login.php method=post name=logout>
 ".        "      $L[INPh]=action value=logout>
-".        "      $L[INPh]=p value=".md5($loguser[pass]).">
+".        "      $L[INPh]=p value=".md5($loguser[pass].$pwdsalt).">
 ".        "    </form>
 ".        "$L[TBLend]
 ".        "<br>

@@ -11,7 +11,7 @@
   }
 
   if($_POST[action]=='Edit profile' && $_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
-    setcookie('pass',packlcookie(md5($_POST[pass])),2147483647);
+    setcookie('pass',packlcookie(md5($_POST[pass].$pwdsalt)),2147483647);
 
   
 
@@ -335,7 +335,7 @@ if (acl_for_user($_GET[id],"edit-user"))
     }
 
     $sql->query('UPDATE users SET '
-               . ($pass?'pass="'.md5($pass).'",':'')
+               . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','

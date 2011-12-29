@@ -167,7 +167,7 @@
 	if(is_file("theme/".$theme."/logo.png"))
 		$logofile = "theme/".$theme."/logo.png";
 	else
-		$logofile = "theme/logo.png";
+		$logofile = $defaultlogo;
 
   $feedicons="";
 

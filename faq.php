@@ -185,30 +185,30 @@ If you have any questions about layouts in general or need help, visit the <a hr
 ".    "    $L[FAQTD]>
 ".    "      In a way similar to HTML and the markup replacements (described above), just put those where you want the numbers to be:<br>
 	<center><table><td><table class=table cellspacing=0>
-	  <tr><td class='tbl tdbgh fonts center'>Tag</td><td class='tbl tdbgh fonts center'>Value
-	  <tr><td class='tbl tdbg2 fonts'>&numposts&	</td><td class='tbl tdbg1 fonts'>Current post count
-	  <tr><td class='tbl tdbg2 fonts'>&numdays&	</td><td class='tbl tdbg1 fonts'>Number of days since registration
-	  <tr><td class='tbl tdbg2 fonts'>&level&	</td><td class='tbl tdbg1 fonts'>Level
-	  <tr><td class='tbl tdbg2 fonts'>&exp&		</td><td class='tbl tdbg1 fonts'>EXP
-	  <tr><td class='tbl tdbg2 fonts'>&expdone&	</td><td class='tbl tdbg1 fonts'>EXP done in the current level
-	  <tr><td class='tbl tdbg2 fonts'>&expdone1k&	</td><td class='tbl tdbg1 fonts'>EXP done / 1000
-	  <tr><td class='tbl tdbg2 fonts'>&expdone10k&	</td><td class='tbl tdbg1 fonts'>EXP done / 10000
-	  <tr><td class='tbl tdbg2 fonts'>&expnext&	</td><td class='tbl tdbg1 fonts'>Amount of EXP left for next level
-	  <tr><td class='tbl tdbg2 fonts'>&expnext1k&	</td><td class='tbl tdbg1 fonts'>EXP needed / 1000
-	  <tr><td class='tbl tdbg2 fonts'>&expnext10k&	</td><td class='tbl tdbg1 fonts'>EXP needed / 10000
-	  <tr><td class='tbl tdbg2 fonts'>&exppct&	</td><td class='tbl tdbg1 fonts'>Percentage of EXP done in the level
-	  <tr><td class='tbl tdbg2 fonts'>&exppct2&	</td><td class='tbl tdbg1 fonts'>Percentage of EXP left in the level
-	  <tr><td class='tbl tdbg2 fonts'>&expgain&	</td><td class='tbl tdbg1 fonts'>EXP gain per post
-	  <tr><td class='tbl tdbg2 fonts'>&expgaintime&</td><td class='tbl tdbg1 fonts'>Seconds for 1 EXP when idle
-	  <tr><td class='tbl tdbg2 fonts'>&lvlexp&	</td><td class='tbl tdbg1 fonts'>Total EXP amount needed for next level
-	  <tr><td class='tbl tdbg2 fonts'>&lvllen&	</td><td class='tbl tdbg1 fonts'>EXP needed to go through the current level
-	  <tr><td class='tbl tdbg2 fonts'>&5000&		</td><td class='tbl tdbg1 fonts'>Posts left until you have 5000
-	  <tr><td class='tbl tdbg2 fonts'>&20000&	</td><td class='tbl tdbg1 fonts'>Posts left until you have 20000
-	  <tr><td class='tbl tdbg2 fonts'>&rank&		</td><td class='tbl tdbg1 fonts'>Current rank, according to your amount of posts
-	  <tr><td class='tbl tdbg2 fonts'>&postrank&	</td><td class='tbl tdbg1 fonts'>Post ranking
-	  <tr><td class='tbl tdbg2 fonts'>&postrank10k&</td><td class='tbl tdbg1 fonts'>Post ranking you'd have with 10000 less posts
-	  <tr><td class='tbl tdbg2 fonts'>&postrank20k&</td><td class='tbl tdbg1 fonts'>Post ranking you'd have with 20000 less posts
-	  <tr><td class='tbl tdbg2 fonts'>&date&		</td><td class='tbl tdbg1 fonts'>Current date
+	  <tr><td class='b h'>Tag</td><td class='b h'>Value
+	  <tr><td class='b n1'>&numposts&	</td><td class='b n2'>Current post count
+	  <tr><td class='b n1'>&numdays&	</td><td class='b n2'>Number of days since registration
+	  <tr><td class='b n1'>&level&	</td><td class='b n2'>Level
+	  <tr><td class='b n1'>&exp&		</td><td class='b n2'>EXP
+	  <tr><td class='b n1'>&expdone&	</td><td class='b n2'>EXP done in the current level
+	  <tr><td class='b n1'>&expdone1k&	</td><td class='b n2'>EXP done / 1000
+	  <tr><td class='b n1'>&expdone10k&	</td><td class='b n2'>EXP done / 10000
+	  <tr><td class='b n1'>&expnext&	</td><td class='b n2'>Amount of EXP left for next level
+	  <tr><td class='b n1'>&expnext1k&	</td><td class='b n2'>EXP needed / 1000
+	  <tr><td class='b n1'>&expnext10k&	</td><td class='b n2'>EXP needed / 10000
+	  <tr><td class='b n1'>&exppct&	</td><td class='b n2'>Percentage of EXP done in the level
+	  <tr><td class='b n1'>&exppct2&	</td><td class='b n2'>Percentage of EXP left in the level
+	  <tr><td class='b n1'>&expgain&	</td><td class='b n2'>EXP gain per post
+	  <tr><td class='b n1'>&expgaintime&</td><td class='b n2'>Seconds for 1 EXP when idle
+	  <tr><td class='b n1'>&lvlexp&	</td><td class='b n2'>Total EXP amount needed for next level
+	  <tr><td class='b n1'>&lvllen&	</td><td class='b n2'>EXP needed to go through the current level
+	  <tr><td class='b n1'>&5000&		</td><td class='b n2'>Posts left until you have 5000
+	  <tr><td class='b n1'>&20000&	</td><td class='b n2'>Posts left until you have 20000
+	  <tr><td class='b n1'>&rank&		</td><td class='b n2'>Current rank, according to your amount of posts
+	  <tr><td class='b n1'>&postrank&	</td><td class='b n2'>Post ranking
+	  <tr><td class='b n1'>&postrank10k&</td><td class='b n2'>Post ranking you'd have with 10000 less posts
+	  <tr><td class='b n1'>&postrank20k&</td><td class='b n2'>Post ranking you'd have with 20000 less posts
+	  <tr><td class='b n1'>&date&		</td><td class='b n2'>Current date
 	 </table></table></center></td>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]><a name='syndromes'>What are the \"syndromes\" and how do I get them? </td>
@@ -217,18 +217,18 @@ If you have any questions about layouts in general or need help, visit the <a hr
 ".    "    $L[FAQTD]>
 ".    "      The syndromes are based on how many posts you have made in the last 24 hours. The amount of posts required for each syndrome is as follows:<br>
 	  <center><table><td><table class=table cellspacing=0>
-	    <tr><td class='tbl tdbgh fonts center'>Posts</td><td class='tbl tdbgh fonts center'>Syndrome
-	    <tr><td class='tbl tdbg2 fonts center'> 75</td><td class='tbl tdbg1 fonts'><x<br><i><font color=83F3A3>Affected by 'Reinfors Syndrome'</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>100</td><td class='tbl tdbg1 fonts'><x<br><i><font color=FFE323>Affected by 'Reinfors Syndrome' +</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>150</td><td class='tbl tdbg1 fonts'><x<br><i><font color=FF5353>Affected by 'Reinfors Syndrome' ++</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>200</td><td class='tbl tdbg1 fonts'><x<br><i><font color=CE53CE>Affected by 'Reinfors Syndrome' +++</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>250</td><td class='tbl tdbg1 fonts'><x<br><i><font color=8E83EE>Affected by 'Reinfors Syndrome' ++++</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>300</td><td class='tbl tdbg1 fonts'><x<br><i><font color=BBAAFF>Affected by 'Wooster Syndrome'!!</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>350</td><td class='tbl tdbg1 fonts'><x<br><i><font color=FFB0FF>Affected by 'Wooster Syndrome' +!!</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>400</td><td class='tbl tdbg1 fonts'><x<br><i><font color=FFB070>Affected by 'Wooster Syndrome' ++!!</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>450</td><td class='tbl tdbg1 fonts'><x<br><i><font color=C8C0B8>Affected by 'Wooster Syndrome' +++!!</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>500</td><td class='tbl tdbg1 fonts'><x<br><i><font color=A0A0A0>Affected by 'Wooster Syndrome' ++++!!</font></i>
-	    <tr><td class='tbl tdbg2 fonts center'>600</td><td class='tbl tdbg1 fonts'><x<br><i><font color=C762F2>Affected by 'Anya Syndrome'!!!</font></i>
+	    <tr><td class='b h'>Posts</td><td class='b h'>Syndrome
+	    <tr><td class='b n1'> 75</td><td class='b n2'><x<br><i><font color=83F3A3>Affected by 'Reinfors Syndrome'</font></i>
+	    <tr><td class='b n1'>100</td><td class='b n2'><x<br><i><font color=FFE323>Affected by 'Reinfors Syndrome' +</font></i>
+	    <tr><td class='b n1'>150</td><td class='b n2'><x<br><i><font color=FF5353>Affected by 'Reinfors Syndrome' ++</font></i>
+	    <tr><td class='b n1'>200</td><td class='b n2'><x<br><i><font color=CE53CE>Affected by 'Reinfors Syndrome' +++</font></i>
+	    <tr><td class='b n1'>250</td><td class='b n2'><x<br><i><font color=8E83EE>Affected by 'Reinfors Syndrome' ++++</font></i>
+	    <tr><td class='b n1'>300</td><td class='b n2'><x<br><i><font color=BBAAFF>Affected by 'Wooster Syndrome'!!</font></i>
+	    <tr><td class='b n1'>350</td><td class='b n2'><x<br><i><font color=FFB0FF>Affected by 'Wooster Syndrome' +!!</font></i>
+	    <tr><td class='b n1'>400</td><td class='b n2'><x<br><i><font color=FFB070>Affected by 'Wooster Syndrome' ++!!</font></i>
+	    <tr><td class='b n1'>450</td><td class='b n2'><x<br><i><font color=C8C0B8>Affected by 'Wooster Syndrome' +++!!</font></i>
+	    <tr><td class='b n1'>500</td><td class='b n2'><x<br><i><font color=A0A0A0>Affected by 'Wooster Syndrome' ++++!!</font></i>
+	    <tr><td class='b n1'>600</td><td class='b n2'><x<br><i><font color=C762F2>Affected by 'Anya Syndrome'!!!</font></i>
 	  </table></table></center>
 	  Any other \"syndromes\" you may see such as \"Cute Kitten Syndrome ++\" are not syndromes; they are simply a custom title that someone else has decided to take.<br> Don't forget that spamming in an attempt to gain these syndromes will result in a warning or a ban. The only right way to gain a syndrome is by making clear, non-spammy posts.</td>
 ".    "  $L[TRh]>

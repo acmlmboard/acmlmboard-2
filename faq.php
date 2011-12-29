@@ -292,6 +292,7 @@ There may be a few rare exceptions, but asking for a custom title before having 
 ".    "      <tr><td width='200' class='nc01'><b>Local moderator, male<td width='200' class='nc11'><b>Local moderator, female<td width='200' class='nc21'><b>Local moderator, unspec.
 ".    "      <tr><td width='200' class='nc02'><b>Full moderator, male<td width='200' class='nc12'><b>Full moderator, female<td width='200' class='nc22'><b>Full moderator, unspec.
 ".    "      <tr><td width='200' class='nc03'><b>Administrator, male<td width='200' class='nc13'><b>Administrator, female<td width='200' class='nc23'><b>Administrator, unspec.
+".    "      <tr><td width='200' class='nc04'><b>Root Administrator, male<td width='200' class='nc14'><b>Root Administrator, female<td width='200' class='nc24'><b>Root Administrator, unspec.
 ".    "      </table>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]>Release notes</td>

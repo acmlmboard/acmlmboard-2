@@ -27,7 +27,7 @@
     global $loguser;
     if(!$loguser[id]) return 0;
     if($loguser[posts]>1200) return 1;
-    if($loguser[posts]>800 && $loguser[regdate]<(time()-3600*24*365)) return 1;
+    if($loguser[posts]>800 && $loguser[regdate]<(time()-3600*24*200)) return 1;
     if($loguser[power]>0) return 1;
     return 0;
   }

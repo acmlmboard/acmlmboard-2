@@ -158,8 +158,10 @@ If you feel that a thread is spammy, then PM or IM an admin and ask them to take
 	 [u]<u>Underlined text</u>[/u]<br>
 	 [s]<s>Stroke text</s>[/s]<br>
 	 [img]URL of image to display[/img]<br>
-	 [url]URL of site or page to link to[/url]<br>
-	 And several color codes such as <br>	 <font color=FFC0C0>[<z>red]</font>, <font color=C0FFC0>[<z>green]</font>, <font color=C0C0FF>[<z>blue]</font>, <font color=FFC080>[<z>orange]</font>, <font color=FFEE20>[<z>yellow]</font>, <font color=FFC0FF>[<z>pink]</font>, <font color=white>[<z>white]</font>, and <font color=0>[<z>black]</font><br/> (put [/color] to revert to normal color) </td>
+	 [svg]URL of a SVG image to display[/svg]<br>
+	 [spoiler]Tag used to hide spoilers[/spoiler]<br>
+	 [code]Shows code in a formatted block[/code]<br>
+	 [url]URL of site or page to link to[/url] </td>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]><a name='layouts'>Are there any rules for post layouts?</td>
 
@@ -186,16 +188,12 @@ If you have any questions about layouts in general or need help, visit the <a hr
 ".    "      In a way similar to HTML and the markup replacements (described above), just put those where you want the numbers to be:<br>
 	<center><table><td><table class=table cellspacing=0>
 	  <tr><td class='b h'>Tag</td><td class='b h'>Value
-	  <tr><td class='b n1'>&numposts&	</td><td class='b n2'>Current post count
+	  <tr><td class='b n1'>&postnum&	</td><td class='b n2'>Current post count
 	  <tr><td class='b n1'>&numdays&	</td><td class='b n2'>Number of days since registration
 	  <tr><td class='b n1'>&level&	</td><td class='b n2'>Level
 	  <tr><td class='b n1'>&exp&		</td><td class='b n2'>EXP
 	  <tr><td class='b n1'>&expdone&	</td><td class='b n2'>EXP done in the current level
-	  <tr><td class='b n1'>&expdone1k&	</td><td class='b n2'>EXP done / 1000
-	  <tr><td class='b n1'>&expdone10k&	</td><td class='b n2'>EXP done / 10000
 	  <tr><td class='b n1'>&expnext&	</td><td class='b n2'>Amount of EXP left for next level
-	  <tr><td class='b n1'>&expnext1k&	</td><td class='b n2'>EXP needed / 1000
-	  <tr><td class='b n1'>&expnext10k&	</td><td class='b n2'>EXP needed / 10000
 	  <tr><td class='b n1'>&exppct&	</td><td class='b n2'>Percentage of EXP done in the level
 	  <tr><td class='b n1'>&exppct2&	</td><td class='b n2'>Percentage of EXP left in the level
 	  <tr><td class='b n1'>&expgain&	</td><td class='b n2'>EXP gain per post
@@ -205,10 +203,7 @@ If you have any questions about layouts in general or need help, visit the <a hr
 	  <tr><td class='b n1'>&5000&		</td><td class='b n2'>Posts left until you have 5000
 	  <tr><td class='b n1'>&20000&	</td><td class='b n2'>Posts left until you have 20000
 	  <tr><td class='b n1'>&rank&		</td><td class='b n2'>Current rank, according to your amount of posts
-	  <tr><td class='b n1'>&postrank&	</td><td class='b n2'>Post ranking
-	  <tr><td class='b n1'>&postrank10k&</td><td class='b n2'>Post ranking you'd have with 10000 less posts
-	  <tr><td class='b n1'>&postrank20k&</td><td class='b n2'>Post ranking you'd have with 20000 less posts
-	  <tr><td class='b n1'>&date&		</td><td class='b n2'>Current date
+	  <tr><td class='b n1'>&rankname&		</td><td class='b n2'>Text only current rank, according to your amount of posts 
 	 </table></table></center></td>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]><a name='syndromes'>What are the \"syndromes\" and how do I get them? </td>
@@ -249,8 +244,8 @@ If you have any questions about layouts in general or need help, visit the <a hr
 ".    "    $L[FAQTD]>
 ".    "      You can get one under one of those conditions:<ul>
 <li>Be a moderator or administrator</li>
-<li>Have at least 2000 posts</li>
-<li>Have at least 1000 posts, and have been registered for at least 200 days</li></ul>
+<li>Have at least 1200 posts</li>
+<li>Have at least 800 posts, and have been registered for at least 200 days</li></ul>
 There may be a few rare exceptions, but asking for a custom title before having the requirements for it won't get you one.</td>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]><a name='bestaff'>How can I become a moderator or administrator?</td>

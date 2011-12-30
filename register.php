@@ -3,6 +3,24 @@
 //  die("You fail");
 //	header("Location: http://board.acmlm.org/register.php");
 //	die("Anonymous does not succeed.");
+require 'lib/common.php';
+
+$regdis = $sql->fetchq("SELECT intval FROM misc WHERE field='regdisable'");
+print $regdis;
+if ($regdis[intval] == 1)
+{
+  pageheader('Register');
+  print "$L[TBL1]>$L[TD1c]>
+".         "  $L[TRh]>
+".         "    $L[TDh] colspan=2>Registration is disabled</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>Registration is currently disabled. For more information please read the board annoucments or visit us on <a href=irc.php>IRC</a><br/>
+".           "  <a href=./>Back to main</a></td></td>
+".      "$L[TBLend]
+";
+  pagefooter();
+  die();
+}
 
   if ($_POST['pass'] == "itsatest") {
 	  header("Location: http://board.acmlm.org/register.php");
@@ -16,6 +34,7 @@
     die();
   }
   */
+
 
   	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
   	$puzzleAnswer = 42;
@@ -34,7 +53,6 @@
   	);
   	$puzzle = $puzzleVariations[array_rand($puzzleVariations)];
 
-  require 'lib/common.php';
 
   //proxy check
   function chkproxy()

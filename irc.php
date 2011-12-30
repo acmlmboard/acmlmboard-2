@@ -2,7 +2,9 @@
 	require 'lib/common.php';
 	pageheader();
 
-	$servers[1]		= "nucleus.kafuka.org";
+	$servers[1]		= "irc.nolimitzone.com";
+	$servers[2]		= "akaneiro.irc.nolimitzone.com";
+	$servers[3]		= "nucleus.kafuka.org";
 	if ($server > count($servers) || $server <= -1) $server = 0;
 
 	$serverlist		= "";
@@ -14,14 +16,14 @@
 		if ($num == 1) $serverlist .= " (preferred)";
 	}
 
-	$channel					= "#acmlm";
+	$channel					= "#kafuka";
 //	$channel					= "#rohmacking";
 //	if ($_GET['jul']) $channel	= "#x";
 
 
 	print	"$L[TBL1]>
 ".			"  $L[TRh]>
-".			"    $L[TDh]>Java IRC Chat - $channel on DJBoucheNET</td>
+".			"    $L[TDh]>Java IRC Chat - $channel on NolimitZone</td>
 ".			"  $L[TR]>
 ".			"    $L[TD1c]>Servers: $serverlist</td>
 ".			"  </tr>     

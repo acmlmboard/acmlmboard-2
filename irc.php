@@ -54,9 +54,9 @@
 		<param name=\"gui\" value=\"pixx\">
 		<param name=\"authorizedcommandlist\" value=\"all-server-s\">
 		<param name=\"authorizedleavelist\" value=\"all-$channel\">
-		<param name=\"authorizedjoinlist\" value=\"all-#nobodysworld-#knuck-#hashish-#akane-#somethingwitty\">
+		<param name=\"authorizedjoinlist\" value=\"all-#nobodysworld-#knuck-#acmlm-#akane-#somethingwitty\">
 
-		<param name=\"quitmessage\" value=\"Java IRC @ http://acmlm.no-ip.org/board/irc.php\">
+		<param name=\"quitmessage\" value=\"Java IRC @   ".$config[base]."/irc.php\">
 		<param name=\"autorejoin\" value=\"true\">
 		
 		<param name=\"style:bitmapsmileys\" value=\"false\">

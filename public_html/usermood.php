@@ -157,7 +157,7 @@
 ".      "          <input type=\"file\" name=\"picture\"><input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\">
 ".($id>0?"           <input type=\"submit\" name='a' value=\"Delete\">
 ":"").  "<input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\"></td>
-".      "        $L[TD2]><small>Limits: 100x100px, 30KB</small></td>
+".      "        $L[TD2]><small>Limits: ".$dimx."x".$dimy."px, ".$size."KB</small></td>
 ".      "     $L[TR]>
 ".      "        $L[TD2] colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"$activeavatar[label]\">" : "&nbsp;") ."
 ".      "$L[TBLend]</form>

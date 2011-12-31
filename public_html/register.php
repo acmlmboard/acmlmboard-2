@@ -6,7 +6,6 @@
 require 'lib/common.php';
 
 $regdis = $sql->fetchq("SELECT intval FROM misc WHERE field='regdisable'");
-print $regdis;
 if ($regdis[intval] == 1)
 {
   pageheader('Register');
@@ -39,12 +38,10 @@ if ($regdis[intval] == 1)
   	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
   	$puzzleAnswer = 42;
   	$puzzleVariations = array(
-  		"What is twenty four times two?",
-  		"What is two times twenty four?",
-  		"What is twelve times four?",
-  		"What is four times twelve?",
+  		"What is twenty four times two minus 6?",
+  		"What is two times twenty four minus 6?",
   		"What is eighty-four divided by two?",
-  		"What is twelve plus twelve?",
+  		"What is twenty one plus twenty one?",
   		"What is six times seven?",
   		"What is seven times six?",
   		"What is fourteen times three?",

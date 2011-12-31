@@ -37,11 +37,11 @@
       $fext=strtolower(substr($fname,-4));
       $error='';
       $exts=array('.png','.jpg','.gif');
-      $dimx=100;
-      $dimy=100;
-      $dimxs=60;
-      $dimys=60;
-      $size=30720;
+      $dimx=$avatardimx;
+      $dimy=$avatardimy;
+      $dimxs=avatardimxs;
+      $dimys=avatardimys;
+      $size=$avatarsize;
 
 	//[KAWA] TODO: replace with token effect
 	/*

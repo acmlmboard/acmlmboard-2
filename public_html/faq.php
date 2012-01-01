@@ -204,6 +204,7 @@ If you have any questions about layouts in general or need help, visit the <a hr
 	  <tr><td class='b n1'>&20000&	</td><td class='b n2'>Posts left until you have 20000
 	  <tr><td class='b n1'>&rank&		</td><td class='b n2'>Current rank, according to your amount of posts
 	  <tr><td class='b n1'>&rankname&		</td><td class='b n2'>Text only current rank, according to your amount of posts 
+      <tr><td class='b n1'>&postrank&		</td><td class='b n2'>Shows your rank by number of posts 
 	 </table></table></center></td>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]><a name='syndromes'>What are the \"syndromes\" and how do I get them? </td>

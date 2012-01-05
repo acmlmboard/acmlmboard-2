@@ -247,8 +247,8 @@ else {
     $modstring="";
     $a=$sql->query("SELECT u.name,u.id,u.sex,u.power FROM forummods f, users u WHERE f.fid=$forum[id] AND u.id=f.uid");
     while($mod=$sql->fetch($a)) $modstring.=userlink($mod).", ";
-    if($modstring) $modstring=" (moderated by: ".substr($modstring,0,-2).")";
-
+    if($modstring) $modstring="<br>(moderated by: ".substr($modstring,0,-2).")";
+//    else $modstring="<p>&nbsp;</p>";
     print
         "  $L[TRc]>
 ".      "    $L[TD1]>$status</td>

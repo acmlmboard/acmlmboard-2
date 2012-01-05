@@ -159,7 +159,7 @@
     $s=str_replace("&exppct2&",sprintf("%d",$eleft*100/lvlexp($lvl)),$s);
     $s=str_replace("&rank&",getrank($post[urankset],$post[uposts]),$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",getrank($post[urankset],$post[uposts])),$s);
-    $s=str_replace("&postrank&",mysql_result(mysql_query("SELECT count(*) FROM users WHERE posts>$post[uposts]"),0,0),$s);
+    $s=str_replace("&postrank&",mysql_result(mysql_query("SELECT count(*) FROM users WHERE posts>$post[uposts]"),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
     $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post[num].', 0)', $s);
     return $s;

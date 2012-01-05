@@ -225,5 +225,109 @@ function RenderPageBar($pagebar) {
     echo "</td></tr></table><br/>";
   }
 }
+  function setfield($field){
+    return "$field='$_POST[$field]'";
+  }
 
+  function catheader($title){
+    global $L;
+    return "  $L[TRh]>
+".         "    $L[TDh] colspan=2>$title</td>";
+  }
+
+  function fieldrow($title,$input){
+    global $L;
+    return "  $L[TR]>
+".         "    $L[TD1c]>$title:</td>
+".         "    $L[TD2]>$input</td>";
+  }
+
+  function fieldinput($avatarsize,$max,$field){
+    global $L,$user;
+    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
+//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+  }
+
+  function fieldinputrpg($avatarsize,$max,$field){
+    global $L,$userrpg;
+    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
+//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+  }
+
+  function fieldtext($rows,$cols,$field){
+    global $L,$user;
+    return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($user[$field]).'</textarea>';
+//  return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($loguser[$field]).'</textarea>';
+  }
+
+  function fieldoption($field,$checked,$choices){
+    global $L;
+    $text='';
+    $sel[$checked]=' checked=1';
+    //[KAWA] Added <label> so the text is clickable.
+    foreach($choices as $key=>$val)
+      $text.="
+".           "      <label>$L[INPr]=$field value=$key$sel[$key]>$val &nbsp;</label>";
+    return "$text
+".         "    ";
+  }
+
+// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
+  function fieldselect($field,$checked,$choices){
+    global $L;
+    $text="
+".        "$L[SEL]=$field>";
+    $sel[$checked]=' selected';
+    foreach($choices as $key=>$val)
+      $text.="
+".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
+    return "$text
+".         "    ";
+  }
+
+  function itemselect($field,$current,$cat) {
+    global $sql, $L;
+
+    $viewhidden = 0;
+
+    if (isadmin())
+      $viewhidden = 1;
+
+    $items = $sql->query("SELECT * FROM items WHERE `cat` = 0 UNION SELECT * FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden");
+
+    $text="
+".        "$L[SEL]=$field>";
+
+    while ($item = $sql->fetch($items)) {
+      $text.="
+".           "      $L[OPT]=\"$item[id]\"";
+      if ($current == $item['id'])
+        $text.=" selected";
+
+      $text.="> $item[name]</option>";
+    }
+    return "$text    ";
+  }
+
+  function themelist() {
+    global $sql, $loguser;
+
+    $t = $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
+    while ($x = $sql -> fetch($t)) $themeuser[$x['theme']] = intval($x['count']);
+
+    $themes = unserialize(file_get_contents("themes_serial.txt"));
+    $themelist = array();
+    foreach($themes as $t)
+      $themelist[$t[1]] = $t[0] . " (".$themeuser[$t[1]].")";
+
+    return $themelist;
+  }
+
+  function ranklist() {
+    global $sql, $loguser;
+    $r=$sql->query("SELECT * FROM ranksets ORDER BY id ASC");
+    while($d=$sql->fetch($r)) $rlist[$d[id]]=$d[name];
+
+    return $rlist;
+  }
 ?>

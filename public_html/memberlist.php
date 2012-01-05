@@ -2,6 +2,12 @@
   require 'lib/common.php';
   pageheader('Memberlist');
 
+  $pow = $_REQUEST['pow'];
+  $ppp = $_REQUEST['ppp'];
+  $page = $_REQIEST['page'];
+
+
+
   if($ppp<1) $ppp=50;
   if($page<1) $page=1;
 
@@ -16,8 +22,7 @@
   if($sex=='n') $where='sex=2';
 
   if($pow!='' && is_numeric($pow))
-    if($pow<5) $where.=" AND power=$pow";
-    else       $where.=" AND power>0";
+    $where.=" AND group_id=$pow";
 
   $users=$sql->query("SELECT *,".sqlexp()." FROM users "
                     ."WHERE $where "
@@ -35,6 +40,14 @@
         $pagelist.=" $p";
       else
         $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p)."$p</a>";
+  }
+
+  $activegroups = $sql->query("SELECT * FROM `group` WHERE id IN (SELECT `group_id` FROM users GROUP BY `group_id`) ORDER BY `sortorder` ASC ");
+
+  $groups = array();
+  $gc = 0;
+  while ($group = $sql->fetch($activegroups)) {
+    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp).$group['title']."</a>";
   }
 
   print "$L[TBL1]>
@@ -55,16 +68,16 @@
 ".      "      ".mlink($sort,'n',$pow,$ppp)."N/A</a> |
 ".      "      ".mlink($sort,'' ,$pow,$ppp)."All</a>
 ".      "  $L[TR]>
-".      "    $L[TD1]>Power:</td>
-".      "    $L[TD2c]>
-".      "      ".mlink($sort,$sex,'-1',$ppp)."Banned</a> |
-".      "      ".mlink($sort,$sex, '0',$ppp)."Normal</a> |
-".      "      ".mlink($sort,$sex, '1',$ppp)."Local moderator</a> |
-".      "      ".mlink($sort,$sex, '2',$ppp)."Full moderator</a> |
-".      "      ".mlink($sort,$sex, '3',$ppp)."Administrator</a> |
-".      "      ".mlink($sort,$sex, '4',$ppp)."Root</a> |
-".      "      ".mlink($sort,$sex, '9',$ppp)."All staff</a> |
-".      "      ".mlink($sort,$sex,  '',$ppp)."All</a>
+".      "    $L[TD1]>Group:</td>
+".      "    $L[TD2c]>";
+$c = 0;
+foreach ($groups as $k => $v) {  
+  echo $v;
+  $c++;
+  //if ($c < $gc) 
+  echo " | ";
+}
+echo      "      ".mlink($sort,$sex,  '',$ppp)."All</a>
 ".      "      
 ".      "$L[TBLend]
 ".      "<br>";

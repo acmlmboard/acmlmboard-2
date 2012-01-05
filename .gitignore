@@ -1,10 +1,30 @@
-lib/config.php
-userpic/
-mathres/
+public_html/lib/config.php
+public_html/userpic/
+public_html/mathres/
 temp
 *~
 .DS_Store
 Thumbs.db
 ._*
+public_html/themes_serial.txt
+public_html/gfx/tags/*
+
+#Temp files changed that are reserved for new uncreated Kafuka branch
+#.gitignore
+#public_html/usermood.php
+#public_html/faq.php
+#public_html/gfx/status.php
+
+public_html/ext/
+
+#Just in case
+lib/config.php
+userpic/
+mathres/
+ext/
 themes_serial.txt
-/www/gfx/tags/*
+gfx/tags/*
+usermood.php
+faq.php
+gfx/status.php
+

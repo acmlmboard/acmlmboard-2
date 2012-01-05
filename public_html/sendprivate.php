@@ -3,16 +3,16 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
+
+  needs_login(1);
+
   pageheader('Send private message');
 
   $top='<a href=./>Main</a> '
     .'- <a href=private.php>Private messages</a> '
     .'- Send';
 
-  if(!$log){
-      $err="    You must be logged in to send private messages.<br>
-".         "    <a href=login.php>Login</a>";
-  }
+  if (!has_perm('create-pms')) no_perm();
 
   if($err){
     print "$top - Error

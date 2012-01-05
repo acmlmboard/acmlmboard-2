@@ -2,9 +2,10 @@
 	require 'lib/common.php';
 	pageheader();
 
-	$servers[1]		= "irc.nolimitzone.com";
-	$servers[2]		= "akaneiro.irc.nolimitzone.com";
-	$servers[3]		= "nucleus.kafuka.org";
+//	$servers[1]		= "irc.nolimitzone.com"; //the round robin is fucking up, 
+apparently.
+	$servers[1]		= "akaneiro.irc.nolimitzone.com";
+	$servers[2]		= "kuroi.irc.nolimitzone.com";
 	if ($server > count($servers) || $server <= -1) $server = 0;
 
 	$serverlist		= "";
@@ -23,7 +24,7 @@
 
 	print	"$L[TBL1]>
 ".			"  $L[TRh]>
-".			"    $L[TDh]>Java IRC Chat - $channel on NolimitZone</td>
+".			"    $L[TDh]>Java IRC Chat - $channel on NoLimitNET</td>
 ".			"  $L[TR]>
 ".			"    $L[TD1c]>Servers: $serverlist</td>
 ".			"  </tr>     

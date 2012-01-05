@@ -37,7 +37,7 @@ function LoadBlocklayouts()
     //if($post[nolayout]) {
     //[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || acl("block-layouts");
+	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || $loguser['blocklayouts'];
     if($isBlocked)
       $post['usign'] = $post['uhead'] = "";
     //}
@@ -45,7 +45,7 @@ function LoadBlocklayouts()
     //post has been deleted, display placeholder
     if($post[deleted]) {
       $postlinks="";
-      if(isadmin() || ismod(getforumbythread($post[thread]))) {
+      if(can_edit_forum_posts(getforumbythread($post[thread]))) {
         $postlinks.="<a href=thread.php?pid=$post[id]&pin=$post[id]&rev=$post[revision]#$post[id]>Peek</a> | ";
         $postlinks.="<a href=editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&act=undelete>Undelete</a>";
       }
@@ -81,22 +81,23 @@ function LoadBlocklayouts()
 
       // I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
       if($post[thread])
-        $postlinks.=($postlinks?' | ':'')."<a href=newreply.php?id=$post[thread]&pid=$post[id]>Quote</a>";
+        $postlinks.=($postlinks?' | ':'')."<a href=newreply.php?id=$post[thread]&pid=$post[id]>Reply</a>";
 
       // "Edit" link for admins or post owners, but not banned users
-      if($post[thread] && ((!isbanned() && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))
+/*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
+if (can_edit_post($post[id]) && $post[id])
         $postlinks.=($postlinks?' | ':'')."<a href=editpost.php?pid=$post[id]>Edit</a>";
 
-      if($post[id] && isadmin() || ismod(getforumbythread($post[thread])))
+      if($post[id] && can_delete_forum_posts(getforumbythread($post[thread])))
         $postlinks.=($postlinks?' | ':'')."<a href=editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&act=delete>Delete</a>";
 
       if($post[id])
         $postlinks.=" | ID: $post[id]";
 
-      if(acl_for_user($post[uid],"show-ips"))
+      if(has_perm('view-post-ips'))
         $postlinks.=($postlinks?' | ':'')."IP: $post[ip]";
 
-      if(   acl_for_thread($post[thread],"see-history")
+      if(can_view_forum_post_history(getforumbythread($post[thread]))
          && $post[maxrevision]>1) {
         $revisionstr.=" | Go to revision: ";
         for($i=1;$i<=$post[maxrevision];++$i)
@@ -111,7 +112,12 @@ function LoadBlocklayouts()
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $L[TR]>
 ".        "    $L[TD1] style=border-bottom:0;border-right:0 height=17>
-".        "      ".userlink($post,'u')./*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
+".        "      ".userlink($post,'u').
+
+
+
+
+/*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
 ".*/        "    </td>
 ".        "    $L[TD1] style=border-left:0 width=100%>
 ".        "      $L[TBL] width=100%>
@@ -144,7 +150,8 @@ function LoadBlocklayouts()
 
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
         $text.=
-          "      <br>".postfilter2($post[utitle])."
+          "      <br>".grouplink($post[uid])."
+".        "      <br>".postfilter2($post[utitle])."
 ".        "      <br>Level: ".calclvl($exp)."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]

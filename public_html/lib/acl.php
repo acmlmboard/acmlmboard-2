@@ -141,7 +141,7 @@ function isbanned(){
   global $loguser;
   return $loguser[power]<0;
 }
-
 /* End Legacy */
+
 
 ?>

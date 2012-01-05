@@ -1,12 +1,14 @@
 <?php
   require 'lib/common.php';
 
+
+
   if($id=$_GET[id])
     checknumeric($id);
   else $id=0;
 
   pageheader("Edit Tokens");
-
+  no_perm();
   if(!acl("edit-tokens")) {
      print "$L[TBL1]>
 ".        "  $L[TD1c]>

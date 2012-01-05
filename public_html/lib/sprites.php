@@ -31,7 +31,7 @@ $chance = 5;
 $roll = 100;
 
 //Always fail to roll if disabled, effectively never appearing at all.
-if(acl('disable-sprites'))
+if($loguser['blocksprites'])
 	$chance = 0;
 	
 $monRequest = mysql_query("SELECT * FROM sprites WHERE id <= ".$roll);

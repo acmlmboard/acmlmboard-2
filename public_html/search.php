@@ -22,15 +22,17 @@ function field(show) {
 
 $categs=$sql->query("SELECT * "
                    ."FROM categories "
-                   ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+//                   ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+                   ."WHERE id IN ".cats_with_view_perm()." "
                    ."ORDER BY ord");
 while($c=$sql->fetch($categs))
   $categ[$c[id]]=$c;
 $forums=$sql->query("SELECT f.* "
                    ."FROM forums f "
                    ."LEFT JOIN categories c ON c.id=f.cat "
-                   ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
-                   .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+//                   ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+//                   .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+                   ."WHERE f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
                    ."ORDER BY c.ord,ord");
 
 $cat=-1;
@@ -132,7 +134,7 @@ if($_GET[w] == 1) {
 	}
   }
   $dastring = trim(substr($dastring, strlen($defbool)));
-  print $dastring;
+//  print $dastring;
   $fieldlist='';
   $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign');
   foreach($ufields as $field)
@@ -153,8 +155,10 @@ if($_GET[w] == 1) {
                     ."LEFT JOIN forums f ON f.id=t.forum "
                     ."LEFT JOIN categories c ON c.id=f.cat "
                     ."WHERE $dastring AND ISNULL(pt2.id) "
-                    .  "AND f.minpower<=$loguser[power] "
-                    .  "AND c.minpower<=$loguser[power] "
+                   ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
+
+//                    .  "AND f.minpower<=$loguser[power] "
+//                    .  "AND c.minpower<=$loguser[power] "
                     ."ORDER BY p.id");
 
 
@@ -224,8 +228,9 @@ else {
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON f.cat=c.id "
                       ."WHERE $dastring "
-                      .  "AND f.minpower<=$loguser[power] "
-                      .  "AND c.minpower<=$loguser[power] "
+//                      .  "AND f.minpower<=$loguser[power] "
+//                      .  "AND c.minpower<=$loguser[power] "
+                   ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
                       ."ORDER BY t.sticky DESC, t.lastdate DESC "
                       ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
@@ -236,8 +241,10 @@ else {
                                ."LEFT JOIN forums f ON f.id=t.forum "
                                ."LEFT JOIN categories c ON f.cat=c.id "
                                ."WHERE $dastring "
-                               .  "AND f.minpower<=$loguser[power] "
-                               .  "AND c.minpower<=$loguser[power]");
+                   ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
+//                               .  "AND f.minpower<=$loguser[power] "
+//                               .  "AND c.minpower<=$loguser[power]"
+);
   print "<br>
 ".      "$L[TBL1]>
 ".      "  $L[TRh]>

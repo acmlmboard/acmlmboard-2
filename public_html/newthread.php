@@ -22,7 +22,9 @@
   }
   checknumeric($fid);
 
-  $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid");
+  needs_login(1);
+
+  $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
   pageheader('New thread',$forum[id]);
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
@@ -30,14 +32,14 @@
            .posttoolbutton("message","I","[i]","[/i]")
            .posttoolbutton("message","U","[u]","[/u]")
            .posttoolbutton("message","S","[s]","[/s]")
-	   ."$L[TD2]>&nbsp;</td>"
+     ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
            .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
            .posttoolbutton("message",";","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
            .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-	   .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
+     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
 
   $tagsin="";
   $t=$sql->query("SELECT * FROM tags WHERE fid=$fid");
@@ -54,23 +56,28 @@
   $forumlink="<a href=forum.php?id=$fid>Back to forum</a>";
 
   if(!$forum)
-    $err="    The specified forum doesn't exist!";
+    forum_not_found();
 
-  else if($forum[minpowerthread]>$user[power]){
-    if(isbanned())
-      $err="    You can't post when you are banned!<br>
+//  else if($forum[minpowerthread]>$user[power]){
+     else if (!can_create_forum_thread($fid)){
+
+  $err="    You have no permissions to create threads in this forum!<br>$forumlink";
+//    if(isbanned())
+/*      $err="    You can't post when you are banned!<br>
 ".         "    $forumlink";
     else
       $err="    You can't post in this restricted forum!<br>
-".         "    $forumlink";
+".         "    $forumlink";*/
   }
 
-  else if($user[lastpost]>ctime()-30 && $act=='Submit')
+  else if($user[lastpost]>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))
       $err="    Don't post threads so fast, wait a little longer.<br>
 ".         "    $forumlink";
 
   //2007-02-19 //blackhole89 - table breach protection
   if($act=='Submit'){
+    $title = $_POST['title'];
+    $message =  $_POST['message'];
     if(($tdepth=tvalidate($message))!=0)
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>
 ".         "    $forumlink";
@@ -302,8 +309,13 @@
 
 //    if($forum[minpower]<=0) sendirc("\x0314New thread by \x0309$user[name]\x0314 in \x0307". $forum[title] ."\x0314: \x0307".stripslashes($_POST[title])."\x0314 - \x0303{boardurl}?t=$tid");
 //    else sendirc("S\x0314New thread by \x0309$user[name]\x0314 in \x0307". $forum[title] ."\x0314: \x0307".stripslashes($_POST[title])."\x0314 - \x0303{boardurl}?t=$tid");
-    if($forum[minpower]<=0) sendirc("\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");
-    else sendirc("S\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");
+    $chan = $sql->resultp("SELECT chan FROM announcechans WHERE id=?",array($forum['announcechan_id']));
+
+/*    if(!$forum['private']) sendirc("\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");
+    else sendirc("S\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");*/
+
+
+     sendirc("\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid",$chan);
 
     print "$top - Submit
 ".        "<br><br>

@@ -46,6 +46,7 @@
       $curph--;
     }
     unset($curpos, $curph, $phs);
+    //HOSTILE DEBUGGING echo ($query)."<br>";
     return $query;
    }
 
@@ -86,6 +87,7 @@
     }
 
     function fetchp($query,$phs,$row=0,$col=0){
+      //HOSTILE DEBUGGING echo 'preparing fetch query<br>';
       return $this->fetchq(self::preparesql($query,$phs),$row,$col);
     }
 

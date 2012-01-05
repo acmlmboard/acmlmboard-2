@@ -1,6 +1,9 @@
 <?php
   require 'lib/common.php';
 
+
+  needs_login(1);
+
   if(!$page)
     $page=1;
 
@@ -21,28 +24,21 @@
     $sent     =false;
   }
 
-  if(!$log){
-    pageheader('Error');
-    print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    You must be logged in to view your private messages.<br>
-".        "    <a href=login.php>Login</a>
-".        "$L[TBLend]
-";
-    pagefooter();
-    die();
-  }
-
-  if(isadmin()) $id=$_GET[id];
+  if(has_perm('view-user-pms')) $id=$_GET[id];
   else $id	= 0;
   checknumeric($id);
+
+  if(!has_perm('view-own-pms') && $id == 0) {
+    pageheader("Access Denied");
+    no_perm();
+  }
 
   $showdel=$_GET[showdel];
   checknumeric($showdel);
 
   if($_GET[action]=="del") {
     $owner=$sql->resultq("SELECT user$fieldn2 FROM pmsgs WHERE id=$id");
-    if(isadmin() || $owner==$loguser[id]) {
+    if(has_perm('delete-user-pms') || ($owner==$loguser[id] && has_perm('delete-own-pms')) ) {
       $sql->query($q="UPDATE pmsgs SET del_$fieldn2=".((int)!$showdel)." WHERE id=$id");
     } else {
       pageheader('Error');

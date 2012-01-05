@@ -90,7 +90,7 @@
 ".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
     else
       $lastmsg='';
-
+if (has_perm('view-own-pms')) {
     $pmsgbox=
         "$L[TBL1]>
 ".      "  $L[TRh]>
@@ -102,14 +102,20 @@
 ".      "  $L[TBLend]
 ".      "  <br>
 ";
+}
+else {
+  $pmsgbox = "";
+
+}
   }
 
   $categs=$sql->query("SELECT * "
                      ."FROM categories "
-                     ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+//                     ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
                      ."ORDER BY ord");
-  while($c=$sql->fetch($categs))
-    $categ[$c[id]]=$c;
+  while($c=$sql->fetch($categs)) {
+    if (can_view_cat($c['id'])) $categ[$c[id]]=$c;
+  }
 
 	//[KAWA] ABXD does ignores with a very nice SQL trick that I think Mega-Mario came up with one day.
 	//Unfortunately, this place is too hairy to add the trick to so I'll have to use a third query to collect the ignores. The first is categories. The second is the forum list itself.
@@ -123,8 +129,8 @@
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "
                .($log?"LEFT JOIN forumsread r ON r.fid=f.id AND r.uid=$loguser[id] ":'')
-                     ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
-                     .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+//                     ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+//                     .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
                      ."ORDER BY c.ord,ord");
   $cat=-1;
 
@@ -132,9 +138,14 @@
   $count[h]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-3600));
   $lastuser=$sql->fetchq('SELECT id,name,sex,power FROM users ORDER BY id DESC LIMIT 1');
 
-  $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic FROM users '
-                      .'WHERE lastview>'.(ctime()-300).' '
-                         .'OR lastpost>'.(ctime()-300).' '
+  $hiddencheck  = "AND hidden=0 ";
+  if (has_perm('view-hidden-users')) {
+    $hiddencheck = "";
+  }
+
+  $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
+                      .'WHERE (lastview>'.(ctime()-300).' '
+                         .'OR lastpost>'.(ctime()-300).") $hiddencheck "
                       .'ORDER BY name');
   $onuserlist='';
   $onusercount=0;
@@ -143,7 +154,7 @@
     $onuserlog=($user[lastpost]<=$user[lastview]);
     $«=($onuserlog?'':'(');
     $»=($onuserlog?'':')');
-    $onuserlist.=($onusercount?', ':'').$«.userlink($user).$»;
+    $onuserlist.=($onusercount?', ':'').$«.($user[hidden] ? '('.userlink($user).')' : userlink($user)).$»;
     $onusercount++;
   }
 
@@ -206,10 +217,12 @@
 ";
 
   while($forum=$sql->fetch($forums)){
+    if (!can_view_forum($forum['id'])) continue;
+
     if($forum[cat]!=$cat){
       $cat=$forum[cat];
         print "  $L[TRg]>
-".            "    $L[TD] colspan=5>".($categ[$cat][title])."</td>
+".            "    $L[TD] colspan=5>".($categ[$cat]['private']?('('.($categ[$cat][title]).')'):($categ[$cat][title]))."</td>
 ";
     }
 
@@ -240,7 +253,7 @@
         "  $L[TRc]>
 ".      "    $L[TD1]>$status</td>
 ".      "    $L[TD2l]>
-".      "      <a href=forum.php?id=$forum[id] $ignoreFX>$forum[title]</a><br>
+".      "      ".($forum['private']?'(':'')."<a href=forum.php?id=$forum[id] $ignoreFX>$forum[title]</a>".($forum['private']?')':'')."<br>
 ".      "      <font class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</font>
 ".      "    </td>
 ".      "    $L[TD1]>$forum[threads]</td>

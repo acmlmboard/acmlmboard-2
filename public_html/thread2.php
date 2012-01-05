@@ -14,14 +14,6 @@
   require 'lib/common.php';
   require 'lib/threadpost.php';
 
-
-    function timelink($time){
-      global $timeval;
-      if ($timeval == $time) return " ".timeunits2($time)." ";
-      else return " <a href=thread.php?time=$time>".timeunits2($time).'</a> ';
-    }
-
-
   loadsmilies();
 
   if(!$page)
@@ -36,8 +28,6 @@
     checknumeric($tid);
   elseif($uid=$_GET[user])
     checknumeric($uid);
-  elseif($timeval=$_GET[time])
-    checknumeric($timeval);
   // "link" support (i.e., thread.php?pid=999whatever)
   elseif($pid=$_GET[pid]){
     checknumeric($pid);
@@ -75,7 +65,7 @@
     $pinstr="AND (pt2.id<>$_GET[pin] OR pt2.revision<>($_GET[rev]+1)) ";
   } else $pinstr="";
 
-  if(!$uid  && !$timeval){
+  if(!$uid){
     if (!$tid) $tid=0;
     $sql->query("UPDATE threads "
                ."SET views=views+1 $action "
@@ -177,47 +167,7 @@
                                   ."WHERE p.user=$uid "
                                   .  "AND f.minpower<=$loguser[power] "
                                   .  "AND c.minpower<=$loguser[power]");
-  }
-  elseif($timeval) {
-    checknumeric($time);
-    $mintime=ctime()-$time;
-
-    pageheader('Latest posts');
-
-
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle "
-                      ."FROM posts p "
-                      ."LEFT JOIN poststext pt ON p.id=pt.id "
-//          ."JOIN ("
-//                        ."SELECT id,MAX(revision) toprev FROM poststext GROUP BY id"
-//                      .") as pt2 ON pt2.id=pt.id AND pt2.toprev=pt.revision "
-          ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
-                      ."LEFT JOIN users u ON p.user=u.id "
-                      ."LEFT JOIN threads t ON p.thread=t.id "
-                      ."LEFT JOIN forums f ON f.id=t.forum "
-                      ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE p.date>$mintime AND ISNULL(pt2.id) "
-//                      .  "AND f.minpower<=$loguser[power] "
-//                      .  "AND c.minpower<=$loguser[power] "
-                      ."ORDER BY p.date DESC "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
-
-    $thread[replies]=$sql->resultq("SELECT count(*) "
-                                  ."FROM posts p "
-                                  ."LEFT JOIN threads t ON p.thread=t.id "
-                                  ."LEFT JOIN forums f ON f.id=t.forum "
-                                  ."LEFT JOIN categories c ON c.id=f.cat "
-                                  ."WHERE p.date>$mintime "
-//                                  .  "AND f.minpower<=$loguser[power] "
-//                                  .  "AND c.minpower<=$loguser[power]"
-                      );
-  }
-
-
-
-
-
-  else
+  }else
     pageheader();
 
   if($thread[replies]<$loguser[ppp]){
@@ -231,20 +181,16 @@
         $pagelist.=" <a href=thread.php?id=$tid&page=$p>$p</a>";
       elseif($uid)
         $pagelist.=" <a href=thread.php?user=$uid&page=$p>$p</a>";
-      elseif($timeval)
-        $pagelist.=" <a href=thread.php?time=$timeval&page=$p>$p</a>";
     $pagebr='<br>';
     $pagelist.='</div>';
   }
 
   if($tid){
-
-    if (can_create_forum_post($thread[forum])) {
     if($thread[closed])
       $newreply="Thread closed";
     else
       $newreply="<a href=newreply.php?id=$tid>New reply</a>";
-    }
+
     if($thread[ispoll])
     {
       if($act=="vote" && $log)
@@ -311,11 +257,11 @@ if(!$isThumbed)
 	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup\">+1</a>";
 else
 	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown\">-1</a>";
-//if($loguser['power'] > 0)
-//{
+if($loguser['power'] > 0)
+{
 	$thumbCount = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE tid=".$tid);
-	if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
-//}
+	$thumbsUp .= " (".$thumbCount.")";
+}
 
 
     $topbot=
@@ -334,13 +280,7 @@ else
 ".        "$L[TBLend]
 ";
   }
-elseif($timeval){
-    $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
-".        "$L[TBLend]
-";
-  }
+
   
   
   $modlinks='<br>';
@@ -462,21 +402,8 @@ elseif($timeval){
 ";
   }
 
-  print   "$topbot";
-
-
-  if($timeval) {
-    print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
-          <a href=forum.php?time=$timeval>By Threads</a> | By Posts</a></div><br>"; 
-    print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">'.
-         timelink(900).'|'.timelink(3600).'|'.timelink(86400).'|'.timelink(604800)
-   ."</div>";
-
-
- }
-
-
-print "$modlinks
+  print   "$topbot
+".        "$modlinks
 ".        "$pagelist
 ".        "$poll
 ";
@@ -484,7 +411,7 @@ print "$modlinks
     if (isset($post['fid'])) {
       if (!can_view_forum($post['fid'])) continue;
     }
-    if($uid || $timeval){
+    if($uid){
       $pthread[id]=$post[tid];
       $pthread[title]=$post[ttitle];
     }
@@ -497,94 +424,10 @@ print "$modlinks
     print "<br>
 ".         threadpost($post,0,$pthread);
   }
-
-
   print   "$pagelist$pagebr
-".        "<br>";
-
-  if($thread[id] && can_create_forum_post($thread[forum])) {
-  echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbutton("message","B","[b]","[/b]")
-           .posttoolbutton("message","I","[i]","[/i]")
-           .posttoolbutton("message","U","[u]","[/u]")
-           .posttoolbutton("message","S","[s]","[/s]")
-     ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","[code]","[/code]","cd")
-           ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
-           .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
-
-      //lol so hacky please organise this into the right place soon.
-
-    print "<script language=javascript>
-
-        function togglequickreply()
-        {
-          var table = document.getElementById('quickreply');
-          var rows = table.getElementsByTagName('tr');
-
-          for(var i = 1; i < rows.length; i++)
-          {
-            if(rows[i].className == 'toolbar') continue;
-            if(rows[i].style['display'] == 'none')
-              rows[i].style['display'] = '';
-            else
-              rows[i].style['display'] = 'none';
-          }
-        }
-    </script>
-    ";
-
-
-    print "
-".        "
-".        "$L[TBL1] name=quickreply id=quickreply>
-".        " <form action=newreply.php method=post>
-".        "  $L[TRh] onclick='togglequickreply();' style='cursor: pointer'>
-".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
-";
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=$loguser[pass]>
-";
-    print "  $L[TR]>
-".        "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]
-".        "  $L[TR]>
-".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
-".        "      $L[INPh]=tid value=$tid>
-".        "      $L[INPs]=action value=Submit>
-".        "      $L[INPs]=action value=Preview>
-".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()." 
-".        "      $L[INPc]=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
-".        "    </td>
-".        " </form>
-".        "$L[TBLend]<br>
-";
-  }
-
-
-print        "$topbot";
+".        "<br>
+".        "$topbot";
 
   pagefooter();
-
-  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
-                        // it was owned by root.
-    global $sql, $loguser;
-    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
-    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
-    $moodst="";
-    while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
-    $moodst.= "</select>";
-    return $moodst;
-  }
 ?>
                                                                                                    

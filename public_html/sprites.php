@@ -26,8 +26,9 @@ capture.");
 		$numCaught = mysql_result(mysql_query("SELECT COUNT(*) FROM sprite_captures WHERE userid=".$userID), 0, 0);
 		if($numCaught == 7)
 		{
-			mysql_query("INSERT IGNORE INTO usertokens VALUES(".$userID.", 100)");
-			$grats .= " and got the Dodongo Badge!";
+			//mysql_query("INSERT IGNORE INTO usertokens VALUES(".$userID.", 100)");
+			//$grats .= " and got the Dodongo Badge!";
+			$grats .= "!";
 		}
 		else
 			$grats .= "!";

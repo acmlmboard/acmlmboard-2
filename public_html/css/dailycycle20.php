@@ -1,4 +1,7 @@
 <?php
+
+date_default_timezone_set("UTC");
+
 $tzoff = isset($_GET['tz']) ? floatval($_GET['tz']) : 0;
 
 function srgb($r, $g, $b, $f=1.0) {

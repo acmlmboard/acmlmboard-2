@@ -1,7 +1,7 @@
 <?php
   include('lib/common.php');
 
-  if(!isadmin()) {
+  if(!has_perm('edit-attentions-box')) {
     pageheader('Nothing here.');
   } else {
 

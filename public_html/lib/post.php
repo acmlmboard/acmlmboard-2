@@ -1,8 +1,37 @@
 <?php
 
 
+  function userlink_by_name($name) {
+    global $sql;
+    $u = $sql->fetchp("SELECT id,name,power,minipic FROM users WHERE UPPER(name)=UPPER(?)",array($name));     
+    if ($u) return userlink($u);
+    else return 0;
+  }
+
+
+
+  function get_userlink($matches) {
+    return userlink_by_id($matches[1]);
+  }
+  function get_username_link($matches) {
+    $x = str_replace('"','',$matches[1]);
+    $nl = userlink_by_name($x);
+    if ($nl) return $nl;
+    else return $matches[0];
+  }
+  function get_forumlink($matches) {
+    $fl = forumlink_by_id($matches[1]);
+    if ($fl) return $fl;
+    else return $matches[0];
+  }
+  function get_threadlink($matches) {
+    $tl = threadlink_by_id($matches[1]);
+    if ($tl) return $tl;
+    else return $matches[0];
+  }
+
  function postfilter($msg, $nosmilies=0){
-    global $smilies, $L, $config;
+    global $smilies, $L, $config, $sql;
 
     //[blackhole89] - [code] tag
     $list = array("<","\\\"" ,"\\\\" ,"\\'","\r\n","[",":",")","_");
@@ -70,10 +99,20 @@
     $msg=str_replace('[spoiler]','<div style=color:black;background:black class=fonts><font color=white><b>Spoiler:</b></font><br>',$msg);
     $msg=str_replace('[/spoiler]','</div>',$msg);
     $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
-    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);
+    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1>',$msg);
     $msg=str_replace('[quote]','<blockquote><hr>',$msg);
     $msg=str_replace('[/quote]','<hr></blockquote>',$msg);
+
+    $msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg);
+//    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
+
+    $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
+    $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);
+    $msg=preg_replace_callback("'\[thread=([0-9]+)\]'si","get_threadlink",$msg);
+
+    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);
+
     $msg=preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small><hr>',$msg);
     $msg=preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small><hr>',$msg);
     $msg=preg_replace("'\[quote=(.*?)\]'si",'<blockquote><i>Posted by \\1</i><hr>',$msg);
@@ -120,6 +159,7 @@
     $s=str_replace("&exppct2&",sprintf("%d",$eleft*100/lvlexp($lvl)),$s);
     $s=str_replace("&rank&",getrank($post[urankset],$post[uposts]),$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",getrank($post[urankset],$post[uposts])),$s);
+    $s=str_replace("&postrank&",mysql_result(mysql_query("SELECT count(*) FROM users WHERE posts>$post[uposts]"),0,0),$s);
     //This one's from ABXD
     $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post[num].', 0)', $s);
     return $s;

@@ -5,6 +5,7 @@
   require 'lib/layout.php';
   require 'lib/config.php';
   require 'lib/database.php';
+  require 'lib/perm.php';  
   require 'lib/acl.php';
   require 'lib/helpers.php';
   require 'lib/thread.php'; 
@@ -17,4 +18,5 @@
   require 'lib/board.php';
   require 'lib/rpg.php';
   require 'lib/graphics.php'
+  
 ?>

@@ -51,6 +51,13 @@
   }
 
 
+ function userlink_by_id($uid) {
+    global $sql;
+    $u = $sql->fetchp("SELECT id,name,power,minipic FROM users WHERE id=?",array($uid));        
+    $u['showminipic']=0;   
+    return userlink($u);
+ }
+
  function userlink($user,$u=''){
     global $loguser;
 
@@ -104,10 +111,7 @@
   //global $loguser;
  // if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 
 /* Broken as of 2011-09-18 -Emuz */
-  static $nccache;
-  if(isset($nccache[$user[$u.id]])) $nc=$nccache[$user[$u.id]];
-  else $nc=$nccache[$user[$u.id]]=$sql->resultq("SELECT t.nc".$user[$u.sex]." FROM usertokens ut, tokens t WHERE ut.u='".$user[$u.id]."' AND ut.t=t.id ORDER BY t.nc_prio DESC LIMIT 1");
- 
+  $nc= color_for_user($user[$u.id]);
    if($user[$u.minipic] && $user[showminipic]) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.minipic]."' border=0> ";
    else $minipic="";
   return "$minipic<font color='#$nc'>" //class=nc".$user[$u.sex].$user[$u.power].'>'

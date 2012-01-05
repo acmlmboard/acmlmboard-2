@@ -2,7 +2,7 @@
   /* newreply.php ****************************************
     Changelog
 0221  blackhole89       related to thread-individual "NEW" display system
-0220  blackhole89	      added minpower check for displaying the thread's
+0220  blackhole89       added minpower check for displaying the thread's
                         previous contents. (yes, it is possible to make a forum
                         with minpowerreply < minpower and allow users to "reply blindly" now)
   */
@@ -32,6 +32,9 @@
   }
   checknumeric($tid);
 
+  needs_login(1);
+
+
   if($act!='Submit'){
     $fieldlist='';
     $ufields=array('id','name','posts','sex','power');
@@ -52,30 +55,40 @@
   $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.minpowerreply, f.minpower '
                       .'FROM threads t '
                       .'LEFT JOIN forums f ON f.id=t.forum '
-                      ."WHERE t.id=$tid");
+                      ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
   pageheader('New reply',$thread[forum]);
+
+
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
            .posttoolbutton("message","I","[i]","[/i]")
            .posttoolbutton("message","U","[u]","[/u]")
            .posttoolbutton("message","S","[s]","[/s]")
-	   ."$L[TD2]>&nbsp;</td>"
+     ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
            .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
            .posttoolbutton("message",";","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
            .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-	   .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
+     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
 
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
-  if(!$thread)
-      $err="    The specified thread doesn't exist!";
+  if(!$thread) {
+//      $err="    The specified thread doesn't exist!";
 
-  elseif($thread[minpowerreply]>$user[power]){
+    thread_not_found();
+    }
+
+
+     else if (!can_create_forum_post($thread[forum])){
+
+       $err="    You have no permissions to create posts in this forum!<br>$forumlink";
+    }
+/*  elseif($thread[minpowerreply]>$user[power]){
     if(isbanned())
       $err="    You can't post when you are banned!<br>
 ".         "    $threadlink";
@@ -86,14 +99,15 @@
   elseif($thread[minpower]>$user[power]){
     $err="      You can't post in this restricted forum!<br>
 ".       "      $threadlink";
-  }
+  }*/
   elseif($thread[closed]){
       $err="    You can't post in closed threads!<br>
 ".         "    $threadlink";
   }
 
   if($act=='Submit'){
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !isadmin())  // admins can double post all they want
+    $message = $_POST[message];
+    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !has_perm('consecutive-posts'))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
@@ -116,19 +130,19 @@
 
   if($pid=$_GET[pid]){
     checknumeric($pid);  //nice way of adding security, really. int_val doesn't really do it (floats and whatnot), so heh
-    $post=$sql->fetchq("SELECT u.name, p.user, pt.text, f.minpower "
+    $post=$sql->fetchq("SELECT u.name, p.user, pt.text, f.minpower, p.thread "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
-		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
+          ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
                       ."LEFT JOIN users u ON p.user=u.id "
-		      ."LEFT JOIN threads t ON t.id=p.thread "
-		      ."LEFT JOIN forums f ON f.id=t.forum "
+          ."LEFT JOIN threads t ON t.id=p.thread "
+          ."LEFT JOIN forums f ON f.id=t.forum "
                       ."WHERE p.id=$pid AND ISNULL(pt2.id)");
-	
-	//does the user have reading access to the quoted post?
-	if($loguser[power]<$post[minpower]) $post[text]="--- restricted post ---";
+  
+  //does the user have reading access to the quoted post?
+  if(!can_view_forum(getforumbythread($post[thread]))) $post[text]="";
 
-	$quotetext="[quote=\"$post[name]\" id=\"$pid\"]$post[text][/quote]";
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]$post[text][/quote]";
   }
 
   //spambot logging [blackhole89]
@@ -259,14 +273,21 @@
     //2007-02-21 //blackhole89 - nuke entries of this thread in the "threadsread" table
     $sql->query("DELETE FROM threadsread WHERE tid='$thread[id]' AND NOT (uid='$userid')");
 
-	// bonus shit
+  // bonus shit
     $c = rand(100, 500);
     $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
 
+   $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
+
+
+
+
 //    if ($thread[minpower]<=0) sendirc("\x0314New reply by \x0309$user[name]\x0314 (\x0303$thread[ftitle]\x0314: \x0307$thread[title]\x0314 (\x0303$tid\x0314) (+$c)) - \x0303{boardurl}?p=$pid");
 //    else sendirc("S\x0314New reply by \x0309$user[name]\x0314 (\x0303$thread[ftitle]\x0314: \x0307$thread[title]\x0314 (\x0303$tid\x0314) (+$c)) - \x0303{boardurl}?p=$pid");
-    if ($thread[minpower]<=0) sendirc("\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");
-    else sendirc("S\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");
+/*    if ($thread[minpower]<=0) sendirc("\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");
+    else sendirc("S\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");*/
+
+sendirc("\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
 
     print "$top - Submit
 ".        "<br><br>

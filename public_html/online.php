@@ -16,8 +16,14 @@
   if(!$time)
     $time=300;
 
+
+  $hiddencheck  = "AND hidden=0 ";
+  if (has_perm('view-hidden-users')) {
+    $hiddencheck = "";
+  }
+
   $users=$sql->query("SELECT * FROM users "
-                    ."WHERE lastview>".(ctime()-$time)." "
+                    ."WHERE lastview>".(ctime()-$time)." $hiddencheck"
                     ."ORDER BY lastview DESC");
   $guests=$sql->query("SELECT g.* FROM guests g "
                     ."WHERE g.date>".(ctime()-$time)." "
@@ -38,8 +44,9 @@
 ".      "    $L[TDh]>Name</td>
 ".      "    $L[TDh] width=90>Last view</td>
 ".      "    $L[TDh] width=140>Last post</td>
-".      "    $L[TDh]>URL</td>
-".(acl_for_user(0,"show-ips")?
+".(has_perm('view-user-urls')?
+        "    $L[TDh]>URL</td>":'')."
+".(has_perm('view-post-ips')?
         "    $L[TDh] width=120>IP</td>":'')."
 ".      "    $L[TDh] width=50>Posts</td>
 ";
@@ -51,11 +58,12 @@
     $tr=($i%2?'TR2':'TR3').'c';
     print "  $L[$tr]>
 ".        "    $L[TD1]>$i.</td>
-".        "    $L[TDl]>".userlink($user)."</td>
+".        "    $L[TDl]>". ($user[hidden] ? '('.userlink($user).')' : userlink($user))."</td>
 ".        "    $L[TD]>".cdate($loguser[timeformat],$user[lastview])."</td>
 ".        "    $L[TD]>".($user[lastpost]?cdate($dateformat,$user[lastpost]):'-')."</td>
-".        "    $L[TDl]><span style='float:right'>".sslicon($user[ssl],$user[id])."</span".($user[url]?"><a href=$user[url]>".str_replace(array("%20", "_")," ",$user[url])."</a>":'>-').($user['ipbanned'] ? " (IP banned)":"")."</td>
-".(acl_for_user($user[id],"show-ips")?
+".(has_perm('view-user-urls')?        
+          "    $L[TDl]><span style='float:right'>".sslicon($user[ssl],$user[id])."</span".($user[url]?"><a href=$user[url]>".str_replace(array("%20", "_")," ",$user[url])."</a>":'>-').($user['ipbanned'] ? " (IP banned)":"")."</td>":'')."
+".(has_perm("view-post-ips")?
           "    $L[TD]>".flagip($user[ip])."</td>":'')."
 ".        "    $L[TD]>$user[posts]</td>
 ";

@@ -2,6 +2,13 @@
   require 'lib/common.php';
   require 'lib/threadpost.php';
 
+  needs_login(1);
+
+  if (!has_perm('view-own-pms')) {
+    pageheader('Access Denied');
+    no_perm();
+  }
+
   loadsmilies();
 
   $fieldlist=''; $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign');
@@ -12,6 +19,12 @@
     checknumeric($pid);
 // should display an error otherwise but for now who cares
 //  if ($pid) 
+
+    if (!$pid) {
+      pageheader('Error');
+      pm_not_found();
+    }
+
     $pmsgs=$sql->fetchq("SELECT $fieldlist p.*, pt.* "
                        ."FROM pmsgs p "
                        ."LEFT JOIN users u ON u.id=p.userfrom "
@@ -19,18 +32,9 @@
                        ."WHERE p.id=$pid");
     $tologuser=($pmsgs[userto]==$loguser[id]);
 
-    if(((!$tologuser && $pmsgs[userfrom]!=$loguser[id]) && !isadmin())){
+    if(((!$tologuser && $pmsgs[userfrom]!=$loguser[id]) && !has_perm('view-user-pms'))) {
       pageheader('Error');
-      print 
-          "$L[TBL1]>
-".        "  $L[TR2]>
-".        "    $L[TD1c]>
-".        "      You are not authorized to view this private message.<br>
-".        "      <a href=private.php>Back to private messages</a>
-".        "$L[TBLend]
-";
-      pagefooter();
-      die();
+      pm_not_found();
     }elseif($tologuser && $pmsgs[unread])
       $sql->query("UPDATE pmsgs SET unread=0 WHERE id=$pid");
 

@@ -5,6 +5,8 @@
   require 'lib/common.php';
 
 
+  needs_login(1);
+
   $targetuserid = $loguser[id];
   $target = false;
   $targetget = "";
@@ -16,6 +18,15 @@
     $targetget = "&uid=".$targetuserid;
     $targetgeta = "?uid=".$targetuserid;
   }
+
+
+  if (!can_edit_user_moods($targetuserid)) $targetuserid = 0;
+
+  if ($targetuserid == 0) {
+     pageheader('No permission');
+     no_perm();
+  }
+
 
   //Select existing avatar or new one
   $id = (isset($_GET[i]) ? $_GET[i] : (isset($_POST[aid]) ? $_POST[aid] : -1 ));
@@ -37,11 +48,11 @@
       $fext=strtolower(substr($fname,-4));
       $error='';
       $exts=array('.png','.jpg','.gif');
-      $dimx=$avatardimx;
-      $dimy=$avatardimy;
-      $dimxs=avatardimxs;
-      $dimys=avatardimys;
-      $size=$avatarsize;
+      $dimx=180;
+      $dimy=180;
+      $dimxs=60;
+      $dimys=60;
+      $size=2*61440;
 
 	//[KAWA] TODO: replace with token effect
 	/*
@@ -157,7 +168,7 @@
 ".      "          <input type=\"file\" name=\"picture\"><input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\">
 ".($id>0?"           <input type=\"submit\" name='a' value=\"Delete\">
 ":"").  "<input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\"></td>
-".      "        $L[TD2]><small>Limits: ".$dimx."x".$dimy."px, ".$size."KB</small></td>
+".      "        $L[TD2]><small>Limits: 180x180px, 60KB</small></td>
 ".      "     $L[TR]>
 ".      "        $L[TD2] colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"$activeavatar[label]\">" : "&nbsp;") ."
 ".      "$L[TBLend]</form>

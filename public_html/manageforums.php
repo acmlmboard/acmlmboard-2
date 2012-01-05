@@ -2,7 +2,7 @@
   
   require 'lib/common.php';
 
-  if (isset($_GET[a]) && $_GET[a] == 's' && isadmin()) {
+  if (isset($_GET[a]) && $_GET[a] == 's' && has_perm('edit-forums')) {
 
     $id = $_POST[id];
     if (!checknumeric($id))
@@ -115,18 +115,7 @@
 
   pageheader("Forums Administration");
 
-  if (!isadmin()) {
-    print "$L[TBL1]>
-".        "  $L[TR]>
-".        "    $L[TDhc]>
-".        "      Access Denied
-".        "    </td>
-".        "  </tr>
-".        "$L[TBLend]
-".        "<br>";
-    pagefooter();
-    die();
-  }
+  if (!has_perm('edit-forums')) no_perm();
 
   if (isset($_GET[t]) && $_GET[t]=='f') { //Edit Forum
     print "<script type=\"text/javascript\" src=\"manageforum.js\"></script>";

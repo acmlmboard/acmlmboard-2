@@ -9,7 +9,7 @@ require("lib/common.php");
 
   pageheader("Edit Sprites");
 
-  acl_or_die("edit-sprites");
+  if(!has_perm('edit-sprites')) no_perm();
 
   $id = $r['id'];
 

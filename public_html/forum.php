@@ -5,6 +5,8 @@
   */
   require 'lib/common.php';
 
+
+
   if(!$page)
     $page=1;
 
@@ -19,11 +21,17 @@
     if($log){
       $forum=$sql->fetchq("SELECT f.*, r.time rtime FROM forums f "
                          ."LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) "
-                         ."WHERE f.id=$fid ");
+                         ."WHERE f.id=$fid AND f.id IN ".forums_with_view_perm());
       if(!$forum[rtime])
         $forum[rtime]=0;
     }else
-      $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid");
+      $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
+
+
+    if (!isset($forum['id'])) {
+      pageheader("Forum not found",$fid);
+      forum_not_found();      
+    }
 
     //load tags
     $tags=array();
@@ -36,54 +44,56 @@
     pageheader($forum[title],$fid);
 
     //forum access control // 2007-02-19 blackhole89 // 2011-11-09 blackhole89 tokenisation (more than 4.5 years...)
-    if(!acl_for_forum($fid,"list")){
-      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      You lack the permissions to access this forum.
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
-    }
+    //2012-01-01 DJBouche Happy New Year!
 
 //[KAWA] Copypasting a chunk from ABXD, with some edits to make it work here.
 $isIgnored = $sql->resultq("select count(*) from ignoredforums where uid=".$loguser['id']." and fid=".$fid) == 1;
 if(isset($_GET['ignore']))
 {
-	if(!$isIgnored)
-	{
-		$sql->query("insert into ignoredforums values (".$loguser['id'].", ".$fid.")");
-		$isIgnored = true;
-  	    print
+  if(!$isIgnored)
+  {
+    $sql->query("insert into ignoredforums values (".$loguser['id'].", ".$fid.")");
+    $isIgnored = true;
+        print
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
 ".      "      Forum ignored. You will no longer see any \"New\" markers for this forum.
 ".      "$L[TBLend]
 ";
-	}
+  }
 }
 else if(isset($_GET['unignore']))
 {
-	if($isIgnored)
-	{
-		$sql->query("delete from ignoredforums where uid=".$loguser['id']." and fid=".$fid);
-		$isIgnored = false;
-  	    print
+  if($isIgnored)
+  {
+    $sql->query("delete from ignoredforums where uid=".$loguser['id']." and fid=".$fid);
+    $isIgnored = false;
+        print
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
 ".      "      Forum unignored.
 ".      "$L[TBLend]
 ";
-	}
+  }
 }
-$ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore forum</a> | "
-						 : "<a href=forum.php?id=$fid&amp;ignore>Ignore forum</a> | ";
 
-    $threads=$sql->query("SELECT $fieldlist t.*, (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<'$forum[rtime]') isread":'').' '
+$editforumlink = "";
+
+if (has_perm('edit-forums')) {
+    $editforumlink = "<a href=manageforums.php?a=e&t=f&i=$fid>Edit Forum</a> | ";
+}
+
+
+$ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore forum</a> "
+             : "<a href=forum.php?id=$fid&amp;ignore>Ignore forum</a> ";
+
+    $threads=$sql->query("SELECT $fieldlist t.*, 
+
+    (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
+
+    (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<'$forum[rtime]') isread":'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
@@ -95,7 +105,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
-".      "  $L[TDnr]>".$ignoreLink."<a href=newthread.php?id=$fid>New thread</a> | <a href=newthread.php?id=$fid&ispoll=1>New poll</a></td>
+".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($fid)?"| <a href=newthread.php?id=$fid>New thread</a> | <a href=newthread.php?id=$fid&ispoll=1>New poll</a>":"")."</td>
 ".      "$L[TBLend]
 ";
   }elseif($uid=$_GET[user]){
@@ -104,17 +114,21 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
 
     pageheader("Threads by $user[name]");
 
-    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle, (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<fr.time) isread":'').' '
+    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle, 
+    (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
+
+
+    (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<fr.time) isread":'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
                         ."LEFT JOIN polls p ON p.id=t.id "
                         ."LEFT JOIN forums f ON f.id=t.forum "
                   .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
-		        ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
+            ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
                         ."LEFT JOIN categories c ON f.cat=c.id "
                         ."WHERE t.user=$uid "
-                        .  "AND f.id IN ".forums_with_right("list")." "
+                        .  "AND f.id IN ".forums_with_view_perm()." "
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
@@ -123,7 +137,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
                                  ."WHERE t.user=$uid "
-                                 .  "AND f.id IN ".forums_with_right("list")." ");
+                                 .  "AND f.id IN ".forums_with_view_perm()." ");
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - Threads by $user[name]</td>
@@ -135,7 +149,11 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
 
     pageheader('Latest posts');
 
-    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, (NOT ISNULL(p.id)) ispoll, f.title ftitle".($log?', ((NOT ISNULL(r.time)) OR t.lastdate<fr.time) isread':'').' '
+    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, 
+    (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
+
+
+    (NOT ISNULL(p.id)) ispoll, f.title ftitle".($log?', ((NOT ISNULL(r.time)) OR t.lastdate<fr.time) isread':'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
@@ -145,18 +163,20 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                   .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
                         ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
                         ."WHERE t.lastdate>$mintime "
-                        .  "AND f.id IN ".forums_with_right("list")." "
-			."ORDER BY t.sticky DESC, t.lastdate DESC "
+                        ."  AND f.id IN ".forums_with_view_perm()." "
+      ."ORDER BY t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
     $forum[threads]=$sql->resultq("SELECT count(*) "
                                  ."FROM threads t "
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
                                  ."WHERE t.lastdate>$mintime "
-                                 .  "AND f.id IN ".forums_with_right("list")." ");
+                                 .  "AND f.id IN ".forums_with_view_perm()." ");
 
-    function timelink($time){
-      return " <a href=forum.php?time=$time>".timeunits2($time).'</a> ';
+    function timelink($timev){
+      global $time;
+      if ($time == $timev) return " ".timeunits2($timev)." ";
+      else return " <a href=forum.php?time=$timev>".timeunits2($timev).'</a> ';
     }
 
     $topbot=
@@ -188,10 +208,14 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
   }
 
   print $topbot;
-  if($time)
+  if($time) {
+    print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
+          By Threads | <a href=thread.php?time=$time>By Posts</a></div><br>"; 
     print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">'.
          timelink(900).'|'.timelink(3600).'|'.timelink(86400).'|'.timelink(604800)
-	 ."</div>";
+   ."</div>";
+
+ }
   print "<br>
 ".      "$L[TBL1]>
 ".      "  $L[TRh]>
@@ -212,7 +236,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     if($thread[replies]>=$loguser[ppp]){
       for($p=1;$p<=($pmax=(1+floor($thread[replies]/$loguser[ppp])));$p++) {
         if($loguser[longpages] || $p<7 || $p>($pmax-7) || !($p%10)) $pagelist.=" <a href=thread.php?id=$thread[id]&page=$p>$p</a>";
-	else if(substr($pagelist,-1)!=".") $pagelist.=" ...";
+  else if(substr($pagelist,-1)!=".") $pagelist.=" ...";
       }
       $pagelist=" <font class=sfont>(pages: $pagelist)</font>";
     }
@@ -255,7 +279,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     for($k=0;$k<sizeof($tags);++$k) {
       $t=$tags[$k];
       if($thread[tags] & (1<<$t[bit])) {
-		  $taglist.=" <img src=\"./gfx/tags/tag$t[fid]-$t[bit].png\" alt=\"$t[name]\" title=\"$t[name]\" style=\"position: relative; top: 3px;\"/>";
+      $taglist.=" <img src=\"./gfx/tags/tag$t[fid]-$t[bit].png\" alt=\"$t[name]\" title=\"$t[name]\" style=\"position: relative; top: 3px;\"/>";
       }
     }
 
@@ -264,7 +288,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
 ".        "    $L[TD]>$icon</td>
 ".($showforum?
           "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
-".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$taglist$pagelist</td>
+".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$taglist$pagelist</td>
 ".        "    $L[TD]>".userlink($thread,'u1')."</td>
 ".        "    $L[TD]>$thread[replies]</td>
 ".        "    $L[TD]>$thread[views]</td>

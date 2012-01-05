@@ -35,8 +35,12 @@ if ($regdis[intval] == 1)
   */
 
 
+
+
+
   	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
   	$puzzleAnswer = 42;
+  	//$puzzleAnswer = 9001;
   	$puzzleVariations = array(
   		"What is twenty four times two minus 6?",
   		"What is two times twenty four minus 6?",
@@ -79,10 +83,24 @@ if ($regdis[intval] == 1)
 
   $act=$_POST[action];
   if(!$act){
+
+      $listsex=array('Male','Female','N/A');
+      $alltz = $sql->query("SELECT name FROM `timezones`"); 
+
+      $listtimezones = array();
+      while ($tz = $sql->fetch($alltz)) {
+        $listtimezones[$tz['name']] = $tz['name'];
+      }
+
+
+
     $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
     $print=" <form action=register.php method=post>
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Register</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>&nbsp;</td>
+".         "    $L[TD2]><font class='sfont'><h3><b>Notice:</b> Registration may take up to a minute to process.</h3></font>
 ".         "  $L[TR]>
 ".         "    $L[TD1c] width=120>&nbsp;</td>
 ".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
@@ -95,6 +113,8 @@ if ($regdis[intval] == 1)
 ".         "  $L[TR]>
 ".         "    $L[TD1c]>Password (again):</td>
 ".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
+".           fieldrow('Sex'             ,fieldoption('sex',$user[sex],$listsex))."
+".           fieldrow('Timezone'      ,fieldselect('timezone',$user['timezone'],$listtimezones))."
 ".         "  $L[TR]>
 ".         "    $L[TD1c] width=120>$puzzle</td>
 ".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
@@ -119,14 +139,14 @@ if ($regdis[intval] == 1)
         break;
     }
 
-    chkproxy();
+//    chkproxy();
 
     if($uname==$cname)
       $err='This username is already taken, please choose another.';
     elseif($name=='' || $cname=='')
       $err='The username must not be empty, please choose one.';
-    elseif($sql -> resultq("SELECT * FROM `users` WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'"))
-      $err='Another user is already using this IP address.';
+//    elseif($sql -> resultq("SELECT * FROM `users` WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'"))
+//      $err='Another user is already using this IP address.';
     elseif(strlen($_POST[pass])<4)
       $err='Your password must be at least 4 characters long.';
     elseif($_POST[pass]!=$_POST[pass2])
@@ -143,12 +163,34 @@ if ($regdis[intval] == 1)
                  ."('$_POST[name]','".md5($_POST[pass].$pwdsalt)."',"
                  .ctime().",".ctime().",'$userip')");
       $id=mysql_insert_id();
+
+      $sql->query("UPDATE users SET "
+        .setfield('sex').","
+        .setfield('timezone')
+       . " WHERE `id` = $id"
+      );
+
+
       $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
       
-      //[KAWA] Give tokens. WHY WASN'T THIS IN HERE SOONER XD
-      $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 1)");
-      if ($id == 1)
-      	$sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 5)"); //[KAWA] First gets root. Is that okay or should it be Admin (3)?
+/*      //[KAWA] Give tokens. WHY WASN'T THIS IN HERE SOONER XD
+      $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 1)"); */
+
+      $ugid = 0;
+      if ($id == 1) {
+//        $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 5)"); 
+          $row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?",array(-1));
+          $ugid = $row['id'];
+      }
+
+        /*//[KAWA] First gets root. Is that okay or should it be Admin (3)?*/
+
+
+      else{ //assign default
+        $row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?",array(1));
+        $ugid = $row['id'];
+      }
+       $sql->prepare("UPDATE users SET group_id=? WHERE id=?",array($ugid,$id));
 
       /* count matches for IP and hash */
       //hash
@@ -171,8 +213,8 @@ if ($regdis[intval] == 1)
       foreach($clist as &$c)
         if($c>0) $c="\x0307$c"; else $c="\x0309$c";
 
-      sendirc("\x0314New user: \x0309".stripslashes($_POST[name])."\x0314 - \x0303{boardurl}?u=$id"
-             ."\x0314 - \x033matches \x0314(\x033#\x0314,\x033/32\x0314,\x033/24\x0314,\x033/16\x0314): \x0314($m_hash\x0314,$m_ip32\x0314,$m_ip24\x0314,$m_ip16\x0314)");
+      sendirc("\x0314New user: \x0309".stripslashes($_POST[name])."\x0314 - \x0303{boardurl}?u=$id");
+//             ."\x0314 - \x033matches \x0314(\x033#\x0314,\x033/32\x0314,\x033/24\x0314,\x033/16\x0314): \x0314($m_hash\x0314,$m_ip32\x0314,$m_ip24\x0314,$m_ip16\x0314)");
 
       $print="  You are now registered!<br>
 ".           "  ".redirect('login.php','login');

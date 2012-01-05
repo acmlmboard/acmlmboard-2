@@ -37,7 +37,8 @@
  $c[bxb3]   =ImageColorAllocate($img,110, 90, 70);
 
  for($i=0;$i<100;$i++)
-   $c[$i]   =ImageColorAllocate($img, 10, 16, 60+$i/2);
+   $c[$i]   =ImageColorAllocate($img, 60+$i/2, 10, 16);
+//   $c[$i]   =ImageColorAllocate($img, 10, 16, 60+$i/2);
 
  $c[barE1]  =ImageColorAllocate($img,120,150,180);
  $c[barE2]  =ImageColorAllocate($img, 30, 60, 90);

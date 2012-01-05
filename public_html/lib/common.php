@@ -21,15 +21,29 @@
     $url.="?$q";
 
   $log=false;
+      $logpermset = array();
   if($_COOKIE[user]>0){
     if($id=checkuid($_COOKIE[user],unpacklcookie($_COOKIE[pass]))){
       $log=true;
       $loguser=$sql->fetchq("SELECT * FROM users WHERE id=$id");
+      load_user_permset();
     }else{
       setcookie('user',0);
       setcookie('pass','');
+            load_guest_permset();
     }
   }
+  else {
+          load_guest_permset();
+
+  }
+
+
+
+
+
+
+
   $a=$sql->fetchq("SELECT intval FROM misc WHERE field='lockdown'");
   
   if($a[intval]) {
@@ -48,6 +62,7 @@
     $loguser[id]=0;	
     $loguser[power]=0;
     $loguser[tzoff]=0;
+    $loguser[timezone] = "UTC";
     $loguser[fontsize]=70;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
     $loguser[dateformat]='m-d-y';
     $loguser[timeformat]='h:i A';
@@ -61,6 +76,9 @@
     $modf=$sql->query("SELECT fid FROM forummods WHERE uid=$loguser[id]");
     while($m=$sql->fetch($modf)) $loguser[modforums][$m[fid]]=1;
   }
+
+
+  require("lib/timezone.php");
 
   //load ACL
   $loguser[acl]=load_acl($loguser[id]); 
@@ -184,15 +202,16 @@
     // this is the only common.php location where we reliably know $fid.
     if($log) $sql->query("UPDATE users SET lastforum='$fid' WHERE id=$loguser[id]");
     else $sql->query("UPDATE guests SET lastforum='$fid' WHERE ip='$_SERVER[REMOTE_ADDR]'");
-
-    $themefile.="?tz=$loguser[tzoff]&minover=$_GET[minover]";
+    $timezone = new DateTimeZone($loguser['timezone']);
+    $tzoff = $timezone->getOffset(new DateTime("now"));
+    $themefile.="?tz=$tzoff&minover=$_GET[minover]";
     //if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
     //if($theme[id]==27) $boardlogo="<img src='theme/gotwood/logo.png'>";
 
     if($pagetitle)
       $pagetitle.=' - ';
 
-    if(isadmin()) $ae="(<a href='editattn.php'>edit</a>)";
+    if(has_perm('edit-attentions-box')) $ae="(<a href='editattn.php'>edit</a>)";
     else $ae="";
 
     $extratitle="
@@ -246,11 +265,11 @@
 ".        "    $L[TD] width=100%><span style='float:right'>$feedicons$ssllnk</span>
 ".        "      <a href=./>Main</a>
 ".        "    | <a href=faq.php>FAQ</a>
-".        "    | <a href=\"/uploader\">Uploader</a>
+".        (has_perm('use-uploader')?"    | <a href=\"/uploader\">Uploader</a>":"")."
 ".        "    | <a href=\"irc.php\">IRC chat</a>
 ".        "    | <a href=memberlist.php>Memberlist</a>
 ".        "    | <a href=activeusers.php>Active users</a>
-".        "    | <a href=forum.php?time=86400>Latest posts</a>
+".        "    | <a href=thread.php?time=86400>Latest posts</a>
 ".        "    | <a href=calendar.php>Calendar</a>
 ".        "    | <a href=stats.php>Stats</a>
 ".        "    | <a href=online.php>Online users</a>
@@ -261,28 +280,47 @@
 ".        "    $L[TD] colspan=3>
 ".        "      ".($log?userlink($loguser):'Guest').": 
 ";
-    if($log){
+//    if($log){
       //mark forum read
       checknumeric($fid);
       if($fid)
-        $markread="<a href=index.php?action=markread&fid=$fid>Mark forum read</a>";
+        $markread=array('url' => "index.php?action=markread&fid=$fid", 'title' => "Mark Forum Read");
       else
-        $markread="<a href=index.php?action=markread&fid=all>Mark all forums read</a>";
+        $markread=array('url' => "index.php?action=markread&fid=all", 'title' => "Mark All Forums Read");
 
-    print "      <a href=javascript:document.logout.submit()>Logout</a>
-".        "    | <a href=editprofile.php>Edit profile</a>
-".
-          (isadmin() ? "    | <a href=manageforums.php>Manage Forums</a>
-" : "").        "    | <a href=usermood.php>Edit mood avatars</a>
-".        "    | <a href=sprites.php>Sprites</a>
-".        "    | <a href=shop.php>Item shop</a>
-".        "    | $markread
-";
-    }else{
-    print "      <a href=register.php>Register</a>
-".        "    | <a href=login.php>Login</a>
-";
+
+    $userlinks = array();
+    $ul=0;
+
+    if (has_perm('register')) 
+      $userlinks[$ul++] = array('url' => "register.php", 'title' => 'Register');
+    if (has_perm('view-login')) 
+      $userlinks[$ul++] = array('url' => "login.php", 'title' => 'Login');
+    if (has_perm('logout')) 
+      $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+    if (has_perm('update-own-profile')) 
+      $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit Profile');
+    if (has_perm('edit-forums')) 
+      $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage Forums');
+    if (has_perm('view-own-sprites')) 
+      $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My Sprites');
+    if (has_perm('edit-sprites')) 
+      $userlinks[$ul++] = array('url' => "editsprites.php", 'title' => 'Manage Sprites');
+    if (has_perm('update-own-moods')) 
+      $userlinks[$ul++] = array('url' => "usermood.php", 'title' => 'Edit Mood Avatars');
+    if (has_perm('use-item-shop')) 
+      $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item Shop');
+    if (has_perm('mark-read')) 
+      $userlinks[$ul++] = $markread;
+
+    $c=0;
+
+    foreach ($userlinks as $k => $v) {
+      if ($c > 0) echo " | ";
+      echo "<a href=".$v['url'].">".$v['title']."</a>";
+      $c++;
     }
+
     print "    </td>
 ".        "    <form action=login.php method=post name=logout>
 ".        "      $L[INPh]=action value=logout>
@@ -291,10 +329,21 @@
 ".        "$L[TBLend]
 ".        "<br>
 ";
+
+  $hiddencheck  = "AND hidden=0 ";
+  if (has_perm('view-hidden-users')) {
+    $hiddencheck = "";
+  }
+
+
+
     if($fid) {
-      $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic FROM users '
+
+
+
+      $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
                           .'WHERE (lastview>'.(ctime()-300).'  '
-                              .'OR lastpost>'.(ctime()-300).') '
+                              .'OR lastpost>'.(ctime()-300).") $hiddencheck "
 			     ."AND lastforum='$fid' "
                           .'ORDER BY name');
       $onuserlist='';
@@ -304,7 +353,7 @@
         $onuserlog=($user[lastpost]<=$user[lastview]);
         $«=($onuserlog?'':'(');
         $»=($onuserlog?'':')');
-        $onuserlist.=($onusercount?', ':'').$«.userlink($user).$»;
+        $onuserlist.=($onusercount?', ':'').$«.($user[hidden] ? '('.userlink($user).')' : userlink($user)).$»;
         $onusercount++;
       }
       
@@ -354,10 +403,13 @@
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (12/28/2011 <font color='#AFFABE'>Development</font>)<br>
+".        "  Acmlmboard v2.5 (1/02/2011)<br>
 ".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();
 //	miscbar(); disabled until needed. -Emuz
   }
+
+
+
 ?>

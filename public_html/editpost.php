@@ -1,9 +1,9 @@
 <?php
   /* editpost.php ****************************************
     Changelog
-0308  blackhole89		forked from newreply.php
+0308  blackhole89   forked from newreply.php
 0221  blackhole89       related to thread-individual "NEW" display system
-0220  blackhole89	      added minpower check for displaying the thread's
+0220  blackhole89       added minpower check for displaying the thread's
                         previous contents. (yes, it is possible to make a forum
                         with minpowerreply < minpower and allow users to "reply blindly" now)
   */
@@ -37,12 +37,16 @@
 
   checknumeric($pid);
 
+  needs_login(1);
+
   $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.minpowerreply, f.minpower '
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '
-                      ."WHERE p.id=$pid");
+                      ."WHERE p.id=$pid AND t.forum IN ".forums_with_view_perm());
 
+
+  if (!$thread) $pid = 0;
   pageheader('Edit post',$thread[forum]);
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
@@ -50,7 +54,7 @@
            .posttoolbutton("message","I","[i]","[/i]")
            .posttoolbutton("message","U","[u]","[/u]")
            .posttoolbutton("message","S","[s]","[/s]")
-	   ."$L[TD2]>&nbsp;</td>"
+     ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
            .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
            .posttoolbutton("message",";","[code]","[/code]","cd")
@@ -58,17 +62,21 @@
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
            .posttoolbutton("message","%","[svg]","[/svg]","sv");
 
-  if($thread[minpowerreply]>$user[power]){
-    if(isbanned())
-      $err="    You can't edit a post when you are banned!<br>
-".         "    $threadlink";
-    else
-      $err="    You can't edit a post in this restricted forum!<br>
-".         "    $threadlink";
-  }
-  elseif($thread[closed] && !ismod($thread[forum])){
+//  if($thread[minpowerreply]>$user[power]){
+//    if(isbanned())
+//      $err="    You can't edit a post when you are banned!<br>
+//".         "    $threadlink";
+//    else
+//      $err="    You can't edit a post in this restricted forum!<br>
+//".         "    $threadlink";
+//  }
+
+  if ($thread[closed]) {
       $err="    You can't edit a post in closed threads!<br>
 ".         "    $threadlink";
+  }
+  else if (!can_edit_post($pid)) {
+      $err="    You do not have permission to edit this post.<br>$threadlink";
   }
   elseif($pid==-1){
       $err="    Your PID code is invalid!<br>
@@ -102,9 +110,9 @@
   $post=$sql->fetch($res);
   $quotetext=$post[text];
 
-  if($post[id] != $loguser[id] && !ismod($thread[forum]))
+/*  if($post[id] != $loguser[id] && !ismod($thread[forum]))
     $err="    You may not edit this post.<br>
-".       "    $threadlink";
+".       "    $threadlink";*/
 
   if($err){
     print "$top - Error
@@ -209,10 +217,10 @@
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
     $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
 
-//    if ($thread[minpower]<=0) sendirc("\x0314Post edited by \x0309$user[name]\x0314 (\x0303$thread[ftitle]\x0314: \x0307$thread[title]\x0314 (\x0303$thread[id]\x0314)) - \x0303{boardurl}?p=$pid");
-//    else sendirc("S\x0314Post edited by \x0309$user[name]\x0314 (\x0303$thread[ftitle]\x0314: \x0307$thread[title]\x0314 (\x0303$thread[id]\x0314)) - \x0303{boardurl}?p=$pid");
-    if ($thread[minpower]<=0) sendirc("\x036Post edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid");
-    else sendirc("S\x036Post edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid");
+    $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
+
+
+    sendirc("\x036Post edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
 
     print "$top - Submit
 ".        "<br><br>
@@ -223,12 +231,12 @@
 ".        "$L[TBLend]
 ";
   }elseif($act=='delete' ||$act=='undelete'){
-    if(!(isadmin() || ismod($thread[forum]))) {
+    if(!(can_delete_forum_posts($thread[forum]))) {
       print "$top - Error
 ".          "<br><br>
 ".          "$L[TBL1]>
 ".          "  $L[TD1c]>
-".          "    Only administrators and moderators may delete or undelete posts.
+".          "    You do not have the permission to do this.
 ".          "$L[TBLend]
 ";
     } else {

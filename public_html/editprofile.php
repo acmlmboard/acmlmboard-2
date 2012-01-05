@@ -2,18 +2,40 @@
   require 'lib/common.php';
 
 
+  needs_login(1);
+
   $targetuserid = $loguser['id'];
 
-  if (isset($_GET['id']) && acl_for_user($_GET[id],"edit-user")) {
+  if (isset($_GET['id'])) {
     $temp = $_GET['id'];
     if (checknumeric($temp))
       $targetuserid = $temp;
   }
 
+  if (!can_edit_user($targetuserid)) $targetuserid = 0;
+
+  if ($targetuserid == 0) {
+     pageheader('No permission');
+     no_perm();
+  }
+
+
+        $blockroot = " AND `default` >= 0 ";
+
+      if (has_perm('no-restrictions')) $blockroot = "";
+
+      $allgroups = $sql->query("SELECT * FROM `group` WHERE `primary`=1 $blockroot ORDER BY sortorder ASC");
+
+      $listgroup = array();
+
+      while ($group = $sql->fetch($allgroups)) {
+        $listgroup[$group['id']] = $group['title'];
+      }
+
+
+
   if($_POST[action]=='Edit profile' && $_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
     setcookie('pass',packlcookie(md5($_POST[pass].$pwdsalt)),2147483647);
-
-  
 
   pageheader('Edit profile');
 
@@ -29,7 +51,7 @@
 
   echo $userrpg['eq1'];
   $act=$_POST[action];
-  if(!$log){
+/*  if(!$log){
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    You must be logged in to edit your profile!<br>
@@ -50,7 +72,8 @@
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
-  }elseif($_POST[pass] && $_POST[pass2] && $_POST[pass]!=$_POST[pass2]){
+  }else*/
+  if($_POST[pass] && $_POST[pass2] && $_POST[pass]!=$_POST[pass2]){
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    The two passwords you entered don't match.<br>
@@ -61,9 +84,24 @@
     
 
     $listsex=array('Male','Female','N/A');
-    $listpower=array(-1 => '-1 Banned',0 => ' 0 Normal User',' 1 Local Moderator',' 2 Global Moderator',' 3 Administrator');
+
+
+
+/*    $listpower=array(-1 => '-1 Banned',0 => ' 0 Normal User',' 1 Local Moderator',' 2 Global Moderator',' 3 Administrator');
+
+
     if($loguser['power'] == 4)
-    	$listpower[4] = " 4 Root";
+      $listpower[4] = " 4 Root";*/
+
+
+
+      $alltz = $sql->query("SELECT name FROM `timezones`"); 
+
+      $listtimezones = array();
+      while ($tz = $sql->fetch($alltz)) {
+        $listtimezones[$tz['name']] = $tz['name'];
+      }
+
     $listpm=array('allow','disallow');
     $listrename=array('disallow','allow');
 
@@ -97,27 +135,25 @@
 ".        " <form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
 ".
            catheader('Login information')."
-".           (acl_for_user($targetuserid,"edit-user") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
+".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
-if (acl_for_user($_GET[id],"edit-user"))
+if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
-".           fieldrow('Powerlevel'      ,fieldselect('power',$user[power],$listpower))."
-".           fieldrow('PM sending'      ,fieldselect('pmblocked',$user[pmblocked],$listpm))."
-".           fieldrow('Thread Retitling',fieldselect('renamethread',$user[renamethread],$listrename))."
+".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
 ";
 
   print
            catheader('Appearance')."
-".           fieldrow('Rankset'		,fieldselect('rankset', $user['rankset'], ranklist()))."
-".           (checkctitle()?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
+".           fieldrow('Rankset'   ,fieldselect('rankset', $user['rankset'], ranklist()))."
+".           (has_perm('edit-title')?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
 ".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
 ";
 
-if (acl_for_user($_GET[id],"edit-user"))
+if (has_perm("edit-users"))
   print    catheader('RPG Stats')."
   ".           fieldrow('Coins'       ,fieldinputrpg(9, 7, 'GP'))."
   ".           fieldrow('Frog Coins'  ,fieldinputrpg(9, 7, 'gcoins' ))."
@@ -149,15 +185,16 @@ if (acl_for_user($_GET[id],"edit-user"))
 ".
            catheader('Options')."
 ".           fieldrow('Theme'           ,fieldselect('theme', $user['theme'], themelist()))."
-".           fieldrow('Timezone offset' ,$tzoffinput                    )."
+".           fieldrow('Timezone'      ,fieldselect('timezone',$user['timezone'],$listtimezones))."
 ".           fieldrow('Posts per page'  ,fieldinput( 3,  3,'ppp'       ))."
 ".           fieldrow('Threads per page',fieldinput( 3,  3,'tpp'       ))."
 ".           fieldrow('Long pagelists'  ,fieldoption('longpages',$user[longpages],array('Abbreviate as needed','Always display in entirety')))."
 ".           fieldrow('Font size'       ,fieldinput( 3,  3,'fontsize'  ))."
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
-".           fieldrow('Post layouts', fieldoption('blocklayouts',acl('block-layouts'),array('Show everything in general', 'Block everything')))."
-".           fieldrow('Sprites', fieldoption('sprites',acl('disable-sprites'),array('Show them', 'Disable sprite layer')))."
+".           fieldrow('Post layouts', fieldoption('blocklayouts',$user['blocklayouts'],array('Show everything in general', 'Block everything')))."
+".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
+".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>
@@ -186,8 +223,8 @@ if (acl_for_user($_GET[id],"edit-user"))
         } else if($type!=3 && $type!=1) {
           $error.="<br>- Minipic file broken or not a valid PNG or GIF image!";
         } else {
-	  if($type==1) $type="gif";
-	  else $type="png";
+    if($type==1) $type="gif";
+    else $type="png";
           $minipic="\"data:image/$type;base64,".base64_encode(file_get_contents($tmpfile))."\"";
         }
       }
@@ -201,14 +238,14 @@ if (acl_for_user($_GET[id],"edit-user"))
 
       $exts=array('.png','.jpg','.gif');
 
-	//[KAWA] TODO: replace with token effect
-	/*
+  //[KAWA] TODO: replace with token effect
+  /*
       if($x_hacks["180px"]) {
         $dimx=180;
-	$dimy=180;
-	$size=2*61440;
+  $dimy=180;
+  $size=2*61440;
       }
-	*/
+  */
 
       $validext=false;
       $extlist='';
@@ -299,24 +336,27 @@ if (acl_for_user($_GET[id],"edit-user"))
     $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);
 
-    if (acl_for_user($_GET[id],"edit-user")) {
+    if (has_perm("edit-users")) {
       
       $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
       $sql->query("UPDATE usersrpg SET "
-	             . setfield('eq1').","
-	             . setfield('eq2').","
-	             . setfield('eq3').","
-	             . setfield('eq4').","
-	             . setfield('eq5').","
-	             . setfield('eq6').","
+               . setfield('eq1').","
+               . setfield('eq2').","
+               . setfield('eq3').","
+               . setfield('eq4').","
+               . setfield('eq5').","
+               . setfield('eq6').","
                . "`spent` = $spent,"
                . setfield('gcoins')
                . " WHERE `id` = $user[id]"
                );
 
       //Update admin bells and whistles
-      $targetpower = $_POST['power'];
-      $targetpower = min($targetpower, $loguser[power]);
+      $targetgroup = $_POST['group_id'];
+      checknumeric($targetgroup);
+      if (!isset($listgroup[$targetgroup])) $targetgroup = 0;
+
+//      $targetpower = min($targetpower, $loguser[power]);
       $targetname = $_POST['name'];
 
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE `name` = '$targetname' AND `id` != $user[id]")) {
@@ -325,9 +365,7 @@ if (acl_for_user($_GET[id],"edit-user"))
       }
 
       $sql->query("UPDATE users SET "
-	               . setfield('renamethread').","
-	               . setfield('pmblocked').","
-                 . "`power` = $targetpower, "
+                 . ($targetgroup?"`group_id` = $targetgroup, ":"")
                  . "`name` = '$targetname'"
                  . " WHERE `id`=$user[id]"
                  );
@@ -353,6 +391,10 @@ if (acl_for_user($_GET[id],"edit-user"))
                . setfield('bio')     .','
                . setfield('fontsize').','
                . setfield('theme')   .','
+               . setfield('blocklayouts')   .','
+               . setfield('blocksprites')   .','
+               . setfield('hidden') .','
+               . setfield('timezone') .','
                . "tzoff=$tztotal,"
                . "birth=$birthday,"
                . "usepic=$usepic,"
@@ -362,7 +404,7 @@ if (acl_for_user($_GET[id],"edit-user"))
                . "WHERE `id`=$user[id]"
                );
 
-    $trainingHelmetTokenID = 200; //CHANGEME
+/*    $trainingHelmetTokenID = 200; //CHANGEME
     $disableSpritesTokenID = 201; //CHANGEME
     if($_POST['blocklayouts'] == 1)
       $sql->query('INSERT IGNORE INTO usertokens VALUES('.$user[id].', '.$trainingHelmetTokenID.')');
@@ -371,8 +413,8 @@ if (acl_for_user($_GET[id],"edit-user"))
     if($_POST['sprites'] == 1)
       $sql->query('INSERT IGNORE INTO usertokens VALUES('.$user[id].', '.$disableSpritesTokenID.')');
     else
-      $sql->query('DELETE FROM usertokens WHERE u='.$user[id].' AND t='.$disableSpritesTokenID);
-	
+      $sql->query('DELETE FROM usertokens WHERE u='.$user[id].' AND t='.$disableSpritesTokenID);*/
+  
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
@@ -384,109 +426,4 @@ if (acl_for_user($_GET[id],"edit-user"))
 
   pagefooter();
 
-  function setfield($field){
-    return "$field='$_POST[$field]'";
-  }
-
-  function catheader($title){
-    global $L;
-    return "  $L[TRh]>
-".         "    $L[TDh] colspan=2>$title</td>";
-  }
-
-  function fieldrow($title,$input){
-    global $L;
-    return "  $L[TR]>
-".         "    $L[TD1c]>$title:</td>
-".         "    $L[TD2]>$input</td>";
-  }
-
-  function fieldinput($avatarsize,$max,$field){
-    global $L,$user;
-    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
-//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
-  }
-
-  function fieldinputrpg($avatarsize,$max,$field){
-    global $L,$userrpg;
-    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
-//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
-  }
-
-  function fieldtext($rows,$cols,$field){
-    global $L,$user;
-    return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($user[$field]).'</textarea>';
-//  return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($loguser[$field]).'</textarea>';
-  }
-
-  function fieldoption($field,$checked,$choices){
-    global $L;
-    $text='';
-    $sel[$checked]=' checked=1';
-    //[KAWA] Added <label> so the text is clickable.
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      <label>$L[INPr]=$field value=$key$sel[$key]>$val &nbsp;</label>";
-    return "$text
-".         "    ";
-  }
-
-// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
-  function fieldselect($field,$checked,$choices){
-    global $L;
-    $text="
-".        "$L[SEL]=$field>";
-    $sel[$checked]=' selected';
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
-    return "$text
-".         "    ";
-  }
-
-  function itemselect($field,$current,$cat) {
-    global $sql, $L;
-
-    $viewhidden = 0;
-
-    if (isadmin())
-      $viewhidden = 1;
-
-    $items = $sql->query("SELECT * FROM items WHERE `cat` = 0 UNION SELECT * FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden");
-
-    $text="
-".        "$L[SEL]=$field>";
-
-    while ($item = $sql->fetch($items)) {
-      $text.="
-".           "      $L[OPT]=\"$item[id]\"";
-      if ($current == $item['id'])
-        $text.=" selected";
-
-      $text.="> $item[name]</option>";
-    }
-    return "$text    ";
-  }
-
-  function themelist() {
-		global $sql, $loguser;
-
-		$t = $sql -> query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
-		while ($x = $sql -> fetch($t)) $themeuser[$x['theme']] = intval($x['count']);
-
-		$themes = unserialize(file_get_contents("themes_serial.txt"));
-		$themelist = array();
-		foreach($themes as $t)
-			$themelist[$t[1]] = $t[0] . " (".$themeuser[$t[1]].")";
-
-		return $themelist;
-  }
-
-  function ranklist() {
-    global $sql, $loguser;
-    $r=$sql->query("SELECT * FROM ranksets ORDER BY id ASC");
-    while($d=$sql->fetch($r)) $rlist[$d[id]]=$d[name];
-
-    return $rlist;
-  }
 ?>

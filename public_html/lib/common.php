@@ -249,7 +249,8 @@
     include("lib/sprites.php");
 	$junk .= "<style type=\"text/css\">.nc04{color:#EE4444} .nc14{color:#E63282} .nc24{color:#AA3C3C}</style>";
 
-    print "<html>
+    print "<!DOCTYPE html>
+".        "<html>
 ".        "<head>
 ".        "<title>$pagetitle$boardtitle</title>
 ".        "$config[meta]
@@ -261,7 +262,7 @@
 ".        "$L[TBL1]>
 ".        "  $L[TD1c] colspan=3>$boardlogo
 ".        "  $L[TR2c]>
-".        "    $L[TD]>Views: <span title=\"And ".number_format($botviews)." views by search engine spiders.\">".number_format($views)."</span><br><img src=img/_.png width=150 height=1></td>
+".        "    $L[TD]><div style=\"width: 150px\">Views: <span title=\"And ".number_format($botviews)." views by search engine spiders.\">".number_format($views)."</span></div></td>
 ".        "    $L[TD] width=100%><span style='float:right'>$feedicons$ssllnk</span>
 ".        "      <a href=./>Main</a>
 ".        "    | <a href=faq.php>FAQ</a>
@@ -275,7 +276,7 @@
 ".        "    | <a href=online.php>Online users</a>
 ".        "    | <a href=search.php>Search</a>
 ".        "    </td>
-".        "    $L[TD]>".cdate($dateformat,ctime())."<br><img src=img/_.png width=150 height=1></td>
+".        "    $L[TD]><div style\"width: 150px\">".cdate($dateformat,ctime())."</div></td>
 ".        "  $L[TR1c]>
 ".        "    $L[TD] colspan=3>
 ".        "      ".($log?userlink($loguser):'Guest').": 

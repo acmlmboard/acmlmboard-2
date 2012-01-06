@@ -10,8 +10,25 @@ pageheader("Sandbox");
 
 $pagebar = array();
 $pagebar['title'] = 'The Sandbox of Champions';
+$msgtext='';
+if ($_GET['type'] == 'group' && isset($_GET['user_id']) && isset($_GET['group_id']) && isset($_GET['act'])) {
+    $uid = $_GET['user_id'];
+    $gid = $_GET['group_id'];
 
-if ((isset($_GET['user_id']) || isset($_GET['group_id'])) && (isset($_GET['forum_id']) || isset($_GET['cat_id'])) && isset($_GET['act']) && isset($_GET['type'])) {
+    $udisplay = $sql->resultp("SELECT name FROM `users` WHERE id=?",array($uid));
+    $gdisplay = $sql->resultp("SELECT title FROM `group` WHERE id=?",array($gid));
+
+    if ($_GET['act'] == 'revoke' || $_GET['act'] == 'grant') {
+      $msgtext.= "Removing user $uid ($udisplay) from group $gid ($gdisplay).\n";
+      $sql->prepare("DELETE FROM `user_group` WHERE user_id=? AND group_id=?",array($uid,$gid));
+    }
+    if ($_GET['act'] == 'grant') {
+      $msgtext.= "Adding user $uid ($udisplay) to group $gid ($gdisplay).\n";
+      $sql->prepare("INSERT INTO `user_group` (user_id,group_id) VALUES (?,?)",array($uid,$gid));
+    }
+
+}
+else if ((isset($_GET['user_id']) || isset($_GET['group_id'])) && (isset($_GET['forum_id']) || isset($_GET['cat_id'])) && isset($_GET['act']) && isset($_GET['type'])) {
 		$xt = 0;
 		$xx = 0;
 		$xvalue = 0;
@@ -42,8 +59,8 @@ if ((isset($_GET['user_id']) || isset($_GET['group_id'])) && (isset($_GET['forum
                         $xname = 'title';
 		}
 
-		$xdisplay = $sql->resultp("SELECT $xname FROM $xtable WHERE id=?",array($xvalue));
-                $bdisplay = $sql->resultp("SELECT $bname FROM $btable WHERE id=?",array($bindvalue));
+		$xdisplay = $sql->resultp("SELECT $xname FROM `$xtable` WHERE id=?",array($xvalue));
+                $bdisplay = $sql->resultp("SELECT $bname FROM `$btable` WHERE id=?",array($bindvalue));
 
 
 		$modpermst['forum']['mod'] = array(
@@ -100,17 +117,16 @@ if ((isset($_GET['user_id']) || isset($_GET['group_id'])) && (isset($_GET['forum
 }
 
 
-else {
 
 
-$uid = $_GET['user'];
+$uid = $_GET['user_id'];
 checknumeric($uid);
 if (!$uid) $uid = $loguser['id'];
 
 
 $user = $sql->fetchp("SELECT * FROM users WHERE id=?",array($uid));
 
-$msgtext = "User id $uid = ".userdisp($user)."\n";
+$msgtext.= "\n\nUser id $uid = ".userdisp($user)."\n";
 
 $msgtext .= "User Primary Group:\n";
 $gid = $user['group_id'];
@@ -138,7 +154,7 @@ $msgtext .= "User permissions:\n";
 foreach ($permset as $k => $v) {
 	$msgtext .= "$k -> ".(($v['revoke'])?'!':'').$v['id'].'('.$v['bindvalue'].") = ".title_for_perm($v['id'])." inherited from ".$v['xtype']."(".$v['xid'].")\n";
 }
-
+/*
 $msgtext .=" CAN WE CAPTURE SPRITES?!?!\n";
 $cansprite = has_perm('capture-sprites');
 $msgtext .= (($cansprite)?"Yup":"Nope!") . "\n";
@@ -169,8 +185,7 @@ while ($cat = mysql_fetch_array($cats)) {
 	$msgtext .= "Got Access to ".$cat['id']." ".$cat['title']."? => ".($access ? "Mmhmm." : "no dice there..")."\n";
 }
 
-
-}
+*/
 
 $pagebar['message'] = "<pre>$msgtext</pre>";
 

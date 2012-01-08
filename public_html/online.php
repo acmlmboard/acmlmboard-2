@@ -130,7 +130,8 @@
   
   pagefooter();
 
-  function timelink($time){
-    return " <a href=online.php?time=$time>".timeunits2($time).'</a> ';
+  function timelink($timex){
+    global $time;
+    return ($time==$timex ? " ".timeunits2($timex)." " : " <a href=online.php?time=$timex>".timeunits2($timex).'</a> ');
   }
 ?>

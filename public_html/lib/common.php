@@ -94,7 +94,7 @@
   if (str_replace($bots, "x", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT']) {
     $bot = 1;
   }
-  
+  if ($bot) load_bot_permset();
   if(substr($url,0,strlen("$config[path]rss.php"))!="$config[path]rss.php") {
 
   $sql->query("DELETE FROM guests WHERE ip='$userip' OR date<".(ctime()-300));
@@ -255,7 +255,7 @@
 ".        "    | <a href=memberlist.php>Memberlist</a>
 ".        "    | <a href=activeusers.php>Active users</a>
 ".        "    | <a href=thread.php?time=86400>Latest posts</a>
-".        "    | <a href=calendar.php>Calendar</a>
+".        (has_perm('view-calendar')?"    | <a href=calendar.php>Calendar</a>":"")."
 ".        "    | <a href=stats.php>Stats</a>
 ".        "    | <a href=online.php>Online users</a>
 ".        "    | <a href=search.php>Search</a>

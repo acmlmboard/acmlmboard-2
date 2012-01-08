@@ -1,6 +1,11 @@
 <?php
     require 'lib/common.php';
     
+    if (!has_perm('view-calendar')) {
+        pageheader('Access Denied');
+        no_perm();
+    }
+
     $daynames = array('Sunday','Monday','Tuesday','Wednesday',
                       'Thursday','Friday','Saturday');
     $monthnames = array(1=>'January',  'Febuary','March',   'April',

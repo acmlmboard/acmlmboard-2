@@ -94,9 +94,23 @@ function color_for_user($userid,$tsex=-1) {
 }
 function load_guest_permset() {
 	global $logpermset;
-
+	$logpermset = array();
 	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user secondary groups<br>";
 	$loggroups = secondary_groups_for_user(0);
+	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "iterating through user secondary groups<br>";
+	foreach ($loggroups as $gid) {
+		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "Group $gid<br>";
+		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user secondary groups perm sets<br>";
+		$logpermset = apply_group_permissions($logpermset,$gid);
+	}
+	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "done loading permset";	
+}
+
+function load_bot_permset() {
+	global $logpermset;
+	$logpermset = array();
+	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user secondary groups<br>";
+	$loggroups = secondary_groups_for_user(-1);
 	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "iterating through user secondary groups<br>";
 	foreach ($loggroups as $gid) {
 		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "Group $gid<br>";

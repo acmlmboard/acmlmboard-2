@@ -1,5 +1,5 @@
 <?php
- require '../lib/function.php';
+ require 'gfxlib.php';
 
  $user=mysql_fetch_array(mysql_query("SELECT regdate FROM users WHERE id=$u"));
  if(!$user[regdate]) die();

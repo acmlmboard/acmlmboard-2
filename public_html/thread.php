@@ -519,23 +519,41 @@ print "$modlinks
       //lol so hacky please organise this into the right place soon.
 
     print "<script language=javascript>
-
+        function updatequickreplystatus(ishidden)
+        {
+          x = new XMLHttpRequest();
+          x.open('GET', 'userpref.php?field=hidequickreply&value='+ishidden);
+          x.send(null);
+        }
         function togglequickreply()
         {
           var table = document.getElementById('quickreply');
           var rows = table.getElementsByTagName('tr');
-
+          var ishidden = 0;
           for(var i = 1; i < rows.length; i++)
           {
             if(rows[i].className == 'toolbar') continue;
-            if(rows[i].style['display'] == 'none')
+            if(rows[i].style['display'] == 'none') {
               rows[i].style['display'] = '';
-            else
+              ishidden = 0;
+            }
+            else {
               rows[i].style['display'] = 'none';
+              ishidden = 1;
+            }
           }
+          updatequickreplystatus(ishidden);
         }
     </script>
     ";
+
+
+    if ($loguser['hidequickreply']) {
+      $quickreplydisplay = " style='display: none' ";
+    }
+    else {
+      $quickreplydisplay = "";
+    }
 
 
     print "
@@ -548,13 +566,13 @@ print "$modlinks
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
 ".        "  $L[INPh]=passenc value=$loguser[pass]>
 ";
-    print "  $L[TR]>
+    print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]
-".        "  $L[TR]>
+".        "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
-".        "  $L[TR1]>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>$quotetext</textarea></td>
+".        "  $L[TR1] $quickreplydisplay >
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
 ".        "      $L[INPh]=tid value=$tid>

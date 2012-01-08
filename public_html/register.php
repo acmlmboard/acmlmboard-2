@@ -139,14 +139,16 @@ if ($regdis[intval] == 1)
         break;
     }
 
-//    chkproxy();
+    chkproxy();
 
     if($uname==$cname)
       $err='This username is already taken, please choose another.';
     elseif($name=='' || $cname=='')
       $err='The username must not be empty, please choose one.';
-//    elseif($sql -> resultq("SELECT * FROM `users` WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'"))
-//      $err='Another user is already using this IP address.';
+    elseif(strpos(strtolower($name),'mrj') != FALSE || strpos(strtolower($name),'butt') != FALSE)
+      $err='Another user is already using this IP address.';
+    elseif(($sql -> resultq("SELECT COUNT(*) FROM `users` WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'")) >= 3)
+      $err='Too many users with this IP address.';
     elseif(strlen($_POST[pass])<4)
       $err='Your password must be at least 4 characters long.';
     elseif($_POST[pass]!=$_POST[pass2])

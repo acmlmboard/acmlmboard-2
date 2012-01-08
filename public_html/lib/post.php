@@ -67,7 +67,7 @@
       for($i=0;$i<$smilies[num];$i++)
         $msg=str_replace($smilies[$i][text],'«'.$smilies[$i][text].'»',$msg);
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0>',$msg);
+        $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 
     $tags=array('script','iframe','textarea','noscript','meta','xmp','plaintext');

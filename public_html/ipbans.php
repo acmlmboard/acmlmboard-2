@@ -8,8 +8,8 @@
     return str_replace("~"," ",str_replace(" ","&nbsp;",sprintf("%3s%s%3s%s%3s%s%3s",$expl[0],$dot,$expl[1],$dot,$expl[2],$dot,$expl[3])));
   }
 
-  if(!isadmin()) {
-
+  if(!has_perm('edit-ip-bans')) {
+    no_perm();
   } else {
     if($action=="del")
     {
@@ -71,17 +71,6 @@
     echo "$L[TBLend]";
   }
 
-  function fieldselect($field,$checked,$choices){
-    global $L;
-    $text="
-".        "$L[SEL]=$field>";
-    $sel[$checked]=' selected';
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
-    return "$text
-".         "    ";
-  }
 
   pagefooter();
 ?>

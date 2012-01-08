@@ -20,23 +20,7 @@
   if($q=getenv('QUERY_STRING'))
     $url.="?$q";
 
-  $log=false;
-      $logpermset = array();
-  if($_COOKIE[user]>0){
-    if($id=checkuid($_COOKIE[user],unpacklcookie($_COOKIE[pass]))){
-      $log=true;
-      $loguser=$sql->fetchq("SELECT * FROM users WHERE id=$id");
-      load_user_permset();
-    }else{
-      setcookie('user',0);
-      setcookie('pass','');
-            load_guest_permset();
-    }
-  }
-  else {
-          load_guest_permset();
-
-  }
+  require 'lib/login.php';
 
 
 
@@ -303,6 +287,8 @@
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit Profile');
     if (has_perm('edit-forums')) 
       $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage Forums');
+    if (has_perm('edit-ip-bans')) 
+      $userlinks[$ul++] = array('url' => "ipbans.php", 'title' => 'Manage IP Bans');
     if (has_perm('view-own-sprites')) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My Sprites');
     if (has_perm('edit-sprites')) 

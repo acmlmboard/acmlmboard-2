@@ -111,7 +111,7 @@ if (can_edit_post($post[id]) && $post[id])
       //       That's right, you can use <anything id="foo"> in place of <a name="foo">!
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $L[TR]>
-".        "    $L[TD1] style=border-bottom:0;border-right:0 height=17>
+".        "    <td class=\"b n1 topbar".$post['uid']."_1\" style=border-bottom:0;border-right:0 height=17>
 ".        "      ".userlink($post,'u').
 
 
@@ -119,13 +119,13 @@ if (can_edit_post($post[id]) && $post[id])
 
 /*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
 ".*/        "    </td>
-".        "    $L[TD1] style=border-left:0 width=100%>
+".        "    <td class=\"b n1 topbar".$post['uid']."_2\" style=border-left:0 width=100%>
 ".        "      $L[TBL] width=100%>
 ".        "        $L[TDns]>Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>
 ".        "        $L[TDnsr]>$postlinks</td>
 ".        "      $L[TBLend]
 ".        "  $L[TR] valign=top>
-".        "    $L[TD1s] style=border-top:0>
+".        "    <td class='b n1 sfont sidebar".$post['uid']."' style=border-top:0>
 ".        "      <img src=img/_.png width=180 height=1>
 ";
       if($type==0){

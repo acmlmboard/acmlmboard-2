@@ -276,7 +276,7 @@
 ".        "    | <a href=online.php>Online users</a>
 ".        "    | <a href=search.php>Search</a>
 ".        "    </td>
-".        "    $L[TD]><div style\"width: 150px\">".cdate($dateformat,ctime())."</div></td>
+".        "    $L[TD]><div style=\"width: 150px\">".cdate($dateformat,ctime())."</div></td>
 ".        "  $L[TR1c]>
 ".        "    $L[TD] colspan=3>
 ".        "      ".($log?userlink($loguser):'Guest').": 

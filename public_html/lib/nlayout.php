@@ -317,8 +317,10 @@ function RenderPageBar($pagebar) {
 
     $themes = unserialize(file_get_contents("themes_serial.txt"));
     $themelist = array();
-    foreach($themes as $t)
-      $themelist[$t[1]] = $t[0] . " (".$themeuser[$t[1]].")";
+    foreach($themes as $t) {
+      $themeusers = isset($themeuser[$t[1]]) ? $themeuser[$t[1]] : 0;
+      $themelist[$t[1]] = $t[0] . ($themeusers ? (" [$themeusers user".($themeusers == 1 ? "" : "s")."]") : "");
+    }
 
     return $themelist;
   }

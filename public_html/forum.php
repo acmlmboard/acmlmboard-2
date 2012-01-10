@@ -99,7 +99,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
                         ."LEFT JOIN polls p ON p.id=t.id "
                   .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id])":'')
-                        ."WHERE t.forum=$fid "
+                        ."WHERE t.forum=$fid AND t.announce=0 "
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
     $topbot=
@@ -217,7 +217,17 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
 
  }
   print "<br>
-".      "$L[TBL1]>
+".      "$L[TBL1]>";
+
+if ($fid) {
+
+echo announcement_row(0,3,4);
+echo announcement_row($fid,3,4);
+
+
+}
+
+  print "
 ".      "  $L[TRh]>
 ".      "    $L[TDh] width=17>&nbsp;</td>
 ".      "    $L[TDh] width=17>&nbsp;</td>

@@ -24,6 +24,8 @@
 
   loadsmilies();
 
+  $page = $_REQUEST['page'];
+
   if(!$page)
     $page=1;
 
@@ -32,19 +34,45 @@
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
-  if($tid=($_POST[id]?$_POST[id]:$_GET[id]))
+//  [DJ Bouche] What the fuck?
+//  if($tid=($_POST[id]?$_POST[id]:$_GET[id])) {
+
+  if ($tid=$_REQUEST['id']) {
     checknumeric($tid);
-  elseif($uid=$_GET[user])
+    $viewmode = "thread";
+  }
+  elseif($uid=$_GET[user]) {
     checknumeric($uid);
-  elseif($timeval=$_GET[time])
+    $viewmode = "user";
+  }
+  elseif($timeval=$_GET[time]) {
     checknumeric($timeval);
+    $viewmode = "time";
+  }
+  elseif(isset($_GET[announce])) {
+    $announcefid = $_GET['announce'];
+    checknumeric($announcefid);
+    $viewmode = "announce";
+  }
   // "link" support (i.e., thread.php?pid=999whatever)
   elseif($pid=$_GET[pid]){
     checknumeric($pid);
-    $tid =$sql->resultq("SELECT thread FROM posts WHERE id=$pid");
-    $page=floor($sql->resultq("SELECT COUNT(*) FROM posts WHERE thread=$tid AND id<$pid")/$loguser[ppp])+1;
+    $isannounce = $sql->resultq("SELECT announce FROM posts WHERE id=$pid");
+    if ($isannounce) {
+      $pinf =$sql->fetchq("SELECT t.forum fid, t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
+      $announcefid = $pinf['fid'];
+      $atid = $pinf['tid'];
+
+      $page=floor($sql->resultq("SELECT COUNT(*) FROM threads WHERE announce=1 AND forum=$announcefid AND id>$atid")/$loguser[ppp])+1;
+      $viewmode = "announce";      
+    }
+    else {
+      $tid =$sql->resultq("SELECT thread FROM posts WHERE id=$pid");
+      $page=floor($sql->resultq("SELECT COUNT(*) FROM posts WHERE thread=$tid AND id<$pid")/$loguser[ppp])+1;
+      $viewmode = "thread";      
+    }
   }
-  if ($tid) 
+  if ($viewmode == "thread") 
     $threadcreator=$sql->resultq("SELECT user FROM threads WHERE id=$tid");
   else $threadcreator=0;
   $action='';
@@ -75,7 +103,7 @@
     $pinstr="AND (pt2.id<>$_GET[pin] OR pt2.revision<>($_GET[rev]+1)) ";
   } else $pinstr="";
 
-  if(!$uid  && !$timeval){
+  if($viewmode == "thread"){
     if (!$tid) $tid=0;
     $sql->query("UPDATE threads "
                ."SET views=views+1 $action "
@@ -146,7 +174,7 @@
     $t=$sql->query("SELECT * FROM tags WHERE fid=$thread[fid]");
     while($tt=$sql->fetch($t)) $tags[]=$tt;
 
-  }elseif($uid){
+  }elseif($viewmode == "user"){
     $user=$sql->fetchq("SELECT * "
                       ."FROM users "
                       ."WHERE id=$uid ");
@@ -178,7 +206,52 @@
                                   .  "AND f.minpower<=$loguser[power] "
                                   .  "AND c.minpower<=$loguser[power]");
   }
-  elseif($timeval) {
+  elseif($viewmode == "announce") {
+    $announceftitle = $sql->resultp("SELECT title FROM forums WHERE id=?",array($announcefid));
+
+    if ($announcefid) pageheader('Announcements',$announcefid);
+    else {
+      $showonusers = 1;
+      pageheader('Announcements');
+    }
+
+/*
+    $posts=$sql->query("SELECT $fieldlist p.*, p.announce isannounce, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle "
+                      ."FROM posts p "
+                      ."LEFT JOIN poststext pt ON p.id=pt.id "
+          ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
+                      ."LEFT JOIN users u ON p.user=u.id "
+                      ."LEFT JOIN threads t ON p.thread=t.id "
+                      ."LEFT JOIN forums f ON f.id=t.forum "
+                      ."LEFT JOIN categories c ON c.id=f.cat "
+                      ."WHERE f.id=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
+                      ."ORDER BY p.date DESC "
+                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+*/
+
+    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, p.announce isannounce "
+                      ."FROM posts p "
+                      ."LEFT JOIN poststext pt ON p.id=pt.id "
+                      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr " //SQL barrel roll
+                      ."LEFT JOIN users u ON p.user=u.id "
+                      ."LEFT JOIN threads t ON p.thread=t.id "
+                      ."LEFT JOIN forums f ON f.id=t.forum "
+                      ."LEFT JOIN categories c ON c.id=f.cat "
+                      ."WHERE f.id=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
+                      ."ORDER BY p.id DESC "
+                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+
+
+
+    $thread[replies]=$sql->resultq("SELECT count(*) "
+                                  ."FROM posts p "
+                                  ."LEFT JOIN threads t ON p.thread=t.id "
+                                  ."LEFT JOIN forums f ON f.id=t.forum "
+                                  ."LEFT JOIN categories c ON c.id=f.cat "
+                                  ."WHERE  f.id=$announcefid AND p.announce=1 AND t.announce=1  "
+                      ) -1;
+  }
+  elseif($viewmode == "time") {
     checknumeric($time);
     $mintime=ctime()-$time;
 
@@ -227,17 +300,19 @@
     for($p=1;$p<=1+floor($thread[replies]/$loguser[ppp]);$p++)
       if($p==$page)
         $pagelist.=" $p";
-      elseif($tid)
+      elseif($viewmode == "thread")
         $pagelist.=" <a href=thread.php?id=$tid&page=$p>$p</a>";
-      elseif($uid)
+      elseif($viewmode == "user")
         $pagelist.=" <a href=thread.php?user=$uid&page=$p>$p</a>";
-      elseif($timeval)
+      elseif($viewmode == "time")
         $pagelist.=" <a href=thread.php?time=$timeval&page=$p>$p</a>";
+      elseif($viewmode == "announce")
+        $pagelist.=" <a href=thread.php?announce=$announcefid&page=$p>$p</a>";
     $pagebr='<br>';
     $pagelist.='</div>';
   }
 
-  if($tid){
+  if($viewmode=="thread"){
 
     if (can_create_forum_post($thread[forum])) {
     if($thread[closed])
@@ -326,14 +401,31 @@ if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
 ".        "  </td>
 ".        "$L[TBLend]
 ";
-  }elseif($uid){
+  }elseif($viewmode=="user"){
     $topbot=
           "$L[TBL] width=100%>
 ".        "  $L[TDn]><a href=./>Main</a> - Posts by ".userlink($user)."</td>
 ".        "$L[TBLend]
 ";
   }
-elseif($timeval){
+  elseif($viewmode=="announce") {
+    if (can_create_forum_announcements($announcefid)) {
+      $newreply="<a href=newthread.php?id=$announcefid&announce=1>New announcement</a>";
+    }
+    else {
+      $newreply = "";
+    }
+
+    $topbot=
+          "$L[TBL] width=100%>$L[TR]>
+".        "  $L[TDn]><a href=./>Main</a> ".($announcefid? "- <a href=forum.php?id=$announcefid>$announceftitle</a> ":"")."- Announcements</td>
+".        "  $L[TDnr]>
+".        "    $newreply
+".        "  </td>
+".        "$L[TBLend]
+";
+  }
+elseif($viewmode=="time"){
     $topbot=
           "$L[TBL] width=100%>
 ".        "  $L[TDn]><a href=./>Main</a> - Latest posts</td>

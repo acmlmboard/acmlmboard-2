@@ -69,6 +69,7 @@ function LoadBlocklayouts()
     switch($type){
      case 0:
      case 1:
+      $postheaderrow = "";
       if($pthread)
         $threadlink=", in <a href=thread.php?id=$pthread[id]>$pthread[title]</a>";
 
@@ -80,8 +81,16 @@ function LoadBlocklayouts()
         $revisionstr=" (rev. $post[revision] of ".cdate($dateformat,$post[ptdate]).")";
 
       // I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
-      if($post[thread])
-        $postlinks.=($postlinks?' | ':'')."<a href=newreply.php?id=$post[thread]&pid=$post[id]>Reply</a>";
+      if($post[isannounce]) {
+          $postheaderrow =
+            "$L[TRh]>
+               $L[TD] colspan=2>".$post['ttitle']."</td>
+             </tr>
+            ";
+      } 
+      else if($post[thread]) {
+          $postlinks.=($postlinks?' | ':'')."<a href=newreply.php?id=$post[thread]&pid=$post[id]>Reply</a>";
+      }
 
       // "Edit" link for admins or post owners, but not banned users
 /*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
@@ -110,6 +119,7 @@ if (can_edit_post($post[id]) && $post[id])
       //[KAWA] Fun fact: <a name> is deprecated in favor of using IDs.
       //       That's right, you can use <anything id="foo"> in place of <a name="foo">!
       $text="$L[TBL1] id=".$post['id'].">
+".        "  $postheaderrow 
 ".        "  $L[TR]>
 ".        "    <td class=\"b n1 topbar".$post['uid']."_1\" style=border-bottom:0;border-right:0 height=17>
 ".        "      ".userlink($post,'u').

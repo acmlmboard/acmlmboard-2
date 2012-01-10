@@ -22,12 +22,6 @@
 
   require 'lib/login.php';
 
-
-
-
-
-
-
   $a=$sql->fetchq("SELECT intval FROM misc WHERE field='lockdown'");
   
   if($a[intval]) {
@@ -181,7 +175,7 @@
   // also added number_format to views
   // also changed the title to be "pagetitle - boardname" and not vice-versa
   function pageheader($pagetitle='',$fid=0){
-    global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$themefile,$logofile,$url,$config,$feedicons,$favicon;
+    global $L,$dateformat,$sql,$log,$loguser,$sqlpass,$views,$botviews,$sqluser,$boardtitle,$extratitle,$boardlogo,$themefile,$logofile,$url,$config,$feedicons,$favicon,$showonusers,$count,$lastannounce,$lastforumannounce;
 
     // this is the only common.php location where we reliably know $fid.
     if($log) $sql->query("UPDATE users SET lastforum='$fid' WHERE id=$loguser[id]");
@@ -232,7 +226,10 @@
 
     include("lib/sprites.php");
 	$junk .= "<style type=\"text/css\">.nc04{color:#EE4444} .nc14{color:#E63282} .nc24{color:#AA3C3C}</style>";
-
+  if ($log) {
+    $logbar = $loguser;
+    $logbar['showminipic'] = 1;
+  }
     print "<!DOCTYPE html>
 ".        "<html>
 ".        "<head>
@@ -263,16 +260,54 @@
 ".        "    $L[TD]><div style=\"width: 150px\">".cdate($dateformat,ctime())."</div></td>
 ".        "  $L[TR1c]>
 ".        "    $L[TD] colspan=3>
-".        "      ".($log?userlink($loguser):'Guest').": 
+".        "      ".($log?userlink($logbar):'Guest').": 
 ";
-//    if($log){
+
+  if($log){
+    //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
+    $pmsgs=$sql->fetchq("SELECT p.id id, p.date date, u.id uid, u.name uname, u.sex usex, u.power upower "
+                       ."FROM pmsgs p "
+                       ."LEFT JOIN users u ON u.id=p.userfrom "
+                       ."WHERE p.userto=$loguser[id] "
+                       ."ORDER BY date DESC LIMIT 1");
+
+    $unreadpms=$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE userto=$loguser[id] AND unread=1 AND del_to=0");
+    $totalpms =$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE userto=$loguser[id] AND del_to=0");
+
+    if($unreadpms){
+      $status='<img src=img/status/new.png>';
+      $unreadpms=" ($unreadpms new)";
+    }else{
+      $status='&nbsp;';
+      $unreadpms='';
+    }
+
+    if($totalpms>0)
+       $lastmsg = "";
+//      $lastmsg="<br>
+//".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
+        
+    else
+      $lastmsg='';
+if (has_perm('view-own-pms')) {
+    $pmsgbox=
+      "<a href=private.php><img src=gfx/pm.png alt=\"Private messages\" title=\"Private message\"></a> $unreadpms $lastmsg | ";
+}
+else {
+  $pmsgbox = "";
+
+}
+  }
+  echo $pmsgbox;
+
+
+
       //mark forum read
       checknumeric($fid);
       if($fid)
         $markread=array('url' => "index.php?action=markread&fid=$fid", 'title' => "Mark Forum Read");
       else
         $markread=array('url' => "index.php?action=markread&fid=all", 'title' => "Mark All Forums Read");
-
 
     $userlinks = array();
     $ul=0;
@@ -312,10 +347,8 @@
 ".        "    <form action=login.php method=post name=logout>
 ".        "      $L[INPh]=action value=logout>
 ".        "      $L[INPh]=p value=".md5($loguser[pass].$pwdsalt).">
-".        "    </form>
-".        "$L[TBLend]
-".        "<br>
-";
+".        "    </form>";
+
 
   $hiddencheck  = "AND hidden=0 ";
   if (has_perm('view-hidden-users')) {
@@ -331,7 +364,7 @@
       $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
                           .'WHERE (lastview>'.(ctime()-300).'  '
                               .'OR lastpost>'.(ctime()-300).") $hiddencheck "
-			     ."AND lastforum='$fid' "
+           ."AND lastforum='$fid' "
                           .'ORDER BY name');
       $onuserlist='';
       $onusercount=0;
@@ -353,14 +386,131 @@
       if($numbots)
         $onuserlist.=" | $numbots bot".($numbots>1?'s':'');
 
-      print "$L[TBL1]>
+echo "</tr>
 ".          "  $L[TR1]>
-".          "    $L[TD1c]>$onuserlist
-".          "$L[TBLend]
-".          "<br>
+".          "    $L[TD1c] colspan=3>$onuserlist
+              </td>
+              </tr>
 ";
     }
+
+
+    else if ($showonusers) {
+      
+  //[KAWA] Copypastadaption from ABXD, with added activity limiter.
+  $birthdayLimit = 86400 * 30; //should be 30 days. Adjust if you want.
+  $rBirthdays = $sql->query("select birth, id, name, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
+  $birthdays = array();
+  while($user = $sql->fetch($rBirthdays))
+  {
+    $b = $user['birth'];
+    if(gmdate("m-d", $b) == gmdate("m-d"))
+    {
+      $y = gmdate("Y") - gmdate("Y", $b);
+      $birthdays[] = UserLink($user)." (".$y.")";
+    }
   }
+  if(count($birthdays))
+  {
+    $birthdaysToday = implode(", ", $birthdays);
+    $birthdaybox =
+print   "  $L[TR1c]>
+".      "    $L[TD2c] colspan=3>
+".      "      Birthdays today: $birthdaysToday
+";
+}
+
+
+
+  $count[d]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-86400));
+  $count[h]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-3600));
+  $lastuser=$sql->fetchq('SELECT id,name,sex,power FROM users ORDER BY id DESC LIMIT 1');
+
+  $hiddencheck  = "AND hidden=0 ";
+  if (has_perm('view-hidden-users')) {
+    $hiddencheck = "";
+  }
+
+  $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
+                      .'WHERE (lastview>'.(ctime()-300).' '
+                         .'OR lastpost>'.(ctime()-300).") $hiddencheck "
+                      .'ORDER BY name');
+  $onuserlist='';
+  $onusercount=0;
+  while($user=$sql->fetch($onusers)){
+    $user[showminipic]=1;
+    $onuserlog=($user[lastpost]<=$user[lastview]);
+    $«=($onuserlog?'':'(');
+    $»=($onuserlog?'':')');
+    $onuserlist.=($onusercount?', ':'').$«.($user[hidden] ? '('.userlink($user).')' : userlink($user)).$»;
+    $onusercount++;
+  }
+
+  $maxpostsday =$sql->resultq('SELECT intval FROM misc WHERE field="maxpostsday"');
+  $maxpostshour=$sql->resultq('SELECT intval FROM misc WHERE field="maxpostshour"');
+  $maxusers    =$sql->resultq('SELECT intval FROM misc WHERE field="maxusers"');
+
+  if($count[d]>$maxpostsday){
+    $sql->query("UPDATE misc SET intval=$count[d] WHERE field='maxpostsday'");
+    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxpostsdaydate'");
+  }
+  if($count[h]>$maxpostshour){
+    $sql->query("UPDATE misc SET intval=$count[h] WHERE field='maxpostshour'");
+    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxpostshourdate'");
+  }
+  if($onusercount>$maxusers){
+    $sql->query("UPDATE misc SET intval=$onusercount WHERE field='maxusers'");
+    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxusersdate'");
+    $sql->query("UPDATE misc SET txtval='".addslashes($onuserlist)."' WHERE field='maxuserstext'");
+  }
+
+  $onuserlist="$onusercount user".($onusercount!=1?'s':'').' online'.($onusercount>0?': ':'').$onuserlist;
+  $numguests=$sql->resultq('SELECT count(*) FROM guests WHERE `bot`=0 AND date>'.(ctime()-300));
+  if($numguests)
+    $onuserlist.=" | $numguests guest".($numguests>1?'s':'');
+  $numbots=$sql->resultq('SELECT count(*) FROM guests WHERE `bot`=1 AND date>'.(ctime()-300));
+  if($numbots)
+    $onuserlist.=" | $numbots bot".($numbots>1?'s':'');
+
+echo "
+".      "  $L[TR]>
+".      "    $L[TD1] colspan=3>
+".      "      $L[TBL] width=100%>
+".      "        $L[TDn] width=250>
+".      "          &nbsp;
+".      "        </td>
+".      "        $L[TDnc]><nobr>
+".      "          $count[t] threads and $count[p] posts total<br>
+".      "          $count[d] new posts today, $count[h] last hour</nobr>
+".      "        </td>
+".      "        $L[TDnr] width=250>
+".      "          $count[u] registered users<br>
+".      "          Newest: ".userlink($lastuser)."
+".      "        </td>
+".      "      $L[TBLend]
+".      "  $L[TR]>
+".      "    $L[TD2c] colspan=3>
+".      "      $onuserlist
+".    "$birthdaybox";
+
+
+    }
+
+
+
+
+echo "
+".        "$L[TBLend]
+".        "<br>
+";
+
+
+  }
+
+
+
+
+
 
   function pagestats(){
     global $start,$L,$sql;

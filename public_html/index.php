@@ -11,7 +11,11 @@
   if($p=$_GET[p]) return header("Location:thread.php?pid=$p#$p");
   if($t=$_GET[t]) return header("Location:thread.php?id=$t");
   if($u=$_GET[u]) return header("Location:profile.php?id=$u");
-
+  if(isset($_GET['a'])) {
+    $a=$_GET['a'];
+    return header("Location:thread.php?announce=$a");
+  }
+  $showonusers=1;
   require 'lib/common.php';
 
   //mark forum read
@@ -40,74 +44,9 @@
   pageheader();
 
 
-	//[KAWA] Copypastadaption from ABXD, with added activity limiter.
-	$birthdayLimit = 86400 * 30; //should be 30 days. Adjust if you want.
-	$rBirthdays = $sql->query("select birth, id, name, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
-	$birthdays = array();
-	while($user = $sql->fetch($rBirthdays))
-	{
-		$b = $user['birth'];
-		if(gmdate("m-d", $b) == gmdate("m-d"))
-		{
-			$y = gmdate("Y") - gmdate("Y", $b);
-			$birthdays[] = UserLink($user)." (".$y.")";
-		}
-	}
-	if(count($birthdays))
-	{
-		$birthdaysToday = implode(", ", $birthdays);
-		$birthdaybox =
-        "$L[TBL1]>
-".      "  $L[TR1c]>
-".      "    $L[TD2c]>
-".      "      Birthdays today: $birthdaysToday
-".      "  $L[TBLend]
-".      "  <br>
-";
-}
 
-  if($log){
-    //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
-    $pmsgs=$sql->fetchq("SELECT p.id id, p.date date, u.id uid, u.name uname, u.sex usex, u.power upower "
-                       ."FROM pmsgs p "
-                       ."LEFT JOIN users u ON u.id=p.userfrom "
-                       ."WHERE p.userto=$loguser[id] "
-                       ."ORDER BY date DESC LIMIT 1");
 
-    $unreadpms=$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE userto=$loguser[id] AND unread=1 AND del_to=0");
-    $totalpms =$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE userto=$loguser[id] AND del_to=0");
 
-    if($unreadpms){
-      $status='<img src=img/status/new.png>';
-      $unreadpms=" ($unreadpms new)";
-    }else{
-      $status='&nbsp;';
-      $unreadpms='';
-    }
-
-    if($totalpms>0)
-      $lastmsg="<br>
-".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
-    else
-      $lastmsg='';
-if (has_perm('view-own-pms')) {
-    $pmsgbox=
-        "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] colspan=2>Private Messages</td>
-".      "  $L[TR]>
-".      "    $L[TD1] width=17>$status</td>
-".      "    $L[TD2]>
-".      "      <a href=private.php>Private messages</a> -- You have $totalpms private message".($totalpms!=1?'s':'')."$unreadpms.$lastmsg
-".      "  $L[TBLend]
-".      "  <br>
-";
-}
-else {
-  $pmsgbox = "";
-
-}
-  }
 
   $categs=$sql->query("SELECT * "
                      ."FROM categories "
@@ -131,84 +70,16 @@ else {
                .($log?"LEFT JOIN forumsread r ON r.fid=f.id AND r.uid=$loguser[id] ":'')
 //                     ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
 //                     .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
+                     ." WHERE announce=0 "
                      ."ORDER BY c.ord,ord");
   $cat=-1;
+print "
+".      "$L[TBL1]>";
 
-  $count[d]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-86400));
-  $count[h]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-3600));
-  $lastuser=$sql->fetchq('SELECT id,name,sex,power FROM users ORDER BY id DESC LIMIT 1');
+echo announcement_row(0,2,3);
 
-  $hiddencheck  = "AND hidden=0 ";
-  if (has_perm('view-hidden-users')) {
-    $hiddencheck = "";
-  }
-
-  $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
-                      .'WHERE (lastview>'.(ctime()-300).' '
-                         .'OR lastpost>'.(ctime()-300).") $hiddencheck "
-                      .'ORDER BY name');
-  $onuserlist='';
-  $onusercount=0;
-  while($user=$sql->fetch($onusers)){
-    $user[showminipic]=1;
-    $onuserlog=($user[lastpost]<=$user[lastview]);
-    $«=($onuserlog?'':'(');
-    $»=($onuserlog?'':')');
-    $onuserlist.=($onusercount?', ':'').$«.($user[hidden] ? '('.userlink($user).')' : userlink($user)).$»;
-    $onusercount++;
-  }
-
-  $maxpostsday =$sql->resultq('SELECT intval FROM misc WHERE field="maxpostsday"');
-  $maxpostshour=$sql->resultq('SELECT intval FROM misc WHERE field="maxpostshour"');
-  $maxusers    =$sql->resultq('SELECT intval FROM misc WHERE field="maxusers"');
-
-  if($count[d]>$maxpostsday){
-    $sql->query("UPDATE misc SET intval=$count[d] WHERE field='maxpostsday'");
-    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxpostsdaydate'");
-  }
-  if($count[h]>$maxpostshour){
-    $sql->query("UPDATE misc SET intval=$count[h] WHERE field='maxpostshour'");
-    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxpostshourdate'");
-  }
-  if($onusercount>$maxusers){
-    $sql->query("UPDATE misc SET intval=$onusercount WHERE field='maxusers'");
-    $sql->query("UPDATE misc SET intval=".ctime()." WHERE field='maxusersdate'");
-    $sql->query("UPDATE misc SET txtval='".addslashes($onuserlist)."' WHERE field='maxuserstext'");
-  }
-
-  $onuserlist="$onusercount user".($onusercount!=1?'s':'').' online'.($onusercount>0?': ':'').$onuserlist;
-  $numguests=$sql->resultq('SELECT count(*) FROM guests WHERE `bot`=0 AND date>'.(ctime()-300));
-  if($numguests)
-    $onuserlist.=" | $numguests guest".($numguests>1?'s':'');
-  $numbots=$sql->resultq('SELECT count(*) FROM guests WHERE `bot`=1 AND date>'.(ctime()-300));
-  if($numbots)
-    $onuserlist.=" | $numbots bot".($numbots>1?'s':'');
-
-  print "$L[TBL1]>
-".      "  $L[TR]>
-".      "    $L[TD1]>
-".      "      $L[TBL] width=100%>
-".      "        $L[TDn] width=250>
-".      "          &nbsp;
-".      "        </td>
-".      "        $L[TDnc]><nobr>
-".      "          $count[t] threads and $count[p] posts total<br>
-".      "          $count[d] new posts today, $count[h] last hour</nobr>
-".      "        </td>
-".      "        $L[TDnr] width=250>
-".      "          $count[u] registered users<br>
-".      "          Newest: ".userlink($lastuser)."
-".      "        </td>
-".      "      $L[TBLend]
-".      "  $L[TR]>
-".      "    $L[TD2c]>
-".      "      $onuserlist
-".      "$L[TBLend]
-".      "<br>
-".		"$birthdaybox
-".      "$pmsgbox
-".      "$L[TBL1]>
-".      "  $L[TRh]>
+echo
+      "  $L[TRh]>
 ".      "    $L[TDh] width=17>&nbsp;</td>
 ".      "    $L[TDh]>Forum</td>
 ".      "    $L[TDh] width=50>Threads</td>

@@ -71,7 +71,7 @@
 //".         "    $threadlink";
 //  }
 
-  if ($thread[closed]) {
+  if ($thread[closed] && !can_edit_forum_posts($thread[forum])) {
       $err="    You can't edit a post in closed threads!<br>
 ".         "    $threadlink";
   }
@@ -206,6 +206,7 @@
 ".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
+    $message = $_POST['message'];
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
 
     $rev=$sql->fetchq("SELECT MAX(revision) m FROM poststext WHERE id=$pid");
@@ -219,8 +220,18 @@
 
     $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
 
-
+    if ($thread[announce]) {
+      if ($thread[forum] == 0) {
+    sendirc("\x036Announcement edited by \x0313$user[name]\x034 (\x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
+      }
+      else {
+    sendirc("\x036Announcement edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
+      }
+    }
+    else {
     sendirc("\x036Post edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
+
+    }
 
     print "$top - Submit
 ".        "<br><br>

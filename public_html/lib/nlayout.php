@@ -332,4 +332,45 @@ function RenderPageBar($pagebar) {
 
     return $rlist;
   }
+
+
+  function announcement_row($announcefid,$aleftspan,$arightspan) {
+    global $L,$dateformat,$sql;
+
+    $announcement = array();
+
+    $ancs = $sql->fetchp("SELECT title,user,`lastdate` FROM threads 
+    WHERE forum=?  AND announce=1 ORDER BY `lastdate` DESC LIMIT 1",array($announcefid));
+    if ($ancs) {
+      $announcement['title'] = $ancs['title'];
+      $announcement['date'] = $ancs['lastdate'];
+      $announcement['user'] = $sql->fetchp("SELECT id,name,sex,group_id FROM users WHERE id=?",array($ancs['user']));
+    }
+
+    if (isset($announcement['title']) || can_create_forum_announcements($announcefid)) {
+
+    if (isset($announcement['title'])) {
+      $anlink = "<a href=thread.php?announce=$announcefid>".$announcement['title']."</a> -- Posted by ".userlink($announcement['user'])." on ".cdate($dateformat,$announcement['date']);
+    }
+    else {
+      $anlink = "No announcements";
+    }
+    if ($announcefid) $a = "Forum ";
+    else $a = "";
+    echo "
+    ".        "  $L[TRh]>
+    ".        "    $L[TD] colspan=".($aleftspan+$arightspan).">".$a."Announcements
+    ".        "    </td>
+    ".        "  </tr>
+    ".        "  $L[TR1c]>
+    ".        "    $L[TD] colspan=$aleftspan align=left>$anlink
+    ".        "    </td>
+    ".        "    $L[TD] colspan=$arightspan align=right>".(can_create_forum_announcements($announcefid)?"<a href=newthread.php?id=$announcefid&announce=1>New Announcement</a>":"&nbsp;")."
+    ".        "    </td>
+    ".        "  </tr>";
+
+  }
+
+}
+
 ?>

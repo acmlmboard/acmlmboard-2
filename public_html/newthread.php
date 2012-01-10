@@ -3,9 +3,11 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
+    $announce=$_REQUEST[announce];
+    checknumeric($announce);
+
   if($act=$_POST[action]){
     $fid=$_POST[fid];
-
     if($_POST[passenc])
       $pass=$_POST[passenc];
     else
@@ -24,8 +26,12 @@
 
   needs_login(1);
 
+  $type = $announce ? "announcement" : "thread";
+  $typecap = $announce ? "Announcement" : "Thread";
+
+
   $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
-  pageheader('New thread',$forum[id]);
+  pageheader("New $type",$forum[id]);
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
@@ -46,7 +52,7 @@
   while($tt=$sql->fetch($t)) {
     if($tagsin=="") $tagsin=
           "$L[TR]>
-".        "  $L[TD1c]>Thread tags:</td>
+".        "  $L[TD1c]>$typecap tags:</td>
 ".        "  $L[TD2]>
 ";
     $tagsin.="<input type='checkbox' name='tag$tt[bit]' id='tag$tt[bit]' value='1' ".($_POST["tag$tt[bit]"]?"checked":"")."><label for='tag$tt[bit]'>$tt[name]</label> ";
@@ -57,6 +63,9 @@
 
   if(!$forum)
     forum_not_found();
+
+    else if ($announce && !can_create_forum_announcements($fid))
+    $err = "    You have no permissions to create announcements in this forum!<br>$forumLink";
 
 //  else if($forum[minpowerthread]>$user[power]){
      else if (!can_create_forum_thread($fid)){
@@ -82,7 +91,7 @@
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>
 ".         "    $forumlink";
     if($title=="")
-      $err="    You must enter a thread title.<br>
+      $err="    You must enter a $type title.<br>
 ".         "    $forumlink";
     if($ispoll && ($_POST[numopts]<1 || !isset($_POST[numopts])))
       $err="    You must add options to your poll.<br>
@@ -95,7 +104,7 @@
     }
   }
 
-  $top="<a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a> - New thread";
+  $top="<a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a> - New $type";
 
   $i=1;
   $icons=$sql->query('SELECT * FROM posticons ORDER BY id');
@@ -151,10 +160,10 @@
 ".        "  $L[INPh]=passenc value=$loguser[pass]>
 ";
     print "  $L[TR]>
-".        "    $L[TD1c]>Thread title:</td>
+".        "    $L[TD1c]>$typecap title:</td>
 ".        "    $L[TD2]>$L[INPt]=title size=60 maxlength=60></td>
 ".        "  $L[TR]>
-".        "    $L[TD1c]>Thread icon:</td>
+".        "    $L[TD1c]>$typecap icon:</td>
 ".        "    $L[TD2]>
 ".        "$iconlist
 ".        "    </td>
@@ -170,6 +179,7 @@
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
 ".        "      $L[INPh]=fid value=$fid>
+".        "      $L[INPh]=announce value=$announce>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
@@ -236,9 +246,9 @@
 ".        "$L[TBL1]>
 ".        " <form action=newthread.php?ispoll=$ispoll method=post>
 ".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Thread</td>
+".        "    $L[TDh] colspan=2>$typecap</td>
 ".        "  $L[TR]>
-".        "    $L[TD1c]>Thread title:</td>
+".        "    $L[TD1c]>$typecap title:</td>
 ".        "    $L[TD2]>$L[INPt]=title size=60 maxlength=60 value=\"".htmlval($_POST[title])."\"></td>
 ".$tagsin."
 ".$pollin."
@@ -256,6 +266,7 @@
 ".        "      $L[INPh]=fid value=$fid>
 ".        "      $L[INPh]=iconid value=$_POST[iconid]>
 ".        "      $L[INPh]=iconurl value=$_POST[iconurl]>
+".        "      $L[INPh]=announce value=$announce>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
@@ -284,15 +295,17 @@
 
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");
-    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags) "
-               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum)");
+    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed) "
+               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$announce)");
     $tid=mysql_insert_id();
-    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout)");
+    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
+               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");
     $pid=mysql_insert_id();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
-    $sql->query("UPDATE forums SET threads=threads+1,posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid "
+if (!$announce)   {
+   $sql->query("UPDATE forums SET threads=threads+1,posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid "
                ."WHERE id=$fid");
+}
     $sql->query("UPDATE threads SET lastid=$pid WHERE id=$tid");
 
     if($ispoll)
@@ -305,7 +318,7 @@
 
     // bonus shit
     $c = rand(250,750);
-    $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
+    if (!$announce) $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
 
 //    if($forum[minpower]<=0) sendirc("\x0314New thread by \x0309$user[name]\x0314 in \x0307". $forum[title] ."\x0314: \x0307".stripslashes($_POST[title])."\x0314 - \x0303{boardurl}?t=$tid");
 //    else sendirc("S\x0314New thread by \x0309$user[name]\x0314 in \x0307". $forum[title] ."\x0314: \x0307".stripslashes($_POST[title])."\x0314 - \x0303{boardurl}?t=$tid");
@@ -314,15 +327,34 @@
 /*    if(!$forum['private']) sendirc("\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");
     else sendirc("S\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");*/
 
+if ($announce) {
+  $viewlink = "thread.php?announce=".$forum['id'];
+  $shortlink = "a=".$forum['id'];
+  $bonus = "";
+}
+else {
+  $viewlink = "thread.php?id=$tid";
+  $shortlink = "t=$tid";
+  $bonus = "    Posted! (Gained $c bonus coins)<br>";
+}
 
-     sendirc("\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid",$chan);
+if ($announce && $forum['id']==0) {
+     sendirc("\x036New $type by \x0313$user[name]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
+}
+else if ($announce) {
+     sendirc("\x036New forum $type by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);  
+}
+else {
+     sendirc("\x036New $type by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
+}
+
 
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
 ".        "  $L[TD1c]>
-".        "    Posted! (Gained $c bonus coins)<br>
-".        "    ".redirect("thread.php?id=$tid",'the thread')."
+".        "  $bonus
+".        "    ".redirect($viewlink,"the $type")."
 ".        "$L[TBLend]
 ";
   }

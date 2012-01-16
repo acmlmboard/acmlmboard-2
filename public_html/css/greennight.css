@@ -1,0 +1,91 @@
+/* META
+Green Night (Mega-Mario)
+
+*/
+a:link 		{ color: #FFC040; }
+a:visited 	{ color: #C09030; }
+a:active 	{ color: #FFEA60; }
+a:hover 		{ color: #FFFFFF; }
+
+a:link, a:visited, a:active, a:hover 
+{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+body 
+{
+	background: black url('../theme/greennight/greennightbg.png');
+	font-family: arial, sans-serif;
+}
+
+body, table 
+{
+	color: #efe;
+	font-size: 1em;
+}
+
+table.c1, table.c2 
+{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td.b 
+{
+	border: 1px solid #208000;
+}
+
+td.n1, tr.n1 td 
+{
+	background: #082000;
+}
+
+td.n2, tr.n2 td 
+{
+	background: #041000;
+}
+
+td.h, tr.h td 
+{
+	background: #104800;
+}
+
+tr.c td 
+{
+	background: #0c3000;
+}
+
+tr.h td, tr.c td 
+{
+	text-align: center;
+}
+
+textarea, input, select 
+{
+	border: 1px solid #208000;
+	background-color: black;
+	color: #efe;
+	font-family: arial, sans-serif;
+	font-size: 1em;
+}
+
+input.submit 
+{
+	border: 2px solid #208000;
+}
+input.radio 
+{
+	border: 0;
+}
+.sfont 
+{
+	font-size: 0.8em;
+	font-family: verdana;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

@@ -312,8 +312,8 @@ If you have any questions about layouts in general or need help, visit the <a hr
 ".    "    $L[FAQTD]>
 ".    "      You can get one under one of those conditions:<ul>
 <li>Be a moderator or administrator</li>
-<li>Have at least 1200 posts</li>
-<li>Have at least 800 posts, and have been registered for at least 200 days</li></ul>
+<li>Have at least 100 posts</li>
+<li>Have at least 50 posts, and have been registered for at least 60 days</li></ul>
 There may be a few rare exceptions, but asking for a custom title before having the requirements for it won't get you one.</td>
 ".    "  $L[TRh]>
 ".    "    $L[TDh]><a name='bestaff'>How can I become a moderator or administrator?</td>

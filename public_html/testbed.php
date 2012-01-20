@@ -11,7 +11,26 @@ pageheader("Sandbox");
 $pagebar = array();
 $pagebar['title'] = 'The Sandbox of Champions';
 $msgtext='';
-if ($_GET['type'] == 'group' && isset($_GET['user_id']) && isset($_GET['group_id']) && isset($_GET['act'])) {
+if ($_GET['act'] == 'update' && $_GET['type'] == 'timezone-offsets') {
+	$zones = array();
+	$tzones = $sql->query("SELECT * FROM timezones");
+	$now = new DateTime("now");
+	while ($tzone = $sql->fetch($tzones)) {
+		$zone = new DateTimeZone($tzone['name']);
+		$off = $zone->getOffset($now);
+		free($zone);
+		$msgtext .= "Timezone ".$tzone['name']." at offset ".$off.".\n";
+		$zones[$tzone['id']] = $off;
+		print "Zone ".$tzone['name']." offset $off<br>";
+	}
+	foreach ($zones as $k => $v) {
+		$sql->prepare("UPDATE timezones SET offset=? WHERE id=?",array($v,$k));
+		print "$k => $v<br>";
+	}
+}
+
+
+else if ($_GET['type'] == 'group' && isset($_GET['user_id']) && isset($_GET['group_id']) && isset($_GET['act'])) {
     $uid = $_GET['user_id'];
     $gid = $_GET['group_id'];
 

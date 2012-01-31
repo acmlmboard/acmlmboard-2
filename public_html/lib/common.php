@@ -490,8 +490,7 @@ echo "
 ".      "      $L[TBLend]
 ".      "  $L[TR]>
 ".      "    $L[TD2c] colspan=3>
-".      "      $onuserlist
-".    "$birthdaybox";
+".      "      $onuserlist";
 
 
     }
@@ -540,7 +539,7 @@ echo "
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (1/02/2011)<br>
+".        "  Acmlmboard v2.5 (1/30/2011)<br>
 ".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

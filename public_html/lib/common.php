@@ -290,8 +290,14 @@
     else
       $lastmsg='';
 if (has_perm('view-own-pms')) {
+    if ($unreadpms){
+      $pmimage = "gfx/pm.png";
+    }
+    else {
+      $pmimage = "gfx/pm-off.png";
+    } 
     $pmsgbox=
-      "<a href=private.php><img src=gfx/pm.png alt=\"Private messages\" title=\"Private message\"></a> $unreadpms $lastmsg | ";
+      "<a href=private.php><img src=$pmimage alt=\"Private messages\" title=\"Private message\"></a> $unreadpms $lastmsg | ";
 }
 else {
   $pmsgbox = "";
@@ -539,7 +545,7 @@ echo "
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (1/30/2011)<br>
+".        "  Acmlmboard v2.5 (2/01/2011)<br>
 ".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

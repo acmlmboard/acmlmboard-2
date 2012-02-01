@@ -383,7 +383,7 @@ else
 }
 
 $thumbsUp = "";
-if (has_perm('rate-thread')) {
+if (has_perm('rate-thread') && $thread['user'] != $loguser['id']) {
   if(!$isThumbed)
   	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup\">+1</a>";
   else

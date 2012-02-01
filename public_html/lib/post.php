@@ -70,7 +70,7 @@
         $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 
-    $tags=array('script','iframe','textarea','noscript','meta','xmp','plaintext');
+    $tags=array('script','iframe','textarea','noscript','meta','xmp','plaintext','base');
     foreach($tags as $tag){
       $msg=preg_replace("'<$tag(.*?)>'si" ,"&lt;$tag\\1>" ,$msg);
       $msg=preg_replace("'</$tag(.*?)>'si","&lt;/$tag>",$msg);

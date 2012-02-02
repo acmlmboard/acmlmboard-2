@@ -40,7 +40,8 @@ $headers = array
 	"img" => array("caption"=>"Image", "width"=>"32px", "color"=>2),
 	"name" => array("caption"=>"Name", "align"=>"center", "color"=>1),
 	"flavor" => array("caption"=>"Description", "color"=>2),
-  "edit" => array("caption"=>"Actions","color"=>1),
+	"rarity" => array("caption"=>"Rarity", "color"=>1),
+  "edit" => array("caption"=>"Actions","color"=>2),
 );
 
 $data = array();
@@ -63,6 +64,7 @@ $data[] = array
 			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
 			"name" => $mon['name'],
 			"flavor" => $mon['flavor'],
+			"rarity" => $mon['rarity'],
       "edit" => RenderActions($actions,1),
 		);
 }
@@ -78,13 +80,13 @@ RenderTable($data, $headers);
 elseif ($r['action']=="edit" || $r['action']=="new") {
 if (!empty($r['act'])) {
       $s =
-request_variables(array('name','franchiseid','pic','alt','anchor','title','flavor'));
+request_variables(array('name','franchiseid','pic','alt','anchor','title','flavor','rarity'));
 
 
 if ($r['action']=="edit" && $id > 0) {
 
 if(      $sql->prepare('UPDATE sprites SET 
-name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=? WHERE id=?;', array(
+name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? WHERE id=?;', array(
 $s['name'],
 $s['franchiseid'],
 $s['pic'],
@@ -92,6 +94,7 @@ $s['alt'],
 $s['anchor'],
 $s['title'],
 $s['flavor'],
+$s['rarity'],
 $id,
 )
 )){
@@ -106,7 +109,7 @@ else {
 
 elseif ($r['action']=="new"){
 if (      $sql->prepare('INSERT INTO sprites SET
-name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=? ;', array(
+name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? ;', array(
 $s['name'],
 $s['franchiseid'],
 $s['pic'],
@@ -114,6 +117,7 @@ $s['alt'],
 $s['anchor'],
 $s['title'],
 $s['flavor'],
+$s['rarity'],
 )
 )) {
 $id = mysql_insert_id();
@@ -152,6 +156,7 @@ $t = array(
   'alt' => '',
   'anchor' => 'free',
   'flavor' => '',  
+  'rarity' => '0',  
 );
 }
 RenderPageBar($pagebar);
@@ -178,7 +183,13 @@ $form = array(
           'title' => 'Franchise ID',
           'type' => 'numeric',
           'length' => 4,
-'value' => $t['franchiseid'],
+'value' => $t['franchiseid'],        
+	),
+        'rarity' => array(
+          'title' => 'Rarity',
+          'type' => 'numeric',
+          'length' => 2,
+'value' => $t['rarity'],
         ),
         'pic' => array(
           'title' => 'Image',
@@ -197,6 +208,7 @@ $form = array(
               'free' => 'Free',
               'sidepic' => 'Sidepic',
               'bottom' => 'Bottom',
+	      'top' => 'Top',
               ),
 'value' => $t['anchor'],
         ),

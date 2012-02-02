@@ -23,23 +23,32 @@
  * -> Add some protecting from easy captures - right now a logged-in user can just go to
  *    /sprites.php?catch=[NUMBER HERE] and get them all.
  * 
+ * New Weighted Random by Gywall
+ * Common = 0 | Uncommon = 20 | 40 = Slightly Rare | Rare = 60 | Very Rare = 80 | Mew Rare = 99
  */
 
 
 require_once("lib/spritelib.php");
-$chance = 5;
-$roll = 100;
+$chance = 100;
+//$roll = 300;
 
 //Always fail to roll if disabled, effectively never appearing at all.
 if($loguser['blocksprites'])
 	$chance = 0;
 	
+/*Version 2 method
 $monRequest = mysql_query("SELECT * FROM sprites WHERE id <= ".$roll);
 $monData = array();
 while($mon = mysql_fetch_assoc($monRequest))
 	$monData[] = $mon;
-$monData = $monData[array_rand($monData)];
+$monData = $monData[array_rand($monData)]; */
 
+// Redone the roll [Gywall]
+// If I broke anything, blame the rabbits. :)
+$monRarity = rand(0,6464646)%100;
+$monRequest = @mysql_result(mysql_query("SELECT count(*) FROM sprites WHERE rarity <= ".$monRarity),0,0);$monNumpty = rand(0,6464646)%$monRequest;
+$monData = array();
+$monData = mysql_fetch_array(mysql_query("SELECT * FROM sprites WHERE rarity <= ".$monRarity." LIMIT ".$monNumpty.",1"));
 /*
 //Old way to pick pics: randomly between two fields.
 $pic = rand(0, 1) ? $monData['alt']: $monData['pic'];

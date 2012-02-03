@@ -48,6 +48,7 @@
     $loguser[theme]=$defaulttheme;
     if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false)
       $loguser[theme]="minerslament";
+    $loguser[blocksprites]=1;
   }
   if($loguser[power]==1) {
     $loguser[modforums]=array();

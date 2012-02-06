@@ -136,7 +136,7 @@
 ".
            catheader('Login information')."
 ".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
-"./*(has_perm("have-displayname") ? */fieldrow('Display name',fieldinput(40,255,'displayname'))/* : "" )*/."
+".(has_perm("has-displayname") ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
@@ -375,7 +375,7 @@ if (has_perm("edit-users"))
 
     $sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
-               . /*(has_perm("have-displayname") ? */ setfield('displayname') /* : '') */ .','
+               . (has_perm("has-displayname") ?  setfield('displayname')  : '')  .','
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','

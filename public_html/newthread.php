@@ -130,7 +130,7 @@
       $pollin=
           "$L[TR]>
 ".        "  $L[TD1c]>Poll question:</td>
-".        "  $L[TD2]>$L[INPt]=question size=60 maxlength=60 value=\"".htmlval($_POST[question])."\"></td>
+".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
 ".        "$L[TR]>
 ".        "  $L[TD1c]>Number of options:</td>
 ".        "  $L[TD2]>$L[INPt]=numopts size=2 maxlength=2 value=\"".htmlval($_POST[numopts])."\"><br><font class=sfont>Press Preview to update the number of fields displayed.</font></td>
@@ -161,7 +161,7 @@
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
-".        "    $L[TD2]>$L[INPt]=title size=60 maxlength=60></td>
+".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>$typecap icon:</td>
 ".        "    $L[TD2]>
@@ -210,7 +210,7 @@
       $pollin=
           "$L[TR]>
 ".        "  $L[TD1c]>Poll question:</td>
-".        "  $L[TD2]>$L[INPt]=question size=60 maxlength=60 value=\"".htmlval($_POST[question])."\"></td>
+".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
 ".        "$L[TR]>
 ".        "  $L[TD1c]>Number of options:</td>
 ".        "  $L[TD2]>$L[INPt]=numopts size=2 maxlength=2 value=\"".htmlval($_POST[numopts])."\"><br><font class=sfont>Press Preview to update the number of fields displayed.</font></td>
@@ -249,7 +249,7 @@
 ".        "    $L[TDh] colspan=2>$typecap</td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
-".        "    $L[TD2]>$L[INPt]=title size=60 maxlength=60 value=\"".htmlval($_POST[title])."\"></td>
+".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
 ".$tagsin."
 ".$pollin."
 ".        "  $L[TR]>

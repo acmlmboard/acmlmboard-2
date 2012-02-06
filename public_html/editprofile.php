@@ -375,7 +375,7 @@ if (has_perm("edit-users"))
 
     $sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
-               . (has_perm("has-displayname") ?  setfield('displayname')  : '')  .','
+               . (has_perm("has-displayname")?(setfield('displayname')   .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','

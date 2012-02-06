@@ -26,9 +26,8 @@
   function checkctitle(){
     global $loguser;
     if(!$loguser[id]) return 0;
-    if($loguser[posts]>100) return 1; //1200
+    if($loguser[posts]>=100) return 1; //1200
     if($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return 1; //800, 200
-    if($loguser[power]>0) return 1;
     return 0;
   }
 

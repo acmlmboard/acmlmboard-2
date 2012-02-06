@@ -30,7 +30,7 @@
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign','signsep');
+  $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign','signsep');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
@@ -179,7 +179,7 @@
                       ."FROM users "
                       ."WHERE id=$uid ");
     //title
-    pageheader("Posts by $user[name]");
+    pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
     $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "

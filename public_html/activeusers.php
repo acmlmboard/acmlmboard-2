@@ -7,7 +7,7 @@
   if($time<1)
     $time=86400;
 
-  $query='SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,COUNT(*) num '
+  $query='SELECT u.id,u.posts,regdate,u.name,u.displayname,u.sex,u.power,COUNT(*) num '
         .'FROM users u '
         .'LEFT JOIN posts p ON p.user=u.id '
         .'WHERE p.date>'.(ctime()-$time).' '

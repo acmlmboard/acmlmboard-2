@@ -39,7 +39,7 @@
     
     //Fetch birthdays - uses the same crude but effective method as the old one
     $bdaytext = array();
-    $bdayres = $sql->query("SELECT id,name,sex,power,birth FROM users WHERE birth != -1");
+    $bdayres = $sql->query("SELECT id,name,displayname,sex,power,birth FROM users WHERE birth != -1");
     while ($bdayarr = $sql->fetch($bdayres)) {
         $bdaydecode = getdate($bdayarr['birth']);
         if ($bdaydecode['mon'] == $month) {

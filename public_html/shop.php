@@ -245,8 +245,8 @@ fclose($f);
 ".            "$L[TBL1]>
 ".            "  $L[TD1c]><a href=shop.php>Return to shop list</a> $edit
 ".            "$L[TBLend]
-".            "<br><a name=status>
-".            "$L[TBL]>
+".            "<br>
+".            "$L[TBL] id=status>
 ".            "  $L[TDn] width=256><img src=gfx/status.php?u=$loguser[id]></td>
 ".            "  $L[TDnc] width=150>
 ".            "    <font class=fonts>
@@ -344,7 +344,7 @@ fclose($f);
                      ."SET eq$item[cat]=$id, spent=spent-$pitem[coins]*0.6+$item[coins] "
                      ."WHERE id=$loguser[id]");
           //sendirc("\x0309$user[name] \x0314is now equipped with \x0307$item[name]\x0314.");
-	  sendirc("\x0313$user[name] \x036is now equipped with \x0313$item[name]\x036.");
+	  sendirc("\x0313".($user[displayname]?$user[displayname]:$user[name])." \x036is now equipped with \x0313$item[name]\x036.");
           print
               "$L[TBL1]>
 ".            "  $L[TD1c]>

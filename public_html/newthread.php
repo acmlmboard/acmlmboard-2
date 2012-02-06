@@ -339,13 +339,13 @@ else {
 }
 
 if ($announce && $forum['id']==0) {
-     sendirc("\x036New $type by \x0313$user[name]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
+     sendirc("\x036New $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
 }
 else if ($announce) {
-     sendirc("\x036New forum $type by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);  
+     sendirc("\x036New forum $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);  
 }
 else {
-     sendirc("\x036New $type by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
+     sendirc("\x036New $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
 }
 
 

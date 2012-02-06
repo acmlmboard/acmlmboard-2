@@ -222,14 +222,14 @@
 
     if ($thread[announce]) {
       if ($thread[forum] == 0) {
-    sendirc("\x036Announcement edited by \x0313$user[name]\x034 (\x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
+    sendirc("\x036Announcement edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
       }
       else {
-    sendirc("\x036Announcement edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
+    sendirc("\x036Announcement edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
       }
     }
     else {
-    sendirc("\x036Post edited by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
+    sendirc("\x036Post edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
 
     }
 

@@ -63,7 +63,7 @@
 	while($i = $sql->fetch($ignoreQ))
 		$ignores[$i['fid']] = true;
 
-  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.sex usex, u.power upower "
+  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower "
                      ."FROM forums f "
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "
@@ -116,7 +116,7 @@ echo
 		$ignoreFX = "";
 
     $modstring="";
-    $a=$sql->query("SELECT u.name,u.id,u.sex,u.power FROM forummods f, users u WHERE f.fid=$forum[id] AND u.id=f.uid");
+    $a=$sql->query("SELECT u.name,u.displayname,u.id,u.sex,u.power FROM forummods f, users u WHERE f.fid=$forum[id] AND u.id=f.uid");
     while($mod=$sql->fetch($a)) $modstring.=userlink($mod).", ";
     if($modstring) $modstring="<br>(moderated by: ".substr($modstring,0,-2).")";
 //    else $modstring="<p>&nbsp;</p>";

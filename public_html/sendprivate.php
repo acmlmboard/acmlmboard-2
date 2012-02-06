@@ -25,7 +25,7 @@
   }elseif(!$act=$_POST[action]){
     if($pid=$_GET[pid]){
       checknumeric($pid);
-      $post=$sql->fetchq("SELECT u.name, p.title, pt.text "
+      $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.title, pt.text "
                         ."FROM pmsgs p "
                         ."LEFT JOIN pmsgstext pt ON p.id=pt.id "
                         ."LEFT JOIN users u ON p.userfrom=u.id "
@@ -39,7 +39,7 @@
 
     if($uid=$_GET[uid]){
       checknumeric($uid);
-      $userto=$sql->resultq("SELECT name FROM users WHERE id=$uid");
+      $userto=$sql->resultq("SELECT IF(displayname='',name,displayname) name FROM users WHERE id=$uid");
     }elseif(!$userto)
       $userto=$_POST[userto];
 
@@ -110,7 +110,7 @@
 ".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
-    $userto=$sql->resultq("SELECT id FROM users WHERE name LIKE '$_POST[userto]'");
+    $userto=$sql->resultq("SELECT id FROM users WHERE name LIKE '$_POST[userto]' OR displayname LIKE '$_POST[userto]'");
 
     if($userto && $_POST[message]){
       //[blackhole89] 2007-07-26

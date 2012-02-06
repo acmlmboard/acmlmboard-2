@@ -11,7 +11,7 @@
 
   loadsmilies();
 
-  $fieldlist=''; $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign');
+  $fieldlist=''; $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 

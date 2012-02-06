@@ -136,6 +136,7 @@
 ".
            catheader('Login information')."
 ".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
+"./*(has_perm("have-displayname") ? */fieldrow('Display name',fieldinput(40,255,'displayname'))/* : "" )*/."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
@@ -359,7 +360,7 @@ if (has_perm("edit-users"))
 //      $targetpower = min($targetpower, $loguser[power]);
       $targetname = $_POST['name'];
 
-      if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE `name` = '$targetname' AND `id` != $user[id]")) {
+      if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
         $targetname = $user[name];
         $error.="- Name already in use, will not change<br />";
       }
@@ -374,6 +375,7 @@ if (has_perm("edit-users"))
 
     $sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
+               . /*(has_perm("have-displayname") ? */ setfield('displayname') /* : '') */ .','
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','

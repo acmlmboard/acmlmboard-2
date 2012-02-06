@@ -37,7 +37,7 @@
 
   if($act!='Submit'){
     $fieldlist='';
-    $ufields=array('id','name','posts','sex','power');
+    $ufields=array('id','name','displayname','posts','sex','power');
     foreach($ufields as $field)
       $fieldlist.="u.$field u$field,";
 
@@ -130,7 +130,7 @@
 
   if($pid=$_GET[pid]){
     checknumeric($pid);  //nice way of adding security, really. int_val doesn't really do it (floats and whatnot), so heh
-    $post=$sql->fetchq("SELECT u.name, p.user, pt.text, f.minpower, p.thread "
+    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.minpower, p.thread "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
@@ -287,7 +287,7 @@
 /*    if ($thread[minpower]<=0) sendirc("\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");
     else sendirc("S\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");*/
 
-sendirc("\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
+sendirc("\x036New reply by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
 
     print "$top - Submit
 ".        "<br><br>

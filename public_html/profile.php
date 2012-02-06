@@ -23,7 +23,7 @@
   $group = $sql->fetchp("SELECT * FROM `group` WHERE id=?",array($user['group_id']));
 
 
-  pageheader("Profile for $user[name]");
+  pageheader("Profile for ".($user[displayname] ? $user[displayname] : $user[name]));
 
   $days=(ctime()-$user[regdate])/86400;
   $pfound=$sql->resultq("SELECT count(*) FROM posts WHERE user=$uid");
@@ -201,6 +201,7 @@ $logtzoff = $logtz->getOffset($now);
 ".      "    $L[TBL1]>
 ".      "      $L[TRh]>
 ".      "        $L[TDh] colspan=2>General information</td>
+".($user[displayname] ? "$L[TR]>$L[TD1] width=110><b>Real handle</b></td>$L[TD2]>$user[name]" : "")."
 ".      "      $L[TR]>
 ".      "        $L[TD1] width=110><b>Group</b></td>
 ".      "        $L[TD2]>$group[title]

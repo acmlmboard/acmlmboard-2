@@ -11,7 +11,7 @@
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','sex','power');
+  $ufields=array('id','name','displayname','sex','power');
   foreach($ufields as $field)
     $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 

@@ -3,7 +3,7 @@
 
   function checkuser($name,$pass){
     global $sql;
-    $id=$sql->resultq("SELECT id FROM users WHERE name='$name' AND pass='$pass'");
+    $id=$sql->resultq("SELECT id FROM users WHERE (name='$name' OR displayname='$name') AND pass='$pass'");
     if(!$id) $id=0;
     return $id;
   }
@@ -53,7 +53,7 @@
 
  function userlink_by_id($uid) {
     global $sql;
-    $u = $sql->fetchp("SELECT id,name,power,minipic FROM users WHERE id=?",array($uid));        
+    $u = $sql->fetchp("SELECT id,name,displayname,power,minipic FROM users WHERE id=?",array($uid));        
     $u['showminipic']=0;   
     return userlink($u);
  }
@@ -111,12 +111,15 @@
   //global $loguser;
  // if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 
 /* Broken as of 2011-09-18 -Emuz */
-  $nc= color_for_user($user[$u.id]);
-   if($user[$u.minipic] && $user[showminipic]) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.minipic]."' border=0> ";
+  $nc= color_for_user($user[$u.'id']);
+  $n = $user[$u.'name'];
+  if($user[$u.'displayname'])
+  	$n = $user[$u.'displayname'];
+   if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
    else $minipic="";
   return "$minipic<font color='#$nc'>" //class=nc".$user[$u.sex].$user[$u.power].'>'
   //return "$minipic<font class=nc".$user[$u.sex].$user[$u.power].'>'
-         .str_replace(" ","&nbsp;",htmlval($user[$u.name]))
+         .str_replace(" ","&nbsp;",htmlval($n))
          .'</font>';
  /* return '<font color=#'. $c .'>'
           .htmlval($user[$u.name])

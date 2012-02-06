@@ -12,10 +12,10 @@
   if($page<1) $page=1;
 
   if($id) {
-    $user=$sql->fetchq("SELECT id,name FROM users WHERE id=$id");
+    $user=$sql->fetchq("SELECT id,name,displayname FROM users WHERE id=$id");
     if($user[id]) {
       
-      $print="<a href=./>Main</a> - Posts by user $user[name]<br><br>
+      $print="<a href=./>Main</a> - Posts by user ".($user[displayname]?$user[displayname]:$user[name])."<br><br>
 ".           "$L[TBL1]>
 ".           "  $L[TRh]>
 ".           "    $L[TDh]>ID

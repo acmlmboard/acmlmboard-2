@@ -130,9 +130,14 @@ if ($regdis[intval] == 1)
     $cname=str_replace(' ','',$cname);
     $cname=str_replace(' ','',$cname);
 
-    $users=$sql->query('SELECT name FROM users');
+    $users=$sql->query('SELECT name, displayname FROM users');
     while($user=$sql->fetch($users)){
       $uname=strtolower($user[name]);
+      $uname=str_replace(' ','',$uname);
+      $uname=str_replace(' ','',$uname);
+      if($uname==$cname)
+        break;
+      $uname=strtolower($user[displayname]);
       $uname=str_replace(' ','',$uname);
       $uname=str_replace(' ','',$uname);
       if($uname==$cname)

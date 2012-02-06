@@ -97,7 +97,7 @@
     //AB-SPECIFIC
     if($loguser[power]>=1 && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
       $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator','Root User');
-      sendirc("S\x0314{$listpower[$loguser[power]]} \x0309$loguser[name]\x0314 changed IPs from \x0307$oldip\x0314 to \x0307$userip\x0314");
+      sendirc("S\x0314{$listpower[$loguser[power]]} \x0309".($loguser[displayname]?$loguser[displayname]:$user[name])."\x0314 changed IPs from \x0307$oldip\x0314 to \x0307$userip\x0314");
     }
 
     $sql->query("UPDATE users SET lastview=".ctime().",ip='$userip',ipfwd='$userfwd',url='".(isssl()?'!':'').addslashes($url)."', ipbanned=0 WHERE id=$loguser[id]");
@@ -132,7 +132,7 @@
   if(($views+100)%1000000<=200){
 	  $sql->query("INSERT INTO views SET view=$views,user='$loguser[id]',time=".ctime());
     if(($views+10)%1000000<=20)
-      if(!$bot) sendirc("\x0314View \x0307$views\x0314 by ".($log?"\x0309$loguser[name]":"\x0305$userip")."\x0314");
+      if(!$bot) sendirc("\x0314View \x0307$views\x0314 by ".($log?"\x0309".($loguser[displayname]?$loguser[displayname]:$loguser[name])."":"\x0305$userip")."\x0314");
   }
   
   $count[u]=$sql->resultq('SELECT COUNT(*) FROM users');
@@ -266,7 +266,7 @@
 
   if($log){
     //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
-    $pmsgs=$sql->fetchq("SELECT p.id id, p.date date, u.id uid, u.name uname, u.sex usex, u.power upower "
+    $pmsgs=$sql->fetchq("SELECT p.id id, p.date date, u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower "
                        ."FROM pmsgs p "
                        ."LEFT JOIN users u ON u.id=p.userfrom "
                        ."WHERE p.userto=$loguser[id] "
@@ -368,7 +368,7 @@ else {
 
 
 
-      $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
+      $onusers=$sql->query('SELECT id,name,displayname,sex,power,lastpost,lastview,minipic,hidden FROM users '
                           .'WHERE (lastview>'.(ctime()-300).'  '
                               .'OR lastpost>'.(ctime()-300).") $hiddencheck "
            ."AND lastforum='$fid' "
@@ -406,7 +406,7 @@ echo "</tr>
       
   //[KAWA] Copypastadaption from ABXD, with added activity limiter.
   $birthdayLimit = 86400 * 30; //should be 30 days. Adjust if you want.
-  $rBirthdays = $sql->query("select birth, id, name, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
+  $rBirthdays = $sql->query("select birth, id, name, displayname, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
   $birthdays = array();
   while($user = $sql->fetch($rBirthdays))
   {
@@ -431,14 +431,14 @@ print   "  $L[TR1c]>
 
   $count[d]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-86400));
   $count[h]=$sql->resultq('SELECT COUNT(*) FROM posts WHERE date>'.(ctime()-3600));
-  $lastuser=$sql->fetchq('SELECT id,name,sex,power FROM users ORDER BY id DESC LIMIT 1');
+  $lastuser=$sql->fetchq('SELECT id,name,displayname,sex,power FROM users ORDER BY id DESC LIMIT 1');
 
   $hiddencheck  = "AND hidden=0 ";
   if (has_perm('view-hidden-users')) {
     $hiddencheck = "";
   }
 
-  $onusers=$sql->query('SELECT id,name,sex,power,lastpost,lastview,minipic,hidden FROM users '
+  $onusers=$sql->query('SELECT id,name,displayname,sex,power,lastpost,lastview,minipic,hidden FROM users '
                       .'WHERE (lastview>'.(ctime()-300).' '
                          .'OR lastpost>'.(ctime()-300).") $hiddencheck "
                       .'ORDER BY name');

@@ -1,5 +1,5 @@
 <?php
- require '../lib/function.php';
+ require 'gfxlib.php';
 
  $t=$_GET[t];
  $u=$_GET[u];

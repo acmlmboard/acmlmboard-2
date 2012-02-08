@@ -1,6 +1,6 @@
 <?php
 
-require '../lib/function.php';
+require 'gfxlib.php';
 require 'fontlib.php';
 require 'ringbuf.php';
 

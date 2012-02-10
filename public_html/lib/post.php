@@ -131,6 +131,9 @@
        '\''."$L[TBL]>$L[TR]>$L[TD3] width=\\1 height='.(\\2+4).' style=\"text-align:center\"><div style=\"padding:0px\" id=swf'.".'(++$swfid)'.".'></div><div style=\"font-size:50px\" id=swf'.".'($swfid)'.".'play><a href=\"#\" onclick=\"document.getElementById(\'swf'.".'$swfid'.".'\').innerHTML=\'<embed src=\\3 width=\\1 height=\\2></embed>\';document.getElementById(\'swf'.".'$swfid'.".'stop\').style.display=\'block\';document.getElementById(\'swf'.".'$swfid'.".'play\').style.display=\'none\';return false;\">&#x25BA;</a></div></td><td style=\"vertical-align:bottom\"><div style=\"display:none\" id=swf'.".'($swfid)'.".'stop><a href=\"#\" onclick=\"document.getElementById(\'swf'.".'$swfid'.".'\').innerHTML=\'\';document.getElementById(\'swf'.".'$swfid'.".'stop\').style.display=\'none\';document.getElementById(\'swf'.".'$swfid'.".'play\').style.display=\'block\';return false;\">&#x25A0;</a></div></td></tr></table>"
        .'\'',$msg);
 
+	//[KAWA] Youtube tag.
+	$s = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si","<object width=\"425\" height=\"344\"><param name=\"movie\" value=\"http://www.youtube.com/v/\\1&amp;hl=en&amp;fs=1\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"never\"></param><embed src=\"http://www.youtube.com/v/\\1&amp;hl=en&amp;fs=1\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"never\" allowfullscreen=\"false\" width=\"425\" height=\"344\"></embed></object>", $s);
+
   //[KAWA] TODO: replace with token effect
   /*
     if ($x_hacks['goggles']) {

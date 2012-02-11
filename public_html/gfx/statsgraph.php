@@ -1,6 +1,6 @@
 <?php
 
-require '../lib/function.php';
+require 'gfxlib.php';
 require 'fontlib.php';
 require 'ringbuf.php';
 
@@ -23,7 +23,7 @@ imagefilledrectangle($im,0,0,960,340,$cblank);
 imagealphablending($im,TRUE);
 for($i=0;$i<320;$i+=20) {
 	imagefilledrectangle($im,0,$i,960,$i+9,$ch1);
-	imagettftext($im,7,0, 906, $i+14, $cwhite, "/var/sites/acmlmboard/board/gfx/verdana.ttf", (310-$i)*2);
+	imagettftext($im,7,0, 906, $i+14, $cwhite, "verdana.ttf", (310-$i)*2);
 	imagefilledrectangle($im,896,$i+10,900,$i+10,$cwhite);
 }
 for($i=0;$i<960;$i+=128) imagefilledrectangle($im,$i,0,$i+64,320,$ch1);

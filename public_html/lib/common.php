@@ -93,11 +93,11 @@
   if(substr($url,0,strlen("$config[path]rss.php"))!="$config[path]rss.php") {
 
   $sql->query("DELETE FROM guests WHERE ip='$userip' OR date<".(ctime()-300));
-  if($log) {
+   if($log) {
     //AB-SPECIFIC
     if($loguser[power]>=1 && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
       $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator','Root User');
-      sendirc("S\x0314{$listpower[$loguser[power]]} \x0309".($loguser[displayname]?$loguser[displayname]:$user[name])."\x0314 changed IPs from \x0307$oldip\x0314 to \x0307$userip\x0314");
+      sendirc("S\x0314{$listpower[$loguser[power]]} \x0309".($loguser[displayname]?$loguser[displayname]:$loguser[name])."\x0314 changed IPs from \x0307$oldip\x0314 to \x0307$userip\x0314");
     }
 
     $sql->query("UPDATE users SET lastview=".ctime().",ip='$userip',ipfwd='$userfwd',url='".(isssl()?'!':'').addslashes($url)."', ipbanned=0 WHERE id=$loguser[id]");

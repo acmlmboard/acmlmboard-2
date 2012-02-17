@@ -13,7 +13,18 @@
 
   require 'lib/common.php';
   require 'lib/threadpost.php';
-
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=0; Max-Age=1; Version=1");
+echo "<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" style=\"position: fixed; width: 90%; left: 5%; top: 5%;\" onclick=\"dismiss()\" title=\"Click to dismiss.\">
+".      "$L[TBL] width=\"100%\">$L[TRh]><td>Post Successful</td></tr>
+".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div>";
+  }
 
     function timelink($time){
       global $timeval;
@@ -696,4 +707,4 @@ print        "$topbot";
     return $moodst;
   }
 ?>
-                                                                                                   
+                                                                                                   

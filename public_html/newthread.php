@@ -31,8 +31,8 @@
 
 
   $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
+if($act!="Submit"){
   pageheader("New $type",$forum[id]);
-
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
            .posttoolbutton("message","I","[i]","[/i]")
@@ -46,7 +46,7 @@
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
            .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
      .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
-
+}
   $tagsin="";
   $t=$sql->query("SELECT * FROM tags WHERE fid=$fid");
   while($tt=$sql->fetch($t)) {
@@ -118,6 +118,7 @@
 ";
 
   if($err){
+    pageheader("New $type",$forum[id]);
     print "$top - Error
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -349,14 +350,16 @@ else {
 }
 
 
-    print "$top - Submit
+/*    print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "  $bonus
 ".        "    ".redirect($viewlink,"the $type")."
 ".        "$L[TBLend]
-";
+";*/
+header("Set-Cookie: pstbon=".$c."; Max-Age=60; Version=1");
+header("Location: ".$viewlink);
   }
 
   pagefooter();

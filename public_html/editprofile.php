@@ -196,6 +196,7 @@ if (has_perm("edit-users"))
 ".           fieldrow('Post layouts', fieldoption('blocklayouts',$user['blocklayouts'],array('Show everything in general', 'Block everything')))."
 ".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
+".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Display redirect page', 'Instant redirect')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>
@@ -396,6 +397,7 @@ if (has_perm("edit-users"))
                . setfield('blocklayouts')   .','
                . setfield('blocksprites')   .','
                . setfield('hidden') .','
+               . setfield('redirtype') .','
                . setfield('timezone') .','
                . "tzoff=$tztotal,"
                . "birth=$birthday,"

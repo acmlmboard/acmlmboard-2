@@ -57,7 +57,7 @@
                       .'LEFT JOIN forums f ON f.id=t.forum '
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
-  if($act!="Submit"){ //Don't render header unless we know an error is to be puked.
+  if($act!="Submit" || $loguser[redirtype]==0){ //We don't render the header for a "Modern" redirect.
     pageheader('New reply',$thread[forum]);
     echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
@@ -151,7 +151,7 @@
   }
 
   if($err){
-    pageheader('New reply',$thread[forum]);
+    if($loguser[redirtype]==1) pageheader('New reply',$thread[forum]);
     //print "$top - Error
     print "<a href=./>Main</a> - Error
 ".        "<br><br>
@@ -289,16 +289,18 @@
 
 sendirc("\x036New reply by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
 
-/*    print "$top - Submit
+if($loguser[redirtype]==0){ //Classical Redirect
+    print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    Posted! (Gained $c bonus coins)<br>
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".        "$L[TBLend]
-";*/
-header("Set-Cookie: pstbon=".$c."; Max-Age=60; Version=1");
-header("Location: thread.php?pid=$pid#$pid");
+";
+} else { //Modern redirect
+  redir2("thread.php?pid=$pid#$pid",$c);
+}
 
   }
 

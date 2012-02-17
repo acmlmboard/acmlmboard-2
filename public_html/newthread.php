@@ -31,7 +31,7 @@
 
 
   $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
-if($act!="Submit"){
+if($act!="Submit" || $loguser[redirtype]==0){
   pageheader("New $type",$forum[id]);
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
@@ -118,7 +118,7 @@ if($act!="Submit"){
 ";
 
   if($err){
-    pageheader("New $type",$forum[id]);
+    if($loguser[redirtype]==1) pageheader("New $type",$forum[id]);
     print "$top - Error
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -350,16 +350,18 @@ else {
 }
 
 
-/*    print "$top - Submit
+if($loguser[redirtype]==0){ //Classic
+    print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "  $bonus
 ".        "    ".redirect($viewlink,"the $type")."
 ".        "$L[TBLend]
-";*/
-header("Set-Cookie: pstbon=".$c."; Max-Age=60; Version=1");
-header("Location: ".$viewlink);
+";
+} else { //Modern
+  redir2($viewlink,$c);
+}
   }
 
   pagefooter();

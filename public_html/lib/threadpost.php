@@ -121,7 +121,7 @@ if (can_edit_post($post[id]) && $post[id])
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $postheaderrow 
 ".        "  $L[TR]>
-".        "    <td class=\"b n1 topbar".$post['uid']."_1\" style=border-bottom:0;border-right:0 height=17>
+".        "    <td class=\"b n1 topbar".$post['uid']."_1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
 ".        "      ".userlink($post,'u').
 
 
@@ -129,14 +129,13 @@ if (can_edit_post($post[id]) && $post[id])
 
 /*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
 ".*/        "    </td>
-".        "    <td class=\"b n1 topbar".$post['uid']."_2\" style=border-left:0 width=100%>
+".        "    <td class=\"b n1 topbar".$post['uid']."_2\" style=\"border-left:0\" width=100%>
 ".        "      $L[TBL] width=100%>
 ".        "        $L[TDns]>Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>
 ".        "        $L[TDnsr]>$postlinks</td>
 ".        "      $L[TBLend]
 ".        "  $L[TR] valign=top>
-".        "    <td class='b n1 sfont sidebar".$post['uid']."' style=border-top:0>
-".        "      <img src=img/_.png width=180 height=1>
+".        "    <td class='b n1 sfont sidebar".$post['uid']."' style=\"border-top:0;\">
 ";
       if($type==0){
         $location=($post[ulocation]?'<br>From: '.postfilter2($post[ulocation]):'');
@@ -160,7 +159,7 @@ if (can_edit_post($post[id]) && $post[id])
 
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
         $text.=
-          "      <br>".grouplink($post[uid])."
+		 grouplink($post[uid])."
 ".        "      <br>".postfilter2($post[utitle])."
 ".        "      <br>Level: ".calclvl($exp)."
 ".        "      <br>$picture

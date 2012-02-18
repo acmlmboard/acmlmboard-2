@@ -108,7 +108,7 @@
     $err="    That post does not exist.";
 
   $post=$sql->fetch($res);
-  $quotetext=$post[text];
+  $quotetext=str_replace("&","&amp",$post[text]);
 
 /*  if($post[id] != $loguser[id] && !ismod($thread[forum]))
     $err="    You may not edit this post.<br>

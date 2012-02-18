@@ -604,7 +604,7 @@ print "$modlinks
   print   "$pagelist$pagebr
 ".        "<br>";
 
-  if($thread[id] && can_create_forum_post($thread[forum])) {
+  if($thread[id] && can_create_forum_post($thread[forum]) && !$thread[closed]) {
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
            .posttoolbutton("message","I","[i]","[/i]")

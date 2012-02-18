@@ -90,8 +90,8 @@ if($act!="Submit" || $loguser[redirtype]==0){
     if(($tdepth=tvalidate($message))!=0)
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>
 ".         "    $forumlink";
-    if($title=="")
-      $err="    You must enter a $type title.<br>
+    if(strlen(trim(str_replace(" ","",$title)))<4)
+      $err="    You need to enter a longer $type title.<br>
 ".         "    $forumlink";
     if($ispoll && ($_POST[numopts]<1 || !isset($_POST[numopts])))
       $err="    You must add options to your poll.<br>

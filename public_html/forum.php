@@ -50,7 +50,7 @@
 $isIgnored = $sql->resultq("select count(*) from ignoredforums where uid=".$loguser['id']." and fid=".$fid) == 1;
 if(isset($_GET['ignore']))
 {
-  if(!$isIgnored)
+  if(!$isIgnored && $loguser['id']!=0)
   {
     $sql->query("insert into ignoredforums values (".$loguser['id'].", ".$fid.")");
     $isIgnored = true;
@@ -85,10 +85,10 @@ if (has_perm('edit-forums')) {
     $editforumlink = "<a href=manageforums.php?a=e&t=f&i=$fid>Edit Forum</a> | ";
 }
 
-
+if($loguser['id']!=0){
 $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore forum</a> "
              : "<a href=forum.php?id=$fid&amp;ignore>Ignore forum</a> ";
-
+}
     $threads=$sql->query("SELECT $fieldlist t.*, 
 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,

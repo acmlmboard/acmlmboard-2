@@ -88,7 +88,7 @@ function LoadBlocklayouts()
              </tr>
             ";
       } 
-      else if($post[thread]) {
+      else if($post[thread] && $loguser['id']!=0) {
           $postlinks.=($postlinks?' | ':'')."<a href=newreply.php?id=$post[thread]&pid=$post[id]>Reply</a>";
       }
 
@@ -118,24 +118,26 @@ if (can_edit_post($post[id]) && $post[id])
       // 2/22/2007 xkeeper - guess which moron forgot to close the </a>
       //[KAWA] Fun fact: <a name> is deprecated in favor of using IDs.
       //       That's right, you can use <anything id="foo"> in place of <a name="foo">!
+$tbar1=($type==0) ? "topbar".$post['uid']."_1" : "";
+$tbar2=($type==0) ? "topbar".$post['uid']."_2" : "";
+$sbar=($type==0) ? "sidebar".$post['uid'] : "";
+$mbar=($type==0) ? "mainbar".$post['uid'] : "";
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $postheaderrow 
 ".        "  $L[TR]>
-".        "    <td class=\"b n1 topbar".$post['uid']."_1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
+".        "    <td class=\"b n1 $tbar1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
 ".        "      ".userlink($post,'u').
-
-
 
 
 /*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
 ".*/        "    </td>
-".        "    <td class=\"b n1 topbar".$post['uid']."_2\" style=\"border-left:0\" width=100%>
+".        "    <td class=\"b n1 $tbar2\" style=\"border-left:0\" width=100%>
 ".        "      $L[TBL] width=100%>
 ".        "        $L[TDns]>Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>
 ".        "        $L[TDnsr]>$postlinks</td>
 ".        "      $L[TBLend]
 ".        "  $L[TR] valign=top>
-".        "    <td class='b n1 sfont sidebar".$post['uid']."' style=\"border-top:0;\">
+".        "    <td class='b n1 sfont $sbar' style=\"border-top:0;\">
 ";
       if($type==0){
         $location=($post[ulocation]?'<br>From: '.postfilter2($post[ulocation]):'');
@@ -173,13 +175,14 @@ if (can_edit_post($post[id]) && $post[id])
 ".        "      <br>Last post: $lastpost
 ".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview])."
 ";
-      }else $text.="
+      }else{
+   $text.="
 ".        "      Posts: $post[num]/$post[uposts]
 ";
-
+}
       $text.=
           "    </td>
-".        "    <td class=\"b n2 mainbar".$post['uid']."\">".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']))."</td>
+".        "    <td class=\"b n2 $mbar\">".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']))."</td>
 ".        "$L[TBLend]
 ";
     }

@@ -22,7 +22,7 @@ echo "<script language=\"javascript\">
 	}
 </script>
 	<div id=\"postmes\" style=\"position: fixed; width: 90%; left: 5%; top: 5%;\" onclick=\"dismiss()\" title=\"Click to dismiss.\">
-".      "$L[TBL] width=\"100%\">$L[TRh]><td>Post Successful</td></tr>
+".      "$L[TBL1] width=\"100%\">$L[TRh]><td>Post Successful<div style=\"float: right\"><a onclick=\"dismiss()\">[x]</a></td></tr>
 ".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div>";
   }
 

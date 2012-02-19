@@ -42,6 +42,7 @@ function redirect($url,$msg,$delay=2){
 function redir2($url,$msg){
   header("Set-Cookie: pstbon=".$msg."; Max-Age=60; Version=1");
   header("Location: ".$url);
+  die();
   return 0;
 }
 

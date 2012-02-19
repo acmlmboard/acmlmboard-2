@@ -4,7 +4,7 @@
 
   $pow = $_REQUEST['pow'];
   $ppp = $_REQUEST['ppp'];
-  $page = $_REQIEST['page'];
+  $page = $_REQUEST['page'];
 
 
 

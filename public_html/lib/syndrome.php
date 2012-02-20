@@ -15,7 +15,7 @@
     if($num>=500) $syn="A0A0A0$a 'Wooster Syndrome' ++++!!";
     if($num>=600) $syn="C762F2$a 'Anya Syndrome'!!!";
     if($num>=800) $syn="D06030$a 'Something higher than Anya Syndrome' +++++!!";
-    if($syn) $syn="<br><i><font color=$syn</font></i>";
+    if($syn) $syn="<i><font color=$syn</font></i>";
     return $syn;
   }
 

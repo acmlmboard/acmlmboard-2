@@ -20,11 +20,12 @@ function LoadBlocklayouts()
 
     $post[text]=$post[head].$post[text].$signsep[$loguser[signsep]].$post[sign];
 
-    $syn="";
-
-    $post[utitle]= getrank($post[urankset],$post[uposts])
-                  .$syn
-                  .(($post[urankset]&&strlen($post[utitle]))?"<br>":"")
+//   $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
+   $actsyn=0; //Disabled syndromes for now.
+   $post[utitle]= getrank($post[urankset],$post[uposts])
+                  .((strlen($post[utitle]))?"<br>":"")
+                  .syndrome($actsyn)
+                  .((strlen($post[utitle]))?"<br>":"")
                   .$post[utitle];
 
 	//[KAWA] TODO: replace with token effect, or preferably just a profile switch

@@ -13,18 +13,25 @@
 
   require 'lib/common.php';
   require 'lib/threadpost.php';
+  $rdmsg="";
   if($_COOKIE['pstbon']){
-	header("Set-Cookie: pstbon=0; Max-Age=1; Version=1");
-echo "<script language=\"javascript\">
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
 	function dismiss()
 	{
 		document.getElementById(\"postmes\").style['display'] = \"none\";
 	}
 </script>
-	<div id=\"postmes\" style=\"position: fixed; width: 90%; left: 5%; top: 5%;\" onclick=\"dismiss()\" title=\"Click to dismiss.\">
-".      "$L[TBL1] width=\"100%\">$L[TRh]><td>Post Successful<div style=\"float: right\"><a onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div>";
-  }
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]><td>";
+if($_COOKIE['pstbon']>=1){
+	$rdmsg.="Post Successful<div style=\"float: right\"><a onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div><br>";
+  } else {
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Post was edited successfully.</td></tr></table></div>";
+}
+}
 
     function timelink($time){
       global $timeval;
@@ -596,6 +603,8 @@ print "$modlinks
       $post[maxrevision]=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
     }
     if(can_edit_forum_posts($pthread[forum]) && $post[id]==$_GET[pin]) $post[deleted]=false;
+if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
+
     print "<br>
 ".         threadpost($post,0,$pthread);
   }
@@ -658,7 +667,7 @@ print "$modlinks
       $quickreplydisplay = "";
     }
 
-
+  if($_COOKIE['pstbon']>=1){ print $rdmsg;}
     print "
 ".        "
 ".        "$L[TBL1] name=quickreply id=quickreply>

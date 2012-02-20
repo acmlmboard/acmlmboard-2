@@ -47,9 +47,10 @@
 
 
   if (!$thread) $pid = 0;
+if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
   pageheader('Edit post',$thread[forum]);
-
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+}
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
            .posttoolbutton("message","I","[i]","[/i]")
            .posttoolbutton("message","U","[u]","[/u]")
@@ -115,6 +116,7 @@
 ".       "    $threadlink";*/
 
   if($err){
+if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[forum]); }
     print "$top - Error
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -232,7 +234,7 @@
     sendirc("\x036Post edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
 
     }
-
+if($loguser[redirtype]==0){ //Classical Redirect
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -241,6 +243,9 @@
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".        "$L[TBLend]
 ";
+} else { //Modern redirect
+  redir2("thread.php?pid=$pid#edit","-1");
+}
   }elseif($act=='delete' ||$act=='undelete'){
     if(!(can_delete_forum_posts($thread[forum]))) {
       print "$top - Error

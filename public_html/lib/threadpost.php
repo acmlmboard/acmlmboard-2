@@ -23,7 +23,7 @@ function LoadBlocklayouts()
 //   $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
    $actsyn=0; //Disabled syndromes for now.
    $post[utitle]= getrank($post[urankset],$post[uposts])
-                  .((strlen($post[utitle]>=1))?"<br>":"")
+                  .((strlen($post[utitle])>=1)?"<br>":"")
                   .syndrome($actsyn)
                   .((strlen(syndrome($actsyn)))?"<br>":"")
                   .$post[utitle];

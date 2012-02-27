@@ -75,7 +75,7 @@
 ".      "$L[TBL1]>
 ".      "  $L[TRh]>
 ".      "    $L[TDh] width=30>#</td>
-".      "    $L[TDh] width=70>User agent (Browser)</td>
+".      "    $L[TDh] width=70 style=\"min-width: 150px;\">User agent (Browser)</td>
 ".      "    $L[TDh] width=70>Last view</td>
 ".      "    $L[TDh]>URL</td>
 ".      "    $L[TDh] width=120>IP</td>

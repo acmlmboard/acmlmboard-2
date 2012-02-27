@@ -14,7 +14,7 @@
   }
 
   $query='SELECT id,posts,regdate,name,sex,power,SUM(num) num FROM ('
-          .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>5 THEN 5 ELSE COUNT(*) END num '
+          .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>10 THEN 10 ELSE COUNT(*) END num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
           .'WHERE p.date>'.(ctime()-(dtime()%86400)-$past*86400).' AND p.date<'.(ctime()-(dtime()%86400)-($past-1)*86400).' '

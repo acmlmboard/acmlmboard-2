@@ -363,10 +363,9 @@ function RenderPageBar($pagebar) {
     ".        "    </td>
     ".        "  </tr>
     ".        "  $L[TR1c]>
-    ".        "    $L[TD] colspan=$aleftspan align=left>$anlink
+    ".        "    $L[TD] colspan=".((can_create_forum_announcements($announcefid))?"$aleftspan":($aleftspan+$arightspan))." align=left>$anlink
     ".        "    </td>
-    ".        "    $L[TD] colspan=$arightspan align=right>".(can_create_forum_announcements($announcefid)?"<a href=newthread.php?id=$announcefid&announce=1>New Announcement</a>":"&nbsp;")."
-    ".        "    </td>
+    ".        (can_create_forum_announcements($announcefid)?    "$L[TD] colspan=$arightspan align=right><a href=newthread.php?id=$announcefid&announce=1>New Announcement</a></td>":"")."
     ".        "  </tr>";
 
   }

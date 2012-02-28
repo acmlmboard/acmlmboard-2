@@ -23,12 +23,12 @@
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]><td>";
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
 if($_COOKIE['pstbon']>=1){
-	$rdmsg.="Post Successful<div style=\"float: right\"><a onclick=\"dismiss()\">[x]</a></td></tr>
+	$rdmsg.="Post Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
 ".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div><br>";
   } else {
-	$rdmsg.="Edit Successful<div style=\"float: right\"><a onclick=\"dismiss()\">[x]</a></td></tr>
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
 ".	"<tr>$L[TD1l]>Post was edited successfully.</td></tr></table></div>";
 }
 }

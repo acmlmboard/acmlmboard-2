@@ -1,7 +1,7 @@
 <?php
     require 'lib/common.php';
     
-    if (!has_perm('view-acs')) {
+    if (!has_perm('view-acs-calendar')) {
         pageheader('Access Denied');
         no_perm();
     }

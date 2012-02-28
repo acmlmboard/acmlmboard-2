@@ -339,8 +339,8 @@ else {
       $userlinks[$ul++] = array('url' => "usermood.php", 'title' => 'Edit Mood Avatars');
     if (has_perm('use-item-shop')) 
       $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item Shop');
-    if (has_perm('view-kcs')) 
-      $userlinks[$ul++] = array('url' => "frank.php", 'title' => 'Forum Rankings');
+    if (has_perm('view-acs')) 
+      $userlinks[$ul++] = array('url' => "frank.php", 'title' => 'Rankings');
     if (has_perm('mark-read')) 
       $userlinks[$ul++] = $markread;
 

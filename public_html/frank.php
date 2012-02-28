@@ -1,7 +1,7 @@
 <?php
     require 'lib/common.php';
     
-    if (!has_perm('view-kcs')) {
+    if (!has_perm('view-acs')) {
         pageheader('Access Denied');
         no_perm();
     }

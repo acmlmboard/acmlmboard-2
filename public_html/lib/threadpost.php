@@ -23,7 +23,7 @@ function LoadBlocklayouts()
 //   $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
    $actsyn=0; //Disabled syndromes for now.
    $post[utitle]= getrank($post[urankset],$post[uposts])
-                  .((strlen($post[utitle])>=1)?"<br>":"")
+                  .((strlen(getrank($post[urankset],$post[uposts]))>=1)?"<br>":"")
                   .syndrome($actsyn)
                   .((strlen(syndrome($actsyn)))?"<br>":"")
                   .$post[utitle];
@@ -163,7 +163,8 @@ $mbar=($type==0) ? "mainbar".$post['uid'] : "";
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
         $text.=
 		 grouplink($post[uid])."
-".        "      <br>".postfilter2($post[utitle])."
+".        "      ".((strlen(grouplink($post[uid])))?"<br>":"")."
+".        "      ".postfilter2($post[utitle])."
 ".        "      <br>Level: ".calclvl($exp)."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]

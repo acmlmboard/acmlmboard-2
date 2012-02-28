@@ -44,11 +44,13 @@ while ($ncr = $sql->fetch($ncx)) {
 
 }
 
+/*Highlighting system core
+Not ready yet. Do not uncomment until ready.
+$hl=$_GET['hl'];
+$hls=explode($hl,":");
+*/
 
-
-
-
-
+//Begin written FAQ
 
 $L[FAQTD]="$L[TD1] style='padding:10px!important;'";
 
@@ -57,191 +59,161 @@ print "$L[TBL1]>
 ".    "    $L[TDh]>FAQ</td>
 ".    "  $L[TR]>
 ".    "    $L[FAQTD]>
-".    "      <a href=#disclaimer>General Disclaimer</a><br>
-".    "      <br>
-".    "      <a href=#whyreg>Why should I register an account on the board?<br>
-".    "      <a href=#kafukaguideline>What are some basic guidelines for members? <br>
-".    "      <a href=#acceptable>What is the standard of acceptable behaviour on the board?<br>
-".    "      <a href=#spam>What is considered \"spam\" at the board?<br>
-".    "      <a href=#newtoboard>I'm new, where should I start?<br>
-".    "      <a href=#strike>What is the strike system? <br>
-".    "      <a href=#escalation>What if you see something was handled improperly? <br>
-".    "      <a href=#closedth>What can I do about my thread being closed/trashed/deleted? <br>
-".    "      <a href=#banned>Help! I've been banned! What do I do now?<br>
-".    "      <a href=#cookies>Are cookies used for this board?<br>
-".    "      <a href=#html>Can HTML be used?<br>
-".    "      <a href=#abcode>Is there some sort of replacement code for HTML?<br>
-".    "      <a href=#layouts>Are there any rules for post layouts?<br>
-".    "      <a href=#exp>What is Level and EXP, and how do I get more EXP?<br>
-".    "      <a href=#stats>How do I add my stats to my posts?<br>
-".    "      <a href=#syndromes>What are the \"syndromes\" and how do I get them?<br>
-".    "      <a href=#kcs>What is the KCS?<br>
-".    "      <a href=#sprites>What are sprites?<br>
-".    "      <a href=#badge>What are badges?<br>
-".    "      <a href=#ranks>What are the user ranks?<br>
-".    "      <a href=#customr>How can I get a custom rank?<br>
-".    "      <a href=#bestaff>How can I become a moderator or administrator?<br>
-".    "      <a href=#annc>What are announcements and the Points of Required Attention?<br>
-".    "      <a href=#album>Can you add me to the Photo Album?<br>
-".    "      <a href=#nickchange>How can I change my username?<br>
-".    "      <a href=#smilies>What smilies does the board have?<br>
-".    "      <a href=#colours>What do the username colours mean?<br>
+".    "    <a href=\"#gpg\">General Posting Guidelines</a><br><br>
+
+".    "    <a href=\"#sprite\">What are these little character doodads appearing on the board?</a><br>
+".    "    <a href=\"#move\">I just made a thread, where did it go?</a><br>
+".    "    <a href=\"#rude\">I feel that a user is being rude to me. What do I do?</a><br>
+".    "    <a href=\"#badge\">What are badges?</a><br>
+".    "    <a href=\"#kcs\">What is \"KCS\"?</a><br>
+".    "    <a href=\"#smile\">Are smilies and BBCode supported?</a><br>
+".    "    <a href=\"#tags\">Board Specific tags (non-BBcode [tags] and other substitutions)</a><br>
+".    "    <a href=\"#irc\">What's this IRC thing I keep hearing about?</a><br>
+".    "    <a href=\"#reg\">Can I register more than one account?</a><br>
+".    "    <a href=\"#layout\">How do I get a layout?</a><br>
+".    "    <a href=\"#css\">What are we not allowed to do in our custom CSS layouts?</a><br>
+".    "    <a href=\"#title\">How do I get a custom title?</a><br>
+".    "    <a href=\"#rpg\">RPG Stats</a><br>
+".    "    <a href=\"#itemshop\">Items and the Item Shop</a><br>
+".    "    <a href=\"#amps\">&Tags& (Amp tags)</a><br>
+".    "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
+".    "    <a href=\"#private\">Are private messages supported?</a><br>
+".    "    <a href=\"#search\">Search Feature</a><br>
+".    "    <a href=\"#calendar\">What is the calendar for?</a><br>
+".    "    <a href=\"#usercols\">What do the username colours mean?</a><br>
+
 ".    "    </td>
 ".    "</table><br>";
 
 print "$L[TBL1]>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name=disclaimer></a>General Disclaimer</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      The site does not own, does not accept responsibility for and cannot be held responsible for statements made by members on the forum. This site is offered as-is to the user. Any statements made on the board may be altered or removed at the discretion of the staff. Furthermore, all users are expected to have read, understood, and agreed to this FAQ before posting.<br>
-".    "      We do not sell, distribute or otherwise disclose member information like IP addresses to any third party. If you have questions about any information contained in this FAQ, please send a private message with your question to a moderator or administrator before posting.<br>
-".    "      By viewing or making others aware of this site the user agrees to all terms of this document and to the final say of the administrative staff.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name=whyreg>Why should I register an account on the board?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      By registering a user account, you will be able to post on the board as well as use several features only accessible through registering, such as the ability to mark forums as read and private messaging. Unregistered users have guest access to the board, meaning they can view threads but not reply to them.</td>
-"."  $L[TRh]>
-".    "    $L[TDh]><a name=kafukaguideline>What are some basic guidelines for members?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      The major rules here are very simple. 
-<ul><li>Respect your fellow posters. The board is the members who make up the community, we can only grow if we respect one another</li>
-<li>Respect that others may not share your opinions, as we all have them. We will not agree on everything. Healthy debate makes life more interesting. Slamming people just causes bad feelings and more issues than an election</li>
-<li>No personal attacks or insults. This is one of those zero tolerance ones. If you do it expect to get slapped upside the head.</li>
-<li>No Trolling. Yup. It’s up to the staff to decide what is and isn’t. We’ll warn ya.. than we’ll hit you with a frying pan.</li> 
-<li>Respect the Staff. The Staff are merely the caretakers of the community. They make sure everything runs.</li>  
-<li>The Staff can and will act without prior warning if needed. Not we’ll do it that often, but we can and will if the need arises.</li>
-<li>Report any staff issues you find. If you wish you can report them directly to Emuz or any of the system admins or Root Admins. Staff are not immune either as they are part of the community just as much as the regular members!</li></ul></td>
+".    "  $L[TRh]>$L[TDh]><a name='gpg'>General Posting Guidelines:
+".    "  $L[TR]>$L[FAQTD]>Posting on a message forum is generally relaxed.  There are, however, a few things to keep in mind when posting.
+".    "  <ul style=\"list-style-type: decimal;\">
+".    "  <li>One word posts.  These types of posts generally do not add to the conversation topic and should be avoided at all cost.  Come on, at least form a complete sentence!
+".    "  <li>Trolling/flaming/drama.  This behavior is totally unacceptable and will be dealt with accordingly, namely with a warning.  Direct (or even indirect) personal attacks on <b><u><i>any</i></u></b> member of this community for any reason whatsoever will result in immediate action.  Do NOT test us on this.
+".    "  <li>Reviving, or \"bumping\" old threads.  If the last post in a thread was a month ago or more, we ask that you do not add another post unless you have something very relevant and interesting to add to the topic.
+".    "  <li>Spamming.  Spam is a pretty broad and grey area.  Spam can be generalized as multiple posts with no real meaning to the topic or what anyone else is talking about.
+".    "  <li>Staff impersonation and 'back seat moderation.' Staff impersonation will <b>not</b> be tolerated. Doing so will may result in an instant ban. While you may feel you are helping by telling a fellow member that they need to stop doing something you know is wrong, you may do more harm than good. If you see an issue please report the issue to the staff immediately.
+".    "  <li>Suggestive Material.  Remember that there are others here who enjoy the board experience. Their standards are not necessarily going to be like yours all the time, so please, do not post anything pornographic or otherwise potentially disturbing to other members.
+".    "  </ul>
+".    "  <br><b><u>Procedural</u></b>:
+".    "  <br>Kafuka follows the \"Three Strike Rule\". This means if you have been warned twice by staff for whatever reason, your third notice will be a ban and a reason, coupled with a ban length.  Each time you are given a \"strike\", you will receive a PM from a staff member stating so.  This PM will also include a link to the post in question and a reason for the warning.  Your third strike will come with a ban.   Ban lengths are as follows:
+".    "  <br>
+".    "  <table cellpadding=0>
+".    "  <tr><td>Offence</td><td>Duration</td></tr>
+".    "  <tr><td>1st</td><td>1 Week</td></tr>
+".    "  <tr><td>2nd</td><td>2 Weeks</td></tr>
+".    "  <tr><td>3rd</td><td>1 Month</td></tr>
+".    "  <tr><td>4th</td><td>2 Months</td></tr>
+".    "  <tr><td>5th</td><td>Indefinite</td></tr>
+".    "  </table>
+".    "  <br>Please note that these ban lengths are \"soft\" and may be changed and/or deviated from by staff at their discretion. Decisions made regarding length will not be negotiable. If you have been banned but not warned, let a member of staff know.
+".    "  <br>
+".    "  <br><b><u>Behavioral</u></b>:
+".    "  <br>Following one rule doesn't mean your post is automatically acceptable. If it is distasteful, repugnant, or offensive, then don't post it.
+".    "  <br>
+".    "  <br>If your post is seen by staff to incite drama, put down others, have negative connotations/bad attitude, or otherwise find fault therein, they have absolute right in deciding what to do with it and with you.
+".    "  <br>
+".    "  <br>IRC is IRC, and the board is the board, and there's a distinct level of separation between the two. However, we acknowledge that they are closely related and will make decisions based on your actions from both mediums of this community. This means if you're prone to being rude on IRC, and then rude on the board, it will most likely be considered when determining disciplinary action.
+".    "  <br>
+".    "  <br><b><u>Codeside</u></b>:
+".    "  <br>The use of CSS usage to change your username colour, impersonate being staff, or similar is forbidden. Any alteration to one's username (font, icon etc) fake custom titles, and other additional text in a non-post field are under discretion of the the staff. Likewise, use of CSS that changes the board layout, others' posts or anything outside of your own post is forbidden. Failure to do so can result in deletion of your post layout, or even disabling the feature on your account altogether.
+".    "  <br>
+".    "  <br><b><u>Disclaimer</u></b>:
+".    "  <br>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.
 
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name=acceptable>What is the standard of acceptable behaviour on the board?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      The following is the original rules of Acmlm's Board. Our rules are based of these rules and as such we've provided them for reference.<br />First off, do not assume that our rules are the same as those of other bulletin boards; just because spammy posts might be acceptable on another forum, they are not necessarily so here.<br><br>However, most of the rules are not that hard to follow, and as long as you keep them in mind, you should not run into trouble.<br><br><b>DO:</b>
-".    "  <ul><li>Follow the rules the local moderators proclaim in their forums.
-".    "  <li>LISTEN to the staff when they speak to you.  We don't do it for our own health.
-".    "  <li>Use proper grammar and avoid '1337speak' and AOL speak (u/ur/y/ in place of words such as you/you're/why). It is a good way to gain and keep respect.
-".    "  <li>Exercise common sense when posting.
-".    "  <li>Exercise caution when posting threads about controversial topics such as religion to avoid unnecessarily insulting other board members</ul>
-".    "  <b>DON'T:</b>
-".    "  <ul><li>Spam.<li>Be a bigot. Hateful, discriminating or homophobic remarks are not welcome on this board. ('<i>DUDE THATS GAY STFU UR GAY</i>')
-".    "  <li>Bump (post in) old or outdated threads, unless you have something meaningful to contribute; mere questions do not count as such outside of question threads
-".    "  <li>Create multiple accounts unless explicitely authorized to do so by an administrator. Creation of secondary accounts to evade bans will result in a permanent banishment from the board.
-".    "  <li>Ask any questions that could be answered using this FAQ or easily and commonly available sources.
-".    "  <li>Stick around if you hate this board. Nobody is forcing you to.
-".    "  <li>Act like the board is a chat room (post messages like '<i>HEY ACMLM</i>', '<i>I AGREE</i>', '<i>What's up?</i>', or any messages directed to individuals). This is what the private message function is for.
-".    "  <li>FLAME, or purposefully try to be an ass to people.
-".    "  <li>Ask to be a moderator, suck up or act like a moderator. It's one of the best ways NOT to get what you want.
-".    "  <li>Backseat moderate.  We have staff for that.  At most, direct users to this FAQ.
-".    "  <li>Threaten to hack the board. Chances are you can't. Besides, we have a few real hackers on staff who test the board constantly for any security problems.
-".    "  <li>Post blatantly pornographic material in inappropriate situations where it might be frowned upon. In case of doubt, usage of NSFW tags in the thread title or on links is recommended.
-".    "  <li>Post ROM/warez links on the board. You are free to exchange links with others through private messages, but do not post them out in the open.
-".    "  <li>Join the board with the sole intent of advertising your site/service/etc.
-".    "  <li>Force your opinion on others.  This is a discussion board, members are entitled to their own opinions.
-".    "  <li>Respond to a spammer attack/obvious flame. If it's obvious that the post/thread in question will be deleted, don't post and make fun of the person or ask for the post/thread to be taken care of.</ul>
-".    "  Naturally, exceptions to most of those rules could arise out of social context or similar; however, unless you have gained a deeper understanding of the forum community, you are on the safe side assuming that to not be the case. In case of any remaining doubts, common sense prevails.
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name=spam>What is considered \"spam\" at the board?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "    <b>Spam is making:</b>
+".    "  $L[TRh]>$L[TDh]><a name='sprite'>What are these little character doodads appearing on the board?
+".    "  $L[TR]>$L[FAQTD]>Those are called Sprites. If you click on them, you will have \"found\" them and will be logged <a href=\"sprites.php\">here</a>. Collect them all!
 
-<ul><li>A post that is off-topic, meaning that it has nothing to do with the original thread. </li>
-<li>A post that is only a few words long and doesn't contribute anything meaningful to the discussion. </li>
-<li>A thread that doesn't have any real meaning. </li>
-<li>A thread with a poll that is pointless. </li>
-<li>A thread that is an exact duplicate of a pre-existing, recent thread.</li></ul> 
+".    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go?
+".    "  $L[TR]>$L[FAQTD]>It was probably moved or deleted by a staff member. If it was deleted, please make sure your thread meets the criteria we have established. If it was moved, look into the other forums and consider why it was moved there. If you have any questions, PM a staff member.
 
-If you feel that a thread is spammy, then PM or IM an admin and ask them to take a look at it. Don't ask for someone to take a look at it in the thread itself or lecture the poster on the dangers of spamming. </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name=newtoboard>I'm new, where should I start? </td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "   The best place for newcomers to start is the <a href=forum?id=1>General</a> Forum where you can introduce yourself to the board. If you have any questions not addressed in this FAQ, feel free to ask them in the <a href=forum?id=1>Help / Suggestions</a> forum.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='strike'>What is the strike system?</td>
+".    "  $L[TRh]>$L[TDh]><a name='rude'>I feel that a user is being rude to me. What do I do?
+".    "  $L[TR]>$L[FAQTD]>Stay cool. Don't further disrupt the thread by responding <b>at all</b> to the rudeness. Let a member of staff know with a link to the offending post(s). Please note that responding to the rudeness is promoting flaming, which is a punishable offense.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      In most cases, the staff at the board follows a three-strike system when it comes to punishments. For most minor offenses, an offending user will be warned about his/her conduct through a PM. If they continue to break the rules, they will be banned for 24 hours (possibly more if it was a serious offense, up to 72 hours). If the user continues to cause trouble, they will receive a second warning, possibly followed by another ban which could last anywhere from 72 hours to a week. Finally, if the user is still causing trouble after all these warnings, they will be permanently banned from the board.<br /><br />Harsher bans may be issued if a user racks up multiple warnings in a short amount of time or does something idiotic such as flooding the board or posting questionable material.<br /><br />Note that if you register another account to post with during a ban, you will be permanently banned on the spot. As well, if you think it's fun to constantly harass us on the board, keep in mind that we can and will contact your ISP and lodge a formal complaint. Many ISP's take harassment very seriously and may deactivate your account. </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='escalation'>What if you see something was handled improperly? </td>
+".    "  $L[TRh]>$L[TDh]><a name='badge'>What are badges?
+".    "  $L[TR]>$L[FAQTD]>Badges are special trinkets that a user gathers through special means. You can acquire them from staff, meeting special requirements, or even find them somewhere. For example; sometimes special contests will be held, with a badge given for those who participate and/or win said competition.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      If you experince a staff or poster issue and something needs to be examined by someone of higher status, we have setup rules for escalation. This will help everyone to know who they need to contact faster. This set of rules applies for most decisions when they have been questioned.
-<ol><li>The local moderator has say on the areas they have their name attached to. They are free to moderate as they see fit as long as it follows the general staff guidelines of the board. </li>
-<li>If an issue arises with a moderation action of a LM, it should be brought to the staff forum for short debate. Lacking that if two or more GMs, agree or an Admin, they can overturn the action. They should state the reason why it was overturned. (offending thread or in the staff forum)</li>
-<li>If an issue arises with a moderation action of a GM, it should be brought to the staff forum for short debate. Lacking that if two Admins or one SysAdmin agrees they can overturn the action. They should state the reason why it was overturned. (offending thread or in the staff forum) </li>
-<li>If an issues arises with something an Admin has performed it should be brought to the staff forum for short debate. Lacking that if three or more Admins (any), Two Sys Admins or a Root Admin agree, They should state the reason why it was overturned. (offending thread or in the staff forum) </li>
-<li>If an issues arises with something an Admin has performed it should be brought to the staff forum for short debate. Lacking that if four or more Admins (any), three Sys Admins or a Root Admin agree, They should state the reason why it was overturned. (offending thread or in the staff forum) </li>
-<li>The Buck stops at Emuz. He’ll have the final say if one is needed.</li></ol> </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='closedth'>What can I do about my thread being closed/trashed/deleted? </td>
+".    "  $L[TRh]>$L[TDh]><a name='kcs'>What is \"KCS\"?
+".    "  $L[TR]>$L[FAQTD]>KCS stands for Kafuka Champion Series. It is an ongoing posting contest which is found in General Chat. All general posting rules apply.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      First off, don't complain on the board about a thread being closed or deleted, and don't single out a certain mod or admin as being responsible. This will result in a ban. Learn from your mistakes and move on.<br/ >If you feel you need clarification on why the thread was closed or if you feel a mistake was made, contact a local mod in charge of the forum or an admin and politely explain the problem. </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='banned'>Help! I've been banned! What do I do now?</td>
+".    "  $L[TRh]>$L[TDh]><a name='smile'>Are smilies and BBCode supported?
+".    "  $L[TR]>$L[FAQTD]>There are some smilies here, a chart is below to show what smilies are supported.
+".    "  <br>$smilietext 
+".    "  <br>Likewise, a selection of BBCode is supported. See the chart below.
+".    "  <table class=table cellspacing=0>
+	 <tr><td class='b h'>Tag</td><td class='b h'>Effect
+	 <tr><td class='b n1'>[b]<i>text</i>[/b]</td><td class='b n2'><b>Bolt Text</b></td>
+	 <tr><td class='b n1'>[i]<i>text</i>[/i]</td><td class='b n2'><i>Italic Text</i></td>
+	 <tr><td class='b n1'>[u]<i>text</i>[/u]</td><td class='b n2'><u>Underlined Text</u></td>
+	 <tr><td class='b n1'>[s]<i>text</i>[/s]</td><td class='b n2'><s>Striked out text</s></td>
+	 <tr><td class='b n1'>[img]<i>URL of image to display</i>[/img]</td><td class='b n2'>Displays an image.</td>
+	 <tr><td class='b n1'>[svg]<i>URL of a SVG image to display</i>[/svg]</td><td class='b n2'>Displays a SVG Image.</td>
+	 <tr><td class='b n1'>[spoiler]<i>text</i>[/spoiler]</td><td class='b n2'>Used for hiding spoiler text.</td>
+	 <tr><td class='b n1'>[code]<i>code text</i>[/code]</td><td class='b n2'>Displays code in a formatted box.</td>
+	 <tr><td class='b n1'>[url]<i>URL of site or page to link to</i>[/url]<br>[url=<i>URL</i>]<i>Link title</i>[/url]</td><td class='b n2'>Creates a link with or without a title.</td>
+	 <tr><td class='b n1'>@\"<i>User Name</i>\"<br>[user=<i>id</i>]</td><td class='b n2'>Creates a link to a user's profile complete with name colour.</td>
+	 <tr><td class='b n1'>[forum=<i>id</i>]</td><td class='b n2'>Creates a link to a forum by id.</td>
+	 <tr><td class='b n1'>[thread=<i>id</i>]</td><td class='b n2'>Creates a link to a thread by id.</td>
+	 <tr><td class='b n1'>[youtube]<i>video id</i>[/youtube]</td><td class='b n2'>Creates an embeded YouTube video.</td>
+	 </table>
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      First off, DO NOT create a new account to complain about your ban, as that will just result in a permanent ban from the board. If you feel that the ban was unfair or if you wish to know exactly why you were banned, PM an admin and calmly ask about it. Aside from that, the only thing you can do is wait for the ban to expire and make sure you know why it happened.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='cookies'>Are cookies used for this board?</td>
+".    "  $L[TRh]>$L[TDh]><a name='irc'>What's this IRC thing I keep hearing about?
+".    "  $L[TR]>$L[FAQTD]>If you have an IRC client like mIRC, you can join a chatroom hosted by the Kafuka community. All crazy kinds of things can happen there, but will you take the plunge? Connect to the server irc.nolimitzone.com and join the channel #kafuka. Mibbit is a great client to start with if you don't know what you're doing.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Yes, it uses cookies to store your login information. You can still use this board with cookies disabled, but you'll have to enter your username and password every time it's asked, and some features may not be available.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='html'>Can HTML be used?</td>
+".    "  $L[TRh]>$L[TDh]><a name='reg'>Can I register more than one account?
+".    "  $L[TR]>$L[FAQTD]>No, you may not. Most uses for a secondary account tend to be to bypass bans. The the most common non-malicious use is to have a different name, and we have another feature will allow this cleanly.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Yes, it can be used in posts, private messages, nearly everywhere except in things such as thread titles, usernames, etc.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='abcode'>Is there some sort of replacement code for HTML?</td>
+".    "  $L[TRh]>$L[TDh]><a name='layout'>How do I get a layout?
+".    "  $L[TR]>$L[FAQTD]>You must code one yourself. Sometimes there are others who might be willing to help you with your layout. If your layout is bad, you may find it deleted by a staff member. Make sure that when you design your layout, it isn't hard to read and doesn't stretch the tables.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Yes, but it's a bit limited. Here's what can be used: (most are case sensitive)<br>
-	 [b]<b>Bold text</b>[/b]<br>
-	 [i]<i>Italic text</i>[/i]<br>
-	 [u]<u>Underlined text</u>[/u]<br>
-	 [s]<s>Stroke text</s>[/s]<br>
-	 [img]URL of image to display[/img]<br>
-	 [svg]URL of a SVG image to display[/svg]<br>
-	 [spoiler]Tag used to hide spoilers[/spoiler]<br>
-	 [code]Shows code in a formatted block[/code]<br>
-	 [url]URL of site or page to link to[/url] </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='layouts'>Are there any rules for post layouts?</td>
+".    "  $L[TRh]>$L[TDh]><a name='css'>What are we not allowed to do in our custom CSS layouts?
+".    "  $L[TR]>$L[FAQTD]>While we allow very open and customizable layouts and side bars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a member of staff. Staff has discretion in deciding violations. This list is expected to be updated regularly, so please make sure to stay up to date.
+".    "  <br>The following are not allowed:
+".    "  <ul style=\"list-style-type: decimal;\">
+".    "  <li>Modification of anyone else's post layout <b>for any reason</b>.
+".    "  <li>Modification of any tables, images, themes, etc outside of your personal layout.
+".    "  <li>Adding a custom title to your profile via css. Custom titles are provided using a board system.
+".    "  <li>Altering your Nick color in any way. Nick color is an indicator of staff, and it will be considered impersonation of staff.
+".    "  <li>Altering the board layout. A good example of this would be CSS that has your post text or any part of that table appearing anywhere in your sidebar. 
+".    "  </ul>
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "         There are a few simple rules which all users should follow in their layouts:<br />
 
-<ul><li>No flashy backgrounds which make text difficult to read. This doesn't mean you can't have a nice background, but at least make sure that the area where the text is doesn't make a post hard to read. </li>
-<li>No huge pictures or excessive amounts of GIFs. Huge pictures just make threads longer to load and having too many GIFs can slow down some computers. </li>
-<li>No broken tables. If you're working with tables and feel that you might be messing up, check your post in your user profile. If the profile seems to be messed up, then the layout is as well. Broken tables can wreck havoc with threads. </li></ul>
+".    "  $L[TRh]>$L[TDh]><a name='title'>How do I get a custom title?
+".    "  $L[TR]>$L[FAQTD]>Custom titles are titles you can use in addition to, or in place of the ranks provided by the board. There are three ways to get them:
+".    "  <ul style=\"list-style-type: decimal;\">
+".    "  <li>After 100 posts, or if you have been around 2 months you will need 50.
+".    /*"  <li>Receive the *badge name goes here* badge. This can be given by staff, by special event, or by meeting a pre-determined goal.
+".    */"  <li>Being a member of staff.
+".    "  </ul>
+".    "  <br>The custom title is a reward for being an active member of the community. Use of the custom title to impersonate staff, or to flame members/staff may result in the loss of custom title.
 
-If you have any questions about layouts in general or need help, visit the <a href=index.php?id=1>Modern Art forum.</a>  </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='exp'>What is Level and EXP, and how do I get more EXP?</td>
+".    "  $L[TRh]>$L[TDh]><a name='rpg'>RPG Stats
+".    "  $L[TR]>$L[FAQTD]>The RPG stats are based on your post count. Currently they are purely cosmetic. They were a part of a forum battle system developed by Acmlm.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      EXP is calculated from your amount of posts and how long it's been since you registered. Level is calculated from EXP. You gain increasing amounts of EXP by posting, and by being registered longer. </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='stats'>How do I add my stats to my posts?</td>
+".    "  $L[TRh]>$L[TDh]><a name='itemshop'>Items and the Item Shop
+".    "  $L[TR]>$L[FAQTD]>Items are equipment that is actually a part of the RPG stat system. Like in an RPG equipment can boost your stats. An item shop allows you to use the RPG coins you get from posting to buy items and equipment. However, it doesn't currently matter what your stats are since they don't do anything right now, as said above.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      In a way similar to HTML and the markup replacements (described above), just put those where you want the numbers to be:<br>
-	<center><table><td><table class=table cellspacing=0>
+".    /*"  $L[TRh]>$L[TDh]><a name='syndrome'>Acmlmboard Syndromes
+".    "  $L[TR]>$L[FAQTD]>The syndromes are an old Acmlmboard tradition carried over from the first version. Syndrome are triggered when you reach the amount of posts posted per day listed in he table below.
+".    "  <br><table class=table cellspacing=0>
+	    <tr><td class='b h'>Posts</td><td class='b h'>Syndrome
+	    <tr><td class='b n1'> 75</td><td class='b n2'>".syndrome(75)."
+	    <tr><td class='b n1'>100</td><td class='b n2'>".syndrome(100)."
+	    <tr><td class='b n1'>150</td><td class='b n2'>".syndrome(150)."
+	    <tr><td class='b n1'>200</td><td class='b n2'>".syndrome(200)."
+	    <tr><td class='b n1'>250</td><td class='b n2'>".syndrome(250)."
+	    <tr><td class='b n1'>300</td><td class='b n2'>".syndrome(300)."
+	    <tr><td class='b n1'>350</td><td class='b n2'>".syndrome(350)."
+	    <tr><td class='b n1'>400</td><td class='b n2'>".syndrome(400)."
+	    <tr><td class='b n1'>450</td><td class='b n2'>".syndrome(450)."
+	    <tr><td class='b n1'>500</td><td class='b n2'>".syndrome(500)."
+	    <tr><td class='b n1'>600</td><td class='b n2'>".syndrome(600)."
+	  </table>
+
+".    */"  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
+".    "  $L[TR]>$L[FAQTD]>amp tags (or &tags&) are tags that allow you to put some of for your profile and RPG stats in a post. They can be incorporated into a layout or used once in a post.
+".    "  <br>	<table class=table cellspacing=0>
 	  <tr><td class='b h'>Tag</td><td class='b h'>Value
 	  <tr><td class='b n1'>&postnum&	</td><td class='b n2'>Current post count
 	  <tr><td class='b n1'>&numdays&	</td><td class='b n2'>Number of days since registration
@@ -260,102 +232,28 @@ If you have any questions about layouts in general or need help, visit the <a hr
 	  <tr><td class='b n1'>&rank&		</td><td class='b n2'>Current rank, according to your amount of posts
 	  <tr><td class='b n1'>&rankname&		</td><td class='b n2'>Text only current rank, according to your amount of posts 
 	  <tr><td class='b n1'>&postrank&		</td><td class='b n2'>Shows your rank by number of posts 
-	 </table></table></center></td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='syndromes'>What are the \"syndromes\" and how do I get them? </td>
+	 </table>
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      The syndromes are based on how many posts you have made in the last 24 hours. The amount of posts required for each syndrome is as follows:<br>
-	  <center><table><td><table class=table cellspacing=0>
-	    <tr><td class='b h'>Posts</td><td class='b h'>Syndrome
-	    <tr><td class='b n1'> 75</td><td class='b n2'><x<br><i><font color=83F3A3>Affected by 'Reinfors Syndrome'</font></i>
-	    <tr><td class='b n1'>100</td><td class='b n2'><x<br><i><font color=FFE323>Affected by 'Reinfors Syndrome' +</font></i>
-	    <tr><td class='b n1'>150</td><td class='b n2'><x<br><i><font color=FF5353>Affected by 'Reinfors Syndrome' ++</font></i>
-	    <tr><td class='b n1'>200</td><td class='b n2'><x<br><i><font color=CE53CE>Affected by 'Reinfors Syndrome' +++</font></i>
-	    <tr><td class='b n1'>250</td><td class='b n2'><x<br><i><font color=8E83EE>Affected by 'Reinfors Syndrome' ++++</font></i>
-	    <tr><td class='b n1'>300</td><td class='b n2'><x<br><i><font color=BBAAFF>Affected by 'Wooster Syndrome'!!</font></i>
-	    <tr><td class='b n1'>350</td><td class='b n2'><x<br><i><font color=FFB0FF>Affected by 'Wooster Syndrome' +!!</font></i>
-	    <tr><td class='b n1'>400</td><td class='b n2'><x<br><i><font color=FFB070>Affected by 'Wooster Syndrome' ++!!</font></i>
-	    <tr><td class='b n1'>450</td><td class='b n2'><x<br><i><font color=C8C0B8>Affected by 'Wooster Syndrome' +++!!</font></i>
-	    <tr><td class='b n1'>500</td><td class='b n2'><x<br><i><font color=A0A0A0>Affected by 'Wooster Syndrome' ++++!!</font></i>
-	    <tr><td class='b n1'>600</td><td class='b n2'><x<br><i><font color=C762F2>Affected by 'Anya Syndrome'!!!</font></i>
-	  </table></table></center>
-	  Any other \"syndromes\" you may see such as \"Cute Kitten Syndrome ++\" are not syndromes; they are simply a custom title that someone else has decided to take.<br> Don't forget that spamming in an attempt to gain these syndromes will result in a warning or a ban. The only right way to gain a syndrome is by making clear, non-spammy posts.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='kcs'>What is the KCS?</td>
+"./*    "  $L[TRh]>$L[TDh]><a name='dispname'>Display Name System
+".    "  $L[TR]>$L[FAQTD]>The display name system allows you to have your name displayed as something other than your account's name. For example \"Acmlm\" might decided he would like to have his name display as \"Milly\" for a while. With this system he would be allowed to do so without changing his actual login account name. It is forbidden to use this to flame or impersonate other members. Your real login name will be visible on your profile. Misuse of this feature will result in blocking of your ability to use it, and possibly further action if warranted. **Feature not tested. Currently not public**
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      The KCS stands for Kafuka Championship Series (Like the ACS from Acmlm's Board), and is a posting \"competition\". Each day the top ten posters (and ties) on the board are given points. The top poster each day receives 10 points and the 10th placed poster receives 1. At around midnight Eastern time each day, the rankings are compiled and posted in the Craziness Domain. \"Awards\" are given out at the end of each month. Note that the KCS is just for fun and people really shouldn't be posting just to rank in it. As well, the points mean absolutely nothing in the grand scheme of things. You can't exchange them for anything. That being said, the KCS has been a success on the board and thankfully we haven't had to ban too many people for spamming to get a top spot. Let's hope it stays that way.<br /><i>Note: KCS may not start right away. Check <a href=forum.php?id=1>General Chat</a> for details</i></td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='sprites'>What are sprites?</td>
+".*/    "  $L[TRh]>$L[TDh]><a name='avatar'>What are avatars & mood avatars?
+".    "  $L[TR]>$L[FAQTD]>Avatars are a form of display picture which appears beside your posts and in your profile. Likewise, a mood avatar allows you to display a different picture as opposed to the one specified in your profile.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Sprite system shows random sprites from many classic games, and media. When you see one and click on it with your mouse you collect it. The sprites are recorded in your record. Some sprites appear more than others like boss creatures. Try to <s>catch</s> collect them all! </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='badge'>What are badges?</td>
+".    "  $L[TRh]>$L[TDh]><a name='private'>Are private messages supported?
+".    "  $L[TR]>$L[FAQTD]>Yes. Your private message inbox is represented by an envelope icon which is highlighted green when you have unread messages. Likewise, you may send a user a message from here, or alternatively use \"Send Private Message\" from the user's profile.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "    Most badges are given out by the for reaching various milestones on the board. Some can be bought using coins, and others can only give directly by a staff member. They are displayed in your profile for everyone to see.<br /><i>Note: Badges are currently not implemented but are coming soon</i>   </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='ranks'>What are the user ranks?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Depending on the amount of posts you have made, you will be grouped into a certain rank within your set, with the ranks intended to convey a certain sense of progression. You can choose from one of several available ranksets or disable them altogether through editing your profile. </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='customr'>How can I get a custom rank?</td>
+".    "  $L[TRh]>$L[TDh]><a name='search'>Search Feature
+".    "  $L[TR]>$L[FAQTD]>The search feature is used to search the forum posts and threads for whatever you may be looking for. It has the ability to be filtered by forum and user it was posted by.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      You can get one under one of those conditions:<ul>
-<li>Be a moderator or administrator</li>
-<li>Have at least 100 posts</li>
-<li>Have at least 50 posts, and have been registered for at least 60 days</li></ul>
-There may be a few rare exceptions, but asking for a custom title before having the requirements for it won't get you one.</td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='bestaff'>How can I become a moderator or administrator?</td>
+".    "  $L[TRh]>$L[TDh]><a name='calendar'>What is the calendar for?
+".    "  $L[TR]>$L[FAQTD]>The calendar lists user birthdays and special board events.
 
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      If us administrators trust you enough for this. Don't ask us, we may ask you if we ever feel you worthy of being promoted. Being a good and regular member helps, while asking for this doesn't. It also depends whether we feel a need to promote more people, which isn't so often the case.  </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='annc'>What are announcements and the Points of Required Attention?</td>
-
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Announcements, and the PorA are general messages posted by administrators only. Everybody can view them, but not reply to them.<br/><i>Note: Annoucments are currently not implemented but are coming soon</i>  </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='album'>Can you add me to the Photo Album?</td>
-
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      <s>Yes, just send or post a picture of yourself and I may add it. Only actual photographs are accepted.</s><br /><i>Note: The Photo Album are currently not implemented but is coming soon</i> </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='nickchange'>How can I change my username?</td>
-
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      You can't change it yourself, only administrators can, but you can ask one of them for a name change. </td>
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='smilies'>What smilies does the board have?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      The board will automatically swap in the following $numsmilies smilies:<br />
-".    "      $smilietext
-".    "  $L[TRh]>
-".    "    $L[TDh]><a name='colours'>What do the username colours mean?</td>
+".    "  $L[TRh]>$L[TDh]><a name='usercols'>What do the username colours mean?</td>
 ".    "  $L[TR]>
 ".    "    $L[FAQTD]>
 ".    "      They reflect the gender setting and group of the user.<table>
 ".$nctable."      </table>
-".    "  $L[TRh]>
-".    "    $L[TDh]>Release notes</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
-".    "      Acmlmboard II is currently under active development. There may be new undocumented features, and various bugs. While this board is running a 'release' version of the code, it is still very much beta software. ABII is developed on a test server, than it is tested, and when it reaches a mature point it is moved to the live server (which is 'Kafuka'). Still we are only human of if you note any issues with the board software please report it on Kafuka's Bug report forum.<br /><br />FAQ Last Updated: <i>2011-12-28</i>.
 ".    "</table>";
 pagefooter();
 

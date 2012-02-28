@@ -8,7 +8,7 @@
 
     $daynames = array('Sunday','Monday','Tuesday','Wednesday',
                       'Thursday','Friday','Saturday');
-    $monthnames = array(1=>'January',  'Febuary','March',   'April',
+    $monthnames = array(1=>'January',  'February','March',   'April',
                            'May',      'June',   'July',    'August',
                            'September','October','November','December');
     

@@ -17,14 +17,20 @@
           .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>10 THEN 10 ELSE COUNT(*) END num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
+          .'LEFT JOIN threads t ON t.id=p.thread '
+          .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.(ctime()-(dtime()%86400)-$past*86400).' AND p.date<'.(ctime()-(dtime()%86400)-($past-1)*86400).' '
+          .'AND f.private=0 '
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   if(isset($easymode)) {
     $query='SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,COUNT(*) num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
+          .'LEFT JOIN threads t ON t.id=p.thread '
+          .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.(ctime()-(dtime()%86400)-$past*86400).' AND p.date<'.(ctime()-(dtime()%86400)-($past-1)*86400).' '
+          .'AND f.private=0 '
           .'GROUP BY u.id ORDER BY num DESC';
   }
   $users=$sql->query($query);

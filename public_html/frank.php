@@ -78,7 +78,10 @@
           .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
+          .'LEFT JOIN threads t ON t.id=p.thread '
+          .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.($dstr-(dtime($dstr)%86400)).' AND p.date<'.($dstr-(dtime($dstr)%86400-86400)).' '
+          .'AND f.private=0 '
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);
@@ -139,7 +142,10 @@
           .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
+          .'LEFT JOIN threads t ON t.id=p.thread '
+          .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.($dstr-(dtime($dstr)%86400)).' AND p.date<'.($dstr-(dtime($dstr)%86400-86400)).' '
+          .'AND f.private=0 '
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);

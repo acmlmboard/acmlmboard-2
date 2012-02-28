@@ -339,6 +339,8 @@ else {
       $userlinks[$ul++] = array('url' => "usermood.php", 'title' => 'Edit Mood Avatars');
     if (has_perm('use-item-shop')) 
       $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item Shop');
+    if (has_perm('view-kcs')) 
+      $userlinks[$ul++] = array('url' => "frank.php", 'title' => 'Forum Rankings');
     if (has_perm('mark-read')) 
       $userlinks[$ul++] = $markread;
 
@@ -546,7 +548,7 @@ echo "
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (2/27/2012)<br>
+".        "  Acmlmboard v2.5 (2/28/2012)<br>
 ".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

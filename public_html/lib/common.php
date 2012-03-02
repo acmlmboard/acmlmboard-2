@@ -298,7 +298,7 @@ if (has_perm('view-own-pms')) {
       $pmimage = "gfx/pm-off.png";
     } 
     $pmsgbox=
-      "<a href=private.php><img src=$pmimage alt=\"Private messages\" title=\"Private message\"></a> $unreadpms $lastmsg | ";
+      "<a href=private.php><img src=$pmimage border=0 alt=\"Private messages\" title=\"Private message\"></a> $unreadpms $lastmsg | ";
 }
 else {
   $pmsgbox = "";

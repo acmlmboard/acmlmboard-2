@@ -82,7 +82,8 @@
     "Bing Bot",
     "Baidu Spider",
     "Baiduspider",
-    "Speedy Spider"
+    "Speedy Spider",
+    "YandexBot"
     );
 
   $bot = 0;

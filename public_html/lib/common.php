@@ -70,21 +70,7 @@
 
   $dateformat="$loguser[dateformat] $loguser[timeformat]";
 
-  $bots = array(
-    "Microsoft URL Control",
-    "msnbot",
-    "Yahoo! Slurp",
-    "Googlebot",
-    "Mediapartners-Google",
-    "Yeti",
-    "Twiceler",
-    "Sogou web spider",
-    "Bing Bot",
-    "Baidu Spider",
-    "Baiduspider",
-    "Speedy Spider",
-    "YandexBot"
-    );
+  $bots=$sql->fetch($sql->query("SELECT bot_agent FROM robots"));
 
   $bot = 0;
 

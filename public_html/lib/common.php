@@ -81,6 +81,7 @@
     "Sogou web spider",
     "Bing Bot",
     "Baidu Spider",
+    "Baiduspider",
     "Speedy Spider"
     );
 

@@ -1,4 +1,4 @@
-ï»¿<?php
+<?php
 
 
   function userlink_by_name($name) {
@@ -65,9 +65,9 @@
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace($smilies[$i][text],'Â«'.$smilies[$i][text].'Â»',$msg);
+        $msg=str_replace($smilies[$i][text],'«'.$smilies[$i][text].'»',$msg);
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace('Â«'.$smilies[$i][text].'Â»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
+        $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 
     $tags=array('script','iframe','textarea','noscript','meta','xmp','plaintext','base');
@@ -76,11 +76,11 @@
       $msg=preg_replace("'</$tag(.*?)>'si","&lt;/$tag>",$msg);
     }
 
-//  $msg=preg_replace("'<table(.*?)>(.*?)</table>'si",'Â°table\\1Â°\\2Â°/tableÂ°',$msg);
+//  $msg=preg_replace("'<table(.*?)>(.*?)</table>'si",'°table\\1°\\2°/table°',$msg);
 //  $msg=preg_replace("'<table(.*?)>'si",'&lt;table\\1>',$msg);
 //  $msg=preg_replace("'</table(.*?)>'si",'&lt;/table>',$msg);
-//  $msg=preg_replace("'Â°table'si",'<table',$msg);
-//  $msg=preg_replace("'Â°/tableÂ°'si",'</table>',$msg);
+//  $msg=preg_replace("'°table'si",'<table',$msg);
+//  $msg=preg_replace("'°/table°'si",'</table>',$msg);
 
 //  $msg=preg_replace("'jul.rusted'si",'jul&#46;rusted',$msg);
     $msg=preg_replace("'display:'si",'display&#58;',$msg);

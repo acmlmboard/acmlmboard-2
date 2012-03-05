@@ -49,6 +49,39 @@
     return "";
   }
 
+  function randnickcolor(){
+    /* OLD HACKISH CODE FOR APRIL 5 */
+    $stime=gettimeofday();
+    $h=(($stime[usec]/5)%600);
+    if($h<100){
+      $r=255;
+      $g=155+$h;
+      $b=155;
+    }elseif($h<200){
+      $r=255-$h+100;
+      $g=255;
+      $b=155;
+    }elseif($h<300){
+      $r=155;
+      $g=255;
+      $b=155+$h-200;
+    }elseif($h<400){
+      $r=155;
+      $g=255-$h+300;
+      $b=255;
+    }elseif($h<500){
+      $r=155+$h-400;
+      $g=155;
+      $b=255;
+    }else{
+      $r=255;
+      $g=155;
+      $b=255-$h+500;
+    }
+    $rndcolor=substr(dechex($r*65536+$g*256+$b),-6);
+    $namecolor="color=$rndcolor";
+    return $rndcolor;   
+  }
 
  function userlink_by_id($uid) {
     global $sql;
@@ -73,39 +106,6 @@
     if($user[$u.power]<0)
       $user[$u.power]='x';
 
-
-/* OLD HACKISH CODE FOR APRIL 5
-    $stime=gettimeofday();
-    $h=(($stime[usec]/5)%600);
-    if($h<100){
-  $r=255;
-  $g=155+$h;
-  $b=155;
-    }elseif($h<200){
-  $r=255-$h+100;
-  $g=255;
-  $b=155;
-    }elseif($h<300){
-  $r=155;
-  $g=255;
-  $b=155+$h-200;
-    }elseif($h<400){
-  $r=155;
-  $g=255-$h+300;
-  $b=255;
-    }elseif($h<500){
-  $r=155+$h-400;
-  $g=155;
-  $b=255;
-    }else{
-  $r=255;
-  $g=155;
-  $b=255-$h+500;
-    }
-    $rndcolor=substr(dechex($r*65536+$g*256+$b),-6);
-    $namecolor="color=$rndcolor";    
-  
-*/  // hack
 
   //global $loguser;
  // if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 

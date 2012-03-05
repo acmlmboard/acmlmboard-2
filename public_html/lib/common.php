@@ -186,7 +186,7 @@
     $extratitle="
 ".              "    $L[TBL1] width=100% align=center>
 ".              "      $L[TRh]>
-".              "         $L[TDh]><span title=\"Compliant with Adobe's bullshit trademark rules\">Points of Required Attention&trade;</span> $ae</td>
+".              "         $L[TDh]><span title=\"Compliant with Adobe's bullshit trademark rules\">$config[atnname]</span> $ae</td>
 ".              "       $L[TR2] align=center>
 ".              "         $L[TDs]>".($t=$sql->resultq("SELECT txtval FROM misc WHERE field='attention'"))."
 ".              "         </td>

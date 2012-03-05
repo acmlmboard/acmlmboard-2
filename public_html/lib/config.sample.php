@@ -20,7 +20,7 @@
   $sqldb  ='sqldatabase';
 
   $boardtitle="Insert title here";
-  $boardlogo="<img style='border: 0px' src='img/logo.png' title=\"ABANDON THE POST\nGET A DRINK\">";
+  $boardlogo="<img style='border: 0px' src='img/logo.png' title=\"$boardtitle\">";
   $defaultlogo="theme/abII.png";//Replace with the logo of your choice. Note: This is used if a theme doesn't have it's own logo. It is replaced per theme depending on the theme used.
   $favicon="theme/fav.png"; //Replace with your favicon of choice
   $defaulttheme="dailycycle2";
@@ -32,6 +32,9 @@
   $config[sslbase]= "https://$config[address]"; //Replace if you need fine control of the address
   $config[path]   = "/";
   $config[meta]   = "<meta name='description' content=\"Stuff goes here!\">";
+
+//The following are optional values you can change to personalize your board
+  $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 
 // User GFX limits
  $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize

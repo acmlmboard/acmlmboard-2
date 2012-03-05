@@ -29,7 +29,7 @@
 
 
     if (!isset($forum['id'])) {
-      pageheader("Forum not found",$fid);
+      pageheader("Forum not found",0);
       forum_not_found();      
     }
 

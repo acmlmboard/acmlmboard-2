@@ -70,8 +70,10 @@
 
   $dateformat="$loguser[dateformat] $loguser[timeformat]";
 
-  $bots=$sql->fetch($sql->query("SELECT bot_agent FROM robots"));
-
+  $bota=$sql->query("SELECT bot_agent FROM robots");
+  while($robots=$sql->fetch($bota)){
+    $bots[]=$robots[bot_agent];
+  }
   $bot = 0;
 
   if (str_replace($bots, "x", $_SERVER['HTTP_USER_AGENT']) != $_SERVER['HTTP_USER_AGENT']) {

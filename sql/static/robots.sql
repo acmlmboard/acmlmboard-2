@@ -299,3 +299,7 @@ INSERT INTO `robots` VALUES ('WWWC Ver 0.2.5', 'WWWC/0.25 (Win95)');
 INSERT INTO `robots` VALUES ('WebZinger', 'none');
 INSERT INTO `robots` VALUES ('XGET', 'XGET/0.7');
 INSERT INTO `robots` VALUES ('Nederland.zoek', 'Nederland.zoek');
+INSERT INTO `robots` VALUES ('Sogou Spider', 'Sogou');
+INSERT INTO `robots` VALUES ('Yandex','YandexBot');
+INSERT INTO `robots` VALUES ('Ahrefs Bot','AhrefsBot');
+INSERT INTO `robots` VALUES ('Ezooms Bot','Ezooms');

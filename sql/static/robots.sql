@@ -303,3 +303,4 @@ INSERT INTO `robots` VALUES ('Sogou Spider', 'Sogou');
 INSERT INTO `robots` VALUES ('Yandex','YandexBot');
 INSERT INTO `robots` VALUES ('Ahrefs Bot','AhrefsBot');
 INSERT INTO `robots` VALUES ('Ezooms Bot','Ezooms');
+INSERT INTO `robots` VALUES ('Baidu Spider','Baiduspider');

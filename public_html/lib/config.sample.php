@@ -31,7 +31,7 @@
   $config[base]   = "http://$config[address]"; //Replace if you need fine control of the address
   $config[sslbase]= "https://$config[address]"; //Replace if you need fine control of the address
   $config[path]   = "/";
-  $config[meta]   = "<meta name='description' content=\"Stuff goes here!\">";
+  $config[meta]   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
 
 //The following are optional values you can change to personalize your board
   $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2

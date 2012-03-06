@@ -479,8 +479,9 @@ echo "
 ".      "          &nbsp;
 ".      "        </td>
 ".      "        $L[TDnc]><nobr>
-".      "          $count[t] threads and $count[p] posts total<!-- | ".$sql->resultq("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '". (ctime() - 86400) ."'") ."  active user(s) and  ".$sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '". (ctime() - 86400) ."'") ." active thread(s) during the last day. --> <br /> 
-".      "          $count[d] new posts today, $count[h] last hour <br /> </nobr>
+".      "          $count[t] threads and $count[p] posts total | 
+".      "          $count[d] new posts today, $count[h] last hour.<br />".$sql->resultq("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '". (ctime() - 86400) ."'") ."  active users and  ".$sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '". (ctime() - 86400) ."'") ." active threads during the last day. <br /> 
+ </nobr>
 ".      "        </td>
 ".      "        $L[TDnr] width=250>
 ".      "          $count[u] registered users<br>

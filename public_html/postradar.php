@@ -14,17 +14,6 @@
 	if ($act == 'Save and continue' || $act == 'Save and finish') {
 		if ($_POST['post_radar_add'] != -1) {
 			$user_add = $sql->fetchq('SELECT id FROM users WHERE id = '.$_POST['post_radar_add']);
-			if ($sql->numrows($sql->query('SELECT user2_id FROM post_radar WHERE user_id = '.$targetuserid.' AND user2_id = '.$_POST['post_radar_add'].' AND dtime IS NULL')) != 0) {
-				pageheader('Post Radar');
-				print "<a href=./>Main</a> - Profile
-	".        "<br><br>
-	".        "$L[TBL1]>
-	".        "  $L[TD1c]>
-	".        "This user is already in your post radar.
-	".        "$L[TBLend]
-	";
-				pagefooter(); die();
-			}
 			if (!$user_add) {
 				pageheader('Post Radar');
 				print "<a href=./>Main</a> - Profile
@@ -36,6 +25,18 @@
 	";
 				pagefooter(); die();
 			}
+			if ($sql->numrows($sql->query('SELECT user2_id FROM post_radar WHERE user_id = '.$targetuserid.' AND user2_id = '.$_POST['post_radar_add'].' AND dtime IS NULL')) != 0) {
+				pageheader('Post Radar');
+				print "<a href=./>Main</a> - Profile
+	".        "<br><br>
+	".        "$L[TBL1]>
+	".        "  $L[TD1c]>
+	".        "This user is already in your post radar.
+	".        "$L[TBLend]
+	";
+				pagefooter(); die();
+			}
+			
 			$qr= 'INSERT INTO `post_radar` ( `user_id` , `user2_id` , `ctime` )
 VALUES (
 '.addslashes($targetuserid).', '.addslashes($_POST['post_radar_add']).', UNIX_TIMESTAMP( ))';

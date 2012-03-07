@@ -34,8 +34,8 @@
     global $smilies, $L, $config, $sql;
 
     //[blackhole89] - [code] tag
-    $list = array("<","\\\"" ,"\\\\" ,"\\'","\r\n","[",":",")","_","@");
-    $list2 = array("&lt;","\"","\\","\'","<br>","&#91;","&#58;","&#41;","&#95;","&#64;");
+    $list = array("<","\\\"" ,"\\\\" ,"\\'","\r\n","[",":",")","_","@","-");
+    $list2 = array("&lt;","\"","\\","\'","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
     $msg=preg_replace("'\[code\](.*?)\[/code\]'sie",
        '\''."$L[TBL] width=90% style=\"min-width: 90%;\">$L[TR]>$L[TD3]><code style=font-size:9pt;>".'\''
       .'.str_replace($list,$list2,\'\\1\').\'</code></table>\'',$msg);
@@ -96,8 +96,8 @@
     $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
-    $msg=str_replace('[spoiler]','<div style=color:black;background:black class=fonts><font color=white><b>Spoiler:</b></font><br>',$msg);
-    $msg=str_replace('[/spoiler]','</div>',$msg);
+    $msg=str_replace('[spoiler]','<span class="spoiler1"><span class="spoiler2">',$msg);
+    $msg=str_replace('[/spoiler]','</span></span>',$msg);
     $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1>',$msg);

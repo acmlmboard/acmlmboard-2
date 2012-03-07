@@ -119,10 +119,10 @@ if (can_edit_post($post[id]) && $post[id])
       // 2/22/2007 xkeeper - guess which moron forgot to close the </a>
       //[KAWA] Fun fact: <a name> is deprecated in favor of using IDs.
       //       That's right, you can use <anything id="foo"> in place of <a name="foo">!
-$tbar1=($type==0) ? "topbar".$post['uid']."_1" : "";
-$tbar2=($type==0) ? "topbar".$post['uid']."_2" : "";
-$sbar=($type==0) ? "sidebar".$post['uid'] : "";
-$mbar=($type==0) ? "mainbar".$post['uid'] : "";
+$tbar1=($type==0 && !$isBlocked) ? "topbar".$post['uid']."_1" : "";
+$tbar2=($type==0 && !$isBlocked) ? "topbar".$post['uid']."_2" : "";
+$sbar=($type==0 && !$isBlocked) ? "sidebar".$post['uid'] : "";
+$mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $postheaderrow 
 ".        "  $L[TR]>

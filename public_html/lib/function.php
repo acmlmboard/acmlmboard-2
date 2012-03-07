@@ -17,6 +17,7 @@
   require 'lib/syndrome.php';
   require 'lib/board.php';
   require 'lib/rpg.php';
-  require 'lib/graphics.php'
+  require 'lib/graphics.php';
+  require 'lib/post_radar.php';
   
 ?>

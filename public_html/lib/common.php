@@ -214,7 +214,9 @@
     } else {
       $ssllnk="<a href='$config[sslbase]$url' title='View in SSL mode'><img border='0' src='img/ssloff.gif'></a>";
     }
-
+	if ($log) {
+		$radar = build_postradar($loguser['id']);
+	}
     include("lib/sprites.php");
 	$junk .= "<style type=\"text/css\">.nc04{color:#EE4444} .nc14{color:#E63282} .nc24{color:#AA3C3C}</style>";
   if ($log) {
@@ -317,6 +319,8 @@ else {
       $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
     if (has_perm('update-own-profile')) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit Profile');
+	if (has_perm('post-radar')) 
+      $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post Radar');
     if (has_perm('edit-forums')) 
       $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage Forums');
     if (has_perm('edit-ip-bans')) 
@@ -347,7 +351,18 @@ else {
 ".        "      $L[INPh]=action value=logout>
 ".        "      $L[INPh]=p value=".md5($loguser[pass].$pwdsalt).">
 ".        "    </form>";
-
+if ($radar) {
+echo    "  $L[TR]>
+".      "    $L[TD1] colspan=3>
+".      "      $L[TBL] width=100%>
+".      "        $L[TDn] width=250>
+".      "          &nbsp;
+".      "        </td>
+".      "        $L[TDnc] width=100%>
+".      "          $radar
+".      "        </td>
+".      "      $L[TBLend]";
+}
 
   $hiddencheck  = "AND hidden=0 ";
   if (has_perm('view-hidden-users')) {

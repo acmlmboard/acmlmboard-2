@@ -21,8 +21,10 @@
   if($sex=='f') $where='sex=1';
   if($sex=='n') $where='sex=2';
 
-  if($pow!='' && is_numeric($pow))
-    $where.=" AND group_id=$pow";
+  if($pow!='' && is_numeric($pow)){
+    if ($pow=='-1') $where.=" AND `group_id` =  ANY (SELECT `x_id` FROM `x_perm` WHERE `x_id`= ANY (SELECT `id` FROM `group` WHERE `perm_id` = \"show-as-staff\") AND`x_type` =\"group\")";
+    else $where.=" AND group_id=$pow";
+  }
 
   $users=$sql->query("SELECT *,".sqlexp()." FROM users "
                     ."WHERE $where "
@@ -77,7 +79,8 @@ foreach ($groups as $k => $v) {
   //if ($c < $gc) 
   echo " | ";
 }
-echo      "      ".mlink($sort,$sex,  '',$ppp)."All</a>
+echo      "      ".mlink($sort,$sex,  '-1',$ppp)."All Staff</a>
+"." |       ".mlink($sort,$sex,  '',$ppp)."All</a>
 ".      "      
 ".      "$L[TBLend]
 ".      "<br>";

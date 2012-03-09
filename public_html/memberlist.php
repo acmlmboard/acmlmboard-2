@@ -5,6 +5,7 @@
   $pow = $_REQUEST['pow'];
   $ppp = $_REQUEST['ppp'];
   $page = $_REQUEST['page'];
+  $mini = $_REQUEST['mini'];
 
 
 
@@ -41,7 +42,7 @@
       if($p==$page)
         $pagelist.=" $p";
       else
-        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p)."$p</a>";
+        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini)."$p</a>";
   }
 
   $activegroups = $sql->query("SELECT * FROM `group` WHERE id IN (SELECT `group_id` FROM users GROUP BY `group_id`) ORDER BY `sortorder` ASC ");
@@ -49,7 +50,7 @@
   $groups = array();
   $gc = 0;
   while ($group = $sql->fetch($activegroups)) {
-    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp).$group['title']."</a>";
+    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini).$group['title']."</a>";
   }
 
   print "$L[TBL1]>
@@ -58,17 +59,22 @@
 ".      "  $L[TR]>
 ".      "    $L[TD1] width=60>Sort by:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink(''    ,$sex,$pow,$ppp)."Posts</a> |
-".      "      ".mlink('exp' ,$sex,$pow,$ppp)."EXP</a> |
-".      "      ".mlink('name',$sex,$pow,$ppp)."Username</a> |
-".      "      ".mlink('reg' ,$sex,$pow,$ppp)."Registration date</a>
+".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini)."Posts</a> |
+".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini)."EXP</a> |
+".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini)."Username</a> |
+".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini)."Registration date</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Sex:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,'m',$pow,$ppp)."Male</a> |
-".      "      ".mlink($sort,'f',$pow,$ppp)."Female</a> |
-".      "      ".mlink($sort,'n',$pow,$ppp)."N/A</a> |
-".      "      ".mlink($sort,'' ,$pow,$ppp)."All</a>
+".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini)."Male</a> |
+".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini)."Female</a> |
+".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini)."N/A</a> |
+".      "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini)."All</a>
+".      "  $L[TR]>
+".      "    $L[TD1]>Image:</td>
+".      "    $L[TD2c]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0')."Avatars</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1')."Minipics</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Group:</td>
 ".      "    $L[TD2c]>";
@@ -79,17 +85,27 @@ foreach ($groups as $k => $v) {
   //if ($c < $gc) 
   echo " | ";
 }
-echo      "      ".mlink($sort,$sex,  '-1',$ppp)."All Staff</a>
-"." |       ".mlink($sort,$sex,  '',$ppp)."All</a>
+echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini)."All Staff</a>
+"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini)."All</a>
 ".      "      
 ".      "$L[TBLend]
 ".      "<br>";
 
+//Need to replace a few things if $mini=1 -Emuz
+if($mini=='1'){
+  $piccap = "Minipic";
+  $picwid = "16px";
+}
+else {
+  $piccap = "Picture";
+  $picwid = "64px";
+}
+echo "$sex | $sort";
 //[KAWA] Rebuilt this to use my new renderer. Not sure what to do about the part above though X3
 $headers = array
 (
 	"id" => array("caption"=>"#", "width"=>"32px", "align"=>"center"),
-	"pic" => array("caption"=>"Picture", "width"=>"64px"),
+	"pic" => array("caption"=>$piccap, "width"=>$picwid),
 	"name" => array("caption"=>"Name"),
 	"reg" => array("caption"=>"Registered on", "width"=>"130px"),
 	"posts" => array("caption"=>"Posts", "width"=>"50px"),
@@ -101,7 +117,9 @@ for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++)
 {
     $user[exp]=floor($user[exp]);
     $user[level]=calclvl($user[exp]);
-    $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id]&s=1 width=60 height=60>"
+    if($mini == '1') $picture=($user[minipic]?"<center><img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0 ></center> "
+                           :'<img src=img/_.png width=16 height=16>');
+    else $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id]&s=1 width=60 height=60>"
                            :'<img src=img/_.png width=60 height=60>');
 
 	$data[] = array
@@ -124,13 +142,14 @@ RenderTable($data, $headers);
 ";
   pagefooter();
 
-  function mlink($sort,$sex,$pow,$ppp,$page=1){
+  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini){
     return '<a href=memberlist.php?'
            .($sort   ?"sort=$sort":'')
            .($sex    ?"&sex=$sex":'')
            .($pow!=''?"&pow=$pow":'')
            .($ppp!=50?"&ppp=$ppp":'')
            .($page!=1?"&page=$page":'')
+           .($mini!=0?"&mini=$mini":'')
            .'>';
   }
 ?>

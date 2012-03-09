@@ -100,7 +100,7 @@ else {
   $piccap = "Picture";
   $picwid = "64px";
 }
-echo "$sex | $sort";
+
 //[KAWA] Rebuilt this to use my new renderer. Not sure what to do about the part above though X3
 $headers = array
 (

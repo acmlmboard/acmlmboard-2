@@ -92,7 +92,7 @@ echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini)."All Staff</a>
 ".      "<br>";
 
 //Need to replace a few things if $mini=1 -Emuz
-if($mini=='1'){
+if($mini==1){
   $piccap = "Minipic";
   $picwid = "16px";
 }
@@ -117,7 +117,7 @@ for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++)
 {
     $user[exp]=floor($user[exp]);
     $user[level]=calclvl($user[exp]);
-    if($mini == '1') $picture=($user[minipic]?"<center><img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0 ></center> "
+    if($mini==1) $picture=($user[minipic]?"<center><img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0 ></center> "
                            :'<img src=img/_.png width=16 height=16>');
     else $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id]&s=1 width=60 height=60>"
                            :'<img src=img/_.png width=60 height=60>');

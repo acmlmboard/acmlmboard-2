@@ -109,6 +109,9 @@
     if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !has_perm('consecutive-posts'))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
+    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-60) && has_perm('consecutive-posts'))  // Protection against double-submit
+      $err="    You must wait 60 seconds before posting consecutively.<br>
+".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
     if(($tdepth=tvalidate($message))!=0)
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>

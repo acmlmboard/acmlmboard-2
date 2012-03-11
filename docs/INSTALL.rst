@@ -9,7 +9,7 @@ These requirements are based on our development environment's specifications. Wh
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
 - MySQL5
-- PHP >=v2.3.0 (again old versions may work)
+- PHP >=v5.2.0 (again old versions may work, with some features disabled.)
 - PHP-GD
 - mcrypt and the module for PHP
 - phpmyadmin or DB tool of your choice.

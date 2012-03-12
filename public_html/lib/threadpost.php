@@ -20,8 +20,8 @@ function LoadBlocklayouts()
 
     $post[text]=$post[head].$post[text].$signsep[$loguser[signsep]].$post[sign];
 
-//   $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
-   $actsyn=0; //Disabled syndromes for now.
+   $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
+//   $actsyn=0; //Disabled syndromes for now.
    $post[utitle]= getrank($post[urankset],$post[uposts])
                   .((strlen(getrank($post[urankset],$post[uposts]))>=1)?"<br>":"")
                   .syndrome($actsyn)

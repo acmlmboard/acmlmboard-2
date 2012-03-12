@@ -12,7 +12,7 @@ function LoadBlocklayouts()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
 
     $post[head]=str_replace("<!--", "&lt;!--", $post[head]);
@@ -20,8 +20,10 @@ function LoadBlocklayouts()
 
     $post[text]=$post[head].$post[text].$signsep[$loguser[signsep]].$post[sign];
 
-   $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
-//   $actsyn=0; //Disabled syndromes for now.
+  //This allows config level enable or disable of syndromes.
+  if($syndromenable == 1) $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
+  else $actsyn=0;
+
    $post[utitle]= getrank($post[urankset],$post[uposts])
                   .((strlen(getrank($post[urankset],$post[uposts]))>=1)?"<br>":"")
                   .syndrome($actsyn)

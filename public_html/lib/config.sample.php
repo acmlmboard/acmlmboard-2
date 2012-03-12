@@ -44,6 +44,8 @@
  $avatardimys=60;
  $avatarsize=2*30720;
 
+ $syndromenable=1; //This variable controls the use of "Syndromes".  0 is off; 1 is on
+ 
    // xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula
   $spatulas = array(
   "Value1",

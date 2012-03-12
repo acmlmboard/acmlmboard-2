@@ -110,37 +110,32 @@
 ".    "  </tr>";
   $shoplist .= "</table>";
 
-  $badgers = "
-".    "  $L[TBL1] width=100%>
-".    "    $L[TRh]>
-".    "      $L[TDh] colspan=3>Badges</td></tr>";
+//New Badge List
   $q=$sql->query("SELECT * FROM tokens RIGHT JOIN usertokens ON tokens.id = usertokens.t WHERE usertokens.u='$uid' AND tokens.img != '' ORDER BY nc_prio DESC LIMIT 9");
-  if($sql->numrows($q) == 0)
-    $badgers.="
-".    "  $L[TR] class=\"sfont\">
-".    "    $L[TD1] colspan=3>None</td>
-".    "  </tr>";
-  else
-  {
+  if(!$sql->numrows($q) == 0) {
+    $badgelist = "
+  ".    "  $L[TBL1] width=100%>
+  ".    "    $L[TRh]>
+  ".    "      $L[TDh] colspan=3>Badges</td></tr>";
     $numbadges = 0;
-    $badgers.="$L[TR]>";
+    $badgelist.="$L[TR]>";
     while($badge = $sql -> fetch($q))
     {
-      $badgers.= "$L[TD2c]><img src=\"".$badge['img']."\" alt=\"\" title=\"".$badge['name']."\" /></td>";
+      $badgelist.= "$L[TD2c]><img src=\"".$badge['img']."\" alt=\"\" title=\"".$badge['name']."\" /></td>";
       $numbadges++;
       if ($numbadges % 3 == 0)
-        $badgers .= "</tr>$L[TR]>";
+        $badgelist .= "</tr>$L[TR]>";
     }
     while($numbadges < 9)
     {
-      $badgers.= "$L[TD1c]>&nbsp;</td>";
+      $badgelist.= "$L[TD1c]>&nbsp;</td>";
       $numbadges++;
       if ($numbadges % 3 == 0)
-        $badgers .= "</tr>$L[TR]>";
+        $badgelist .= "</tr>$L[TR]>";
     }
+    $badgelist .= "</table>    <br>";
   }
-  $badgers .= "</table>";
-
+//END badge list
 
 //[KAWA] Blocklayout ported from ABXD
 $qBlock = "select * from blockedlayouts where user=".$uid." and blockee=".$loguser['id'];
@@ -275,8 +270,7 @@ $logtzoff = $logtz->getOffset($now);
 ".      "  </td>
 ".      "  $L[TDn] width=15>&nbsp;</td>
 ".      "  $L[TDn] width=256 valign=top>
-".    "    $badgers
-".      "    <br>
+".    "    $badgelist
 ".      "    $L[TBL1]>
 ".      "      $L[TRh]>
 ".      "        $L[TDh] colspan=2>RPG status</td>

@@ -128,7 +128,7 @@
     }
     while($numbadges < 9)
     {
-      $badgelist.= "$L[TD1c]>&nbsp;</td>";
+      $badgelist.= "$L[TD1c]><img src=\"img/_.png\" width=\"25\" height=\"25\" /></td>";
       $numbadges++;
       if ($numbadges % 3 == 0)
         $badgelist .= "</tr>$L[TR]>";

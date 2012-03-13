@@ -141,6 +141,11 @@
       $msg=str_replace('-->','--></font>',$msg);
     }
     */
+    
+    if (has_badge_perm("show-html-comments")) {
+      $msg=str_replace('<!--','<font color="#66ff66">&lt;!--',$msg);
+      $msg=str_replace('-->','--></font>',$msg);
+    }
 
     return $msg;
   }

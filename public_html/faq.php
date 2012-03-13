@@ -193,8 +193,9 @@ print "$L[TBL1]>
 
 ".    "  $L[TRh]>$L[TDh]><a name='itemshop'>Items and the Item Shop
 ".    "  $L[TR]>$L[FAQTD]>Items are equipment that is actually a part of the RPG stat system. Like in an RPG equipment can boost your stats. An item shop allows you to use the RPG coins you get from posting to buy items and equipment. However, it doesn't currently matter what your stats are since they don't do anything right now, as said above.
-
-".    /*"  $L[TRh]>$L[TDh]><a name='syndrome'>Acmlmboard Syndromes
+";
+if($syndromenable == 1){
+print "  $L[TRh]>$L[TDh]><a name='syndrome'>Acmlmboard Syndromes
 ".    "  $L[TR]>$L[FAQTD]>The syndromes are an old Acmlmboard tradition carried over from the first version. Syndrome are triggered when you reach the amount of posts posted per day listed in he table below.
 ".    "  <br><table class=table cellspacing=0>
 	    <tr><td class='b h'>Posts</td><td class='b h'>Syndrome
@@ -209,9 +210,9 @@ print "$L[TBL1]>
 	    <tr><td class='b n1'>450</td><td class='b n2'>".syndrome(450)."
 	    <tr><td class='b n1'>500</td><td class='b n2'>".syndrome(500)."
 	    <tr><td class='b n1'>600</td><td class='b n2'>".syndrome(600)."
-	  </table>
-
-".    */"  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
+	  </table>";
+}
+print "  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
 ".    "  $L[TR]>$L[FAQTD]>amp tags (or &tags&) are tags that allow you to put some of for your profile and RPG stats in a post. They can be incorporated into a layout or used once in a post.
 ".    "  <br>	<table class=table cellspacing=0>
 	  <tr><td class='b h'>Tag</td><td class='b h'>Value

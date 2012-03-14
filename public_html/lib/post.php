@@ -142,8 +142,9 @@
     }
     */
     
-    if (has_badge_perm("show-html-comments")) {
-      $msg=str_replace('<!--','<font color="#66ff66">&lt;!--',$msg);
+    if ($htmlcomcolor = has_badge_perm("show-html-comments")) {
+      if ($htmlcomcolor == "1") $htmlcomcolor = "#66ff66";
+      $msg=str_replace('<!--','<font color="'.$htmlcomcolor.'">&lt;!--',$msg);
       $msg=str_replace('-->','--></font>',$msg);
     }
 

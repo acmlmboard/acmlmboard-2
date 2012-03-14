@@ -171,4 +171,35 @@ function get_irc_color($color,$bcolor){
 	return $irccolor;
 }
 
+function get_irc_style($style){
+	switch ($style)	{
+		case "bold":
+		case "2":
+		case "02":
+			$ircstyle = "\x02";
+			break;
+		case "fixed":
+		case "17":
+			$ircstyle = "\x17";
+			break;
+		case "reverse":
+		case "18":
+			$ircstyle = "\x18";
+			break;
+		case "italic":
+		case "29":
+			$ircstyle = "\x29";
+			break;
+		case "underline":
+		case "31":
+			$ircstyle = "\x31";
+			break;
+		case "normal":
+		case "15":
+		default:
+			$ircstyle = "\x15";
+			break;
+	}
+	return $ircstyle;
+}
 ?>

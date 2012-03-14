@@ -4,7 +4,7 @@
  * in config.php that will handle all the bot specific functions required. This will allow each board owner to
  * easily connect the board to their bot.
  */
-function get_irc_color($color){
+function get_irc_color($color,$bcolor){
 	switch ($color)	{
 		case "white":
 		case "00":
@@ -85,6 +85,90 @@ function get_irc_color($color){
 			$irccolor = "\x0316";
 			break;
 	}
+
+	switch ($bcolor)	{
+		case "white":
+		case "00":
+		case "0":
+			$irccolor .= ",00";
+			break;
+		case "black":
+		case "01":
+		case "1":
+			$irccolor .= ",01";
+			break;
+		case "blue":
+		case "02":
+		case "2":
+			$irccolor .= ",02";
+			break;
+		case "green":
+		case "03":
+		case "3":
+			$irccolor .= ",03";
+			break;
+		case "red":
+		case "04":
+		case "4":
+			$irccolor .= ",04";
+			break;
+		case "brown":
+		case "05":
+		case "5":
+			$irccolor .= ",05";
+			break;
+		case "purple":
+		case "06":
+		case "6":
+			$irccolor .= ",06";
+			break;
+		case "orange":
+		case "07":
+		case "7":
+			$irccolor .= ",07";
+			break;
+		case "yellow":
+		case "08":
+		case "8":
+			$irccolor .= ",08";
+			break;
+		case "lt_green":
+		case "09":
+		case "9":
+			$irccolor .= ",09";
+			break;
+		case "teal":
+		case "10":
+			$irccolor .= ",10";
+			break;
+		case "lt_cyan":
+		case "11":
+			$irccolor .= ",11";
+			break;
+		case "lt_blue":
+		case "12":
+			$irccolor .= ",12";
+			break;
+		case "pink":
+		case "13":
+			$irccolor .= ",13";
+			break;
+		case "grey":
+		case "14":
+			$irccolor .= ",14";
+			break;
+		case "lt_grey":
+		case "15":
+			$irccolor .= ",15";
+			break;
+		case "white2":
+		case "16":
+			$irccolor .= ",16";
+			break;
+		default:
+			break;
+	}
 	return $irccolor;
 }
+
 ?>

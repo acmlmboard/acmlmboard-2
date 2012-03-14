@@ -20,5 +20,6 @@
   require 'lib/graphics.php';
   require 'lib/post_radar.php';
   require 'lib/badges.php';
+  require 'lib/irc.php';
   
 ?>

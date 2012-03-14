@@ -80,8 +80,9 @@ function get_irc_color($color,$bcolor){
 		case "15":
 			$irccolor = "\x0315";
 			break;
-		case "white2":
+		case "normal":
 		case "16":
+		default:
 			$irccolor = "\x0316";
 			break;
 	}
@@ -180,26 +181,28 @@ function get_irc_style($style){
 			break;
 		case "fixed":
 		case "17":
-			$ircstyle = "\x17";
+			$ircstyle = "\x11";
 			break;
 		case "reverse":
 		case "18":
-			$ircstyle = "\x18";
+			$ircstyle = "\x12";
 			break;
 		case "italic":
 		case "29":
-			$ircstyle = "\x29";
+			$ircstyle = "\x1D";
 			break;
 		case "underline":
 		case "31":
-			$ircstyle = "\x31";
+			$ircstyle = "\x1F";
 			break;
 		case "normal":
 		case "15":
 		default:
-			$ircstyle = "\x15";
+			$ircstyle = "\x0F";
 			break;
 	}
 	return $ircstyle;
 }
+
+
 ?>

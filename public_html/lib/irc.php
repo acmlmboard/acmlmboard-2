@@ -203,6 +203,9 @@ function get_irc_style($style){
 	}
 	return $ircstyle;
 }
+function set_irc_style($fcolor,$bcolor,$style){
+	return get_irc_style($style).get_irc_color($fcolor,$bcolor);
+}
 
 function sendirc($text,$channel){
    global $config;

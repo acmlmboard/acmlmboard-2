@@ -347,7 +347,7 @@ else if ($announce) {
 }
 else {
      
-     sendirc(get_irc_color($irccolor[base])."New $type by ".get_irc_color($irccolor[name]).($user[displayname]?$user[displayname]:$user[name]).get_irc_color($irccolor[base])." in ".get_irc_color($irccolor[title]).$forum[title].get_irc_color($irccolor[base]).": ".get_irc_color($irccolor[name]).stripslashes($_POST[title]).get_irc_color($irccolor[base])." - ".get_irc_color($irccolor[url])."{boardurl}?$shortlink",$chan);
+     sendirc(set_irc_style($irccolor[base])."New $type by ".set_irc_style($irccolor[name]).($user[displayname]?$user[displayname]:$user[name]).set_irc_style($irccolor[base])." in ".set_irc_style($irccolor[title]).$forum[title].set_irc_style($irccolor[base]).": ".set_irc_style($irccolor[name]).stripslashes($_POST[title]).set_irc_style($irccolor[base])." - ".set_irc_style($irccolor[url])."{boardurl}?$shortlink",$chan);
 
 }
 

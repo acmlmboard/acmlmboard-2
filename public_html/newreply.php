@@ -283,14 +283,7 @@
    $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
 
 
-
-
-//    if ($thread[minpower]<=0) sendirc("\x0314New reply by \x0309$user[name]\x0314 (\x0303$thread[ftitle]\x0314: \x0307$thread[title]\x0314 (\x0303$tid\x0314) (+$c)) - \x0303{boardurl}?p=$pid");
-//    else sendirc("S\x0314New reply by \x0309$user[name]\x0314 (\x0303$thread[ftitle]\x0314: \x0307$thread[title]\x0314 (\x0303$tid\x0314) (+$c)) - \x0303{boardurl}?p=$pid");
-/*    if ($thread[minpower]<=0) sendirc("\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");
-    else sendirc("S\x036New reply by \x0313$user[name]\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid");*/
-
-sendirc("\x036New reply by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$tid\x034) (\x036+$c\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
+sendirc("{irccolor-base}New reply by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
 if($loguser[redirtype]==0){ //Classical Redirect
     print "$top - Submit

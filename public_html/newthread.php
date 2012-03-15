@@ -321,12 +321,7 @@ if (!$announce)   {
     $c = rand(250,750);
     if (!$announce) $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
 
-//    if($forum[minpower]<=0) sendirc("\x0314New thread by \x0309$user[name]\x0314 in \x0307". $forum[title] ."\x0314: \x0307".stripslashes($_POST[title])."\x0314 - \x0303{boardurl}?t=$tid");
-//    else sendirc("S\x0314New thread by \x0309$user[name]\x0314 in \x0307". $forum[title] ."\x0314: \x0307".stripslashes($_POST[title])."\x0314 - \x0303{boardurl}?t=$tid");
     $chan = $sql->resultp("SELECT chan FROM announcechans WHERE id=?",array($forum['announcechan_id']));
-
-/*    if(!$forum['private']) sendirc("\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");
-    else sendirc("S\x036New thread by \x0313$user[name]\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?t=$tid");*/
 
 if ($announce) {
   $viewlink = "thread.php?announce=".$forum['id'];
@@ -340,14 +335,14 @@ else {
 }
 
 if ($announce && $forum['id']==0) {
-     sendirc("\x036New $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
+     sendirc("{irccolor-base}New $type by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-url}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}{boardurl}?$shortlink{irccolor-base}",$chan);
 }
 else if ($announce) {
-     sendirc("\x036New forum $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);  
+     sendirc("{irccolor-base}New forum $type by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-base} in {irccolor-title}$forum[title]{irccolor-url}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}{boardurl}?$shortlink{irccolor-base}",$chan);  
 }
 else {
      
-     sendirc("{irccolor-base}New $type by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-base} in {irccolor-title}".$forum[title]."{irccolor-title}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}"."{boardurl}?$shortlink{irccolor-base}",$chan);
+     sendirc("{irccolor-base}New $type by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-base} in {irccolor-title}".$forum[title]."{irccolor-url}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}"."{boardurl}?$shortlink{irccolor-base}",$chan);
 
 }
 

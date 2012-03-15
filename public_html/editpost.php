@@ -224,14 +224,14 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 
     if ($thread[announce]) {
       if ($thread[forum] == 0) {
-    sendirc("\x036Announcement edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
+    sendirc("{irccolor-base}Announcement edited by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-url} ({irccolor-title}$thread[title]{irccolor-url}){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
       }
       else {
-    sendirc("\x036Announcement edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034)\x036 - \x034{boardurl}?p=$pid",$chan);
+    sendirc("{irccolor-base}Announcement edited by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url}){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
       }
     }
     else {
-    sendirc("\x036Post edited by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x034 (\x036$thread[ftitle]\x034: \x0313$thread[title]\x034 (\x036\x02\x02$thread[id]\x034))\x036 - \x034{boardurl}?p=$pid",$chan);
+    sendirc("{irccolor-base}Post edited by {irccolor-name}".($user[displayname]?$user[displayname]:$user[name])."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$thread[id]{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
     }
 if($loguser[redirtype]==0){ //Classical Redirect

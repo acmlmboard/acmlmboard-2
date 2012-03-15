@@ -26,18 +26,6 @@ if ($regdis[intval] == 1)
 	  die();
   }
 
-	//[KAWA] Lame. Personally, I'd be inclined to agree but objectively...
-	/*
-  if($ref == "http://jul.rustedlogic.net/register.php") {
-    header("Location: http://jul.rustedlogic.net/register.php?with+best+wishes+from+board2");
-    die();
-  }
-  */
-
-
-
-
-
   	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
   	$puzzleAnswer = 42;
   	//$puzzleAnswer = 9001;
@@ -218,10 +206,10 @@ if ($regdis[intval] == 1)
       //fancy colouring (if matches exist, make it red); references to make foreach not operate on copies
       $clist = array(&$m_hash, &$m_ip32, &$m_ip24, &$m_ip16);
       foreach($clist as &$c)
-        if($c>0) $c="\x0307$c"; else $c="\x0309$c";
+        if($c>0) $c="{irccolor-no}$c"; else $c="{irccolor-yes}$c";
 
-      sendirc("\x0314New user: \x0309".stripslashes($_POST[name])."\x0314 - \x0303{boardurl}?u=$id");
-      sendirc("S\x0314New user: \x0309".stripslashes($_POST[name])."\x0314 - \x0303{boardurl}?u=$id\x0314 - [".$userip." - \x033matches \x0314(\x033#\x0314,\x033/32\x0314,\x033/24\x0314,\x033/16\x0314): \x0314($m_hash\x0314,$m_ip32\x0314,$m_ip24\x0314,$m_ip16\x0314)]");
+      sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id");
+      sendirc("S{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id{irccolor-base} - [".$userip." - \x033matches {irccolor-base}(\x033#{irccolor-base},\x033/32{irccolor-base},\x033/24{irccolor-base},\x033/16{irccolor-base}){irccolor-url}: {irccolor-base}($m_hash{irccolor-base},$m_ip32{irccolor-base},$m_ip24{irccolor-base},$m_ip16{irccolor-base})]");
 
       $print="  You are now registered!<br>
 ".           "  ".redirect('login.php','login');

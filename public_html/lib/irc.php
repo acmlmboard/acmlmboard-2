@@ -218,6 +218,8 @@ function sendirc($text,$channel){
   $text=str_replace('{irccolor-name}',set_irc_style($irccolor[name]),$text);
   $text=str_replace('{irccolor-title}',set_irc_style($irccolor[title]),$text);
   $text=str_replace('{irccolor-url}',set_irc_style($irccolor[url]),$text);
+  $text=str_replace('{irccolor-yes}',set_irc_style($irccolor[yes]),$text);
+  $text=str_replace('{irccolor-no}',set_irc_style($irccolor[no]),$text);
 
   //Legacy method used a 'S' and 'P' as the first char in the IRC string to direct message to the staff and public channel
   //This will be removed upon completion of the conversion.
@@ -230,7 +232,7 @@ function sendirc($text,$channel){
     $text = substr($text,1);
   }
   elseif ($channel != null) $chan = $channel;
-  else $chan = $pubchan;
+  else $chan = $config[pubchan];
 
   send_to_ircbot($text,$chan);
 }

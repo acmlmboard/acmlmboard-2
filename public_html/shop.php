@@ -343,8 +343,8 @@ fclose($f);
           $sql->query("UPDATE usersrpg "
                      ."SET eq$item[cat]=$id, spent=spent-$pitem[coins]*0.6+$item[coins] "
                      ."WHERE id=$loguser[id]");
-          //sendirc("\x0309$user[name] \x0314is now equipped with \x0307$item[name]\x0314.");
-	  sendirc("\x0313".($user[displayname]?$user[displayname]:$user[name])." \x036is now equipped with \x0313$item[name]\x036.");
+
+	  sendirc("{irccolor-name}".($user[displayname]?$user[displayname]:$user[name])." {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
           print
               "$L[TBL1]>
 ".            "  $L[TD1c]>

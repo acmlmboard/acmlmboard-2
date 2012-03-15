@@ -87,7 +87,7 @@
     //AB-SPECIFIC
     if($loguser[power]>=1 && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
       $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator','Root User');
-      sendirc("S\x0314{$listpower[$loguser[power]]} \x0309".($loguser[displayname]?$loguser[displayname]:$loguser[name])."\x0314 changed IPs from \x0307$oldip\x0314 to \x0307$userip\x0314");
+      sendirc("S{irccolor-base}{$listpower[$loguser[power]]} {irccolor-name}".($loguser[displayname]?$loguser[displayname]:$loguser[name])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}");
     }
 
     $sql->query("UPDATE users SET lastview=".ctime().",ip='$userip',ipfwd='$userfwd',url='".(isssl()?'!':'').addslashes($url)."', ipbanned=0 WHERE id=$loguser[id]");
@@ -122,7 +122,7 @@
   if(($views+100)%1000000<=200){
 	  $sql->query("INSERT INTO views SET view=$views,user='$loguser[id]',time=".ctime());
     if(($views+10)%1000000<=20)
-      if(!$bot) sendirc("\x0314View \x0307$views\x0314 by ".($log?"\x0309".($loguser[displayname]?$loguser[displayname]:$loguser[name])."":"\x0305$userip")."\x0314");
+      if(!$bot) sendirc("{irccolor-base}View {irccolor-title}$views{irccolor-base} by ".($log?"{irccolor-name}".($loguser[displayname]?$loguser[displayname]:$loguser[name])."":"{irccolor-name}$userip")."{irccolor-base}");
   }
   
   $count[u]=$sql->resultq('SELECT COUNT(*) FROM users');

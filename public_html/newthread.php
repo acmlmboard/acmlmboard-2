@@ -346,7 +346,9 @@ else if ($announce) {
      sendirc("\x036New forum $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);  
 }
 else {
-     sendirc("\x036New $type by \x0313".($user[displayname]?$user[displayname]:$user[name])."\x036 in \x0313$forum[title]\x034: \x0313".stripslashes($_POST[title])."\x036 - \x034{boardurl}?$shortlink",$chan);
+     
+     sendirc(get_irc_color($irccolor[base])."New $type by ".get_irc_color($irccolor[name]).($user[displayname]?$user[displayname]:$user[name]).get_irc_color($irccolor[base])." in ".get_irc_color($irccolor[title]).$forum[title].get_irc_color($irccolor[base]).": ".get_irc_color($irccolor[name]).stripslashes($_POST[title]).get_irc_color($irccolor[base])." - ".get_irc_color($irccolor[url])."{boardurl}?$shortlink",$chan);
+
 }
 
 

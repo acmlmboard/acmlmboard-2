@@ -32,6 +32,12 @@
   $config[sslbase]= "https://$config[address]"; //Replace if you need fine control of the address
   $config[path]   = "/";
   $config[meta]   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
+  //This section configures the board's interaction with an IRC bot.
+  //You will need to build an interface to your board (see send_to_ircbot() below)
+  $config[disableirc] = true;
+  $config[ircbase] = "http://$config[address]$config[path]";
+  $config[staffchan] = '#pubchangoeshere PASSWORD';
+  $config[pubchan] = '#pubchangoeshere PASSWORD';
 
 //The following are optional values you can change to personalize your board
   $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
@@ -53,7 +59,11 @@
   );
   $spaturand  = array_rand($spatulas);
 
-  function sendirc($text){
-	//provide code for post reporting here
+  function send_to_ircbot($text,$chan){
+    /* While the board does some pre-processing, there is no standard for reporting to IRC from Acmlmboard. This
+     * function revives an IRC formatted string (currently includes colors, bold, underline etc) and an output 
+     * channel. $chan also includes any channel passwords and this may soon be passed separately. */
+	 
+   //provide code for post reporting here
   }
 ?>

@@ -204,5 +204,30 @@ function get_irc_style($style){
 	return $ircstyle;
 }
 
+function sendirc($text,$channel){
+   global $config;
+
+   if($config[disableirc]) return false;
+  //Legacy method to replace the board address. replaces {boardurl} with the link to the board thread/post.
+  //This will be removed upon completion of the conversion.
+  $text=str_replace('{boardurl}',$config[ircbase],$text);
+  //Legacy method used a 'S' and 'P' as the first char in the IRC string to direct message to the staff and public channel
+  //This will be removed upon completion of the conversion.
+  if ($text[0] == 'S') {
+    $chan = $config[staffchan];
+    $text = substr($text,1);
+  }
+  elseif ($text[0] == 'P') {
+    $chan = $config[pubchan];
+    $text = substr($text,1);
+  }
+  elseif ($channel != null) $chan = $channel;
+  else $chan = $pubchan;
+
+  $text=str_replace("\n","",$text);
+  $text=str_replace("\r","",$text);
+
+  send_to_ircbot($text,$chan);
+}
 
 ?>

@@ -210,14 +210,14 @@ function set_irc_style($fcolor,$bcolor,$style){
 function sendirc($text,$channel){
    global $config, $irccolor;
 
-   if($config[disableirc]) return false;
+   if(!$config[enableirc]) return false;
   //str_replace method to replace the board address. replaces {boardurl} with the link to the board thread/post.
   $text=str_replace('{boardurl}',$config[ircbase],$text);
   //str_replace method to fill in color codes
-  $text=str_replace('{ircolor-base}',set_irc_style($irccolor[base]),$text);
-  $text=str_replace('{ircolor-name}',set_irc_style($irccolor[name]),$text);
-  $text=str_replace('{ircolor-title}',set_irc_style($irccolor[title]),$text);
-  $text=str_replace('{ircolor-url}',set_irc_style($irccolor[url]),$text);
+  $text=str_replace('{irccolor-base}',set_irc_style($irccolor[base]),$text);
+  $text=str_replace('{irccolor-name}',set_irc_style($irccolor[name]),$text);
+  $text=str_replace('{irccolor-title}',set_irc_style($irccolor[title]),$text);
+  $text=str_replace('{irccolor-url}',set_irc_style($irccolor[url]),$text);
 
   //Legacy method used a 'S' and 'P' as the first char in the IRC string to direct message to the staff and public channel
   //This will be removed upon completion of the conversion.

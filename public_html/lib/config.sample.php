@@ -34,7 +34,7 @@
   $config[meta]   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
-  $config[disableirc] = true;
+  $config[enableirc] = false; //Enable to send messages to IRC 
   $config[ircbase] = "http://$config[address]$config[path]";
   $config[staffchan] = '#pubchangoeshere PASSWORD';
   $config[pubchan] = '#pubchangoeshere PASSWORD';

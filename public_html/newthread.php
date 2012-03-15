@@ -347,7 +347,7 @@ else if ($announce) {
 }
 else {
      
-     sendirc(set_irc_style($irccolor[base])."New $type by ".set_irc_style($irccolor[name]).($user[displayname]?$user[displayname]:$user[name]).set_irc_style($irccolor[base])." in ".set_irc_style($irccolor[title]).$forum[title].set_irc_style($irccolor[base]).": ".set_irc_style($irccolor[name]).stripslashes($_POST[title]).set_irc_style($irccolor[base])." - ".set_irc_style($irccolor[url])."{boardurl}?$shortlink",$chan);
+     sendirc("{ircolor-base}New $type by {ircolor-name}".($user[displayname]?$user[displayname]:$user[name])."{ircolor-base} in {ircolor-title}".$forum[title]."{ircolor-title}: {ircolor-name}".stripslashes($_POST[title])."{ircolor-base} - {ircolor-url}"."{boardurl}?$shortlink{ircolor-base}",$chan);
 
 }
 

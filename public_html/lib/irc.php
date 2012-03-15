@@ -208,12 +208,17 @@ function set_irc_style($fcolor,$bcolor,$style){
 }
 
 function sendirc($text,$channel){
-   global $config;
+   global $config, $irccolor;
 
    if($config[disableirc]) return false;
-  //Legacy method to replace the board address. replaces {boardurl} with the link to the board thread/post.
-  //This will be removed upon completion of the conversion.
+  //str_replace method to replace the board address. replaces {boardurl} with the link to the board thread/post.
   $text=str_replace('{boardurl}',$config[ircbase],$text);
+  //str_replace method to fill in color codes
+  $text=str_replace('{ircolor-base}',set_irc_style($irccolor[base]),$text);
+  $text=str_replace('{ircolor-name}',set_irc_style($irccolor[name]),$text);
+  $text=str_replace('{ircolor-title}',set_irc_style($irccolor[title]),$text);
+  $text=str_replace('{ircolor-url}',set_irc_style($irccolor[url]),$text);
+
   //Legacy method used a 'S' and 'P' as the first char in the IRC string to direct message to the staff and public channel
   //This will be removed upon completion of the conversion.
   if ($text[0] == 'S') {
@@ -226,9 +231,6 @@ function sendirc($text,$channel){
   }
   elseif ($channel != null) $chan = $channel;
   else $chan = $pubchan;
-
-  $text=str_replace("\n","",$text);
-  $text=str_replace("\r","",$text);
 
   send_to_ircbot($text,$chan);
 }

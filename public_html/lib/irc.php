@@ -181,22 +181,27 @@ function get_irc_style($style){
 			break;
 		case "fixed":
 		case "17":
+		case "11":
 			$ircstyle = "\x11";
 			break;
 		case "reverse":
 		case "18":
+		case "12":
 			$ircstyle = "\x12";
 			break;
 		case "italic":
 		case "29":
+		case "1D":
 			$ircstyle = "\x1D";
 			break;
 		case "underline":
 		case "31":
+		case "1F":
 			$ircstyle = "\x1F";
 			break;
 		case "normal":
 		case "15":
+		case "0F":
 		default:
 			$ircstyle = "\x0F";
 			break;
@@ -221,16 +226,6 @@ function sendirc($text,$channel){
   $text=str_replace('{irccolor-yes}',set_irc_style($irccolor[yes]),$text);
   $text=str_replace('{irccolor-no}',set_irc_style($irccolor[no]),$text);
 
-  //Legacy method used a 'S' and 'P' as the first char in the IRC string to direct message to the staff and public channel
-  //This will be removed upon completion of the conversion.
-  if ($text[0] == 'S') {
-    $chan = $config[staffchan];
-    $text = substr($text,1);
-  }
-  elseif ($text[0] == 'P') {
-    $chan = $config[pubchan];
-    $text = substr($text,1);
-  }
   elseif ($channel != null) $chan = $channel;
   else $chan = $config[pubchan];
 

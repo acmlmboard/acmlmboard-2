@@ -209,7 +209,7 @@ if ($regdis[intval] == 1)
         if($c>0) $c="{irccolor-no}$c"; else $c="{irccolor-yes}$c";
 
       sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id");
-      sendirc("S{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id{irccolor-base} - [".$userip." - \x033matches {irccolor-base}(\x033#{irccolor-base},\x033/32{irccolor-base},\x033/24{irccolor-base},\x033/16{irccolor-base}){irccolor-url}: {irccolor-base}($m_hash{irccolor-base},$m_ip32{irccolor-base},$m_ip24{irccolor-base},$m_ip16{irccolor-base})]");
+      sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id{irccolor-base} - [".$userip." - \x033matches {irccolor-base}(\x033#{irccolor-base},\x033/32{irccolor-base},\x033/24{irccolor-base},\x033/16{irccolor-base}){irccolor-url}: {irccolor-base}($m_hash{irccolor-base},$m_ip32{irccolor-base},$m_ip24{irccolor-base},$m_ip16{irccolor-base})]",$config[staffchan]);
 
       $print="  You are now registered!<br>
 ".           "  ".redirect('login.php','login');

@@ -36,11 +36,20 @@
   //You will need to build an interface to your board (see send_to_ircbot() below)
   $config[enableirc] = false; //Enable to send messages to IRC 
   $config[ircbase] = "http://$config[address]$config[path]";
-  $config[staffchan] = '#pubchangoeshere PASSWORD';
+  $config[staffchan] = '#staffchangoeshere PASSWORD';
   $config[pubchan] = '#pubchangoeshere PASSWORD';
 
 //The following are optional values you can change to personalize your board
   $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
+
+//IRC Color Defines. Color code numbers, and color names work here.
+  $irccolor[base] = "grey"; //default color for the irc output.
+  $irccolor[name] = "lt_green"; //used most often for usernames and other things that need emphasis.
+  $irccolor[title] = "orange"; // used for thread titles
+  $irccolor[url] = "green"; //used for URLs and for some accents
+
+  $irccolor[yes] = "green"; //used where you want a clear color for yes/on/good/etc
+  $irccolor[no] = "red"; //used where you want a clear color for no/off/bad/etc
 
 // User GFX limits
  $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize

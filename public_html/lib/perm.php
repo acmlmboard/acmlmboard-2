@@ -532,6 +532,15 @@ function has_perm($permid) {
 	return false;
 }
 
+function has_perm_revoked($permid) {
+	global $logpermset;
+	foreach ($logpermset as $k => $v) {
+		if ($v['id'] == 'no-restrictions') return false;
+		if ($permid == $v['id'] && $v['revoke']) return true;
+	}
+	return false;
+}
+
 function has_perm_with_bindvalue($permid,$bindvalue) {
 	global $logpermset;
 	foreach ($logpermset as $k => $v) {

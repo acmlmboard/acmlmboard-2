@@ -149,7 +149,7 @@ if (has_perm("edit-users"))
   print
            catheader('Appearance')."
 ".           fieldrow('Rankset'   ,fieldselect('rankset', $user['rankset'], ranklist()))."
-".           ((has_perm('edit-title') || checkctitle()) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
+".           ((checkctitle()) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
 ".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
 ";

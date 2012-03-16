@@ -25,10 +25,13 @@
 
   function checkctitle(){
     global $loguser;
-    if(!$loguser[id]) return 0;
-    if($loguser[posts]>=100) return 1; //1200
-    if($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return 1; //800, 200
-    return 0;
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('edit-title')) return false;
+    if (has_perm('edit-title')) return true;
+    if($loguser[posts]>=100) return true; //1200
+    if($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true; //800, 200
+    
+    return false;
   }
 
   function getrank($set,$posts){

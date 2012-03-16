@@ -226,7 +226,7 @@ function sendirc($text,$channel){
   $text=str_replace('{irccolor-yes}',set_irc_style($irccolor[yes]),$text);
   $text=str_replace('{irccolor-no}',set_irc_style($irccolor[no]),$text);
 
-  elseif ($channel != null) $chan = $channel;
+  if ($channel != null) $chan = $channel;
   else $chan = $config[pubchan];
 
   send_to_ircbot($text,$chan);

@@ -115,7 +115,7 @@
           print "<br>- Bad image format";
         }
         //Save the mood avatar
-        $sql->query("INSERT INTO mood (id,user,url,local,label) VALUES ($avatarid, ".$targetuserid." ,'$_POST[url]', $islocal,'$_POST[label]') ON DUPLICATE KEY UPDATE url='$_POST[url]', local=$islocal, label='$_POST[label]'");
+        $sql->query("INSERT INTO mood (id,user,url,local,label) VALUES ($avatarid, ".$targetuserid." ,'".addslashes($_POST[url])."', $islocal,'".addslashes($_POST[label])."') ON DUPLICATE KEY UPDATE url='".addslashes($_POST[url])."', local=$islocal, label='".addslashes($_POST[label])."'");
         //and give it focus
         $id = $avatarid;
       }else

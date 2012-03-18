@@ -93,7 +93,7 @@
   $posts=0;
   $threads=0;
   $views=0;
-  $stats=$sql->query('SELECT * FROM dailystats ORDER BY views');
+  $stats=$sql->query('SELECT * FROM dailystats');
   while($day=$sql->fetch($stats)){
     print
         "  $L[TRc]>

@@ -211,6 +211,15 @@ function get_irc_style($style){
 function set_irc_style($fcolor,$bcolor,$style){
 	return get_irc_style($style).get_irc_color($fcolor,$bcolor);
 }
+function get_irc_displayname(){
+	global $loguser, $sql;
+	$q = $sql->fetchp("SELECT `char` FROM annoucenickprefix WHERE group_id=$loguser[group_id]");
+    $group_prefix = $q[char];
+    if ($q[char]) $name = $group_prefix;
+	
+	$name .= ($loguser[displayname]?$loguser[displayname]:$loguser[name]);
+	return ($name);
+}
 
 function sendirc($text,$channel){
    global $config, $irccolor;

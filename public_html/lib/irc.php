@@ -213,9 +213,15 @@ function set_irc_style($fcolor,$bcolor,$style){
 }
 function get_irc_displayname(){
 	global $loguser, $sql;
-	$q = $sql->fetchp("SELECT `char` FROM annoucenickprefix WHERE group_id=$loguser[group_id]");
+	$q = $sql->fetchp("SELECT `char`,`color` FROM annoucenickprefix WHERE group_id=$loguser[group_id]");
     $group_prefix = $q[char];
-    if ($q[char]) $name = $group_prefix;
+    $group_color = $q[color];
+    if ($group_prefix) {
+    	$name = get_irc_style("bold");
+    	if ($group_color) $name .=get_irc_color($group_color);
+    	$name .= "$group_prefix".get_irc_style("normal");
+    	$name .="{irccolor-name}";
+    }
 	
 	$name .= ($loguser[displayname]?$loguser[displayname]:$loguser[name]);
 	return ($name);

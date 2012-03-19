@@ -3,16 +3,6 @@
 
   header ('Content-type: text/html; charset=utf-8');
 
-  // SamuraiHax
-  if ($_COOKIE['dumb']) die();
-
-  // more hax
-  if(strpos($HTTP_REFERER,"www.stumbleupon.com") && $PHP_SELF!="/board/index.php") {
-    header('Location: index.php');
-    die();
-  }
-
-
   $userip=$REMOTE_ADDR;
   $userfwd=addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
 
@@ -181,8 +171,6 @@
     $timezone = new DateTimeZone($loguser['timezone']);
     $tzoff = $timezone->getOffset(new DateTime("now"));
     $themefile.="?tz=$tzoff&minover=$_GET[minover]";
-    //if($theme[id]==19) $boardlogo="<img src='theme/brightblue/diet.jpg'>";
-    //if($theme[id]==27) $boardlogo="<img src='theme/gotwood/logo.png'>";
 
     if($pagetitle)
       $pagetitle.=' - ';
@@ -285,9 +273,7 @@
 
     if($totalpms>0)
        $lastmsg = "";
-//      $lastmsg="<br>
-//".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
-        
+       
     else
       $lastmsg='';
 if (has_perm('view-own-pms')) {

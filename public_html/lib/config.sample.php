@@ -38,6 +38,8 @@
   $config[ircbase] = "http://$config[address]$config[path]";
   $config[staffchan] = '#staffchangoeshere PASSWORD';
   $config[pubchan] = '#pubchangoeshere PASSWORD';
+  $config[ircnickprefix] = true; //Use an IRC prefix when sending messages to the IRC channel.
+  $config[ircnickcolor] = false; //Use the nick color for the whole nick on IRC.
 
 //The following are optional values you can change to personalize your board
   $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2

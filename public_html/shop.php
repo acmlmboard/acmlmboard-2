@@ -344,7 +344,7 @@ fclose($f);
                      ."SET eq$item[cat]=$id, spent=spent-$pitem[coins]*0.6+$item[coins] "
                      ."WHERE id=$loguser[id]");
 
-	  sendirc("{irccolor-name}".($user[displayname]?$user[displayname]:$user[name])." {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
+	  sendirc("{irccolor-name}".get_irc_displayname()." {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
           print
               "$L[TBL1]>
 ".            "  $L[TD1c]>

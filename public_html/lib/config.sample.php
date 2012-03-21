@@ -40,6 +40,8 @@
   $config[pubchan] = '#pubchangoeshere PASSWORD';
   $config[ircnickprefix] = true; //Use an IRC prefix when sending messages to the IRC channel.
   $config[ircnickcolor] = false; //Use the nick color for the whole nick on IRC.
+  $config[ircnicksex] = false; //Use a Color to reflect each user's Sex Color. N/A Defaults nothing.
+
 
 //The following are optional values you can change to personalize your board
   $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
@@ -52,6 +54,8 @@
 
   $irccolor[yes] = "green"; //used where you want a clear color for yes/on/good/etc
   $irccolor[no] = "red"; //used where you want a clear color for no/off/bad/etc
+  $irccolor[male] = "lt_blue"; //Male Nick Color
+  $irccolor[female] = "pink"; //Female Nick Color
 
 // User GFX limits
  $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize

@@ -232,6 +232,18 @@ function get_irc_displayname(){
 	return ($name);
 }
 
+function get_irc_usercolor(){
+	//Note: This should/will be used to return more than just the logged in user. 
+	global $loguser, $config, $sql;
+	$q = $sql->fetchp("SELECT `color` FROM annoucenickprefix WHERE group_id=$loguser[group_id]");
+    $group_color = $q[color];
+    
+    if ($group_color){
+		return get_irc_color($group_color);
+    }
+    else return false;
+}
+
 function sendirc($text,$channel){
    global $config, $irccolor;
 

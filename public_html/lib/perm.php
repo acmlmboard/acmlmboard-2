@@ -367,6 +367,16 @@ function grouplink($uid) {
 	else return "";
 }
 
+function grouptitle($uid) {
+	global $sql;
+		
+	$gid = gid_for_user($uid);
+
+	$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?",array($gid));
+	if (!$group['title']) return "";
+	else return $group['title'];
+}
+
 
 function forum_not_found() {
 	  global $L;

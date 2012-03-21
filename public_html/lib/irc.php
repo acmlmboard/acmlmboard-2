@@ -244,6 +244,14 @@ function get_irc_usercolor(){
     else return false;
 }
 
+function get_irc_groupname($gid) {
+	global $sql;
+
+	$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?",array($gid));
+	if (!$group['title']) return "";
+	else return get_irc_usercolor().$group['title'];
+}
+
 function sendirc($text,$channel){
    global $config, $irccolor;
 

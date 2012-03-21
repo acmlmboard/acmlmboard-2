@@ -77,7 +77,7 @@
     //AB-SPECIFIC
     if($loguser[power]>=1 && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
       $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator','Root User');
-      sendirc("{irccolor-base}".get_irc_usercolor().grouptitle($loguser[group_id])." {irccolor-name}".($loguser[displayname]?$loguser[displayname]:$loguser[name])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}",$config[staffchan]);
+      sendirc("{irccolor-base}".get_irc_groupname($loguser[group_id])." {irccolor-name}".($loguser[displayname]?$loguser[displayname]:$loguser[name])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}",$config[staffchan]);
     }
 
     $sql->query("UPDATE users SET lastview=".ctime().",ip='$userip',ipfwd='$userfwd',url='".(isssl()?'!':'').addslashes($url)."', ipbanned=0 WHERE id=$loguser[id]");

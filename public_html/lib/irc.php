@@ -223,7 +223,7 @@ function get_irc_displayname(){
 
     if ($group_prefix && $config[ircnickprefix]) {
     	$name = get_irc_style("bold");
-    	if ($group_color) $name .=get_irc_color($group_color,0);
+    	if ($group_color) $name .=get_irc_color($group_color,"");
     	$name .= "$group_prefix".get_irc_style("normal");
     	$name .="{irccolor-name}";
     }

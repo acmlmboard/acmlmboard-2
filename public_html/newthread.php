@@ -208,6 +208,10 @@ if($act!="Submit" || $loguser[redirtype]==0){
       $_POST[question]=stripslashes($_POST[question]);
       $numopts=$_POST[numopts];
       checknumeric($numopts);
+      $pollprev="<br>$L[TBL1]>
+".        "  $L[TR1]>
+".        "    $L[TD1] colspan=2>".htmlval($_POST[question])."
+";
       $pollin=
           "$L[TR]>
 ".        "  $L[TD1c]>Poll question:</td>
@@ -229,15 +233,18 @@ if($act!="Submit" || $loguser[redirtype]==0){
                                 ." - RGB color: $L[INPt]=r$i size=3 maxlength=3 value=\"".htmlval($_POST["r$i"])."\">"
                                               ."$L[INPt]=g$i size=3 maxlength=3 value=\"".htmlval($_POST["g$i"])."\">"
                                               ."$L[INPt]=b$i size=3 maxlength=3 value=\"".htmlval($_POST["b$i"])."\">";
+	 $pollprev.="$L[TR2]>$L[TD2]>".htmlval($_POST["opt$i"])." $h$L[TD3]><img src=gfx/bargraph.php?z=1&n=1&r=".htmlval($_POST["r$i"])."&g=".htmlval($_POST["g$i"])."&b=".htmlval($_POST["b$i"]).">";
+
       }
       $pollin.="$L[TR]>
 ".             "  $L[TD1c]>Options:</td>
 ".             "  $L[TD2]>$L[INPc]=multivote ".($_POST[multivote]?"checked":"")." value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable ".($_POST[changeable]?"checked":"")." value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
+$pollprev.="$L[TBLend]";
     }
 
     print "$top - Preview
-".        "<br>
+".        "$pollprev<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Post preview

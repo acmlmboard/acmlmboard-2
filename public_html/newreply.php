@@ -144,7 +144,7 @@
   //does the user have reading access to the quoted post?
   if(!can_view_forum(getforumbythread($post[thread]))) $post[text]="";
 
-  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]$post[text][/quote]";
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".str_replace("&","&amp",$post[text])."[/quote]";
   }
 
   //spambot logging [blackhole89]

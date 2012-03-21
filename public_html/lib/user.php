@@ -95,7 +95,6 @@
 
  function userlink($user,$u=''){
     global $loguser;
-
     if(!$user[$u.name])
       $user[$u.name]='&nbsp;';
 

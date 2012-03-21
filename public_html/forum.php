@@ -112,7 +112,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     checknumeric($uid);
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$uid");
 
-    pageheader("Threads by $user[name]");
+    pageheader("Threads by ".($user[displayname] ? $user[displayname] : $user[name]));
 
     $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
@@ -140,7 +140,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
                                  .  "AND f.id IN ".forums_with_view_perm()." ");
     $topbot=
         "$L[TBL] width=100%>
-".      "  $L[TDn]><a href=./>Main</a> - Threads by $user[name]</td>
+".      "  $L[TDn]><a href=./>Main</a> - Threads by ".($user[displayname] ? $user[displayname] : $user[name])."</td>
 ".      "$L[TBLend]
 ";
   }elseif($time=$_GET[time]){

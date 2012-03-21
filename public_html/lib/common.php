@@ -112,7 +112,7 @@
   if(($views+100)%1000000<=200){
 	  $sql->query("INSERT INTO views SET view=$views,user='$loguser[id]',time=".ctime());
     if(($views+10)%1000000<=20)
-      if(!$bot) sendirc("{irccolor-base}View {irccolor-title}$views{irccolor-base} by ".($log?"{irccolor-name}".($loguser[displayname]?$loguser[displayname]:$loguser[name])."":"{irccolor-name}$userip")."{irccolor-base}");
+      if(!$bot) sendirc("{irccolor-base}View {irccolor-title}$views{irccolor-base} by ".($log?"{irccolor-name}".get_irc_displayname()."":"{irccolor-name}$userip")."{irccolor-base}");
   }
   
   $count[u]=$sql->resultq('SELECT COUNT(*) FROM users');

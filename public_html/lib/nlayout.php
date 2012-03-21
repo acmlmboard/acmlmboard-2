@@ -344,7 +344,7 @@ function RenderPageBar($pagebar) {
     if ($ancs) {
       $announcement['title'] = $ancs['title'];
       $announcement['date'] = $ancs['lastdate'];
-      $announcement['user'] = $sql->fetchp("SELECT id,name,sex,group_id FROM users WHERE id=?",array($ancs['user']));
+      $announcement['user'] = $sql->fetchp("SELECT id,name,sex,group_id,displayname FROM users WHERE id=?",array($ancs['user']));
     }
 
     if (isset($announcement['title']) || can_create_forum_announcements($announcefid)) {

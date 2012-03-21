@@ -75,8 +75,7 @@
   $sql->query("DELETE FROM guests WHERE ip='$userip' OR date<".(ctime()-300));
    if($log) {
     //AB-SPECIFIC
-    if($loguser[power]>=1 && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
-      $listpower=array(-1 => 'Banned User',0 => 'Normal User','Local Moderator','Global Moderator','Administrator','Root User');
+    if(has_perm('track-ip-change') && ($userip != ($oldip=$sql->resultq("SELECT ip FROM users WHERE id=$loguser[id]")))) {
       sendirc("{irccolor-base}".get_irc_groupname($loguser[group_id])." {irccolor-name}".($loguser[displayname]?$loguser[displayname]:$loguser[name])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}",$config[staffchan]);
     }
 
@@ -548,7 +547,7 @@ echo "
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (3/14/2012)<br>
+".        "  Acmlmboard v2.5 (3/22/2012)<br>
 ".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

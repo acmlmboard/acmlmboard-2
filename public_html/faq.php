@@ -74,8 +74,9 @@ print "$L[TBL1]>
 ".    "    <a href=\"#css\">What are we not allowed to do in our custom CSS layouts?</a><br>
 ".    "    <a href=\"#title\">How do I get a custom title?</a><br>
 ".    "    <a href=\"#rpg\">RPG Stats</a><br>
-".    "    <a href=\"#itemshop\">Items and the Item Shop</a><br>
-".    "    <a href=\"#amps\">&Tags& (Amp tags)</a><br>
+".    "    <a href=\"#itemshop\">Items and the Item Shop</a><br>";
+if($syndromenable == 1) print "    <a href=\"#syndrome\">Acmlmboard Syndromes</a><br>";
+print     "    <a href=\"#amps\">&Tags& (Amp tags)</a><br>
 ".    "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
 ".    "    <a href=\"#private\">Are private messages supported?</a><br>
 ".    "    <a href=\"#search\">Search Feature</a><br>

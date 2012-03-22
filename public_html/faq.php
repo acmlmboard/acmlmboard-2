@@ -77,7 +77,8 @@ print "$L[TBL1]>
 ".    "    <a href=\"#itemshop\">Items and the Item Shop</a><br>";
 if($syndromenable == 1) print "    <a href=\"#syndrome\">Acmlmboard Syndromes</a><br>";
 print     "    <a href=\"#amps\">&Tags& (Amp tags)</a><br>
-".    "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
+"/*.    "    <a href=\"#dispname\">Display Name System</a><br>
+"*/.    "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
 ".    "    <a href=\"#private\">Are private messages supported?</a><br>
 ".    "    <a href=\"#search\">Search Feature</a><br>
 ".    "    <a href=\"#calendar\">What is the calendar for?</a><br>

@@ -1,306 +1,320 @@
 -- phpMyAdmin SQL Dump
--- version 2.9.0.1
+-- version 3.4.8
 -- http://www.phpmyadmin.net
--- 
+--
 -- Host: localhost
--- Generation Time: Mar 04, 2012 at 04:29 PM
--- Server version: 5.0.24
--- PHP Version: 5.1.6
--- 
--- Database: `kafuka`
--- 
+-- Generation Time: Mar 22, 2012 at 12:27 PM
+-- Server version: 5.5.19
+-- PHP Version: 5.3.8
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `aboardisyou`
+--
 
 -- --------------------------------------------------------
 
--- 
+--
 -- Table structure for table `robots`
--- 
+--
 
-CREATE TABLE `robots` (
-  `bot_name` varchar(100) collate latin1_general_ci NOT NULL,
-  `bot_agent` varchar(100) collate latin1_general_ci NOT NULL
+CREATE TABLE IF NOT EXISTS `robots` (
+  `bot_name` varchar(100) COLLATE latin1_general_ci NOT NULL,
+  `bot_agent` varchar(100) COLLATE latin1_general_ci NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
--- 
+--
 -- Dumping data for table `robots`
--- 
+--
 
-INSERT INTO `robots` VALUES ('ABCdatos BotLink', 'ABCdatos BotLink/1.0.2');
-INSERT INTO `robots` VALUES ('Ahoy! The Homepage Finder', 'ahoy');
-INSERT INTO `robots` VALUES ('Alkaline', 'AlkalineBOT');
-INSERT INTO `robots` VALUES ('Anthill', 'AnthillV1.1');
-INSERT INTO `robots` VALUES ('Walhello appie', 'appie/1.1');
-INSERT INTO `robots` VALUES ('Arachnophilia', 'Arachnophilia');
-INSERT INTO `robots` VALUES ('Arale', 'arale');
-INSERT INTO `robots` VALUES ('Araneo', 'Araneo/0.7');
-INSERT INTO `robots` VALUES ('AraybOt', 'AraybOt/1.0');
-INSERT INTO `robots` VALUES ('ArchitextSpider', 'ArchitextSpider');
-INSERT INTO `robots` VALUES ('arks', 'arks/1.0');
-INSERT INTO `robots` VALUES ('ASpider (Associative Spider)', 'ASpider/0.09');
-INSERT INTO `robots` VALUES ('ATN Worldwide', 'ATN_Worldwide');
-INSERT INTO `robots` VALUES ('Atomz.com Search Robot', 'Atomz/1.0');
-INSERT INTO `robots` VALUES ('AURESYS', 'AURESYS/1.0');
-INSERT INTO `robots` VALUES ('BackRub', 'BackRub');
-INSERT INTO `robots` VALUES ('robot-id: bayspider', 'BaySpider');
-INSERT INTO `robots` VALUES ('BBot', 'bbot/0.100');
-INSERT INTO `robots` VALUES ('Big Brother', 'Big Brother');
-INSERT INTO `robots` VALUES ('Bjaaland', 'Bjaaland/0.5');
-INSERT INTO `robots` VALUES ('BlackWidow', 'BlackWidow');
-INSERT INTO `robots` VALUES ('Die Blinde Kuh', 'Die Blinde Kuh');
-INSERT INTO `robots` VALUES ('Bloodhound', 'Ukonline');
-INSERT INTO `robots` VALUES ('Borg-Bot', 'borg-bot/0.9');
-INSERT INTO `robots` VALUES ('BoxSeaBot', 'BoxSeaBot/0.5 (http://boxsea.com/crawler)');
-INSERT INTO `robots` VALUES ('bright.net caching robot', 'Mozilla/3.01 (compatible;)');
-INSERT INTO `robots` VALUES ('BSpider', 'BSpider/1.0 libwww-perl/0.40');
-INSERT INTO `robots` VALUES ('CACTVS Chemistry Spider', 'CACTVS Chemistry Spider');
-INSERT INTO `robots` VALUES ('Calif', 'Calif/0.6');
-INSERT INTO `robots` VALUES ('Digimarc Marcspider/CGI', 'Digimarc CGIReader/1.0');
-INSERT INTO `robots` VALUES ('Checkbot', 'Checkbot/x.xx LWP/5.x');
-INSERT INTO `robots` VALUES ('ChristCrawler.com', 'ChristCrawler');
-INSERT INTO `robots` VALUES ('cIeNcIaFiCcIoN.nEt', 'cIeNcIaFiCcIoN.nEt Spider');
-INSERT INTO `robots` VALUES ('CMC/0.01', 'CMC/0.01');
-INSERT INTO `robots` VALUES ('Collective', 'LWP');
-INSERT INTO `robots` VALUES ('Combine System', 'combine/0.0');
-INSERT INTO `robots` VALUES ('ConfuzzledBot', 'Confuzzledbot/X.X');
-INSERT INTO `robots` VALUES ('CoolBot', 'CoolBot');
-INSERT INTO `robots` VALUES ('Web Core / Roots', 'root/0.1');
-INSERT INTO `robots` VALUES ('XYLEME Robot', 'cosmos/0.3');
-INSERT INTO `robots` VALUES ('Internet Cruiser Robot', 'Internet Cruiser Robot/2.1');
-INSERT INTO `robots` VALUES ('Cusco', 'Cusco/3.2');
-INSERT INTO `robots` VALUES ('CyberSpyder Link Test', 'CyberSpyder/2.1');
-INSERT INTO `robots` VALUES ('CydralSpider', 'CydralSpider/');
-INSERT INTO `robots` VALUES ('Desert Realm Spider', 'DesertRealm.com; 0.2; [J];');
-INSERT INTO `robots` VALUES ('DeWeb(c) Katalog/Index', 'Deweb/1.01');
-INSERT INTO `robots` VALUES ('DienstSpider', 'dienstspider/1.0');
-INSERT INTO `robots` VALUES ('Digger', 'Digger/1.0 JDK/1.3.0');
-INSERT INTO `robots` VALUES ('Digital Integrity Robot', 'DIIbot');
-INSERT INTO `robots` VALUES ('Direct Hit Grabber', 'grabber');
-INSERT INTO `robots` VALUES ('DNAbot', 'DNAbot/1.0');
-INSERT INTO `robots` VALUES ('DragonBot', 'DragonBot/1.0 libwww/5.0');
-INSERT INTO `robots` VALUES ('DWCP (Dridus''Web Cataloging Project)', 'DWCP/2.0');
-INSERT INTO `robots` VALUES ('e-collector', 'LWP::');
-INSERT INTO `robots` VALUES ('EbiNess', 'EbiNess/0.01a');
-INSERT INTO `robots` VALUES ('EIT Link Verifier Robot', 'EIT-Link-Verifier-Robot/0.2');
-INSERT INTO `robots` VALUES ('ELFINBOT', 'elfinbot');
-INSERT INTO `robots` VALUES ('Emacs-w3 Search Engine', 'Emacs-w3/v[0-9.]+');
-INSERT INTO `robots` VALUES ('ananzi', 'EMC Spider');
-INSERT INTO `robots` VALUES ('esculapio', 'esculapio/1.1');
-INSERT INTO `robots` VALUES ('Esther', 'esther');
-INSERT INTO `robots` VALUES ('Evliya Celebi', 'Evliya Celebi v0.151 - http://ilker.ulak.net.tr');
-INSERT INTO `robots` VALUES ('nzexplorer', 'explorersearch');
-INSERT INTO `robots` VALUES ('FastCrawler', 'FastCrawler');
-INSERT INTO `robots` VALUES ('Fluid Dynamics Search Engine robot', 'Mozilla/4.0 (compatible: FDSE robot)');
-INSERT INTO `robots` VALUES ('Felix IDE', 'FelixIDE/1.0');
-INSERT INTO `robots` VALUES ('Wild Ferret Web Hopper #1, #2, #3', 'Hazel''s Ferret Web hopper,');
-INSERT INTO `robots` VALUES ('FetchRover', 'ESIRover v1.0');
-INSERT INTO `robots` VALUES ('fido', 'fido/0.9 Harvest/1.4.pl2');
-INSERT INTO `robots` VALUES ('Hambot', 'hambot');
-INSERT INTO `robots` VALUES ('KIT-Fireball', 'KIT-Fireball/2.0 libwww/5.0a');
-INSERT INTO `robots` VALUES ('Fish search', 'Fish-Search-Robot');
-INSERT INTO `robots` VALUES ('Fouineur', 'fouineur');
-INSERT INTO `robots` VALUES ('Robot Francoroute', 'Robot du CRIM 1.0a');
-INSERT INTO `robots` VALUES ('Freecrawl', 'Freecrawl');
-INSERT INTO `robots` VALUES ('FunnelWeb', 'FunnelWeb-1.0');
-INSERT INTO `robots` VALUES ('gammaSpider, FocusedCrawler', 'gammaSpider xxxxxxx ()/');
-INSERT INTO `robots` VALUES ('gazz', 'gazz/1.0');
-INSERT INTO `robots` VALUES ('GCreep', 'gcreep/1.0');
-INSERT INTO `robots` VALUES ('GetURL', 'GetURL.rexx v1.05');
-INSERT INTO `robots` VALUES ('Golem', 'Golem/1.1');
-INSERT INTO `robots` VALUES ('Googlebot', 'Googlebot');
-INSERT INTO `robots` VALUES ('Griffon', 'griffon/1.0');
-INSERT INTO `robots` VALUES ('Gromit', 'Gromit/1.0');
-INSERT INTO `robots` VALUES ('Northern Light Gulliver', 'Gulliver/1.1');
-INSERT INTO `robots` VALUES ('Gulper Bot', 'Gulper Web Bot');
-INSERT INTO `robots` VALUES ('Harvest', 'yes');
-INSERT INTO `robots` VALUES ('havIndex', 'havIndex/');
-INSERT INTO `robots` VALUES ('HI (HTML Index) Search', 'AITCSRobot/1.1');
-INSERT INTO `robots` VALUES ('Hometown Spider Pro', 'Hometown Spider Pro');
-INSERT INTO `robots` VALUES ('Wired Digital', 'wired-digital-newsbot/1.5');
-INSERT INTO `robots` VALUES ('ht://Dig', 'htdig/3.1.0b2');
-INSERT INTO `robots` VALUES ('HTMLgobble', 'HTMLgobble v2.2');
-INSERT INTO `robots` VALUES ('iajaBot', 'iajaBot/0.1');
-INSERT INTO `robots` VALUES ('IBM_Planetwide', 'IBM_Planetwide,');
-INSERT INTO `robots` VALUES ('Popular Iconoclast', 'gestaltIconoclast/1.0 libwww-FM/2.17');
-INSERT INTO `robots` VALUES ('Ingrid', 'INGRID/0.1');
-INSERT INTO `robots` VALUES ('Imagelock', 'Mozilla 3.01 PBWF (Win95)');
-INSERT INTO `robots` VALUES ('IncyWincy', 'IncyWincy/1.0b1');
-INSERT INTO `robots` VALUES ('Informant', 'Informant');
-INSERT INTO `robots` VALUES ('InfoSeek Robot 1.0', 'InfoSeek Robot 1.0');
-INSERT INTO `robots` VALUES ('Infoseek Sidewinder', 'Infoseek Sidewinder');
-INSERT INTO `robots` VALUES ('InfoSpiders', 'InfoSpiders/0.1');
-INSERT INTO `robots` VALUES ('Inspector Web', 'inspectorwww');
-INSERT INTO `robots` VALUES ('IntelliAgent', '''IAGENT/1.0''');
-INSERT INTO `robots` VALUES ('I, Robot', 'I Robot 0.4 (irobot@chaos.dk)');
-INSERT INTO `robots` VALUES ('Iron33', 'Iron33/0.0');
-INSERT INTO `robots` VALUES ('Israeli-search', 'IsraeliSearch/1.0');
-INSERT INTO `robots` VALUES ('JavaBee', 'JavaBee');
-INSERT INTO `robots` VALUES ('JBot Java Web Robot', 'JBot');
-INSERT INTO `robots` VALUES ('JCrawler', 'JCrawler/0.2');
-INSERT INTO `robots` VALUES ('AskJeeves', 'Teoma');
-INSERT INTO `robots` VALUES ('JoBo Java Web Robot', 'JoBo');
-INSERT INTO `robots` VALUES ('Jobot', 'Jobot/0.1alpha libwww-perl/4.0');
-INSERT INTO `robots` VALUES ('JoeBot', 'JoeBot/x.x,');
-INSERT INTO `robots` VALUES ('The Jubii Indexing Robot', 'JubiiRobot/version#');
-INSERT INTO `robots` VALUES ('JumpStation', 'jumpstation');
-INSERT INTO `robots` VALUES ('image.kapsi.net', 'image.kapsi.net/1.0');
-INSERT INTO `robots` VALUES ('Katipo', 'Katipo/1.0');
-INSERT INTO `robots` VALUES ('KDD-Explorer', 'KDD-Explorer/0.1');
-INSERT INTO `robots` VALUES ('KO_Yappo_Robot', 'KO_Yappo_Robot/');
-INSERT INTO `robots` VALUES ('LabelGrabber', 'LabelGrab/1.1');
-INSERT INTO `robots` VALUES ('larbin', 'larbin (+mail)');
-INSERT INTO `robots` VALUES ('legs', 'legs');
-INSERT INTO `robots` VALUES ('Link Validator', 'Linkidator/0.93');
-INSERT INTO `robots` VALUES ('LinkScan', 'LinkScan');
-INSERT INTO `robots` VALUES ('LinkWalker', 'LinkWalker');
-INSERT INTO `robots` VALUES ('Lockon', 'Lockon');
-INSERT INTO `robots` VALUES ('logo.gif Crawler', 'logo.gif crawler');
-INSERT INTO `robots` VALUES ('Lycos', 'Lycos/x.x');
-INSERT INTO `robots` VALUES ('Magpie', 'Magpie/1.0');
-INSERT INTO `robots` VALUES ('marvin/infoseek', 'marvin');
-INSERT INTO `robots` VALUES ('Mattie', 'M/3.8');
-INSERT INTO `robots` VALUES ('MediaFox', 'MediaFox');
-INSERT INTO `robots` VALUES ('MerzScope', 'MerzScope');
-INSERT INTO `robots` VALUES ('NEC-MeshExplorer', 'NEC-MeshExplorer');
-INSERT INTO `robots` VALUES ('MindCrawler', 'MindCrawler');
-INSERT INTO `robots` VALUES ('mnoGoSearch search engine software', 'UdmSearch');
-INSERT INTO `robots` VALUES ('moget', 'moget/1.0');
-INSERT INTO `robots` VALUES ('MOMspider', 'MOMspider/');
-INSERT INTO `robots` VALUES ('Monster', 'Monster/');
-INSERT INTO `robots` VALUES ('Motor', 'Motor/0.2');
-INSERT INTO `robots` VALUES ('MSNBot', 'MSNBOT/');
-INSERT INTO `robots` VALUES ('Muncher', 'yes');
-INSERT INTO `robots` VALUES ('Muninn', 'Muninn/0.1 libwww-perl-5.76');
-INSERT INTO `robots` VALUES ('Muscat Ferret', 'MuscatFerret/');
-INSERT INTO `robots` VALUES ('Mwd.Search', 'MwdSearch/0.1');
-INSERT INTO `robots` VALUES ('Internet Shinchakubin', 'sharp-info-agent');
-INSERT INTO `robots` VALUES ('NDSpider', 'NDSpider/1.5');
-INSERT INTO `robots` VALUES ('NetCarta WebMap Engine', 'NetCarta CyberPilot Pro');
-INSERT INTO `robots` VALUES ('NetMechanic', 'NetMechanic');
-INSERT INTO `robots` VALUES ('NetScoop', 'NetScoop/1.0 libwww/5.0a');
-INSERT INTO `robots` VALUES ('newscan-online', 'newscan-online/1.1');
-INSERT INTO `robots` VALUES ('NHSE Web Forager', 'NHSEWalker/3.0');
-INSERT INTO `robots` VALUES ('Nomad', 'Nomad-V2.x');
-INSERT INTO `robots` VALUES ('The NorthStar Robot', 'NorthStar');
-INSERT INTO `robots` VALUES ('ObjectsSearch', 'ObjectsSearch/0.01');
-INSERT INTO `robots` VALUES ('Occam', 'Occam/1.0');
-INSERT INTO `robots` VALUES ('HKU WWW Octopus', 'HKU WWW Robot,');
-INSERT INTO `robots` VALUES ('OntoSpider', 'OntoSpider/1.0 libwww-perl/5.65');
-INSERT INTO `robots` VALUES ('Openfind data gatherer', 'Openbot/3.0');
-INSERT INTO `robots` VALUES ('Orb Search', 'Orbsearch/1.0');
-INSERT INTO `robots` VALUES ('Pack Rat', 'PackRat/1.0');
-INSERT INTO `robots` VALUES ('PageBoy', 'PageBoy/1.0');
-INSERT INTO `robots` VALUES ('ParaSite', 'ParaSite/0.21 (http://www.ianett.com/parasite/)');
-INSERT INTO `robots` VALUES ('Patric', 'Patric/0.01a');
-INSERT INTO `robots` VALUES ('pegasus', 'web robot PEGASUS');
-INSERT INTO `robots` VALUES ('The Peregrinator', 'Peregrinator-Mathematics/0.7');
-INSERT INTO `robots` VALUES ('PerlCrawler 1.0', 'PerlCrawler/1.0 Xavatoria/2.0');
-INSERT INTO `robots` VALUES ('Phantom', 'Duppies');
-INSERT INTO `robots` VALUES ('PhpDig', 'phpdig/x.x.x');
-INSERT INTO `robots` VALUES ('PiltdownMan', 'PiltdownMan/1.0 profitnet@myezmail.com');
-INSERT INTO `robots` VALUES ('Pimptrain.com''s robot', 'Pimptrain');
-INSERT INTO `robots` VALUES ('Pioneer', 'Pioneer');
-INSERT INTO `robots` VALUES ('Portal Juice Spider', 'PortalJuice.com/4.0');
-INSERT INTO `robots` VALUES ('PGP Key Agent', 'PGP-KA/1.2');
-INSERT INTO `robots` VALUES ('PlumtreeWebAccessor', 'PlumtreeWebAccessor/0.9');
-INSERT INTO `robots` VALUES ('Poppi', 'Poppi/1.0');
-INSERT INTO `robots` VALUES ('PortalB Spider', 'PortalBSpider/1.0 (spider@portalb.com)');
-INSERT INTO `robots` VALUES ('psbot', 'psbot/0.X (+http://www.picsearch.com/bot.html)');
-INSERT INTO `robots` VALUES ('GetterroboPlus Puu', 'GetterroboPlus');
-INSERT INTO `robots` VALUES ('Raven Search', 'Raven-v2');
-INSERT INTO `robots` VALUES ('Resume Robot', 'Resume Robot');
-INSERT INTO `robots` VALUES ('RoadHouse Crawling System', 'RHCS/1.0a');
-INSERT INTO `robots` VALUES ('RixBot', 'RixBot (http://www.oops-as.no/rix/)');
-INSERT INTO `robots` VALUES ('Road Runner: The ImageScape Robot', 'Road Runner: ImageScape Robot (lim@cs.leidenuniv.nl)');
-INSERT INTO `robots` VALUES ('Robbie the Robot', 'Robbie/0.1');
-INSERT INTO `robots` VALUES ('ComputingSite Robi/1.0', 'ComputingSite Robi/1.0 (robi@computingsite.com)');
-INSERT INTO `robots` VALUES ('RoboCrawl Spider', 'RoboCrawl (http://www.canadiancontent.net)');
-INSERT INTO `robots` VALUES ('RoboFox', 'Robofox v2.0');
-INSERT INTO `robots` VALUES ('Robozilla', 'Robozilla/1.0');
-INSERT INTO `robots` VALUES ('Roverbot', 'Roverbot');
-INSERT INTO `robots` VALUES ('RuLeS', 'RuLeS/1.0 libwww/4.0');
-INSERT INTO `robots` VALUES ('SafetyNet Robot', 'SafetyNet Robot 0.1,');
-INSERT INTO `robots` VALUES ('Scooter', 'Scooter/2.0 G.R.A.B. V1.1.0');
-INSERT INTO `robots` VALUES ('Search.Aus-AU.COM', 'not available');
-INSERT INTO `robots` VALUES ('Sleek', 'Mozilla/4.0 (Sleek Spider/1.2)');
-INSERT INTO `robots` VALUES ('SearchProcess', 'searchprocess/0.9');
-INSERT INTO `robots` VALUES ('Senrigan', 'Senrigan/xxxxxx');
-INSERT INTO `robots` VALUES ('SG-Scout', 'SG-Scout');
-INSERT INTO `robots` VALUES ('ShagSeeker', 'Shagseek');
-INSERT INTO `robots` VALUES ('Shai''Hulud', 'Shai''Hulud');
-INSERT INTO `robots` VALUES ('Sift', 'libwww-perl-5.41');
-INSERT INTO `robots` VALUES ('Simmany Robot Ver1.0', 'SimBot/1.0');
-INSERT INTO `robots` VALUES ('Site Valet', 'Site Valet');
-INSERT INTO `robots` VALUES ('SiteTech-Rover', 'SiteTech-Rover');
-INSERT INTO `robots` VALUES ('Skymob.com', 'aWapClient');
-INSERT INTO `robots` VALUES ('SLCrawler', 'SLCrawler');
-INSERT INTO `robots` VALUES ('Inktomi Slurp', 'Slurp/2.0');
-INSERT INTO `robots` VALUES ('Smart Spider', 'ESISmartSpider/2.0');
-INSERT INTO `robots` VALUES ('Snooper', 'Snooper/b97_01');
-INSERT INTO `robots` VALUES ('Solbot', 'Solbot/1.0 LWP/5.07');
-INSERT INTO `robots` VALUES ('Speedy Spider', 'Speedy Spider');
-INSERT INTO `robots` VALUES ('spider_monkey', 'mouse.house/7.1');
-INSERT INTO `robots` VALUES ('SpiderBot', 'SpiderBot/1.0');
-INSERT INTO `robots` VALUES ('Spiderline Crawler', 'spiderline/3.1.3');
-INSERT INTO `robots` VALUES ('SpiderMan', 'SpiderMan 1.0');
-INSERT INTO `robots` VALUES ('SpiderView(tm)', 'SpiderView');
-INSERT INTO `robots` VALUES ('Spry Wizard Robot', 'no');
-INSERT INTO `robots` VALUES ('Site Searcher', 'ssearcher100');
-INSERT INTO `robots` VALUES ('Suke', 'suke/*.*');
-INSERT INTO `robots` VALUES ('suntek search engine', 'suntek/1.0');
-INSERT INTO `robots` VALUES ('Sygol', 'http://www.sygol.com');
-INSERT INTO `robots` VALUES ('TACH Black Widow', 'Black Widow');
-INSERT INTO `robots` VALUES ('Tarantula', 'Tarantula/1.0');
-INSERT INTO `robots` VALUES ('tarspider', 'tarspider');
-INSERT INTO `robots` VALUES ('Tcl W3 Robot', 'dlw3robot/x.y (in TclX by http://hplyot.obspm.fr/~dl/)');
-INSERT INTO `robots` VALUES ('TechBOT', 'TechBOT');
-INSERT INTO `robots` VALUES ('Templeton', 'Templeton/{version} for {platform}');
-INSERT INTO `robots` VALUES ('TitIn', 'TitIn/0.2');
-INSERT INTO `robots` VALUES ('TITAN', 'TITAN/0.1');
-INSERT INTO `robots` VALUES ('TLSpider', 'TLSpider/1.1');
-INSERT INTO `robots` VALUES ('UCSD Crawl', 'UCSD-Crawler');
-INSERT INTO `robots` VALUES ('UdmSearch', 'UdmSearch/2.1.1');
-INSERT INTO `robots` VALUES ('UptimeBot', 'uptimebot');
-INSERT INTO `robots` VALUES ('URL Check', 'urlck/1.2.3');
-INSERT INTO `robots` VALUES ('URL Spider Pro', 'URL Spider Pro');
-INSERT INTO `robots` VALUES ('Valkyrie', 'Valkyrie/1.0 libwww-perl/0.40');
-INSERT INTO `robots` VALUES ('Verticrawl', 'Verticrawlbot');
-INSERT INTO `robots` VALUES ('Victoria', 'Victoria/1.0');
-INSERT INTO `robots` VALUES ('vision-search', 'vision-search/3.0''');
-INSERT INTO `robots` VALUES ('void-bot', 'void-bot/0.1 (bot@void.be; http://www.void.be/)');
-INSERT INTO `robots` VALUES ('Voyager', 'Voyager/0.0');
-INSERT INTO `robots` VALUES ('VWbot', 'VWbot_K/4.2');
-INSERT INTO `robots` VALUES ('The NWI Robot', 'w3index');
-INSERT INTO `robots` VALUES ('W3M2', 'W3M2/x.xxx');
-INSERT INTO `robots` VALUES ('WallPaper (alias crawlpaper)', 'CrawlPaper/n.n.n (Windows n)');
-INSERT INTO `robots` VALUES ('the World Wide Web Wanderer', 'WWWWanderer v3.0');
-INSERT INTO `robots` VALUES ('w@pSpider by wap4.com', 'w@pSpider/xxx (unix) by wap4.com');
-INSERT INTO `robots` VALUES ('WebBandit Web Spider', 'WebBandit/1.0');
-INSERT INTO `robots` VALUES ('WebCatcher', 'WebCatcher/1.0');
-INSERT INTO `robots` VALUES ('WebCopy', 'WebCopy/(version)');
-INSERT INTO `robots` VALUES ('webfetcher', 'WebFetcher/0.8,');
-INSERT INTO `robots` VALUES ('weblayers', 'weblayers/0.0');
-INSERT INTO `robots` VALUES ('WebLinker', 'WebLinker/0.0 libwww-perl/0.1');
-INSERT INTO `robots` VALUES ('WebMirror', 'no');
-INSERT INTO `robots` VALUES ('The Web Moose', 'WebMoose/0.0.0000');
-INSERT INTO `robots` VALUES ('WebQuest', 'WebQuest/1.0');
-INSERT INTO `robots` VALUES ('Digimarc MarcSpider', 'Digimarc WebReader/1.2');
-INSERT INTO `robots` VALUES ('WebReaper', 'WebReaper [webreaper@otway.com]');
-INSERT INTO `robots` VALUES ('webs', 'webs@recruit.co.jp');
-INSERT INTO `robots` VALUES ('WebVac', 'webvac/1.0');
-INSERT INTO `robots` VALUES ('webwalk', 'webwalk');
-INSERT INTO `robots` VALUES ('WebWalker', 'WebWalker/1.10');
-INSERT INTO `robots` VALUES ('WebWatch', 'WebWatch');
-INSERT INTO `robots` VALUES ('Wget', 'Wget/1.4.0');
-INSERT INTO `robots` VALUES ('whatUseek Winona', 'whatUseek_winona/3.0');
-INSERT INTO `robots` VALUES ('Weblog Monitor', 'wlm-1.1');
-INSERT INTO `robots` VALUES ('w3mir', 'w3mir');
-INSERT INTO `robots` VALUES ('WebStolperer', 'WOLP/1.0 mda/1.0');
-INSERT INTO `robots` VALUES ('WWWC Ver 0.2.5', 'WWWC/0.25 (Win95)');
-INSERT INTO `robots` VALUES ('WebZinger', 'none');
-INSERT INTO `robots` VALUES ('XGET', 'XGET/0.7');
-INSERT INTO `robots` VALUES ('Nederland.zoek', 'Nederland.zoek');
-INSERT INTO `robots` VALUES ('Sogou Spider', 'Sogou');
-INSERT INTO `robots` VALUES ('Yandex','YandexBot');
-INSERT INTO `robots` VALUES ('Ahrefs Bot','AhrefsBot');
-INSERT INTO `robots` VALUES ('Ezooms Bot','Ezooms');
-INSERT INTO `robots` VALUES ('Baidu Spider','Baiduspider');
+INSERT INTO `robots` (`bot_name`, `bot_agent`) VALUES
+('ABCdatos BotLink', 'ABCdatos BotLink/1.0.2'),
+('Ahoy! The Homepage Finder', 'ahoy'),
+('Alkaline', 'AlkalineBOT'),
+('Anthill', 'AnthillV1.1'),
+('Walhello appie', 'appie/1.1'),
+('Arachnophilia', 'Arachnophilia'),
+('Arale', 'arale'),
+('Araneo', 'Araneo/0.7'),
+('AraybOt', 'AraybOt/1.0'),
+('ArchitextSpider', 'ArchitextSpider'),
+('arks', 'arks/1.0'),
+('ASpider (Associative Spider)', 'ASpider/0.09'),
+('ATN Worldwide', 'ATN_Worldwide'),
+('Atomz.com Search Robot', 'Atomz/1.0'),
+('AURESYS', 'AURESYS/1.0'),
+('BackRub', 'BackRub'),
+('robot-id: bayspider', 'BaySpider'),
+('BBot', 'bbot/0.100'),
+('Big Brother', 'Big Brother'),
+('Bjaaland', 'Bjaaland/0.5'),
+('BlackWidow', 'BlackWidow'),
+('Die Blinde Kuh', 'Die Blinde Kuh'),
+('Bloodhound', 'Ukonline'),
+('Borg-Bot', 'borg-bot/0.9'),
+('BoxSeaBot', 'BoxSeaBot/0.5 (http://boxsea.com/crawler)'),
+('bright.net caching robot', 'Mozilla/3.01 (compatible;)'),
+('BSpider', 'BSpider/1.0 libwww-perl/0.40'),
+('CACTVS Chemistry Spider', 'CACTVS Chemistry Spider'),
+('Calif', 'Calif/0.6'),
+('Digimarc Marcspider/CGI', 'Digimarc CGIReader/1.0'),
+('Checkbot', 'Checkbot/x.xx LWP/5.x'),
+('ChristCrawler.com', 'ChristCrawler'),
+('cIeNcIaFiCcIoN.nEt', 'cIeNcIaFiCcIoN.nEt Spider'),
+('CMC/0.01', 'CMC/0.01'),
+('Collective', 'LWP'),
+('Combine System', 'combine/0.0'),
+('ConfuzzledBot', 'Confuzzledbot/X.X'),
+('CoolBot', 'CoolBot'),
+('Web Core / Roots', 'root/0.1'),
+('XYLEME Robot', 'cosmos/0.3'),
+('Internet Cruiser Robot', 'Internet Cruiser Robot/2.1'),
+('Cusco', 'Cusco/3.2'),
+('CyberSpyder Link Test', 'CyberSpyder/2.1'),
+('CydralSpider', 'CydralSpider/'),
+('Desert Realm Spider', 'DesertRealm.com; 0.2; [J];'),
+('DeWeb(c) Katalog/Index', 'Deweb/1.01'),
+('DienstSpider', 'dienstspider/1.0'),
+('Digger', 'Digger/1.0 JDK/1.3.0'),
+('Digital Integrity Robot', 'DIIbot'),
+('Direct Hit Grabber', 'grabber'),
+('DNAbot', 'DNAbot/1.0'),
+('DragonBot', 'DragonBot/1.0 libwww/5.0'),
+('DWCP (Dridus''Web Cataloging Project)', 'DWCP/2.0'),
+('e-collector', 'LWP::'),
+('EbiNess', 'EbiNess/0.01a'),
+('EIT Link Verifier Robot', 'EIT-Link-Verifier-Robot/0.2'),
+('ELFINBOT', 'elfinbot'),
+('Emacs-w3 Search Engine', 'Emacs-w3/v[0-9.]+'),
+('ananzi', 'EMC Spider'),
+('esculapio', 'esculapio/1.1'),
+('Esther', 'esther'),
+('Evliya Celebi', 'Evliya Celebi v0.151 - http://ilker.ulak.net.tr'),
+('nzexplorer', 'explorersearch'),
+('FastCrawler', 'FastCrawler'),
+('Fluid Dynamics Search Engine robot', 'Mozilla/4.0 (compatible: FDSE robot)'),
+('Felix IDE', 'FelixIDE/1.0'),
+('Wild Ferret Web Hopper #1, #2, #3', 'Hazel''s Ferret Web hopper,'),
+('FetchRover', 'ESIRover v1.0'),
+('fido', 'fido/0.9 Harvest/1.4.pl2'),
+('Hambot', 'hambot'),
+('KIT-Fireball', 'KIT-Fireball/2.0 libwww/5.0a'),
+('Fish search', 'Fish-Search-Robot'),
+('Fouineur', 'fouineur'),
+('Robot Francoroute', 'Robot du CRIM 1.0a'),
+('Freecrawl', 'Freecrawl'),
+('FunnelWeb', 'FunnelWeb-1.0'),
+('gammaSpider, FocusedCrawler', 'gammaSpider xxxxxxx ()/'),
+('gazz', 'gazz/1.0'),
+('GCreep', 'gcreep/1.0'),
+('GetURL', 'GetURL.rexx v1.05'),
+('Golem', 'Golem/1.1'),
+('Googlebot', 'Googlebot'),
+('Griffon', 'griffon/1.0'),
+('Gromit', 'Gromit/1.0'),
+('Northern Light Gulliver', 'Gulliver/1.1'),
+('Gulper Bot', 'Gulper Web Bot'),
+('Harvest', 'yes'),
+('havIndex', 'havIndex/'),
+('HI (HTML Index) Search', 'AITCSRobot/1.1'),
+('Hometown Spider Pro', 'Hometown Spider Pro'),
+('Wired Digital', 'wired-digital-newsbot/1.5'),
+('ht://Dig', 'htdig/3.1.0b2'),
+('HTMLgobble', 'HTMLgobble v2.2'),
+('iajaBot', 'iajaBot/0.1'),
+('IBM_Planetwide', 'IBM_Planetwide,'),
+('Popular Iconoclast', 'gestaltIconoclast/1.0 libwww-FM/2.17'),
+('Ingrid', 'INGRID/0.1'),
+('Imagelock', 'Mozilla 3.01 PBWF (Win95)'),
+('IncyWincy', 'IncyWincy/1.0b1'),
+('Informant', 'Informant'),
+('InfoSeek Robot 1.0', 'InfoSeek Robot 1.0'),
+('Infoseek Sidewinder', 'Infoseek Sidewinder'),
+('InfoSpiders', 'InfoSpiders/0.1'),
+('Inspector Web', 'inspectorwww'),
+('IntelliAgent', '''IAGENT/1.0'''),
+('I, Robot', 'I Robot 0.4 (irobot@chaos.dk)'),
+('Iron33', 'Iron33/0.0'),
+('Israeli-search', 'IsraeliSearch/1.0'),
+('JavaBee', 'JavaBee'),
+('JBot Java Web Robot', 'JBot'),
+('JCrawler', 'JCrawler/0.2'),
+('AskJeeves', 'Teoma'),
+('JoBo Java Web Robot', 'JoBo'),
+('Jobot', 'Jobot/0.1alpha libwww-perl/4.0'),
+('JoeBot', 'JoeBot/x.x,'),
+('The Jubii Indexing Robot', 'JubiiRobot/version#'),
+('JumpStation', 'jumpstation'),
+('image.kapsi.net', 'image.kapsi.net/1.0'),
+('Katipo', 'Katipo/1.0'),
+('KDD-Explorer', 'KDD-Explorer/0.1'),
+('KO_Yappo_Robot', 'KO_Yappo_Robot/'),
+('LabelGrabber', 'LabelGrab/1.1'),
+('larbin', 'larbin (+mail)'),
+('legs', 'legs'),
+('Link Validator', 'Linkidator/0.93'),
+('LinkScan', 'LinkScan'),
+('LinkWalker', 'LinkWalker'),
+('Lockon', 'Lockon'),
+('logo.gif Crawler', 'logo.gif crawler'),
+('Lycos', 'Lycos/x.x'),
+('Magpie', 'Magpie/1.0'),
+('marvin/infoseek', 'marvin'),
+('Mattie', 'M/3.8'),
+('MediaFox', 'MediaFox'),
+('MerzScope', 'MerzScope'),
+('NEC-MeshExplorer', 'NEC-MeshExplorer'),
+('MindCrawler', 'MindCrawler'),
+('mnoGoSearch search engine software', 'UdmSearch'),
+('moget', 'moget/1.0'),
+('MOMspider', 'MOMspider/'),
+('Monster', 'Monster/'),
+('Motor', 'Motor/0.2'),
+('MSNBot', 'MSNBOT/'),
+('Muncher', 'yes'),
+('Muninn', 'Muninn/0.1 libwww-perl-5.76'),
+('Muscat Ferret', 'MuscatFerret/'),
+('Mwd.Search', 'MwdSearch/0.1'),
+('Internet Shinchakubin', 'sharp-info-agent'),
+('NDSpider', 'NDSpider/1.5'),
+('NetCarta WebMap Engine', 'NetCarta CyberPilot Pro'),
+('NetMechanic', 'NetMechanic'),
+('NetScoop', 'NetScoop/1.0 libwww/5.0a'),
+('newscan-online', 'newscan-online/1.1'),
+('NHSE Web Forager', 'NHSEWalker/3.0'),
+('Nomad', 'Nomad-V2.x'),
+('The NorthStar Robot', 'NorthStar'),
+('ObjectsSearch', 'ObjectsSearch/0.01'),
+('Occam', 'Occam/1.0'),
+('HKU WWW Octopus', 'HKU WWW Robot,'),
+('OntoSpider', 'OntoSpider/1.0 libwww-perl/5.65'),
+('Openfind data gatherer', 'Openbot/3.0'),
+('Orb Search', 'Orbsearch/1.0'),
+('Pack Rat', 'PackRat/1.0'),
+('PageBoy', 'PageBoy/1.0'),
+('ParaSite', 'ParaSite/0.21 (http://www.ianett.com/parasite/)'),
+('Patric', 'Patric/0.01a'),
+('pegasus', 'web robot PEGASUS'),
+('The Peregrinator', 'Peregrinator-Mathematics/0.7'),
+('PerlCrawler 1.0', 'PerlCrawler/1.0 Xavatoria/2.0'),
+('Phantom', 'Duppies'),
+('PhpDig', 'phpdig/x.x.x'),
+('PiltdownMan', 'PiltdownMan/1.0 profitnet@myezmail.com'),
+('Pimptrain.com''s robot', 'Pimptrain'),
+('Pioneer', 'Pioneer'),
+('Portal Juice Spider', 'PortalJuice.com/4.0'),
+('PGP Key Agent', 'PGP-KA/1.2'),
+('PlumtreeWebAccessor', 'PlumtreeWebAccessor/0.9'),
+('Poppi', 'Poppi/1.0'),
+('PortalB Spider', 'PortalBSpider/1.0 (spider@portalb.com)'),
+('psbot', 'psbot/0.X (+http://www.picsearch.com/bot.html)'),
+('GetterroboPlus Puu', 'GetterroboPlus'),
+('Raven Search', 'Raven-v2'),
+('Resume Robot', 'Resume Robot'),
+('RoadHouse Crawling System', 'RHCS/1.0a'),
+('RixBot', 'RixBot (http://www.oops-as.no/rix/)'),
+('Road Runner: The ImageScape Robot', 'Road Runner: ImageScape Robot (lim@cs.leidenuniv.nl)'),
+('Robbie the Robot', 'Robbie/0.1'),
+('ComputingSite Robi/1.0', 'ComputingSite Robi/1.0 (robi@computingsite.com)'),
+('RoboCrawl Spider', 'RoboCrawl (http://www.canadiancontent.net)'),
+('RoboFox', 'Robofox v2.0'),
+('Robozilla', 'Robozilla/1.0'),
+('Roverbot', 'Roverbot'),
+('RuLeS', 'RuLeS/1.0 libwww/4.0'),
+('SafetyNet Robot', 'SafetyNet Robot 0.1,'),
+('Scooter', 'Scooter/2.0 G.R.A.B. V1.1.0'),
+('Search.Aus-AU.COM', 'not available'),
+('Sleek', 'Mozilla/4.0 (Sleek Spider/1.2)'),
+('SearchProcess', 'searchprocess/0.9'),
+('Senrigan', 'Senrigan/xxxxxx'),
+('SG-Scout', 'SG-Scout'),
+('ShagSeeker', 'Shagseek'),
+('Shai''Hulud', 'Shai''Hulud'),
+('Sift', 'libwww-perl-5.41'),
+('Simmany Robot Ver1.0', 'SimBot/1.0'),
+('Site Valet', 'Site Valet'),
+('SiteTech-Rover', 'SiteTech-Rover'),
+('Skymob.com', 'aWapClient'),
+('SLCrawler', 'SLCrawler'),
+('Inktomi Slurp', 'Slurp/2.0'),
+('Smart Spider', 'ESISmartSpider/2.0'),
+('Snooper', 'Snooper/b97_01'),
+('Solbot', 'Solbot/1.0 LWP/5.07'),
+('Speedy Spider', 'Speedy Spider'),
+('spider_monkey', 'mouse.house/7.1'),
+('SpiderBot', 'SpiderBot/1.0'),
+('Spiderline Crawler', 'spiderline/3.1.3'),
+('SpiderMan', 'SpiderMan 1.0'),
+('SpiderView(tm)', 'SpiderView'),
+('Spry Wizard Robot', 'no'),
+('Site Searcher', 'ssearcher100'),
+('Suke', 'suke/*.*'),
+('suntek search engine', 'suntek/1.0'),
+('Sygol', 'http://www.sygol.com'),
+('TACH Black Widow', 'Black Widow'),
+('Tarantula', 'Tarantula/1.0'),
+('tarspider', 'tarspider'),
+('Tcl W3 Robot', 'dlw3robot/x.y (in TclX by http://hplyot.obspm.fr/~dl/)'),
+('TechBOT', 'TechBOT'),
+('Templeton', 'Templeton/{version} for {platform}'),
+('TitIn', 'TitIn/0.2'),
+('TITAN', 'TITAN/0.1'),
+('TLSpider', 'TLSpider/1.1'),
+('UCSD Crawl', 'UCSD-Crawler'),
+('UdmSearch', 'UdmSearch/2.1.1'),
+('UptimeBot', 'uptimebot'),
+('URL Check', 'urlck/1.2.3'),
+('URL Spider Pro', 'URL Spider Pro'),
+('Valkyrie', 'Valkyrie/1.0 libwww-perl/0.40'),
+('Verticrawl', 'Verticrawlbot'),
+('Victoria', 'Victoria/1.0'),
+('vision-search', 'vision-search/3.0'''),
+('void-bot', 'void-bot/0.1 (bot@void.be; http://www.void.be/)'),
+('Voyager', 'Voyager/0.0'),
+('VWbot', 'VWbot_K/4.2'),
+('The NWI Robot', 'w3index'),
+('W3M2', 'W3M2/x.xxx'),
+('WallPaper (alias crawlpaper)', 'CrawlPaper/n.n.n (Windows n)'),
+('the World Wide Web Wanderer', 'WWWWanderer v3.0'),
+('w@pSpider by wap4.com', 'w@pSpider/xxx (unix) by wap4.com'),
+('WebBandit Web Spider', 'WebBandit/1.0'),
+('WebCatcher', 'WebCatcher/1.0'),
+('WebCopy', 'WebCopy/(version)'),
+('webfetcher', 'WebFetcher/0.8,'),
+('weblayers', 'weblayers/0.0'),
+('WebLinker', 'WebLinker/0.0 libwww-perl/0.1'),
+('WebMirror', 'no'),
+('The Web Moose', 'WebMoose/0.0.0000'),
+('WebQuest', 'WebQuest/1.0'),
+('Digimarc MarcSpider', 'Digimarc WebReader/1.2'),
+('WebReaper', 'WebReaper [webreaper@otway.com]'),
+('webs', 'webs@recruit.co.jp'),
+('WebVac', 'webvac/1.0'),
+('webwalk', 'webwalk'),
+('WebWalker', 'WebWalker/1.10'),
+('WebWatch', 'WebWatch'),
+('Wget', 'Wget/1.4.0'),
+('whatUseek Winona', 'whatUseek_winona/3.0'),
+('Weblog Monitor', 'wlm-1.1'),
+('w3mir', 'w3mir'),
+('WebStolperer', 'WOLP/1.0 mda/1.0'),
+('WWWC Ver 0.2.5', 'WWWC/0.25 (Win95)'),
+('WebZinger', 'none'),
+('XGET', 'XGET/0.7'),
+('Nederland.zoek', 'Nederland.zoek'),
+('Baidu Spider', 'Baiduspider'),
+('Generic BOT (any with bot in the agent name)', 'bot'),
+('Generic SPIDER (any with spider in the agent name)', 'spider'),
+('InfoPath', 'InfoPath');
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

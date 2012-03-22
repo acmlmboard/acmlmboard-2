@@ -110,7 +110,10 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
 
   $post=$sql->fetch($res);
   $quotetext=str_replace("&","&amp",$post[text]);
-
+if($act=="Submit" && $quotetext==$_POST[message]){
+      $err="    No changes detected.<br>
+".         "    $threadlink";
+}
 /*  if($post[id] != $loguser[id] && !ismod($thread[forum]))
     $err="    You may not edit this post.<br>
 ".       "    $threadlink";*/

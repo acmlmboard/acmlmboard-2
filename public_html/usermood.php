@@ -147,20 +147,20 @@
 ".      "    $L[TD1] style=\"vertical-align: top\" rowspan='4'>";
 
   while ($row=$sql->fetch($avatars))
-    print "<a href=\"?a=e&i=$row[id]$targetget\">$row[label]</a><br>";
+    print "<a href=\"?a=e&i=$row[id]$targetget\">".stripslashes($row[label])."</a><br>";
   
   if ($numavatars < 64)
     print "          <a href=\"usermood.php$targetgeta\">(Add New)</a>";
 
   print "        </td>
 ".      "        $L[TD2]><nobr>
-".      "          <input type=\"text\" style=\"width: 100%\" name=\"label\" value=\"$activeavatar[label]\">
+".      "          <input type=\"text\" style=\"width: 100%\" name=\"label\" value=\"".stripslashes($activeavatar[label])."\">
 ".      "        $L[TD2]>
 ".      "          <input type=\"submit\" name='a' value=\"Save\">
 ".($id>0?"           
 ":"").  "     $L[TR]>
 ".      "       $L[TD3]>
-".      "          <input type=\"text\" style=\"width: 100%\" name=\"url\" value=\"$activeavatar[url]\">
+".      "          <input type=\"text\" style=\"width: 100%\" name=\"url\" value=\"".stripslashes($activeavatar[url])."\">
 ".      "       $L[TD3] width='1'><nobr><input id=\"islocal\" name=\"islocal\" type=\"checkbox\"".(!$activeavatar[local]?'checked="checked"':'')."
 ".      "          <label for=\"islocal\">Use URL instead of uploaded file</label>
 ".      "     $L[TR]>
@@ -170,7 +170,7 @@
 ":"").  "<input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\"></td>
 ".      "        $L[TD2]><small>Limits: 180x180px, 60KB</small></td>
 ".      "     $L[TR]>
-".      "        $L[TD2] colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"$activeavatar[label]\">" : "&nbsp;") ."
+".      "        $L[TD2] colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"".stripslashes($activeavatar[label])."\">" : "&nbsp;") ."
 ".      "$L[TBLend]</form>
 ".      "<br>";
 

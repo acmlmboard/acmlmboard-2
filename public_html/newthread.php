@@ -26,8 +26,22 @@
 
   needs_login(1);
 
+/* Had to disable ternary operator now that a third option is used
   $type = $announce ? "announcement" : "thread";
-  $typecap = $announce ? "Announcement" : "Thread";
+  $typecap = $announce ? "Announcement" : "Thread";*/
+  if ($announce) {
+    $type = "announcement";
+    $typecap = "Announcement";
+  }
+  elseif ($ispoll) {
+    $type = "poll";
+    $typecap = "Poll";
+  }
+  else {
+    $type = "thread";
+    $typecap = "Thread";
+  }
+
 
 
   $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());

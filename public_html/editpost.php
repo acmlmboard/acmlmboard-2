@@ -167,14 +167,14 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ";
   }elseif($act=='Preview'){
     $_POST[message]=stripslashes($_POST[message]);
-
+    $euser=$sql->fetchq("SELECT * FROM users WHERE id=$post[id]");
     $post[date]=ctime();
     $post[ip]=$userip;
-    $post[num]=++$user[posts];
+    $post[num]=++$euser[posts];
     $post[mood]=(isset($_POST[mid]) ? $_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
     $post[text]=$_POST[message];
-    foreach($user as $field => $val)
+    foreach($euser as $field => $val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 

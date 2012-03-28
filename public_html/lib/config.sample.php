@@ -32,6 +32,7 @@
   $config[sslbase]= "https://$config[address]"; //Replace if you need fine control of the address
   $config[path]   = "/";
   $config[meta]   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
+  
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
   $config[enableirc] = false; //Enable to send messages to IRC 
@@ -47,6 +48,8 @@
   $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 //The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
   $config[classictags] = false;
+//This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
+  $config[secafterpost] = 0; //(in seconds, 0 == off)
 //IRC Color Defines. Color code numbers, and color names work here.
   $irccolor[base] = "grey"; //default color for the irc output.
   $irccolor[name] = "lt_green"; //used most often for usernames and other things that need emphasis.

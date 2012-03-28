@@ -109,8 +109,8 @@
     if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !has_perm('consecutive-posts'))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-60) && has_perm('consecutive-posts'))  // Protection against double-submit
-      $err="    You must wait 60 seconds before posting consecutively.<br>
+    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-$config[secafterpost]) && has_perm('consecutive-posts'))  // Protection against double-submit
+      $err="    You must wait $config[secafterpost] seconds before posting consecutively.<br>
 ".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
     if(($tdepth=tvalidate($message))!=0)
@@ -119,8 +119,8 @@
     if(strlen(trim($message))==0)
       $err="    Your post is empty! Enter a message and try again.<br>
 ".         "    $threadlink";
-    if($user[regdate]>(ctime()-60))
-      $err="    You must wait 60 seconds before posting on a freshly registered account.<br>
+    if($user[regdate]>(ctime()-$config[secafterpost]))
+      $err="    You must wait $config[secafterpost] seconds before posting on a freshly registered account.<br>
 ".         "    $threadlink";
   }
 

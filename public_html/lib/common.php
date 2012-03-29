@@ -402,8 +402,7 @@ echo "</tr>
     }
 
 
-    else if ($showonusers) {
-      
+    else if ($showonusers) { 
   //[KAWA] Copypastadaption from ABXD, with added activity limiter.
   $birthdayLimit = 86400 * 30; //should be 30 days. Adjust if you want.
   $rBirthdays = $sql->query("select birth, id, name, displayname, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
@@ -411,6 +410,7 @@ echo "</tr>
   while($user = $sql->fetch($rBirthdays))
   {
     $b = $user['birth'];
+    $b += $tzoff;
     if(gmdate("m-d", $b) == gmdate("m-d"))
     {
       $y = gmdate("Y") - gmdate("Y", $b);
@@ -547,7 +547,7 @@ echo "
 //    pagestats();
     print "<br>
 ".        "$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src='img/poweredbyacmlm.PNG' \/><br \/>
-".        "  Acmlmboard v2.5 (3/22/2012)<br>
+".        "  Acmlmboard v2.5 (4/1/2012)<br>
 ".        "  &copy; 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.
 ".        "$L[TBLend]";
     pagestats();

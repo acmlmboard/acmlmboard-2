@@ -103,7 +103,7 @@ echo
       $lastpost='None';
 
     if($forum[lastdate]>($log?$forum[rtime]:ctime()-3600))
-      $status="<img src=img/status/new.png>";
+      $status="<img src=gfx/new.php?type=n>";
     else
       $status='&nbsp;';
 

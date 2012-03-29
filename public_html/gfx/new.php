@@ -5,6 +5,7 @@ include 'fontlib.php';
 $newcount = $_GET[num];
 $type = $_GET[type];
 
+$stoprender = false;
 header('Content-type: image/png');
 
 if ($newcount) $x=16;
@@ -18,7 +19,8 @@ switch ($type) {
 		$text="NEW";
 		break;
 
-	case "N": 
+	case "N":
+	case "hn":
 		$fcol="R";
 		$text="NEW";
 		break;
@@ -38,12 +40,34 @@ switch ($type) {
 		$text="EDT";
 		break;
 
-	case "o": 
+	case "x": 
+		$fcol="W";
+		$text="OFF";
+		break;
+
+	case "X":
+	case "xh":
+		$fcol="R";
+		$text="OFF";
+		break;
+
+	case "xh": 
+		$fcol="Y";
+		$text="OFF";
+		break;
+
+	case "xhn": 
+		$fcol="R";
+		$text="OFF";
+		break;
+
+	case "o":
 		Header("Location:../img/status/off.png");
 		return;
 		break;
 
-	case "O": 
+	case "O":
+	case "ho":  
 		Header("Location:../img/status/offhot.png");
 		return;
 		break;
@@ -53,7 +77,8 @@ switch ($type) {
 		return;
 		break;
 
-	case "On": 
+	case "On":
+	case "ohn":
 		Header("Location:../img/status/offhotnew.png");
 		return;
 		break;

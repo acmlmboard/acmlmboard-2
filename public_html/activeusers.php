@@ -40,8 +40,14 @@
 ";
   $j++;
   }
-  print "$L[TRh]>$L[TDh] colspan=5>Totals</td></tr>".
-        "$L[TRh]>$L[TDh]>$j</td>$L[TDh]></td>$L[TDh]></td>$L[TDh]>$post_total</td></tr>";
+  print "$L[TRh]>$L[TDh] colspan=5>Totals</td></tr>
+".        "  $L[$tr]>
+".      "    $L[TD]>$j.</td>
+".      "    $L[TDl]></td>
+".      "    $L[TD]></td>
+".      "    $L[TD]><b>$post_total</b></td>
+".      "    $L[TD]>$user[posts]</b></td>
+";
   print "$L[TBLend]
 ";
 

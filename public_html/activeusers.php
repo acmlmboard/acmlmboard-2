@@ -26,9 +26,11 @@
 ".      "    $L[TDh] width=50>Total</td>
 ";
   $post_total = 0;
+  $post_overall = 0;
   $j=0;
   for($i=1;$user=$sql->fetch($users);$i++){
     $post_total+=$user['num'];
+    $post_overall+=$user['posts'];
     $tr=($i%2?'TR2':'TR3').'c';
     print
         "  $L[$tr]>
@@ -42,11 +44,11 @@
   }
   print "$L[TRh]>$L[TDh] colspan=5>Totals</td></tr>
 ".        "  $L[$tr]>
-".      "    $L[TD]>$j.</td>
+".      "    $L[TD]><b>$j.</b></td>
 ".      "    $L[TDl]></td>
 ".      "    $L[TD]></td>
 ".      "    $L[TD]><b>$post_total</b></td>
-".      "    $L[TD]>$user[posts]</b></td>
+".      "    $L[TD]><b>$post_overall</b></td>
 ";
   print "$L[TBLend]
 ";

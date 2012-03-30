@@ -410,10 +410,9 @@ echo "</tr>
   while($user = $sql->fetch($rBirthdays))
   {
     $b = $user['birth'];
-    $b += $tzoff;
-    if(gmdate("m-d", $b) == gmdate("m-d"))
+    if(date("m-d", $b) == date("m-d"))
     {
-      $y = gmdate("Y") - gmdate("Y", $b);
+      $y = date("Y") - date("Y", $b);
       $birthdays[] = UserLink($user)." (".$y.")";
     }
   }

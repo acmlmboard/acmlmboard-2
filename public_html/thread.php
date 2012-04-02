@@ -522,7 +522,7 @@ elseif($viewmode=="time"){
 ".        "    $edit
 ".        "    </span>
 ".        "    <span id=mappend>
-".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread[title])."\">
+".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread[title],ENT_COMPAT | ENT_HTML401,'UTF-8')."\">
 ".        "    </span>
 ".        "    <script type=text/javascript>
 ".        "      function submitmod(act){

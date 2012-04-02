@@ -103,7 +103,7 @@ echo
       $lastpost='None';
 
     if($forum[lastdate]>($log?$forum[rtime]:ctime()-3600)){
-      $thucount = $sql->resultq("SELECT count(*) FROM threadsread r LEFT JOIN threads t ON r.tid=t.id WHERE t.forum=$forum[id] AND r.time > $forum[rtime] ");
+      if ($log) $thucount = $sql->resultq("SELECT count(*) FROM threadsread r LEFT JOIN threads t ON r.tid=t.id WHERE t.forum=$forum[id] AND r.time > $forum[rtime] ");
       $status="<img src=gfx/new.php?type=n&num=$thucount>";
     }
     else

@@ -1,5 +1,5 @@
 /* META
-Acmlm's Board
+Acmlm's Board (Acmlm, Mega-Mario, Emuz)
 
 */
 A:link		{color:#FFC040}
@@ -83,6 +83,14 @@ input.radio
 {
 	font-size: 0.8em;
 	font-family: verdana;
+}
+
+a[class~="newthread"] { 
+	content: url('../theme/abI/newthread.png');
+}
+
+a[class~="newreply"] { 
+	content: url('../theme/abI/newreply.png'); 
 }
 
 .nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}

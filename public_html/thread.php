@@ -336,7 +336,7 @@ if($_COOKIE['pstbon']>=1){
     if($thread[closed])
       $newreply="Thread closed";
     else
-      $newreply="<a href=newreply.php?id=$tid>New reply</a>";
+      $newreply="<a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>";
     }
     if($thread[ispoll])
     {

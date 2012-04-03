@@ -253,7 +253,7 @@ echo announcement_row($fid,3,4);
 
     $status='';
     if($thread[closed])                $status.='o';
-    if($thread[replies]>=50)           $status.='h';
+    if($thread[replies]>=50)           $status.='!';
 
     if($log){
       if(!$thread[isread]) $status.='n';

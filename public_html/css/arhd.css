@@ -119,6 +119,36 @@ del{
   color: #FF4000;
 }
 
+/* This section uses CSS to replace various link onpart of the board with images per each theme.
+Right now there is a mix of two style of CSS replacement. One is to make up for the fact Mozilla doesn't render
+content: url(); without :before or :after */
+
+a[class~="newreply"] { 
+  display: -moz-inline-box;
+  display: inline-block;
+  text-indent: -3000px;
+  font: 0/0 Arial;
+  overflow: hidden;
+  color: rgba(255,255,255,0);
+  width: 70px;
+  height: 16px;
+  background: url('../theme/arhd/newreply.png');
+  content: url('../theme/arhd/newreply.png'); 
+}
+
+a[class~="newthread"] { 
+  display: -moz-inline-box;
+  display: inline-block;
+  text-indent: -3000px;
+  font: 0/0 Arial;
+  overflow: hidden;
+  color: rgba(255,255,255,0);
+  width: 76px;
+  height: 16px;
+  background: url('../theme/arhd/newthread.png');
+  content: url('../theme/arhd/newthread.png'); 
+}
+
 .nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
 .nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
 .nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}

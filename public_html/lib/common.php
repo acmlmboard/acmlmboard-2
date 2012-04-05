@@ -212,7 +212,6 @@
 		$radar = build_postradar($loguser['id']);
 	}
     include("lib/sprites.php");
-	$junk .= "<style type=\"text/css\">.nc04{color:#EE4444} .nc14{color:#E63282} .nc24{color:#AA3C3C}</style>";
   if ($log) {
     $logbar = $loguser;
     $logbar['showminipic'] = 1;
@@ -225,7 +224,6 @@
 ".        "<link rel='icon' type='image/png' href='$favicon'>
 ".        "<style>.spoiler1 { border: 1px dotted rgba(255,255,255,0.5); }.spoiler2 { opacity: 0; }.spoiler2:hover { opacity: 1; }</style>
 ".        "<link rel='stylesheet' href='css/$themefile'>
-".        $junk ."
 ".        "</head>
 ".        "<body style=font-size:$loguser[fontsize]%>$dongs
 ".        "$L[TBL1]>

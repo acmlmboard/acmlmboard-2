@@ -82,12 +82,12 @@ else if(isset($_GET['unignore']))
 $editforumlink = "";
 
 if (has_perm('edit-forums')) {
-    $editforumlink = "<a href=manageforums.php?a=e&t=f&i=$fid>Edit Forum</a> | ";
+    $editforumlink = "<a href=\"manageforums.php?a=e&t=f&i=$fid\" class=\"editforum\">Edit Forum</a> | ";
 }
 
 if($loguser['id']!=0){
-$ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore forum</a> "
-             : "<a href=forum.php?id=$fid&amp;ignore>Ignore forum</a> ";
+$ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"unignoreforum\">Unignore forum</a> "
+             : "<a href=\"forum.php?id=$fid&amp;ignore\" class=\"ignoreforum\">Ignore forum</a> ";
 }
     $threads=$sql->query("SELECT $fieldlist t.*, 
 
@@ -105,7 +105,7 @@ $ignoreLink = $isIgnored ? "<a href=forum.php?id=$fid&amp;unignore>Unignore foru
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
-".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($fid)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=newthread.php?id=$fid&ispoll=1>New poll</a>":"")."</td>
+".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($fid)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>":"")."</td>
 ".      "$L[TBLend]
 ";
   }elseif($uid=$_GET[user]){

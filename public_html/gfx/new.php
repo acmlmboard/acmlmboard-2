@@ -41,7 +41,8 @@ switch ($type) {
 		$text="EDT";
 		break;
 
-	case "E": 
+	case "E":
+	case "!e": 
 		$fcol="R";
 		$text="EDT";
 		break;
@@ -53,6 +54,7 @@ switch ($type) {
 
 	case "X":
 	case "xh":
+	case "x!":
 		$fcol="R";
 		$text="OFF";
 		break;
@@ -74,6 +76,7 @@ switch ($type) {
 
 	case "O":
 	case "ho":  
+	case "o!": 
 		Header("Location:../img/status/offhot.png");
 		return;
 		break;
@@ -85,6 +88,7 @@ switch ($type) {
 
 	case "On":
 	case "ohn":
+	case "o!n":
 		Header("Location:../img/status/offhotnew.png");
 		return;
 		break;

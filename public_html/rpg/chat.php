@@ -7,7 +7,7 @@
 
   if($t!=''){
     $sql->query("INSERT INTO rpgchat (chan, date, user, text) "
-               ."VALUES ($r, ".ctime().", $uid, '$_GET[t]')");
+               ."VALUES ($r, ".ctime().", $uid, '".addslashes($_GET[t])."')");
   }
 
   $out='';

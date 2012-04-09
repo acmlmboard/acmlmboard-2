@@ -403,9 +403,9 @@ else
 $thumbsUp = "";
 if (has_perm('rate-thread') && $thread['user'] != $loguser['id']) {
   if(!$isThumbed)
-  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup\">+1</a>";
+  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup\" class=\"threadthumbsup\">+1</a>";
   else
-  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown\">-1</a>";
+  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown\" class=\"threadthumbsdown\">-1</a>";
 }
 
 $thumbCount = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE tid=".$tid);

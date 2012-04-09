@@ -8,9 +8,9 @@ $type = $_GET[type];
 $stoprender = false;
 header('Content-type: image/png');
 
-if ($newcount) $x=16;
+if ($newcount) $x=18;
 else $x=8;
-$y = 8*3;
+$y = 6*3;
 
 
 switch ($type) {
@@ -21,7 +21,8 @@ switch ($type) {
 
 	case "N":
 	case "hn":
-		$fcol="R";
+	case "!n":
+		$fcol="O";
 		$text="NEW";
 		break;
 
@@ -30,12 +31,18 @@ switch ($type) {
 		$text="HOT";
 		break;
 
+	case "!": 
+		$fcol="R";
+		$text=" ! ";
+		break;
+
 	case "e": 
 		$fcol="G";
 		$text="EDT";
 		break;
 
-	case "E": 
+	case "E":
+	case "!e": 
 		$fcol="R";
 		$text="EDT";
 		break;
@@ -47,6 +54,7 @@ switch ($type) {
 
 	case "X":
 	case "xh":
+	case "x!":
 		$fcol="R";
 		$text="OFF";
 		break;
@@ -68,6 +76,7 @@ switch ($type) {
 
 	case "O":
 	case "ho":  
+	case "o!": 
 		Header("Location:../img/status/offhot.png");
 		return;
 		break;
@@ -79,6 +88,7 @@ switch ($type) {
 
 	case "On":
 	case "ohn":
+	case "o!n":
 		Header("Location:../img/status/offhotnew.png");
 		return;
 		break;
@@ -98,23 +108,25 @@ $black=imagecolorallocate($im,255,0,255);
 
 imagefilledrectangle($im,0,0,$y,$x,$black);
 
- $fontcolor[Y]=fontc(255,250,240, 255,240, 80,  0, 0, 0);
- $fontcolor[R]=fontc(255,230,220, 240,160,150,  0, 0, 0);
- $fontcolor[G]=fontc(190,255,190,  60,220, 60,  0, 0, 0);
- $fontcolor[B]=fontc(160,240,255, 120,190,240,  0, 0, 0);
- $fontcolor[W]=fontc(255,255,255, 210,210,210,  0, 0, 0);
+ $fontcolor[Y]=fontcN(255,250,240, 255,240, 80,  0, 0, 0);
+ $fontcolor[R]=fontcN(255,230,220, 240,160,150,  0, 0, 0);
+ $fontcolor[G]=fontcN(190,255,190,  60,220, 60,  0, 0, 0);
+ $fontcolor[B]=fontcN(160,240,255, 120,190,240,  0, 0, 0);
+ $fontcolor[W]=fontcN(255,255,255, 210,210,210,  0, 0, 0);
+ $fontcolor[O]=fontcN(255,213,159, 255,158, 33,  0, 0, 0);
 
-if (!$stoprender) frender($im,$fontcolor[$fcol], 0, 0,0,$text);
+
+if (!$stoprender) frenderN($im,$fontcolor[$fcol], 2, 0,0,$text);
 
 switch (strlen($newcount))	{
 	case 1: 
-		$z = 8;
+		$z = 7;
 		break;
 	case 2:
 		$z = 4;
 		break;
 	default:
-		$z = 0;
+		$z = 2;
 		break;
 
 }
@@ -123,7 +135,7 @@ if ($newcount > 999 || $newcount < 0){
 	$z = 0;
 }
 
-if (!$stoprender) frender($im,$fontcolor[W], $z, 9,0,$newcount);
+if (!$stoprender) frenderN($im,$fontcolor[W], $z, 9,0,$newcount);
 
 imagecolortransparent($im,$black);
 

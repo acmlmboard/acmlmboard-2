@@ -408,7 +408,7 @@ echo "</tr>
   while($user = $sql->fetch($rBirthdays))
   {
     $b = $user['birth'];
-    if(date("m-d", $b) == date("m-d"))
+    if(date("m-d", $b) == date("m-d",ctime()))
     {
       $y = date("Y") - date("Y", $b);
       $birthdays[] = UserLink($user)." (".$y.")";

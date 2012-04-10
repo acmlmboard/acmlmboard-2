@@ -152,6 +152,7 @@
   }
 
   function amptags($post,$s){
+    if(!$post[num]) $post[num]=$post[uposts];
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
     $s=str_replace("&postnum&",$post[num],$s);
     $s=str_replace("&numdays&",floor((time()-$post[uregdate])/86400),$s);

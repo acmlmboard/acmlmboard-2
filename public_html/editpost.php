@@ -61,6 +61,7 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
            .posttoolbutton("message",";","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
+           .posttoolbutton("message","YT","[youtube]","[/youtube]","yt")
            .posttoolbutton("message","%","[svg]","[/svg]","sv");
 
 //  if($thread[minpowerreply]>$user[power]){

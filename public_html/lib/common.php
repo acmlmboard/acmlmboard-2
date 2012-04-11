@@ -224,7 +224,7 @@
 ".        "<link rel='icon' type='image/png' href='$favicon'>
 ".        "<style>.spoiler1 { border: 1px dotted rgba(255,255,255,0.5); }.spoiler2 { opacity: 0; }.spoiler2:hover { opacity: 1; }</style>
 ".        "<link rel='stylesheet' href='css/$themefile'>
-".        "<link href='prettify.css' type='text/css' rel='stylesheet' />
+".        "<link href='lib/prettify/prettify.css' type='text/css' rel='stylesheet' />
 ".        "<script type='text/javascript' src='lib/prettify/prettify.js'></script>
 ".        "</head>
 ".        "<body style=font-size:$loguser[fontsize]% onload=\"prettyPrint()\">$dongs

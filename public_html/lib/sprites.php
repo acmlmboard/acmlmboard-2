@@ -1,7 +1,7 @@
 <?php
 
 /*
- * B2Sprites subsystem by Kawa
+ * Sprites subsystem by Kawa
  *
  * Based on the dodongo thing, this is supposed to be some kind of collect and discover bullshit
  * where you sometimes randomly get some videogame beastie on the page. Clicking that beastie for

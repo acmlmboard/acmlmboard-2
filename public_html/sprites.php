@@ -45,7 +45,7 @@ if(!$log)
 	print "
 	$L[TBL1]>
 		$L[TD1c]>
-			You must be logged in to check your B2Sprites!<br>
+			You must be logged in to check your captured Sprites!<br>
 			<a href=./>Back to main</a> or <a href=login.php>login</a>
 	$L[TBLend]
 ";

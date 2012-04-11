@@ -227,7 +227,7 @@
 ".        "<link href='prettify.css' type='text/css' rel='stylesheet' />
 ".        "<script type='text/javascript' src='lib/prettify/prettify.js'></script>
 ".        "</head>
-".        "<body style=font-size:$loguser[fontsize]%>$dongs
+".        "<body style=font-size:$loguser[fontsize]% onload=\"prettyPrint()\">$dongs
 ".        "$L[TBL1]>
 ".        "  $L[TD1c] colspan=3>$boardlogo
 ".        "  $L[TR2c]>

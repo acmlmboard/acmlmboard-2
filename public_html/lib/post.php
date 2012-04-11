@@ -37,7 +37,7 @@
     $list = array("<","\\\"" ,"\\\\" ,"\\'","\r\n","[",":",")","_","@","-");
     $list2 = array("&lt;","\"","\\","\'","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
     $msg=preg_replace("'\[code\](.*?)\[/code\]'sie",
-       '\''."$L[TBL] width=90% style=\"min-width: 90%;\">$L[TR]>$L[TD3]><code style=font-size:9pt;>".'\''
+       '\''."$L[TBL] width=90% style=\"min-width: 90%;\">$L[TR]>$L[TD3]><code class='prettyprint' style=font-size:9pt;>".'\''
       .'.str_replace($list,$list2,\'\\1\').\'</code></table>\'',$msg);
 
     //[blackhole89] - [svg] tag

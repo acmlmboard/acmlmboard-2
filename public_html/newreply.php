@@ -72,7 +72,8 @@
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
            .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl");
+     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl")
+     .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
 
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 

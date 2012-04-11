@@ -61,8 +61,9 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
            .posttoolbutton("message",";","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
-           .posttoolbutton("message","YT","[youtube]","[/youtube]","yt")
-           .posttoolbutton("message","%","[svg]","[/svg]","sv");
+           .posttoolbutton("message","%","[svg]","[/svg]","sv")
+           .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl")
+           .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
 
 //  if($thread[minpowerreply]>$user[power]){
 //    if(isbanned())

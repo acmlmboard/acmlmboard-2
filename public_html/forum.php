@@ -93,7 +93,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
-    (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<'$forum[rtime]') isread":'').' '
+    (NOT ISNULL(p.id)) ispoll".($log?", (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<'$forum[rtime]') isread":'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
@@ -118,7 +118,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
 
-    (NOT ISNULL(p.id)) ispoll".($log?", ((NOT ISNULL(r.time)) OR t.lastdate<fr.time) isread":'').' '
+    (NOT ISNULL(p.id)) ispoll".($log?", (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread":'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
@@ -153,7 +153,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
 
-    (NOT ISNULL(p.id)) ispoll, f.title ftitle".($log?', ((NOT ISNULL(r.time)) OR t.lastdate<fr.time) isread':'').' '
+    (NOT ISNULL(p.id)) ispoll, f.title ftitle".($log?', (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread':'').' '
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "

@@ -123,7 +123,8 @@ $dongs = "";
 if(rand(0, 100) < $chance)
 {
 	$dongs = $monMarkup;
-	$junk .= $monScript;
+	$dongs .= $monScript;
+	//$junk .= $monScript; //Hack or not? Makes it work again.. -Emuz
 }
 
 /** ORIGINAL DODONGO CODE FOLLOWS **/

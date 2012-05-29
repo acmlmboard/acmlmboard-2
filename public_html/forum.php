@@ -290,7 +290,7 @@ echo announcement_row($fid,3,4);
       $t=$tags[$k];
       if($thread[tags] & (1<<$t[bit])) {
         if ($config[classictags]) {
-          sscanf($t[color],"%02X%02X%02X",&$r,&$g,&$b);
+	  list($r,$g,$b) = sscanf($t[color],"%02X%02X%02X"); //updated to new php syntax, call by reference is now completely removed in PHP
           if($r<128 && $g<128) { $r+=32; $g+=32; }
           $t[color2]=sprintf("%02X%02X%02X",$r,$g,$b);
           $taglist.=" <span style=\"background-repeat:repeat;background:url('gfx/tpng.php?c=$t[color]&t=105');font-size:7pt;font-family:Small Fonts,sans-serif;padding:1px 1px\">"

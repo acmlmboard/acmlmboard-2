@@ -1,6 +1,6 @@
 <?php
  require 'gfxlib.php';
-
+ $u=$_GET[u];
  if(!$u) die();
 
  $user=$sql->fetchq("SELECT u.name, u.posts, u.regdate, r.* "

@@ -1,7 +1,7 @@
 <?php
   require 'lib/common.php';
-
-  if ($action=="save"&&isadmin()) {
+  $action=$_GET[action];
+  if ($_POST[action]=="save"&&isadmin()) {
     checknumeric($_GET[id]);
     $set="";
     $id = $_GET[id];

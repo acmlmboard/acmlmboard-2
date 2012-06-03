@@ -3,7 +3,11 @@
 require 'fontlib.php';
 
 $im=imagecreatetruecolor(690,20);
-
+$n=$_GET[n];
+$b=$_GET[b];
+$g=$_GET[g];
+$r=$_GET[r];
+$z=$_GET[z];
 if($n==0) $n=1;
 
 imagealphablending($im,FALSE);

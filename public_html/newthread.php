@@ -33,7 +33,7 @@
     $type = "announcement";
     $typecap = "Announcement";
   }
-  elseif ($ispoll) {
+  elseif ($_GET[ispoll]) {
     $type = "poll";
     $typecap = "Poll";
   }

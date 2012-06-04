@@ -6,7 +6,7 @@
   require 'lib/common.php';
 
 
-
+  $page=$_GET[page];
   if(!$page)
     $page=1;
 

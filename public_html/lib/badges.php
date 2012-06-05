@@ -20,7 +20,7 @@ function perms_for_badges($userid) {
 }
 
 //**TEMP: This function directly tests the database for if a perm exists and returns if it is or not.
-function has_badge_perm($effectid, $userid) {
+function has_badge_perm($effectid, $userid=0) {
 	global $loguser;
 	if (!$userid) $userid = $loguser['id'];
 	$badgepermset = perms_for_badges($userid);

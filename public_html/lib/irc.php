@@ -267,7 +267,7 @@ function get_irc_groupname($gid) {
 	else return get_irc_usercolor().$group['title'];
 }
 
-function sendirc($text,$channel){
+function sendirc($text,$channel=null){
    global $config, $irccolor;
 
    if(!$config[enableirc]) return false;

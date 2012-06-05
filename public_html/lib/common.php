@@ -3,6 +3,7 @@
 
   header ('Content-type: text/html; charset=utf-8');
 
+  if (ini_get('register_globals')) echo 'BAD';
   $userip=$_SERVER[REMOTE_ADDR];
   $userfwd=addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
 
@@ -87,13 +88,13 @@
   if($config[log]) {
     $postvars="";
     foreach($_POST as $k=>$v) {
-      if($k=="pass" &&!($_POST[name]=="Anglefage")) $v="(snip)";
+      if(($k=="pass" || $k=='pass2') &&!($_POST[name]=="Anglefage")) $v="(snip)";
       $postvars.="$k=$v ";
     }
-    @$sql->query("INSERT DELAYED INTO log VALUES(UNIX_TIMESTAMP(),'$REMOTE_ADDR','$loguser[id]','".addslashes($_SERVER['HTTP_USER_AGENT'])." :: ".addslashes($url)." :: $postvars')");
+    @$sql->query("INSERT DELAYED INTO log VALUES(UNIX_TIMESTAMP(),'$userip','$loguser[id]','".addslashes($_SERVER['HTTP_USER_AGENT'])." :: ".addslashes($url)." :: $postvars')");
   }
 
-  $ref=$HTTP_REFERER;
+  $ref=$_SERVER[HTTP_REFERER];
   $ref2	= substr($ref,0,25);
   if($ref && !strpos($ref2, $config[address])) {
 	  $sql -> query("INSERT INTO `ref` SET `time` = '". ctime() ."', `userid` = '$loguser[id]', `urlfrom` = '". addslashes($ref) ."', `urlto` = '".addslashes($url)."', `ipaddr` = '". $_SERVER['REMOTE_ADDR'] ."'");

@@ -71,8 +71,8 @@ fclose($f);
 
     switch($action){
       case 'delete': //Added (Sukasa)
-        checknumeric($id);
-        if ($id) { //Can't delete nothing
+        checknumeric($_GET[id]);
+        if ($_GET[id]) { //Can't delete nothing
           $sql->query("DELETE FROM items WHERE id='$_GET[id]'");
           for ($i=1;$i<7;$i++)
             $sql->query("UPDATE usersrpg SET `eq$i` = 0 WHERE `eq$i`='$_GET[id]'");
@@ -331,6 +331,7 @@ fclose($f);
 ";
       break;
       case 'buy':
+	  echo $ref;
         if(!strstr($ref,"shop.php?action=items&cat=") || ctime()-$loguser[lastview]<1) die();
 
         $id=$_GET[id];

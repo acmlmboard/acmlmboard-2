@@ -3,7 +3,7 @@
 
   header ('Content-type: text/html; charset=utf-8');
 
-  $userip=$REMOTE_ADDR;
+  $userip=$_SERVER[REMOTE_ADDR];
   $userfwd=addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
 
   $url=getenv('SCRIPT_NAME');

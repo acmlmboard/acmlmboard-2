@@ -20,6 +20,7 @@
 
   //mark forum read
   if($log && $_GET[action]=='markread'){
+    $fid=$_GET[fid];
     if($fid!='all'){
       checknumeric($fid);
       //delete obsolete threadsread entries

@@ -3,7 +3,7 @@
 
   header ('Content-type: text/html; charset=utf-8');
 
-  if (ini_get('register_globals')) echo 'BAD';
+  if (ini_get('register_globals')) echo '<span style="color: red;"> Warning: register_globals is enabled.</style>';
   $userip=$_SERVER[REMOTE_ADDR];
   $userfwd=addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
 

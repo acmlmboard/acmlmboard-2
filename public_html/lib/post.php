@@ -29,35 +29,58 @@
     if ($tl) return $tl;
     else return $matches[0];
   }
-
- function postfilter($msg, $nosmilies=0){
-    global $smilies, $L, $config, $sql;
-
-    //[blackhole89] - [code] tag
-    $list = array("<","\\\"" ,"\\\\" ,"\\'","\r\n","[",":",")","_","@","-");
-    $list2 = array("&lt;","\"","\\","\'","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-    $msg=preg_replace("'\[code\](.*?)\[/code\]'sie",
-       '\''."$L[TBL] width=90% style=\"min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=font-size:9pt;>".'\''
-      .'.str_replace($list,$list2,\'\\1\').\'</code></table>\'',$msg);
-
-    //[blackhole89] - [svg] tag
-    $svgin="'<?xml version=\"1.0\" standalone=\"no\"?".">"
+  
+  function makecode($match)
+  {
+	global $L;
+	$list = array("<","\r\n","[",":",")","_","@","-");
+    $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
+  }
+  
+  function makesvg($match)
+  {
+	$svgin="<?xml version=\"1.0\" standalone=\"no\"?".">"
           ."<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n "
     ."\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"
-    ."<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"\\1\" height=\"\\2\" viewBox=\"0 0 \\1 \\2\" version=\"1.1\">'";
-    $svgout="'</svg>'";
-    $svglist1 = array("\\\"","\\\\","\\'");
-    $svglist2 = array("\"","\\","\'");
-    if(strpos($_SERVER['HTTP_USER_AGENT'],"Chrome")!==false)
-      $msg=preg_replace("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'sie",
-       '\''."<img src=\"data:image/svg+xml;base64,"
-      .'\''.".base64_encode($svgin.".'str_replace($svglist1,$svglist2,\'\\3\')'.".$svgout).".'"'
-      ."\\\"  width=".'\'\\1\' height=\'\\2\''.">\"",$msg);
-    else $msg=preg_replace("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'sie",
-       '\''."<object data=\"data:image/svg+xml;base64,"
-      .'\''.".base64_encode($svgin.".'str_replace($svglist1,$svglist2,\'\\3\')'.".$svgout).".'"'
-      ."\\\" type=\\\"image/svg+xml\\\" width=".'\'\\1\' height=\'\\2\''."></object>\"",$msg);
+    ."<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"\\1\" height=\"\\2\" viewBox=\"0 0 \\1 \\2\" version=\"1.1\">";
+    $svgout="</svg>";
+	
+	if(strpos($_SERVER['HTTP_USER_AGENT'],"Chrome")!==false)
+		return "<img src=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$match[3].$svgout))."\" width=\"{$match[1]}\" height=\"{$match[2]}\">";
+    else
+		return "<object data=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$match[3].$svgout))."\" type=\"image/svg+xml\" width=\"{$match[1]}\" height=\"{$match[2]}\"></object>";
+  }
+  
+  function makeswf($match)
+  {
+	global $L;
+	static $swfid = 0;
+	
+	// in case you wonder why there is double html escaping going on:
+	// we first escape the URL attribute, with ENT_QUOTES, to make sure that it doesn't leak out from anything
+	// and then we escape the whole link's onclick attribute so that it doesn't leak out either (this guarantees valid HTML, too)
+	return "$L[TBL]>$L[TR]>$L[TD3] width=\"{$match[1]}\" height=\"".($match[2]+4)."\" style=\"text-align:center\">
+".		"	<div style=\"padding:0px\" id=\"swf".(++$swfid)."\"></div>
+".		"	<div style=\"font-size:50px\" id=\"swf{$swfid}play\">
+".		"		<a href=\"#\" onclick=\"".htmlspecialchars("document.getElementById('swf{$swfid}').innerHTML='<embed src=\"".htmlspecialchars($match[3],ENT_QUOTES)."\" width=\"{$match[1]}\" height=\"{$match[2]}\"></embed>';document.getElementById('swf{$swfid}stop').style.display='block';document.getElementById('swf{$swfid}play').style.display='none';return false;")."\">&#x25BA;</a>
+".		"	</div>
+".		"</td>
+".		"<td style=\"vertical-align:bottom\">
+".		"	<div style=\"display:none\" id=\"swf{$swfid}stop\">
+".		"		<a href=\"#\" onclick=\"document.getElementById('swf{$swfid}').innerHTML='';document.getElementById('swf{$swfid}stop').style.display='none';document.getElementById('swf{$swfid}play').style.display='block';return false;\">&#x25A0;</a>
+".		"	</div>
+".		"</td></tr></table>";
+  }
 
+ function postfilter($msg, $nosmilies=0){
+    global $smilies, $L, $config, $sql, $swfid;
+
+    //[blackhole89] - [code] tag
+    $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
+
+    //[blackhole89] - [svg] tag
+    $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
 
     $msg=preg_replace("'\[math\](.*?)\[/math\]'sie", "mkmath('\\1')",$msg);
 
@@ -126,10 +149,7 @@
     //spam
 //    $msg=str_ireplace("posting","posting<span style=position:relative;left:-55px;top:-28px;width:0px;height:0px;vertical-align:text-bottom;display:inline-block><img src=img/rsi.png></span>",$msg);
 
-    static $swfid=0;
-    $msg=preg_replace("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'sie",
-       '\''."$L[TBL]>$L[TR]>$L[TD3] width=\\1 height='.(\\2+4).' style=\"text-align:center\"><div style=\"padding:0px\" id=swf'.".'(++$swfid)'.".'></div><div style=\"font-size:50px\" id=swf'.".'($swfid)'.".'play><a href=\"#\" onclick=\"document.getElementById(\'swf'.".'$swfid'.".'\').innerHTML=\'<embed src=\\3 width=\\1 height=\\2></embed>\';document.getElementById(\'swf'.".'$swfid'.".'stop\').style.display=\'block\';document.getElementById(\'swf'.".'$swfid'.".'play\').style.display=\'none\';return false;\">&#x25BA;</a></div></td><td style=\"vertical-align:bottom\"><div style=\"display:none\" id=swf'.".'($swfid)'.".'stop><a href=\"#\" onclick=\"document.getElementById(\'swf'.".'$swfid'.".'\').innerHTML=\'\';document.getElementById(\'swf'.".'$swfid'.".'stop\').style.display=\'none\';document.getElementById(\'swf'.".'$swfid'.".'play\').style.display=\'block\';return false;\">&#x25A0;</a></div></td></tr></table>"
-       .'\'',$msg);
+    $msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
 
 	//[KAWA] Youtube tag.
 	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si","<object width=\"425\" height=\"344\"><param name=\"movie\" value=\"http://www.youtube.com/v/\\1&amp;hl=en&amp;fs=1\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"never\"></param><embed src=\"http://www.youtube.com/v/\\1&amp;hl=en&amp;fs=1\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"never\" allowfullscreen=\"false\" width=\"425\" height=\"344\"></embed></object>", $msg);

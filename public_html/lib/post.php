@@ -82,7 +82,7 @@
     //[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
 
-    $msg=preg_replace("'\[math\](.*?)\[/math\]'sie", "mkmath('\\1')",$msg);
+    $msg=preg_replace_callback("'\[math\](.*?)\[/math\]'si", "mkmath",$msg);
 
     $msg=str_replace("\n",'<br>',$msg);
     

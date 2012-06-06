@@ -331,7 +331,6 @@ fclose($f);
 ";
       break;
       case 'buy':
-	  echo $ref;
         if(!strstr($ref,"shop.php?action=items&cat=") || ctime()-$loguser[lastview]<1) die();
 
         $id=$_GET[id];

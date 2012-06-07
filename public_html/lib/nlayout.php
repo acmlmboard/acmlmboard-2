@@ -86,19 +86,19 @@ function HTMLAttribEncode($string) {
 // (perhaps named differently, or perhaps we could reuse the functions editprofile uses)
 function RenderForm($form) {
   if ($form) {
-    $formp = '<form action=%s method=%s>%s</form>';
-    $table = '<table cellspacing=0 class=c1>%s</table>';
-    $row = '<tr>%s</tr>';
-	$rowaction = '<tr class="n1">%s</tr>';
-    $rowhead = '<tr class="h">%s</tr>';
-    $cell = '<td class="b n2">%s</td>';
-    $cellhead = '<td class="b h" colspan="2">%s</td>';
-    $celltitle = '<td align="center" class="b n1">%s</td>';
-    $cellaction = '<td class="b">%s</td>';
-    $select = '<select id=%s name=%s>%s</select>';
-    $option = '<option value=%s %s>%s</option>';
-    $input = '<input id=%s name=%s type=%s %s />';
-	$label = '<label>%s %s</label> ';
+    $formp = "<form action=%s method=%s>\n%s</form>\n";
+    $table = "\t<table cellspacing=0 class=c1>\n%s\t</table>\n";
+    $row = "\t\t<tr>\n%s\t\t</tr>\n";
+	$rowaction = "\t\t<tr class=\"n1\">\n%s\t\t</tr>\n";
+    $rowhead = "\t\t<tr class=\"h\">\n%s\t\t</tr>\n";
+    $cell = "\t\t\t<td class=\"b n2\">\n%s\t\t\t</td>\n";
+    $cellhead = "\t\t\t<td class=\"b h\" colspan=\"2\">%s</td>\n";
+    $celltitle = "\t\t\t<td align=\"center\" class=\"b n1\">%s</td>\n";
+    $cellaction = "\t\t\t<td class=\"b\">\n%s\t\t\t</td>\n";
+    $select = "\t\t\t\t<select id=%s name=%s>\n%s\t\t\t\t</select>\n";
+    $option = "\t\t\t\t\t<option value=%s %s>%s</option>\n";
+    $input = "\t\t\t\t<input id=%s name=%s type=%s %s />\n";
+	$radio = "\t\t\t\t<label><input type=\"radio\" id=%s name=%s value=%s %s /> %s</label> \n";
     $formout = '';
 
     if (isset($form['categories'])) {
@@ -115,24 +115,21 @@ function RenderForm($form) {
           else {
             $fieldout = sprintf($celltitle,'&nbsp;');
           }
-          switch ($type) {
+          switch ($type) 
+		  {
             case 'color':
               $size = 6; $length = 6;
-              $valuestring = (isset($field['value'])) ?
-                ' value='.HTMLAttribEncode($field['value']).' ' : '';
-              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,
-                'text',"size=$size maxlength=$length $valuestring"));
+              $valuestring = (isset($field['value'])) ? ' value='.HTMLAttribEncode($field['value']).' ' : '';
+              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,'text',"size=$size maxlength=$length $valuestring"));
               break;
+			  
             case 'imgref':
               $size = 40;
               $length = 60;
-              $valuestring = (isset($field['value'])) ?
-                ' value='.HTMLAttribEncode($field['value']).' ' : '';
-              
-$fieldout 
-.= sprintf($cell,sprintf($input,$fieldid,$fieldid,
-                'text',"size=$size maxlength=$length $valuestring"));
+              $valuestring = (isset($field['value'])) ? ' value='.HTMLAttribEncode($field['value']).' ' : '';
+              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,'text',"size=$size maxlength=$length $valuestring"));
               break;
+			  
             case 'numeric':
             case 'text':
               $length = (isset($field['length'])) ? $field['length'] : 60;
@@ -145,40 +142,36 @@ $fieldout
               else {
                 $size = $field['size'];
               }
-              $valuestring = (isset($field['value'])) ?
-                ' value='.HTMLAttribEncode($field['value']).' ' : '';
-              
-$fieldout 
-.= sprintf($cell,sprintf($input,$fieldid,$fieldid,
-                'text',"size=$size maxlength=$length $valuestring"));
+              $valuestring = (isset($field['value'])) ?' value='.HTMLAttribEncode($field['value']).' ' : '';
+              $fieldout .= sprintf($cell,sprintf($input,$fieldid,$fieldid,'text',"size=$size maxlength=$length $valuestring"));
 
               break;
+			  
             case 'dropdown':
               $optout = '';
               foreach($field['choices'] as $choiceid => $choice) {
-                $selected = ($field['value'] == $choiceid) ? ' 
-selected="selected" ' : '';
-                $optout .= 
-sprintf($option,HTMLAttribEncode($choiceid),$selected,$choice);
+                $selected = ($field['value'] == $choiceid) ? ' selected="selected" ' : '';
+                $optout .= sprintf($option,HTMLAttribEncode($choiceid),$selected,$choice);
               }
-              $fieldout .= 
-sprintf($cell,sprintf($select,$fieldid,$fieldid,$optout));
-              
+              $fieldout .= sprintf($cell,sprintf($select,$fieldid,$fieldid,$optout));
               break;        
+			  
 			case 'radio':
               $optout = '';
               foreach($field['choices'] as $choiceid => $choice) 
 			  {
                 $selected = ($field['value'] == $choiceid) ? ' checked="checked" ' : '';
-                $optout .= sprintf($label,sprintf($input,$fieldid.'_'.$choiceid,$fieldid,'radio',$selected),$choice);
+                $optout .= sprintf($radio,HTMLAttribEncode($fieldid.'_'.$choiceid),$fieldid,HTMLAttribEncode($choiceid),$selected,$choice);
               }
               $fieldout .= sprintf($cell,$optout);
               break; 
+			  
             case 'submit':
               $title = (isset($field['title'])) ? $field['title'] : 'Submit';
               $fieldout .= sprintf($cellaction,sprintf($input,$fieldid,$fieldid,
                 'submit','class=submit value='.HTMLAttribEncode($title)));
               break;
+			  
             default:
               $fieldout .= sprintf($cell,'&nbsp;');
               break;            

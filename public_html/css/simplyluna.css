@@ -1,0 +1,149 @@
+/* META
+Simply Luna (Lunaria)
+
+*/
+
+a:link, a:active
+{
+	color: rgba(220, 250, 255, 1);
+	font-weight:bold;
+	text-decoration:none;
+	text-shadow: rgba(220, 250, 255, 0.2) 0px 0px 4px;
+}
+a:visited
+{
+	color: rgba(100, 130, 200, 1);
+	font-weight:bold;
+	text-decoration:none;
+}
+a:hover
+{
+	color: #E0E060;
+	font-weight:bold;
+	text-shadow: #E0E000 0px 0px 9px;
+	text-decoration:none;
+}
+
+body{
+	background: rgba(20, 52, 112, 1) URL('../theme/simplyluna/bg1.png') top right no-repeat;
+	color: #FFFFFF;
+	font-family: "Tahoma", sans-serif;
+	font-size: 10pt;
+/*	text-shadow: rgba(80, 170, 210, 0.2) 0px 0px 1px; */
+	margin: 0px;
+}
+
+table{
+  color: #FFFFFF;
+  font-size: 1em;
+}
+
+table.c1{
+  width: 100%;
+/*  background: black; */
+  border: rgba(0, 0, 0, 0.9) 1px solid;
+}
+
+table.c2{
+  width: 100%;
+  border: rgba(0, 0, 0, .9) 1px solid;
+  font-size: 0.9em;
+}
+
+tr.h{
+	background:  url('../theme/simplyluna/bar1.png');  
+	text-align: center;
+	font-size: 8pt;
+	font-weight:bold;
+	border: 0px none #000000;
+}
+
+tr.c{
+	background: url('../theme/simplyluna/bar2.png');  
+	text-align: center;
+	color: #FFFFFF;
+	font-size: 8pt;
+	font-weight:bold;
+	border-top: 0px none;
+	border-bottom: 0px none;
+}
+
+td.b{
+  border-left: rgba(0, 0, 0, 0.8) 1px solid;
+  border-top:  rgba(0, 0, 0, 0.8) 1px solid;
+  padding: 1px;
+}
+
+td.nb{
+  border: 0px none;
+  padding: 1px;
+}
+
+td.h{
+  border-left: 0;
+  border-right: 0;
+  padding: 1px;
+}
+
+tr.n1{
+  background: url('../theme/simplyluna/bg2.png');
+}
+td.n1{
+  background: url('../theme/simplyluna/bg2.png');
+}
+
+tr.n2{
+  background: rgba(0, 0, 0, .5);
+}
+td.n2{
+  background: rgba(0, 0, 0, .5);
+}
+
+tr.n3,td.n3{
+  background: rgba(0, 0, 0, .5);
+}
+
+.sfont{
+  font-size: 0.8em;
+}
+
+textarea,input,select{
+  border:    rgba(224, 224, 20, .2) ridge 2px;
+  background:#000000;
+  color:     #D0D0D0;
+  font: 1em verdana;
+}
+
+.radio{
+  border: none;
+  background: none;
+  color: #DDDDDD;
+  font: 1em verdana;
+}
+
+.submit{
+  border: rgba(0, 0, 0, .5) ridge 2px;
+  color: #D0D0D0;
+  font-weight: bold;
+}
+
+/*
+ins{
+  background: #FF0000); /* unused for end users */
+  border: 1px #F0A050 dashed;
+  text-decoration: none;
+  color: #40FF30;
+}
+
+del{
+  background: #FF0000; /* unused for end users */
+  border: 1px #003010 dashed;
+  text-decoration: none;
+  color: #FF4000;
+}
+*/
+.nc0x{color:#555555} .nc1x{color:#555555} .nc2x{color:#555555}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#6C40A0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

@@ -194,10 +194,14 @@ function RenderActions($actions,$ret = false) {
   $out = '';
   $i = 0;
   foreach ($actions as $action) {
-    if ($action['confirm'] == true) {
-      $href = "javascript:if(confirm('Are you sure you want to 
-".$action['title']."?')){window.location.href='".$action['href']."';} else 
-{void('');};";
+    if ($action['confirm']) 
+	{
+	  if ($action['confirm'] == true)
+		$confirmmsg = 'Are you sure you want to '.$action['title'].'?';
+	  else
+		$confirmmsg = str_replace("'", "\\'", $action['confirm']);
+		
+      $href = "javascript:if(confirm('".$confirmmsg."')){window.location.href='".$action['href']."';} else {void('');};";
     }
     else {
       $href = $action['href'];

@@ -196,7 +196,7 @@ function RenderActions($actions,$ret = false) {
   foreach ($actions as $action) {
     if ($action['confirm']) 
 	{
-	  if ($action['confirm'] == true)
+	  if ($action['confirm'] === true)
 		$confirmmsg = 'Are you sure you want to '.$action['title'].'?';
 	  else
 		$confirmmsg = str_replace("'", "\\'", $action['confirm']);

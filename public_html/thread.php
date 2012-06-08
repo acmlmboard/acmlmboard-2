@@ -270,8 +270,8 @@ if($_COOKIE['pstbon']>=1){
                       ) -1;
   }
   elseif($viewmode == "time") {
-    checknumeric($time);
-    $mintime=ctime()-$time;
+    checknumeric($timeval);
+    $mintime=ctime()-$timeval;
 
     pageheader('Latest posts');
 

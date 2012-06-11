@@ -205,7 +205,12 @@ if (has_perm("edit-users"))
 ".        " </form>
 ".        "$L[TBLend]
 ";
-  }elseif($act=='Edit profile'){
+  }
+  elseif($act=='Edit profile')
+  {
+	// TODO: when an error is detected, return the user to the form, with their changes still in,
+	// and an error message somewhere near the erroring fields, rather than wiping the erroring
+	// fields and applying the changes
 
     $minipic='minipic';
     if($fname=$_FILES[minipic][name]){
@@ -330,10 +335,11 @@ if (has_perm("edit-users"))
     $pass=$_POST[pass];
     if(!strlen($_POST[pass2])) $pass="";
     $tztotal=$_POST[tzoffH]*3600+$_POST[tzoffM]*60*($_POST[tzoffH]<0?-1:1);
-    if(!$birthM && !$birthD && !$birthY)
+    if(!$_POST[birthM] && !$_POST[birthD] && !$_POST[birthY])
       $birthday=-1;
     else
-      $birthday=mktime(0,0,0,$birthM,$birthD,$birthY);
+      $birthday=@mktime(0,0,0,$_POST[birthM],$_POST[birthD],$_POST[birthY]);
+	if ($birthday === FALSE) $birthday = -1;
 
     $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);

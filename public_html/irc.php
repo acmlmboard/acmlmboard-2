@@ -1,9 +1,10 @@
 <?php
 	require 'lib/common.php';
 	pageheader();
+	
+	$server = (int)$_GET['server'];
 
-//	$servers[1]		= "irc.nolimitzone.com"; //the round robin is fucking up, 
-apparently.
+//	$servers[1]		= "irc.nolimitzone.com"; //the round robin is fucking up, apparently.
 	$servers[1]		= "akaneiro.irc.nolimitzone.com";
 	$servers[2]		= "kuroi.irc.nolimitzone.com";
 	if ($server > count($servers) || $server <= -1) $server = 0;

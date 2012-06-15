@@ -1,14 +1,5 @@
 <?php
   require 'lib/common.php';
-  
-/*
-[02:57:12]	Emuz	x_perm - the table assigning the specific permission to a user/forum/group via g/f/uid and x_type (group, forum, user)
-[02:59:05]	Emuz	group - holds primary and secondary groups. Primary are selectable in the editprofile and are the user color definitions. Secondary are used to give rights and access without changing the main group etc. just like you'd expect
-[02:59:20]	Emuz	they inhert from the previous group/sub group
-[03:00:16]	Emuz	perm - I am 80% sure it is ment to be a list for any future editor for the perms. It's not really in code as of yet
-[03:00:47]	Emuz	permbind - list of what perms can bind to for the editor
-[03:01:08]	Emuz	permcat - Sort catagory for the editor for perms
-*/
 
   if (!has_perm('edit-groups'))
   {

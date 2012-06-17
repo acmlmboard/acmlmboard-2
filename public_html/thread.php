@@ -174,7 +174,11 @@ if($_COOKIE['pstbon']>=1){
 		  
 		  $redir = 'Location: thread.php?';
 		  if ($pid) $redir .= "pid={$pid}#{$pid}";
-		  else $redir .= 'id='.$tid;
+		  else 
+		  {
+			$redir .= 'id='.$tid;
+			if (isset($_REQUEST['page'])) $redir .= '&page='.$_REQUEST['page'];
+		  }
 		  die(header($redir));
         }
       }

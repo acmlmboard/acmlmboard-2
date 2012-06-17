@@ -36,10 +36,12 @@
   elseif ($_GET[ispoll]) {
     $type = "poll";
     $typecap = "Poll";
+	$ispoll = 1;
   }
   else {
     $type = "thread";
     $typecap = "Thread";
+	$ispoll = 0;
   }
 
 
@@ -236,7 +238,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        "  $L[TD2]>$L[INPt]=numopts size=2 maxlength=2 value=\"".htmlval($_POST[numopts])."\"><br><font class=sfont>Press Preview to update the number of fields displayed.</font></td>
 ".        "  $L[INPh]=noptcache value=$numopts>
 ";
-      for($i=$noptcache;$i<$numopts;++$i){
+      for($i=$_POST['noptcache'];$i<$numopts;++$i){
         $_POST["r$i"]=rand(0,255);
         $_POST["g$i"]=rand(0,255);
         $_POST["b$i"]=rand(0,255);
@@ -334,8 +336,8 @@ if (!$announce)   {
     if($ispoll)
     {
 //      $multivote=0;
-      $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'".htmlentities($question)."','$multivote','$changeable')");
-      for($i=0;$i<$numopts;++$i)
+      $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'".htmlentities($_POST['question'])."','{$_POST['multivote']}','{$_POST['changeable']}')");
+      for($i=0;$i<$_POST['numopts'];++$i)
         $sql->query("INSERT INTO polloptions (`poll`,`option`,r,g,b) VALUES ($tid,'".htmlentities($_POST["opt$i"])."','".htmlentities($_POST["r$i"])."','".htmlentities($_POST["g$i"])."','".htmlentities($_POST["b$i"])."')");
     }
 

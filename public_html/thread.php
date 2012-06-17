@@ -151,6 +151,35 @@ if($_COOKIE['pstbon']>=1){
     }
 
 
+	if($thread[ispoll])
+    {
+      if($_GET['act']=="vote" && $log)
+      {
+		$vote=unpacksafenumeric($_GET['vote']);
+        if($vote > -1) 
+		{
+          if($thread[multivote]){
+            if($thread[changeable]) {
+              //changeable multivotes toggle
+              $res=$sql->query("DELETE FROM pollvotes WHERE user='$loguser[id]' AND id='$vote'");
+              if(!mysql_affected_rows()) $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
+            } else $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
+          } else if($thread[changeable]) {
+            $sql->query("DELETE v FROM pollvotes v LEFT JOIN polloptions o ON o.id=v.id WHERE v.user=$loguser[id] AND o.poll=$tid");
+            $sql->query("INSERT INTO pollvotes VALUES($vote,$loguser[id])");
+          } else {
+	    $res=$sql->resultq("SELECT COUNT(*) FROM pollvotes v LEFT JOIN polloptions o ON o.id=v.id WHERE v.user='$loguser[id]' AND o.poll=$tid"); 
+	    if(!$res) $sql->query("INSERT INTO pollvotes VALUES($vote,$loguser[id])");
+          }
+		  
+		  $redir = 'Location: thread.php?';
+		  if ($pid) $redir .= "pid={$pid}#{$pid}";
+		  else $redir .= 'id='.$tid;
+		  die(header($redir));
+        }
+      }
+	}
+
     $feedicons.=feedicon("img/rss3.png","rss.php?thread=$thread[id]","RSS feed for this thread");
     $feedicons.=feedicon("img/rss2.png","rss.php?forum=$thread[forum]","RSS feed for this section");
     
@@ -340,28 +369,6 @@ if($_COOKIE['pstbon']>=1){
     }
     if($thread[ispoll])
     {
-      if($act=="vote" && $log)
-      {
-	$vote=unpacksafenumeric($vote);
-        if($vote==-1) {
-//          echo $vote[0].",".$vote[1];
-//          die();
-        } else {
-          if($thread[multivote]){
-            if($thread[changeable]) {
-              //changeable multivotes toggle
-              $res=$sql->query("DELETE FROM pollvotes WHERE user='$loguser[id]' AND id='$vote'");
-              if(!mysql_affected_rows()) $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
-            } else $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
-          } else if($thread[changeable]) {
-            $sql->query("DELETE v FROM pollvotes v LEFT JOIN polloptions o ON o.id=v.id WHERE v.user=$loguser[id] AND o.poll=$tid");
-            $sql->query("INSERT INTO pollvotes VALUES($vote,$loguser[id])");
-          } else {
-	    $res=$sql->resultq("SELECT COUNT(*) FROM pollvotes v LEFT JOIN polloptions o ON o.id=v.id WHERE v.user='$loguser[id]' AND o.poll=$tid"); 
-	    if(!$res) $sql->query("INSERT INTO pollvotes VALUES($vote,$loguser[id])");
-          }
-        }
-      }
       $poll=
           "<br>$L[TBL1]>
 ".        "  $L[TR1]>
@@ -373,7 +380,7 @@ if($_COOKIE['pstbon']>=1){
       while($opt=$sql->fetch($opts))
       {
         $h=$opt[s]?"*":"";
-	$cond=($thread[multivote]&&!$opt[s])||$thread[changeable]||!$mytotal;
+	$cond=$log&&(($thread[multivote]&&!$opt[s])||$thread[changeable]||!$mytotal);
         $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote=".urlencode(packsafenumeric($opt[id])).">"):"").$opt[option].($cond?"</a>":"")." $h$L[TD3]><img src=gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]>";
       }
       $poll.=

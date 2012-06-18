@@ -45,7 +45,6 @@
   }
 
 
-
   $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
 if($act!="Submit" || $loguser[redirtype]==0){
   pageheader("New $type",$forum[id]);
@@ -63,6 +62,13 @@ if($act!="Submit" || $loguser[redirtype]==0){
            .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
      .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl")
      .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
+	 
+	if ($ispoll)
+	{
+		echo '<script type="text/javascript" src="jscolor/jscolor.js"></script>';
+		echo '<script type="text/javascript" src="polleditor.js"></script>';
+		$optfield = '<div><input type="text" name="opt[]" size=40 maxlength=40 value="%s"> - Color: <input class="color" name="col[]" value="%02X%02X%02X"> - <button class="submit" onclick="removeOption(this.parentNode);return false;">Remove</button></div>';
+	}
 }
   $tagsin="";
   $t=$sql->query("SELECT * FROM tags WHERE fid=$fid");
@@ -110,13 +116,13 @@ if($act!="Submit" || $loguser[redirtype]==0){
     if(strlen(trim(str_replace(" ","",$title)))<4)
       $err="    You need to enter a longer $type title.<br>
 ".         "    $forumlink";
-    if($ispoll && ($_POST[numopts]<1 || !isset($_POST[numopts])))
-      $err="    You must add options to your poll.<br>
+    if($ispoll && count($_POST['opt']) < 2)
+      $err="    You must add atleast two choices to your poll.<br>
 ".         "    $forumlink";
     else if($ispoll) {
-      for($i=0;$i<$_POST[numopts];++$i)
-        if($_POST["opt$i"]=="" || $_POST["r$i"]=="" || $_POST["g$i"]=="" || $_POST["b$i"]=="")
-          $err="You must fill in all poll options' fields.<br>
+      foreach ($_POST['opt'] as $id => $text)
+        if(trim($text) == '' || $_POST['col'][$id] == '')
+          $err="You must fill in all poll choices' fields.<br>
 ".             "$forumlink";
     }
   }
@@ -150,9 +156,12 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        "  $L[TD1c]>Poll question:</td>
 ".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
 ".        "$L[TR]>
-".        "  $L[TD1c]>Number of options:</td>
-".        "  $L[TD2]>$L[INPt]=numopts size=2 maxlength=2 value=\"".htmlval($_POST[numopts])."\"><br><font class=sfont>Press Preview to update the number of fields displayed.</font></td>
-".        "  $L[INPh]=noptcache value=0>
+".        "  $L[TD1c]>Poll choices:</td>
+".        "  $L[TD2]><div id=\"polloptions\">
+".        "    ".sprintf($optfield, '', rand(0,255), rand(0,255), rand(0,255))."
+".        "    ".sprintf($optfield, '', rand(0,255), rand(0,255), rand(0,255))."
+".        "  </div>
+".        "  $L[BTTn]=addopt onclick=\"addOption();return false;\">Add choice</button></td>
 ".        "$L[TR]>
 ".             "  $L[TD1c]>Options:</td>
 ".             "  $L[TD2]>$L[INPc]=multivote value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable checked value=1 id=ch><label for=ch>Allow changing one's vote</label>
@@ -160,10 +169,10 @@ if($act!="Submit" || $loguser[redirtype]==0){
     }
     print "$top
 ".        "<br><br>
-".        "$L[TBL1]>
-".        " <form action=newthread.php?ispoll=$ispoll method=post>
+".        "<form action=newthread.php?ispoll=$ispoll method=post>
+".        " $L[TBL1]>
 ".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Thread</td>
+".        "    $L[TDh] colspan=2>$typecap</td>
 ";
     if(!$log)
     print "  $L[TR]>
@@ -204,8 +213,8 @@ if($act!="Submit" || $loguser[redirtype]==0){
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
-".        " </form>
-".        "$L[TBLend]
+".        " $L[TBLend]
+".        "</form>
 ";
   }elseif($act=='Preview'){
     $_POST[title]  =stripslashes($_POST[title]);
@@ -234,26 +243,24 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        "  $L[TD1c]>Poll question:</td>
 ".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
 ".        "$L[TR]>
-".        "  $L[TD1c]>Number of options:</td>
-".        "  $L[TD2]>$L[INPt]=numopts size=2 maxlength=2 value=\"".htmlval($_POST[numopts])."\"><br><font class=sfont>Press Preview to update the number of fields displayed.</font></td>
-".        "  $L[INPh]=noptcache value=$numopts>
+".        "  $L[TD1c]>Poll choices:</td>
+".        "  $L[TD2]><div id=\"polloptions\">
 ";
-      for($i=$_POST['noptcache'];$i<$numopts;++$i){
-        $_POST["r$i"]=rand(0,255);
-        $_POST["g$i"]=rand(0,255);
-        $_POST["b$i"]=rand(0,255);
-      }
-      for($i=0;$i<$numopts;++$i){
-        $_POST["opt$i"]=stripslashes($_POST["opt$i"]);
-        $pollin.="$L[TR]>$L[TD1c]>Option ".($i+1).":</td>"
-                       ."$L[TD2] >$L[INPt]=opt$i size=40 maxlength=40 value=\"".htmlval($_POST["opt$i"])."\">"
-                                ." - RGB color: $L[INPt]=r$i size=3 maxlength=3 value=\"".htmlval($_POST["r$i"])."\">"
-                                              ."$L[INPt]=g$i size=3 maxlength=3 value=\"".htmlval($_POST["g$i"])."\">"
-                                              ."$L[INPt]=b$i size=3 maxlength=3 value=\"".htmlval($_POST["b$i"])."\">";
-	 $pollprev.="$L[TR2]>$L[TD2]>".htmlval($_POST["opt$i"])." $h$L[TD3]><img src=gfx/bargraph.php?z=1&n=1&r=".htmlval($_POST["r$i"])."&g=".htmlval($_POST["g$i"])."&b=".htmlval($_POST["b$i"]).">";
+
+      foreach ($_POST['opt'] as $id => $text)
+	  {
+        $text = htmlval(stripslashes($text));
+		
+		$color = stripslashes($_POST['col'][$id]);
+		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
+		
+        $pollin .= "    ".sprintf($optfield, $text, $r, $g, $b)."\n";
+		$pollprev .= "$L[TR2]>$L[TD2]>{$text} $h$L[TD3]><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
 
       }
-      $pollin.="$L[TR]>
+      $pollin.="  </div>
+".             "  $L[BTTn]=addopt onclick=\"addOption();return false;\">Add choice</button></td>
+".             "$L[TR]>
 ".             "  $L[TD1c]>Options:</td>
 ".             "  $L[TD2]>$L[INPc]=multivote ".($_POST[multivote]?"checked":"")." value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable ".($_POST[changeable]?"checked":"")." value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
@@ -268,8 +275,8 @@ $pollprev.="$L[TBLend]";
 ".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
-".        "$L[TBL1]>
-".        " <form action=newthread.php?ispoll=$ispoll method=post>
+".        "<form action=newthread.php?ispoll=$ispoll method=post>
+".        " $L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>$typecap</td>
 ".        "  $L[TR]>
@@ -298,8 +305,8 @@ $pollprev.="$L[TBLend]";
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
-".        " </form>
-".        "$L[TBLend]
+".        " $L[TBLend]
+".        "</form>
 ";
   }elseif($act=='Submit'){
     if(!($iconurl=$_POST[iconurl]))
@@ -335,10 +342,15 @@ if (!$announce)   {
 
     if($ispoll)
     {
-//      $multivote=0;
-      $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'".htmlentities($_POST['question'])."','{$_POST['multivote']}','{$_POST['changeable']}')");
-      for($i=0;$i<$_POST['numopts'];++$i)
-        $sql->query("INSERT INTO polloptions (`poll`,`option`,r,g,b) VALUES ($tid,'".htmlentities($_POST["opt$i"])."','".htmlentities($_POST["r$i"])."','".htmlentities($_POST["g$i"])."','".htmlentities($_POST["b$i"])."')");
+      $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'{$_POST['question']}','{$_POST['multivote']}','{$_POST['changeable']}')");
+	  
+      foreach ($_POST['opt'] as $id => $text)
+	  {
+	    $color = stripslashes($_POST['col'][$id]);
+		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
+		
+        $sql->query("INSERT INTO polloptions (`poll`,`option`,r,g,b) VALUES ($tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
+	  }
     }
 
     // bonus shit

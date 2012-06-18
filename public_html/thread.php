@@ -376,7 +376,7 @@ if($_COOKIE['pstbon']>=1){
       $poll=
           "<br>$L[TBL1]>
 ".        "  $L[TR1]>
-".        "    $L[TD1] colspan=2>$thread[question]
+".        "    $L[TD1] colspan=2>".htmlval($thread[question])."
 ";
       $opts=$sql->query("SELECT o.*,(COUNT(*) & (NOT ISNULL(v.user))*1023) c,((NOT ISNULL(w.user))*1) s FROM polloptions o LEFT JOIN pollvotes v ON v.id=o.id LEFT JOIN pollvotes w ON w.user='$loguser[id]' AND w.id=o.id WHERE poll=$tid GROUP BY o.id");
       $total=$sql->resultq("SELECT COUNT(DISTINCT v.user) FROM polloptions o, pollvotes v WHERE o.poll=$tid AND v.id=o.id");
@@ -385,7 +385,7 @@ if($_COOKIE['pstbon']>=1){
       {
         $h=$opt[s]?"*":"";
 	$cond=$log&&(($thread[multivote]&&!$opt[s])||$thread[changeable]||!$mytotal);
-        $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote=".urlencode(packsafenumeric($opt[id])).">"):"").$opt[option].($cond?"</a>":"")." $h$L[TD3]><img src=gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]>";
+        $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote=".urlencode(packsafenumeric($opt[id])).">"):"").htmlval($opt[option]).($cond?"</a>":"")." $h$L[TD3]><img src=\"gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]\">";
       }
       $poll.=
           "  $L[TR2]>$L[TDs] colspan=2>Multiple voting is ".($thread[multivote]?"":"not")." allowed. Changing your vote is ".($thread[changeable]?"":"not")." allowed. $total ".($total==1?"user has":"users have")." voted so far.

@@ -116,7 +116,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
     if(strlen(trim(str_replace(" ","",$title)))<4)
       $err="    You need to enter a longer $type title.<br>
 ".         "    $forumlink";
-    if($ispoll && count($_POST['opt']) < 2)
+    if($ispoll && (!isset($_POST['opt']) || count($_POST['opt']) < 2))
       $err="    You must add atleast two choices to your poll.<br>
 ".         "    $forumlink";
     else if($ispoll) {
@@ -247,17 +247,21 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        "  $L[TD2]><div id=\"polloptions\">
 ";
 
-      foreach ($_POST['opt'] as $id => $text)
+      if (isset($_POST['opt']))
 	  {
-        $text = htmlval(stripslashes($text));
-		
-		$color = stripslashes($_POST['col'][$id]);
-		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
-		
-        $pollin .= "    ".sprintf($optfield, $text, $r, $g, $b)."\n";
-		$pollprev .= "$L[TR2]>$L[TD2]>{$text} $h$L[TD3]><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
+		  foreach ($_POST['opt'] as $id => $text)
+		  {
+			$text = htmlval(stripslashes($text));
+			
+			$color = stripslashes($_POST['col'][$id]);
+			list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
+			
+			$pollin .= "    ".sprintf($optfield, $text, $r, $g, $b)."\n";
+			$pollprev .= "$L[TR2]>$L[TD2]>{$text} $h$L[TD3]><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
 
-      }
+		  }
+	  }
+	  
       $pollin.="  </div>
 ".             "  $L[BTTn]=addopt onclick=\"addOption();return false;\">Add choice</button></td>
 ".             "$L[TR]>

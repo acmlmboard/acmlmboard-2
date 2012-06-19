@@ -2,6 +2,8 @@
   require 'lib/common.php';
   pageheader('Memberlist');
 
+  $sort = $_REQUEST['sort'];
+  $sex = $_REQUEST['sex'];
   $pow = $_REQUEST['pow'];
   $ppp = $_REQUEST['ppp'];
   $page = $_REQUEST['page'];

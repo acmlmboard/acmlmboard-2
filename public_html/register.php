@@ -118,59 +118,64 @@ if ($regdis[intval] == 1)
     }else{
 	  $name = mysql_real_escape_string($name);
 	  
-      $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone) VALUES "
+      $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone) VALUES "
                  ."('{$name}','".md5($_POST[pass].$pwdsalt)."',"
                  .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}')");
-      $id=mysql_insert_id();
+	  if ($res)
+	  {
+		  $id=mysql_insert_id();
 
 
-      $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
-      
-/*      //[KAWA] Give tokens. WHY WASN'T THIS IN HERE SOONER XD
-      $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 1)"); */
+		  $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
+		  
+	/*      //[KAWA] Give tokens. WHY WASN'T THIS IN HERE SOONER XD
+		  $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 1)"); */
 
-      $ugid = 0;
-      if ($id == 1) {
-//        $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 5)"); 
-          $row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?",array(-1));
-          $ugid = $row['id'];
-      }
+		  $ugid = 0;
+		  if ($id == 1) {
+	//        $sql->query("INSERT INTO usertokens (u, t) VALUES ($id, 5)"); 
+			  $row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?",array(-1));
+			  $ugid = $row['id'];
+		  }
 
-        /*//[KAWA] First gets root. Is that okay or should it be Admin (3)?*/
+			/*//[KAWA] First gets root. Is that okay or should it be Admin (3)?*/
 
 
-      else{ //assign default
-        $row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?",array(1));
-        $ugid = $row['id'];
-      }
-       $sql->prepare("UPDATE users SET group_id=? WHERE id=?",array($ugid,$id));
+		  else{ //assign default
+			$row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?",array(1));
+			$ugid = $row['id'];
+		  }
+		   $sql->prepare("UPDATE users SET group_id=? WHERE id=?",array($ugid,$id));
 
-      /* count matches for IP and hash */
-      //hash
-      $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($_POST[pass].$pwdsalt)."'");
-      $m_hash=$a[c]-1;
-      //split the IP
-      $ipparts=explode(".",$userip);
-      // /32 matches
-      $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip='$userip'");
-      $m_ip32=$a[c]-1;
-      // /24
-      $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].$ipparts[2].%'");
-      $m_ip24=$a[c]-1;
-      // /16
-      $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].%'");
-      $m_ip16=$a[c]-1;
+		  /* count matches for IP and hash */
+		  //hash
+		  $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($_POST[pass].$pwdsalt)."'");
+		  $m_hash=$a[c]-1;
+		  //split the IP
+		  $ipparts=explode(".",$userip);
+		  // /32 matches
+		  $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip='$userip'");
+		  $m_ip32=$a[c]-1;
+		  // /24
+		  $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].$ipparts[2].%'");
+		  $m_ip24=$a[c]-1;
+		  // /16
+		  $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].%'");
+		  $m_ip16=$a[c]-1;
 
-      //fancy colouring (if matches exist, make it red); references to make foreach not operate on copies
-      $clist = array(&$m_hash, &$m_ip32, &$m_ip24, &$m_ip16);
-      foreach($clist as &$c)
-        if($c>0) $c="{irccolor-no}$c"; else $c="{irccolor-yes}$c";
+		  //fancy colouring (if matches exist, make it red); references to make foreach not operate on copies
+		  $clist = array(&$m_hash, &$m_ip32, &$m_ip24, &$m_ip16);
+		  foreach($clist as &$c)
+			if($c>0) $c="{irccolor-no}$c"; else $c="{irccolor-yes}$c";
 
-      sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id");
-      sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id{irccolor-base} - [".$userip." - \x033matches {irccolor-base}(\x033#{irccolor-base},\x033/32{irccolor-base},\x033/24{irccolor-base},\x033/16{irccolor-base}){irccolor-url}: {irccolor-base}($m_hash{irccolor-base},$m_ip32{irccolor-base},$m_ip24{irccolor-base},$m_ip16{irccolor-base})]",$config[staffchan]);
+		  sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id");
+		  sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id{irccolor-base} - [".$userip." - \x033matches {irccolor-base}(\x033#{irccolor-base},\x033/32{irccolor-base},\x033/24{irccolor-base},\x033/16{irccolor-base}){irccolor-url}: {irccolor-base}($m_hash{irccolor-base},$m_ip32{irccolor-base},$m_ip24{irccolor-base},$m_ip16{irccolor-base})]",$config[staffchan]);
 
-      $print="  You are now registered!<br>
-".           "  ".redirect('login.php','login');
+		  $print="  You are now registered!<br>
+".           	 "  ".redirect('login.php','login');
+	  }
+	  else
+		$print="Registration failed: ".mysql_error();
     }
     $print="  $L[TD1c]>$print</td>";
   }

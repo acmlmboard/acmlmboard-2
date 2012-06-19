@@ -113,14 +113,14 @@ tr.c td {
 tr.h td, tr.c td {
 	text-align: center;
 }
-textarea, input, select {
+textarea, input, select, button {
 	border: 1px solid #$tableheadbg;
 	background-color: #000000;
 	color: #E0E0E0;
 	font-family: arial, sans-serif;
 	font-size: 1em;
 }
-input.submit {
+.submit {
 	border: 2px solid #$tableheadbg;
 }
 input.radio {

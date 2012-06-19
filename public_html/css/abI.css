@@ -62,7 +62,7 @@ tr.h td, tr.c td
 	color: #FFFFFF;
 }
 
-textarea, input, select 
+textarea, input, select, button
 {
 	border: 1px solid #0070C0;
 	background-color: black;
@@ -71,7 +71,7 @@ textarea, input, select
 	font-size: 1em;
 }
 
-input.submit 
+.submit 
 {
 	border: 2px solid #0070C0;
 }

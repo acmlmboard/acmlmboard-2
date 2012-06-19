@@ -126,7 +126,7 @@ border-spacing: 2px;
 font-size: 0.8em; 
 } 
 
-select,textarea,input{ 
+select,textarea,input,button{ 
 font-size: 11px; 
 font-family: verdana, helvetica, sans-serif; 
 vertical-align: middle; 
@@ -141,7 +141,7 @@ background: none;
 color: #000000; 
 } 
 
-input.submit{ 
+.submit{ 
 border: 3px solid #B4FF00; 
 } 
 

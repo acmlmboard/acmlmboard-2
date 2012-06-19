@@ -107,7 +107,7 @@ tr.n3,td.n3{
   font-size: 0.8em;
 }
 
-textarea,input,select{
+textarea,input,select,button{
   border:    rgba(224, 224, 20, .2) ridge 2px;
   background:#000000;
   color:     #D0D0D0;

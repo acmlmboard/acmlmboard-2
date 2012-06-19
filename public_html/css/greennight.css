@@ -61,7 +61,7 @@ tr.h td, tr.c td
 	text-align: center;
 }
 
-textarea, input, select 
+textarea, input, select, button 
 {
 	border: 1px solid #208000;
 	background-color: black;
@@ -70,7 +70,7 @@ textarea, input, select
 	font-size: 1em;
 }
 
-input.submit 
+.submit
 {
 	border: 2px solid #208000;
 }

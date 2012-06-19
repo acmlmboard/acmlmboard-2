@@ -82,11 +82,15 @@ tr.n3,td.n3{
   font-size: 0.8em;
 }
 
-textarea,input,select{
+textarea,input,select,button{
   border:    #777777 ridge 2px;
-  background:#1F1828 url(../theme/notpurple/tdt5.png) top repeat-x;;
+  background:#1F1828 url(../theme/notpurple/tdt5.png) top repeat-x;
   color:     #FFFFFF;
   font: 1em verdana;
+}
+
+input.color{
+  background-image:none;
 }
 
 .radio{

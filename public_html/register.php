@@ -88,8 +88,8 @@ if ($regdis[intval] == 1)
   }elseif($act=='Register'){
     $name=trim(stripslashes($_POST[name]));
 
-    $cname=str_replace(array(' ',"\xC2\xA0"),'',$cname);
-	$cname=strtolower($name);
+    $cname=str_replace(array(' ',"\xC2\xA0"),'',$name);
+	$cname=strtolower($cname);
 
     $dupe=$sql->resultp("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", array($cname,$cname));
 	

@@ -21,11 +21,6 @@ if ($regdis[intval] == 1)
   die();
 }
 
-  if ($_POST['pass'] == "itsatest") {
-	  header("Location: http://board.acmlm.org/register.php");
-	  die();
-  }
-
   	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
   	$puzzleAnswer = 42;
   	//$puzzleAnswer = 9001;
@@ -43,30 +38,12 @@ if ($regdis[intval] == 1)
   	$puzzle = $puzzleVariations[array_rand($puzzleVariations)];
 
 
-  //proxy check
-  function chkproxy()
-  {
-    global $err;
-    $f=@fopen("http://".$_SERVER['REMOTE_ADDR']."/","r");
-    $d=@fread($f,4096);
-    if(strpos($d,"Apache is working on your cPanel")) {
-      $err="You appear to be connecting from an open proxy server. If that is not the case, stop any HTTP daemons running on port 80 and retry.";
-    }
-    @fclose($f);
-  }
-
   function randstr($l)
   {
     $str="";
     $chars="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz$+/~";
     for($i=0;$i<$l;++$i) $str.=$chars[rand(0, strlen($chars)-1)];
     return $str;
-  }
-
-  // SamuraiHax
-  if($_POST['pass'] == "asdf") {
-	setcookie("dumb", "1", time()+999999);
-	die();
   }
 
   $act=$_POST[action];
@@ -88,9 +65,6 @@ if ($regdis[intval] == 1)
 ".         "    $L[TDh] colspan=2>Register</td>
 ".         "  $L[TR]>
 ".         "    $L[TD1c] width=120>&nbsp;</td>
-".         "    $L[TD2]><font class='sfont'><h3><b>Notice:</b> Registration may take up to a minute to process.</h3></font>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>&nbsp;</td>
 ".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
 ".         "  $L[TR]>
 ".         "    $L[TD1c] width=120>Username:</td>
@@ -101,8 +75,8 @@ if ($regdis[intval] == 1)
 ".         "  $L[TR]>
 ".         "    $L[TD1c]>Password (again):</td>
 ".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
-".           fieldrow('Sex'             ,fieldoption('sex',$user[sex],$listsex))."
-".           fieldrow('Timezone'      ,fieldselect('timezone',$user['timezone'],$listtimezones))."
+".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
+".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
 ".         "  $L[TR]>
 ".         "    $L[TD1c] width=120>$puzzle</td>
 ".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
@@ -112,34 +86,22 @@ if ($regdis[intval] == 1)
 ".         " </form>
 ";
   }elseif($act=='Register'){
-    $_POST[name]=$name=trim($_POST[name]);
+    $name=trim(stripslashes($_POST[name]));
 
-    $cname=strtolower($name);
-    $cname=str_replace(' ','',$cname);
-    $cname=str_replace(' ','',$cname);
+    $cname=str_replace(array(' ',"\xC2\xA0"),'',$cname);
+	$cname=strtolower($name);
 
-    $users=$sql->query('SELECT name, displayname FROM users');
-    while($user=$sql->fetch($users)){
-      $uname=strtolower($user[name]);
-      $uname=str_replace(' ','',$uname);
-      $uname=str_replace(' ','',$uname);
-      if($uname==$cname)
-        break;
-      $uname=strtolower($user[displayname]);
-      $uname=str_replace(' ','',$uname);
-      $uname=str_replace(' ','',$uname);
-      if($uname==$cname)
-        break;
-    }
+    $dupe=$sql->resultp("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", array($cname,$cname));
+	
+	$sex = (int)$sex;
+	if ($sex < 0 || $sex > 2) $sex = 1;
+	
+	$timezone = $_POST['timezone'];
 
-    chkproxy();
-
-    if($uname==$cname)
+    if($dupe)
       $err='This username is already taken, please choose another.';
     elseif($name=='' || $cname=='')
       $err='The username must not be empty, please choose one.';
-    elseif(strpos(strtolower($name),'mrj') != FALSE || strpos(strtolower($name),'butt') != FALSE)
-      $err='Another user is already using this IP address.';
     elseif(($sql -> resultq("SELECT COUNT(*) FROM `users` WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'")) >= 3)
       $err='Too many users with this IP address.';
     elseif(strlen($_POST[pass])<4)
@@ -154,16 +116,12 @@ if ($regdis[intval] == 1)
 ".           "  <a href=./>Back to main</a> or <a href=register.php>try again</a>
 ";
     }else{
-      $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip) VALUES "
-                 ."('$_POST[name]','".md5($_POST[pass].$pwdsalt)."',"
-                 .ctime().",".ctime().",'$userip')");
+	  $name = mysql_real_escape_string($name);
+	  
+      $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone) VALUES "
+                 ."('{$name}','".md5($_POST[pass].$pwdsalt)."',"
+                 .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}')");
       $id=mysql_insert_id();
-
-      $sql->query("UPDATE users SET "
-        .setfield('sex').","
-        .setfield('timezone')
-       . " WHERE `id` = $id"
-      );
 
 
       $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");

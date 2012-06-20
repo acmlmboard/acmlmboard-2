@@ -17,7 +17,7 @@
 
  while($item=$sql->fetch($eqitems))
    $items[$item[id]]=$item;
-
+ $ct=$_GET[ct];
  if($ct){
    $GPdif=floor($items[$user['eq'.$ct]][coins]*0.6)-$items[$it][coins];
    $user['eq'.$ct]=$it;

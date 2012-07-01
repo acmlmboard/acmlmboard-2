@@ -1,22 +1,9 @@
 <?php
 
-/* Populate default Access Control List. */
-$default_acl = array();
-$q=$sql->query("SELECT r FROM tokenrights WHERE t=0");
-while($d=$sql->fetch($q)) {
-  $default_acl[$d[r]]=1;
-}
-
-/* Populate token info. */
-$tokens = array();
-$q=$sql->query("SELECT * FROM tokens");
-while($d=$sql->fetch($q)) {
-  $tokens[$d[id]]=$d;
-}
-
 /* Load Access Control List for user $uid. 0 yields the default list. */
 function load_acl($uid) {
   global $sql,$default_acl;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   
   $acl=$default_acl;
   $q=$sql->query("SELECT tr.r FROM usertokens ut JOIN tokenrights tr ON tr.t=ut.t WHERE ut.u='$uid'");
@@ -30,6 +17,7 @@ function load_acl($uid) {
 /* Render a presentation of a token, if available. */
 function present_token($tid) {
   global $tokens;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
 
   if($tokens[$tid][img]=="") return "";
   
@@ -40,6 +28,7 @@ function present_token($tid) {
 function gettokenstring($uid) {
   global $sql;
   static $cache;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   
   if(isset($cache[$uid])) return $cache[$uid];
   else {
@@ -54,6 +43,7 @@ function gettokenstring($uid) {
 /* specific ACL resolution functions */
 function acl_for_thread($tid,$key) {
   global $loguser;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if($loguser[acl]["$key t$tid"]) return 1;
   else if($loguser[acl]["not $key t$tid"]) return 0;
   else if($loguser[acl]["$key f".getforumbythread($tid)]) return 1;
@@ -67,6 +57,7 @@ function acl_for_thread($tid,$key) {
 
 function acl_for_forum($fid,$key) {
   global $loguser;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if($loguser[acl]["$key f$fid"]) return 1;
   else if($loguser[acl]["not $key f$fid"]) return 0;
   else if($loguser[acl]["$key c".getcategorybyforum($fid)]) return 1;
@@ -78,6 +69,7 @@ function acl_for_forum($fid,$key) {
 
 function acl_for_user($uid,$key) {
   global $loguser;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if($loguser[acl]["$key u$uid"]) return 1;
   else if($loguser[acl]["not $key u$uid"]) return 0;
   else if($loguser[acl][$key]) return 1;
@@ -87,6 +79,7 @@ function acl_for_user($uid,$key) {
 
 function acl($key) {
   global $loguser;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if($loguser[acl][$key]) return 1;
   else if($loguser[acl]["not $key"]) return 0;
   return 0;
@@ -95,6 +88,7 @@ function acl($key) {
 function acl_or_die($key) {
   global $L;
   global $sql;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if (acl($key)) {
 	return true;
   }
@@ -115,6 +109,7 @@ function acl_or_die($key) {
 function forums_with_right($key) {
   global $loguser,$sql;
   static $cache;
+  die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if($cache) return $cache;
   $cache="(";
   $r=$sql->query("SELECT id FROM forums");
@@ -126,19 +121,23 @@ function forums_with_right($key) {
 }
 
 /* Legacy */
+// those are still being used apparently, namely by shop.php... -- Mega-Mario
 function isadmin(){
   global $loguser;
+  //die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   return $loguser[power]>=3;
 }
 
 function ismod($fid=0){
   global $loguser;
+  //die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   if($loguser[power]==1) return isset($loguser[modforums][$fid]);
   return $loguser[power]>=2;
 }
 
 function isbanned(){
   global $loguser;
+  //die((__FUNCTION__)." is legacy and shouldn't be used. Someone fix that.");
   return $loguser[power]<0;
 }
 /* End Legacy */

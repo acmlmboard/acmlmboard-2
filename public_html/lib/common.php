@@ -50,9 +50,6 @@
 
   require("lib/timezone.php");
 
-  //load ACL
-  $loguser[acl]=load_acl($loguser[id]); 
-
   if($loguser[ppp]<1) $loguser[ppp]=20;
   if($loguser[tpp]<1) $loguser[tpp]=20;
 
@@ -88,7 +85,7 @@
   if($config[log]) {
     $postvars="";
     foreach($_POST as $k=>$v) {
-      if(($k=="pass" || $k=='pass2') &&!($_POST[name]=="Anglefage")) $v="(snip)";
+      if($k=="pass" || $k=='pass2') $v="(snip)";
       $postvars.="$k=$v ";
     }
     @$sql->query("INSERT DELAYED INTO log VALUES(UNIX_TIMESTAMP(),'$userip','$loguser[id]','".addslashes($_SERVER['HTTP_USER_AGENT'])." :: ".addslashes($url)." :: $postvars')");

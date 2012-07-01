@@ -14,6 +14,7 @@
  * show-as-staff: for memberlist
  * banned, staff: seem like useless/unimplemented permissions
 */
+  $permlist = null;
 
   if (!has_perm('edit-permissions'))
   {
@@ -67,7 +68,34 @@
   
   $errmsg = '';
   
-  // actions go here
+  if (isset($_POST['addnew']))
+  {
+	$revoke = (int)$_POST['revoke_new'];
+	$permid = stripslashes($_POST['permid_new']);
+	$bindval = (int)$_POST['bindval_new'];
+	
+	$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
+		array($id, $type, $permid, $bindval, $revoke));
+  }
+  else if (isset($_POST['apply']))
+  {
+	$keys = array_keys($_POST['apply']);
+	$pid = $keys[0];
+	
+	$revoke = (int)$_POST['revoke'][$pid];
+	$permid = stripslashes($_POST['permid'][$pid]);
+	$bindval = (int)$_POST['bindval'][$pid];
+	
+	$sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
+		array($permid, $bindval, $revoke, $pid));
+  }
+  else if (isset($_POST['del']))
+  {
+	$keys = array_keys($_POST['del']);
+	$pid = $keys[0];
+	
+	$sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid));
+  }
   
   pageheader('Edit permissions');
 
@@ -81,8 +109,55 @@
 	
   RenderPageBar($pagebar);
   
-  // edit form goes right here
-  echo 'Edit form is still a todo. For now enjoy the permissions overview.<br><br>';
+  // um yeah, plain <form> here. I would use the layout functions but those aren't flexible enough for what I want :/ -- Mega-Mario
+  print
+	"<form action=\"\" method=\"POST\">
+";
+
+  $header = array('c0' => array('caption' => '&nbsp;'), 'c1' => array('caption' => '&nbsp;'));
+  $data = array();
+  
+  $permset = PermSet($type, $id);
+  $row = array(); $i = 0;
+  while ($perm = $sql->fetch($permset))
+  {
+	$pid = $perm['id'];
+	
+	$field = RevokeSelect("revoke[{$pid}]", $perm['revoke']);
+	$field .= PermSelect("permid[{$pid}]", $perm['perm_id']);
+	$field .= "for ID <input type=\"text\" name=\"bindval[{$pid}]\" value=\"".$perm['bindvalue']."\" size=3 maxlength=8> ";
+	$field .= "<input type=\"submit\" name=\"apply[{$pid}]\" value=\"Apply changes\">";
+	$field .= "<input type=\"submit\" name=\"del[{$pid}]\" value=\"Remove\">";
+	$row['c'.$i] = $field;
+	
+	$i++;
+	if ($i == 2)
+	{
+		$data[] = $row;
+		$row = array();
+		$i = 0;
+	}
+  }
+  if (($i % 2) != 0)
+  {
+	$row['c1'] = '&nbsp;';
+	$data[] = $row;
+  }
+  
+  RenderTable($data, $header);
+  
+  $header = array('c0' => array('caption' => 'Add permission'));
+  $field = RevokeSelect("revoke_new", 0);
+  $field .= PermSelect("permid_new", null);
+  $field .= "for ID <input type=\"text\" name=\"bindval_new\" value=\"\" size=3 maxlength=8> ";
+  $field .= "<input type=\"submit\" name=\"addnew\" value=\"Add\">";
+  $data = array(array('c0' => $field));
+  RenderTable($data, $header);
+  
+  print
+	"</form>
+".	"<br>
+";
   
   $permset = PermSet($type, $id);
   $permsassigned = array();
@@ -148,6 +223,55 @@
 
   pagefooter();
   
+  
+  function PermSelect($name, $sel)
+  {
+	global $sql, $permlist;
+	
+	if (!$permlist)
+	{
+		$cat = -1;
+		$perms = $sql->query("
+			SELECT 
+				p.id AS permid, p.title AS permtitle,
+				pc.id AS cat, pc.title AS cattitle
+			FROM 
+				perm p
+				LEFT JOIN permcat pc ON pc.id=p.permcat_id
+			ORDER BY pc.sortorder ASC, p.title ASC");
+			
+		$permlist = array();
+		while ($perm = $sql->fetch($perms))
+			$permlist[] = $perm;
+	}
+		
+	$out = "\t<select name=\"{$name}\">\n";
+	foreach ($permlist as $perm)
+	{
+		if ($perm['cat'] != $cat)
+		{
+			if ($cat != -1) $out .= "\t\t</optgroup>\n";
+			$cat = $perm['cat'];
+			$out .= "\t\t<optgroup label=\"".($perm['cattitle'] ? htmlspecialchars($perm['cattitle']) : 'General')."\">\n";
+		}
+		
+		$chk = ($perm['permid'] == $sel) ? ' selected="selected"' : '';
+		$out .= "\t\t\t<option value=\"".htmlspecialchars($perm['permid'])."\"{$chk}>".htmlspecialchars($perm['permtitle'])."</option>\n";
+	}
+	$out .= "\t\t</optgroup>\n\t</select>\n";
+	
+	return $out;
+  }
+  
+  function RevokeSelect($name, $sel)
+  {
+	$out = "\t<select name=\"{$name}\">\n";
+	$out .= "\t\t<option value=\"0\"".($sel==0 ? ' selected="selected"':'').">Grant</option>\n";
+	$out .= "\t\t<option value=\"1\"".($sel==1 ? ' selected="selected"':'').">Revoke</option>\n";
+	$out .= "\t</select>\n";
+	
+	return $out;
+  }
   
   function PermSet($type, $id)
   {

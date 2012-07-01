@@ -228,9 +228,9 @@
   {
 	global $sql, $permlist;
 	
+	$cat = -1;
 	if (!$permlist)
 	{
-		$cat = -1;
 		$perms = $sql->query("
 			SELECT 
 				p.id AS permid, p.title AS permtitle,

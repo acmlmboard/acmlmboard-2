@@ -114,6 +114,7 @@
   }
 
   pageheader("Forums Administration");
+  $forum_perm = "";
 
   if (!has_perm('edit-forums')) no_perm();
 
@@ -123,6 +124,14 @@
     $data = $sql->fetchq("select id,title,descr,ord,cat,minpower,minpowerthread,minpowerreply from forums where id=".addslashes($_GET[i])." union select -2 id, '' title, '' descr, 0 ord, 1 cat, 0 minpower, 0 minpowerthread, 0 minpowerreply");
     $data[title] = str_replace("\"","'",$data[title]);
     $data[descr] = str_replace("\"","'",$data[descr]);
+
+  if (has_perm('edit-permissions')){
+    $forum_perm = $L['TR1'].">
+".        "  ".$L['TD1']." colspan='5'>
+".        "      <center><a href=\"editperms.php?fid=$_GET[i]\">Edit Per-Forum Perms</a> (This is temp until we rework forums editing.)</center>
+".        "    </td>
+".        "  </tr>";
+  } 
 
     print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=f\">".$L['TBL1']." width=\"100%\">    
 ".        "  $L[TRh]>
@@ -178,6 +187,7 @@
 ".        "      $L[INPt]=\"minpowerthread\" value=\"$data[minpowerthread]\" style=\"width: 40px\">
 ".        "    </td>
 ".        "  </tr>
+".$forum_perm."
 ".        "</table> <br />
 ".         $L['TBL1'].">
 ".            $L[TRh].">

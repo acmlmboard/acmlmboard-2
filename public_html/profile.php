@@ -141,37 +141,38 @@
 $qBlock = "select * from blockedlayouts where user=".$uid." and blockee=".$loguser['id'];
 $rBlock = $sql->query($qBlock);
 $isBlocked = $sql->numrows($rBlock);
-if($isBlocked)
-  $blockLayoutLink = "| <a href=\"profile.php?id=".$uid."&amp;block=0\">Unblock layout</a>";
-else
-  $blockLayoutLink = "| <a href=\"profile.php?id=".$uid."&amp;block=1\">Block layout</a>";
-if(isset($_GET['block']) && $log)
-{
-  $block = (int)$_GET['block'];
+if (has_perm('block-layout')){
+  if($isBlocked)
+    $blockLayoutLink = "| <a href=\"profile.php?id=".$uid."&amp;block=0\">Unblock layout</a>";
+  else
+    $blockLayoutLink = "| <a href=\"profile.php?id=".$uid."&amp;block=1\">Block layout</a>";
+  if(isset($_GET['block']) && $log)
+  {
+    $block = (int)$_GET['block'];
 
-  if($block && !$isBlocked)
-  {
-    $qBlock = "insert into blockedlayouts (user, blockee) values (".$uid.", ".$loguser['id'].")";
-    $rBlock = $sql->query($qBlock);
-    $blockMessage = "Layout blocked.";
-  }
-  elseif(!$block && $isBlocked)
-  {
-    $qBlock = "delete from blockedlayouts where user=".$uid." and blockee=".$loguser['id']." limit 1";
-    $rBlock = $sql->query($qBlock);
-    $blockMessage = "Layout unblocked.";
-  }
-  if($blockMessage)
-  {
-    print "
-    $L[TBL1]>
-      $L[TD1c]>
-        $blockMessage
-    $L[TBLend]
-  ";
+    if($block && !$isBlocked)
+    {
+      $qBlock = "insert into blockedlayouts (user, blockee) values (".$uid.", ".$loguser['id'].")";
+      $rBlock = $sql->query($qBlock);
+      $blockMessage = "Layout blocked.";
+    }
+    elseif(!$block && $isBlocked)
+    {
+      $qBlock = "delete from blockedlayouts where user=".$uid." and blockee=".$loguser['id']." limit 1";
+      $rBlock = $sql->query($qBlock);
+      $blockMessage = "Layout unblocked.";
+    }
+    if($blockMessage)
+    {
+      print "
+      $L[TBL1]>
+        $L[TD1c]>
+          $blockMessage
+      $L[TBLend]
+    ";
+    }
   }
 }
-
 
 //timezone calculations
 
@@ -219,7 +220,7 @@ $logtzoff = $logtz->getOffset($now);
 ".      "        $L[TD2]>
 ".      "          ".cdate($dateformat,$user[lastview])." (".timeunits(ctime()-$user[lastview])." ago)
 ".      "          ".($user[url]?"<br>at <a href=$user[url]>$user[url]</a>":'')."
-".      "          ".($user[ip]&&acl_for_user($user[id],"show-ips")?"<br>from IP: $user[ip]":'')."
+".      "          ".($user[ip]&&has_perm('view-post-ips')?"<br>from IP: $user[ip]":'')."
 ".      "    $L[TBLend]
 ".      "    <br>
 ".      "    $L[TBL1]>
@@ -297,8 +298,9 @@ $logtzoff = $logtz->getOffset($now);
 ".    "      $blockLayoutLink
 ".      "            ". (has_perm('create-pms')?"| <a href=sendprivate.php?uid=$user[id]>Send Private Message</a>":"") ."
 ".      "            ". (has_perm('view-user-pms')?"| <a href=private.php?id=$user[id]>View Private Messages</a>":"") ."
-".      "            ". (has_perm('edit-moods')?"| <a href=usermood.php?uid=$user[id]>Edit mood avatars</a>":"") ."
-".      "            ". (has_perm('edit-users')?"| <a href=editprofile.php?id=$user[id]>Edit user</a>":"") ."
+".      "            ". (has_perm('edit-moods')?"| <a href=usermood.php?uid=$user[id]>Edit Mood Avatars</a>":"") ."
+".      "            ". (has_perm('edit-users')?"| <a href=editprofile.php?id=$user[id]>Edit User</a>":"") ."
+".      "            ". (has_perm('edit-permissions')?"| <a href=editperms.php?uid=$user[id]>Edit User Permissions</a>":"") ."
 ".      "$L[TBLend]
 ";
 

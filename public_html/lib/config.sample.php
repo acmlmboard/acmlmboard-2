@@ -50,6 +50,8 @@
   $config[classictags] = false;
 //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config[secafterpost] = 0; //(in seconds, 0 == off)
+//The following enables the optional badge system
+  $config[badgesystem] = false; //This system is currently unfinished.
 //IRC Color Defines. Color code numbers, and color names work here.
   $irccolor[base] = "grey"; //default color for the irc output.
   $irccolor[name] = "lt_green"; //used most often for usernames and other things that need emphasis.

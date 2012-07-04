@@ -111,6 +111,8 @@
   $shoplist .= "</table>";
 
 //New Badge List
+$badgelist ="";
+if ($config[badgesystem]){
   $q=$sql->query("SELECT * FROM badges RIGHT JOIN user_badges ON badges.id = user_badges.badge_id WHERE user_badges.user_id='$uid' AND badges.image != '' ORDER BY priority DESC LIMIT 9");
   if(!$sql->numrows($q) == 0) {
     $badgelist = "
@@ -135,6 +137,7 @@
     }
     $badgelist .= "</table>    <br>";
   }
+}
 //END badge list
 
 //[KAWA] Blocklayout ported from ABXD

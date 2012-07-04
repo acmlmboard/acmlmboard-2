@@ -271,7 +271,6 @@ $logtzoff = $logtz->getOffset($now);
 ".      "  </td>
 ".      "  $L[TDn] width=15>&nbsp;</td>
 ".      "  $L[TDn] width=256 valign=top>
-".    "    $badgelist
 ".      "    $L[TBL1]>
 ".      "      $L[TRh]>
 ".      "        $L[TDh] colspan=2>RPG status</td>
@@ -279,6 +278,7 @@ $logtzoff = $logtz->getOffset($now);
 ".      "        $L[TD1]><img src=gfx/status.php?u=$uid>
 ".      "    $L[TBLend]
 ".      "    <br>
+".    "    $badgelist
 ".    "    $shoplist
 ".      "  </td>
 ".      "$L[TBLend]

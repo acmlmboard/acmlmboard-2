@@ -10,8 +10,8 @@
 ".      "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
 ".      "  <channel>
 ".      "    <title>$boardtitle</title>
-".      "    <copyright>Posts are owned by the poster. Acmlmboard 2.1 software Copyright 2005-2009 Acmlm, Xkeeper, blackhole89 et al.</copyright>
-".      "    <generator>Acmlmboard 2.x</generator>
+".      "    <copyright>Posts are owned by the poster. Acmlmboard 2.5.1 software Copyright 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.</copyright>
+".      "    <generator>Acmlmboard 2.5</generator>
 ".      "    <ttl>5</ttl>
 ".      "    <atom:link href=\"$config[base]$url\" rel=\"self\" type=\"application/rss+xml\" />
 ".      "    <language>en</language>

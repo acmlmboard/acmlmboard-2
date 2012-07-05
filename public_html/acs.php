@@ -4,6 +4,7 @@
 
   $time=$_GET[time];
   $past=$_GET[past];
+  $easymode=$_GET[easymode];
   checknumeric($time);
   checknumeric($past);
   if($time<1)
@@ -20,7 +21,7 @@
           .'LEFT JOIN threads t ON t.id=p.thread '
           .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.(ctime()-(dtime()%86400)-$past*86400).' AND p.date<'.(ctime()-(dtime()%86400)-($past-1)*86400).' '
-          .'AND f.private=0 '
+          .'AND f.private=0 AND p.deleted=0 '
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   if(isset($easymode)) {
@@ -30,7 +31,7 @@
           .'LEFT JOIN threads t ON t.id=p.thread '
           .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.(ctime()-(dtime()%86400)-$past*86400).' AND p.date<'.(ctime()-(dtime()%86400)-($past-1)*86400).' '
-          .'AND f.private=0 '
+          .'AND f.private=0 AND p.deleted=0 '
           .'GROUP BY u.id ORDER BY num DESC';
   }
   $users=$sql->query($query);

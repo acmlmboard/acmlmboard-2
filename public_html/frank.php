@@ -81,7 +81,7 @@
           .'LEFT JOIN threads t ON t.id=p.thread '
           .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.($dstr-(dtime($dstr)%86400)).' AND p.date<'.($dstr-(dtime($dstr)%86400-86400)).' '
-          .'AND f.private=0 '
+          .'AND f.private=0 AND p.deleted=0 '
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);
@@ -145,7 +145,7 @@
           .'LEFT JOIN threads t ON t.id=p.thread '
           .'LEFT JOIN forums f ON f.id=t.forum '
           .'WHERE p.date>'.($dstr-(dtime($dstr)%86400)).' AND p.date<'.($dstr-(dtime($dstr)%86400-86400)).' '
-          .'AND f.private=0 '
+          .'AND f.private=0 AND p.deleted=0 '
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);

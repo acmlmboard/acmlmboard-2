@@ -9,14 +9,16 @@ These requirements are based on our development environment's specifications. Wh
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
 - MySQL5
-- PHP >=v5.2.0 (again old versions may work, with some features disabled.)
+- PHP >=v5.4.3 (again old versions may work, with some features disabled.)
 - PHP-GD
 - mcrypt and the module for PHP
 - phpmyadmin or DB tool of your choice.
 
-Pre-Configuration
+Pre-Configuration **(DEFUNCT)**
 #################
-ABII was developed starting in 2005, so most of the code is designed for an earlier style of programing. As such a few configuration changes are required to get it to run properly.
+ABII was developed starting in 2005, so most of the code is designed for an earlier style of programing. 
+
+However as of version 2.5.1 the code has been updated to no longer require the following step. 
 
 Apache VHost
 ------------

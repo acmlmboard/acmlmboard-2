@@ -1,4 +1,7 @@
 <?php
+$server=$_SERVER['HTTP_USER_AGENT'];
+$c=$_GET[c];
+$t=$_GET[t];
 
 if(strstr($_SERVER['HTTP_USER_AGENT'],"MSIE")) {
 	header('Content-type: image/gif');

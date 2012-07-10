@@ -1,5 +1,5 @@
 <?php
-$server=$_SERVER['HTTP_USER_AGENT'];
+
 $c=$_GET[c];
 $t=$_GET[t];
 

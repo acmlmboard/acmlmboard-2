@@ -405,16 +405,13 @@ echo "</tr>
     else if ($showonusers) { 
   //[KAWA] Copypastadaption from ABXD, with added activity limiter.
   $birthdayLimit = 86400 * 30; //should be 30 days. Adjust if you want.
-  $rBirthdays = $sql->query("select birth, id, name, displayname, power, sex from users where birth > 0 and lastview > ".(time()-$birthdayLimit)." order by name");
+  $rBirthdays = $sql->query("select birth, id, name, displayname, power, sex from users where birth LIKE '".date('m')."-".date('d')."%' and lastview > ".(time()-$birthdayLimit)." order by name");
   $birthdays = array();
   while($user = $sql->fetch($rBirthdays))
   {
-    $b = $user['birth'];
-    if(date("m-d", $b) == date("m-d",ctime()))
-    {
-      $y = date("Y") - date("Y", $b);
+    $b = explode('-',$user['birth']);
+      $y = date("Y") - $b[2];
       $birthdays[] = UserLink($user)." (".$y.")";
-    }
   }
   if(count($birthdays))
   {

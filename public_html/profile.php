@@ -59,8 +59,11 @@
     }
 
   if($user[birth]!=-1){
-    $birthday=date('l, F j, Y',$user[birth]);
-    $age='('.floor((ctime()-$user[birth])/86400/365.2425).' years old)';
+    //Crudely done code.
+    $bdec=explode('-',$user[birth]);
+    $bstr=$bdec[2].'-'.$bdec[0].'-'.$bdec[1];
+    $birthday=date('l, F j, Y',strtotime($bstr));
+    $age='('.(date('Y')-$bdec[2]).' years old)';
   }else{
     $birthday='&nbsp;';
     $age='';

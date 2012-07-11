@@ -41,9 +41,10 @@
     $bdaytext = array();
     $bdayres = $sql->query("SELECT id,name,displayname,sex,power,birth FROM users WHERE birth != -1");
     while ($bdayarr = $sql->fetch($bdayres)) {
-        $bdaydecode = getdate($bdayarr['birth']);
-        if ($bdaydecode['mon'] == $month) {
-            $age = $year - $bdaydecode['year'];
+        $bdaydecode=explode('-',$bdayarr['birth']);
+
+        if ($bdaydecode[0] == $month) {
+            $age = $year - $bdaydecode[2];
             $t = userlink($bdayarr);
             if ($age > 0) {
                 $t .= " turns $age";
@@ -52,10 +53,10 @@
             } else {
                 $t .= " is born";
             }
-            if (isset($bdaytext[$bdaydecode['mday']])) {
-                $bdaytext[$bdaydecode['mday']] .= '<br/>'.$t;
+            if (isset($bdaytext[$bdaydecode[1]])) {
+                $bdaytext[$bdaydecode[1]] .= '<br/>'.$t;
             } else {
-                $bdaytext[$bdaydecode['mday']] = $t;
+                $bdaytext[$bdaydecode[1]] = $t;
             }
         }
     }

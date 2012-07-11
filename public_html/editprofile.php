@@ -106,10 +106,10 @@
     $listrename=array('disallow','allow');
 
     if($user[birth]!=-1){
-      $birthday=getdate($user[birth]);
-      $birthM=$birthday[mon];
-      $birthD=$birthday[mday];
-      $birthY=$birthday[year];
+      $birthday=explode('-',$user[birth]);
+      $birthM=$birthday[0];
+      $birthD=$birthday[1];
+      $birthY=$birthday[2];
     }
 
     $dateformats=array('','m-d-y','d-m-y','y-m-d','Y-m-d','m/d/Y','d.m.y','M j Y','D jS M Y');
@@ -335,11 +335,14 @@ if (has_perm("edit-users"))
     $pass=$_POST[pass];
     if(!strlen($_POST[pass2])) $pass="";
     $tztotal=$_POST[tzoffH]*3600+$_POST[tzoffM]*60*($_POST[tzoffH]<0?-1:1);
-    if(!$_POST[birthM] && !$_POST[birthD] && !$_POST[birthY])
+    if(!$_POST[birthM] || !$_POST[birthD] || !$_POST[birthY]) //Reject if any are missing.
+      $birthday=-1;
+    else {
+    if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD]) || !is_numeric($_POST[birthY])) //Reject if not numeric.
       $birthday=-1;
     else
-      $birthday=@mktime(0,0,0,$_POST[birthM],$_POST[birthD],$_POST[birthY]);
-	if ($birthday === FALSE) $birthday = -1;
+      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$_POST[birthY];
+    }
 
     $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);
@@ -406,7 +409,7 @@ if (has_perm("edit-users"))
                . setfield('redirtype') .','
                . setfield('timezone') .','
                . "tzoff=$tztotal,"
-               . "birth=$birthday,"
+               . "birth='$birthday',"
                . "usepic=$usepic,"
                . "minipic=$minipic,"
                . "dateformat='$dateformat',"

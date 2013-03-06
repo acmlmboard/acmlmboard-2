@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.";
-  $abdate    = "7/28/2012";
+  $abdate    = "3/05/2013";
   $abversion = "2.5.1";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -684,7 +684,7 @@
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><img src=\"img/poweredbyacmlm.PNG\"><br>
              Acmlmboard v$abversion ($abdate)<br>
-             &copy; 2005-".date("Y")." $boardprog
+             &copy; 2005-2013 $boardprog
            $L[TBLend]";
     pagestats();
     //miscbar(); disabled until needed. -Emuz

@@ -1,0 +1,70 @@
+
+a:link		{color: #DEDAFE}
+a:visited	{color: #CECAFE}
+a:active	{color: #FFEEFF}
+a:hover		{color: #EEEAFE}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #000F1F;
+	background-image: url(../themes/night/nightscheme_starsbg.png);
+	font-family: arial;
+}
+body, table {
+	color: #DDDDDD;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #000000;
+}
+td.n1, tr.n1 td {
+	background: #111133;
+}
+td.n2, tr.n2 td {
+	background: #11112B;
+}
+td.h, tr.h td {
+	background: #221133;
+	color: #FFEEFF;
+}
+tr.c td {
+	background: #2F2F5F;
+	color: #FFEEFF;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 1px solid #663399;
+	background-color: #000000;
+	color: #DDDDDD;
+	font-family: arial;
+	font-size: 10pt;
+}
+.submit {
+	border: 2px solid #663399;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #DDDDDD;
+	font: 10pt arial;
+}

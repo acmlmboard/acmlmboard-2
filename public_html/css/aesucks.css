@@ -1,0 +1,73 @@
+/* META
+AE Sucks (Acmlmboard 1.x Classic)
+
+*/
+a:link		{color: #FF0000}
+a:visited	{color: #FF0000}
+a:active	{color: #FFEA00}
+a:hover		{color: #FFFFFF}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #00FF00;
+	background-image: url(../theme/aesucks/boo.gif);
+	font-family: MS Serif;
+}
+body, table {
+	color: #FF0000;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #00FFFF url(../theme/aesucks/flash1.gif);
+}
+td.n1, tr.n1 td {
+	background: #0000FF url(../theme/aesucks/flash3.gif);
+}
+td.n2, tr.n2 td {
+	background: #00FF00 url(../theme/aesucks/flash1.gif);
+}
+td.h, tr.h td {
+	background: #FFFFFF url(../theme/aesucks/flash2.gif);
+	color: #FFFF00;
+}
+tr.c td {
+	background: #FF00FF url(../theme/aesucks/flash2.gif);
+	color: #FFFF00;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 1px solid #1042A7;
+	background-color: #000000;
+	color: #FF0000;
+	font-family: MS Serif;
+	font-size: 10pt;
+}
+.submit {
+	border: 2px solid #1042A7;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #FF0000;
+	font: 10pt MS Serif;
+}

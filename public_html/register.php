@@ -146,6 +146,10 @@ if ($regdis[intval] == 1)
 			$ugid = $row['id'];
 		  }
 		   $sql->prepare("UPDATE users SET group_id=? WHERE id=?",array($ugid,$id));
+		   
+		  // [Mega-Mario] mark existing threads and forums as read
+		  $sql->prepare("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", array($id, ctime()));
+		  $sql->prepare("INSERT INTO forumsread (uid,fid,time) SELECT ?,id,? FROM forums", array($id, ctime()));
 
 		  /* count matches for IP and hash */
 		  //hash

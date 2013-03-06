@@ -27,9 +27,13 @@
  * Common = 0 | Uncommon = 20 | 40 = Slightly Rare | Rare = 60 | Very Rare = 80 | Mew Rare = 99
  */
 
-
-require_once("lib/spritelib.php");
-$chance = 5 + (rand(0,6464)%5);
+ function generate_sprite_hash($userid, $spriteid)
+  {
+   global $spritesalt;
+   return md5($spritesalt.$userid.$spriteid.$spritesalt);
+  }
+  
+$chance = 5 + (rand(0, 6464) % 5);
 
 //$chance = 100;
 //$roll = 300;
@@ -47,10 +51,20 @@ $monData = $monData[array_rand($monData)]; */
 
 // Redone the roll [Gywall]
 // If I broke anything, blame the rabbits. :)
-$monRarity = rand(0,6464646)%100;
-$monRequest = @mysql_result(mysql_query("SELECT count(*) FROM sprites WHERE rarity <= ".$monRarity),0,0);$monNumpty = rand(0,6464646)%$monRequest;
-$monData = array();
-$monData = mysql_fetch_array(mysql_query("SELECT * FROM sprites WHERE rarity <= ".$monRarity." LIMIT ".$monNumpty.",1"));
+$monRarity  = rand(0, 6464646) % 100;
+$monRequest = @mysql_result(mysql_query("SELECT count(*) FROM `sprites` WHERE `rarity` <= ".$monRarity),0,0);
+
+  if ($monRequest) //[Scrydan] Added this loop to prevent divide by zero errors should no sprites exist, no chance also if it fails.
+   {
+    $monNumpty  = rand(0, 6464646) % $monRequest;
+    $monData    = array();
+    $monData    = mysql_fetch_array(mysql_query("SELECT * FROM `sprites` WHERE `rarity` <= ".$monRarity." LIMIT ".$monNumpty.",1"));
+   }
+  else
+   {
+    $chance = 0;
+   }
+   
 /*
 //Old way to pick pics: randomly between two fields.
 $pic = rand(0, 1) ? $monData['alt']: $monData['pic'];
@@ -97,7 +111,7 @@ switch($monData['anchor'])
 
 $monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999\" src=\"img/sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
 
-$spritehash = generate_sprite_hash($loguser['id'],$monData['id']);
+$spritehash = generate_sprite_hash($loguser['id'], $monData['id']);
 
 $monScript = "<script language=\"javascript\">
 	function capture()

@@ -14,7 +14,7 @@ A:link,A:visited,A:active,A:hover{
 }
 
 body{
-  background: url(../theme/kafuka/bg3.jpg) #b40600;
+  background: url(../theme/kafuka/bg3.jpg) #b40600 fixed;
   color: white;
   font-family: verdana, geneva, sans-serif;
 }
@@ -27,13 +27,15 @@ table{
 table.c1{
   width: 100%;
   background: black;
-  border: #000000 1px solid;
+  border-right: #000000 1px solid;
+  border-bottom: #000000 1px solid;
 }
 
 table.c2{
   width: 100%;
   background: black;
-  border: #000000 1px solid;
+  border-right: #000000 1px solid;
+  border-bottom: #000000 1px solid;
   font-size: 0.9em;
 }
 
@@ -69,16 +71,21 @@ td.h{
   padding: 1px;
 }
 
+td.h:first-child
+{
+	border-left: 1px solid #000000;
+}
+
 tr.n1,td.n1{
-  background: url(../theme/kafuka/bg2.jpg) #1c0101;
+  background: url(../theme/kafuka/bg2.jpg) #1c0101 fixed;
 }
 
 tr.n2,td.n2{
-  background: url(../theme/kafuka/bg1.jpg) #340100;
+  background: url(../theme/kafuka/bg1.jpg) #340100 fixed;
 }
 
 tr.n3,td.n3{
-  background: url(../theme/kafuka/bg5.gif) #441100;
+  background: url(../theme/kafuka/bg5.gif) #441100 fixed;
 }
 
 .sfont{

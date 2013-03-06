@@ -1,0 +1,70 @@
+
+a:link		{color: #FFD062}
+a:visited	{color: #BDB8FA}
+a:active	{color: #FFFFFF}
+a:hover		{color: #FFCAFF}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #BF407C;
+	background-image: url(../themes/kirby/kirbybg.jpg);
+	font-family: arial;
+}
+body, table {
+	color: #E9E9E9;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #B58631;
+}
+td.n1, tr.n1 td {
+	background: #630E2C url(../themes/kirby/kirbybg2a.png);
+}
+td.n2, tr.n2 td {
+	background: #570F11 url(../themes/kirby/kirbybg2b.png);
+}
+td.h, tr.h td {
+	background: #D6AA73 url(../themes/kirby/kirbybgtop.png);
+	color: #570D27;
+}
+tr.c td {
+	background: #BD9252 url(../themes/kirby/kirbybgtop2.png);
+	color: #570D27;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 1px solid #faaade;
+	background-color: #000000;
+	color: #E9E9E9;
+	font-family: arial;
+	font-size: 10pt;
+}
+.submit {
+	border: 2px solid #faaade;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #E9E9E9;
+	font: 10pt arial;
+}

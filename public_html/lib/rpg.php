@@ -56,14 +56,14 @@
   }
   function getstats($u,$items=0){
     global $stat;
-    $p=$u[posts];
-    $d=(ctime()-$u[regdate])/86400;
+    $p=$u['posts'];
+    $d=(ctime()-$u['regdate'])/86400;
     for($i=0;$i<9;$i++) $m[$i]=1;
     for($i=1;$i<7;$i++){
       $item=$items[$u['eq'.$i]];
       for($k=0;$k<9;$k++){
         $is=$item['s'.$stat[$k]];
-        if(substr($item[stype],$k,1)=='m') $m[$k]*=$is/100;
+        if(substr($item['stype'],$k,1)=='m') $m[$k]*=$is/100;
         else $a[$k]+=$is;
       }
     }

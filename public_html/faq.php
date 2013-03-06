@@ -198,7 +198,7 @@ print "$L[TBL1]>
 ";
 if($syndromenable == 1){
 print "  $L[TRh]>$L[TDh]><a name='syndrome'>Acmlmboard Syndromes
-".    "  $L[TR]>$L[FAQTD]>The syndromes are an old Acmlmboard tradition carried over from the first version. Syndrome are triggered when you reach the amount of posts posted per day listed in he table below.
+".    "  $L[TR]>$L[FAQTD]>The syndromes are an old Acmlmboard tradition carried over from the first version. Syndrome are triggered when you reach the amount of posts posted per day listed in the table below.
 ".    "  <br><table class=table cellspacing=0>
 	    <tr><td class='b h'>Posts</td><td class='b h'>Syndrome
 	    <tr><td class='b n1'> 75</td><td class='b n2'>".syndrome(75)."

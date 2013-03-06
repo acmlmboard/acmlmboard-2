@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
   function hex2str($hex)
   {
@@ -25,43 +25,43 @@
   $favicon="theme/fav.png"; //Replace with your favicon of choice
   $defaulttheme="dailycycle2";
   
-  $config[log]    = 0;
-  $config[ckey]   = "configckey";
-  $config[address]   = "url";  //Hostname or IP address of your server (this will be public)
-  $config[base]   = "http://$config[address]"; //Replace if you need fine control of the address
-  $config[sslbase]= "https://$config[address]"; //Replace if you need fine control of the address
-  $config[path]   = "/";
-  $config[meta]   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
+  $config['log']    = 0;
+  $config['ckey']   = "configckey";
+  $config['address']   = "url";  //Hostname or IP address of your server (this will be public)
+  $config['base']   = "http://".$config['address']; //Replace if you need fine control of the address
+  $config['sslbase']= "https://".$config['address']; //Replace if you need fine control of the address
+  $config['path']   = "/";
+  $config['meta']   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
   
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
-  $config[enableirc] = false; //Enable to send messages to IRC 
-  $config[ircbase] = "http://$config[address]$config[path]";
-  $config[staffchan] = '#staffchangoeshere PASSWORD';
-  $config[pubchan] = '#pubchangoeshere PASSWORD';
-  $config[ircnickprefix] = true; //Use an IRC prefix when sending messages to the IRC channel.
-  $config[ircnickcolor] = false; //Use the nick color for the whole nick on IRC.
-  $config[ircnicksex] = false; //Use a Color to reflect each user's Sex Color. N/A Defaults nothing.
+  $config['enableirc'] = false; //Enable to send messages to IRC 
+  $config['ircbase'] = "http://".$config['address']."".$config['path']";
+  $config['staffchan'] = '#staffchangoeshere PASSWORD';
+  $config['pubchan'] = '#pubchangoeshere PASSWORD';
+  $config['ircnickprefix'] = true; //Use an IRC prefix when sending messages to the IRC channel.
+  $config['ircnickcolor'] = false; //Use the nick color for the whole nick on IRC.
+  $config['ircnicksex'] = false; //Use a Color to reflect each user's Sex Color. N/A Defaults nothing.
 
 
 //The following are optional values you can change to personalize your board
-  $config[atnname]  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
+  $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 //The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
-  $config[classictags] = false;
+  $config['classictags'] = false;
 //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
-  $config[secafterpost] = 0; //(in seconds, 0 == off)
+  $config['secafterpost'] = 0; //(in seconds, 0 == off)
 //The following enables the optional badge system
-  $config[badgesystem] = false; //This system is currently unfinished.
+  $config['badgesystem'] = false; //This system is currently unfinished.
 //IRC Color Defines. Color code numbers, and color names work here.
-  $irccolor[base] = "grey"; //default color for the irc output.
-  $irccolor[name] = "lt_green"; //used most often for usernames and other things that need emphasis.
-  $irccolor[title] = "orange"; // used for thread titles
-  $irccolor[url] = "green"; //used for URLs and for some accents
+  $irccolor['base'] = "grey"; //default color for the irc output.
+  $irccolor['name'] = "lt_green"; //used most often for usernames and other things that need emphasis.
+  $irccolor['title'] = "orange"; // used for thread titles
+  $irccolor['url'] = "green"; //used for URLs and for some accents
 
-  $irccolor[yes] = "green"; //used where you want a clear color for yes/on/good/etc
-  $irccolor[no] = "red"; //used where you want a clear color for no/off/bad/etc
-  $irccolor[male] = "lt_blue"; //Male Nick Color
-  $irccolor[female] = "pink"; //Female Nick Color
+  $irccolor['yes'] = "green"; //used where you want a clear color for yes/on/good/etc
+  $irccolor['no'] = "red"; //used where you want a clear color for no/off/bad/etc
+  $irccolor['male'] = "lt_blue"; //Male Nick Color
+  $irccolor['female'] = "pink"; //Female Nick Color
 
 // User GFX limits
  $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize

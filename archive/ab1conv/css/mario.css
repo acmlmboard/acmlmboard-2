@@ -1,0 +1,70 @@
+
+a:link		{color: #FDD240}
+a:visited	{color: #F7AE2F}
+a:active	{color: #DDFFEE}
+a:hover		{color: #DDEEFF}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #001144;
+	background-image: url(../themes/mario/smwmountainbg.jpg);
+	font-family: tahoma;
+}
+body, table {
+	color: #FFFFFF;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #CF985F;
+}
+td.n1, tr.n1 td {
+	background: #301A0C url(../themes/mario/dirtbg2.png);
+}
+td.n2, tr.n2 td {
+	background: #442413 url(../themes/mario/dirtbg1.png);
+}
+td.h, tr.h td {
+	background: #008438 url(../themes/mario/treebg1.png);
+	color: #FFFFFF;
+}
+tr.c td {
+	background: #014542 url(../themes/mario/treebg2.png);
+	color: #FFFFFF;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 1px solid #B08050;
+	background-color: #000000;
+	color: #FFFFFF;
+	font-family: tahoma;
+	font-size: 10pt;
+}
+.submit {
+	border: 2px solid #B08050;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #FFFFFF;
+	font: 10pt tahoma;
+}

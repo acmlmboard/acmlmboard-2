@@ -1,0 +1,73 @@
+/* META
+Classic (Acmlmboard 1.x Classic)
+
+*/
+a:link		{color: #FFC040}
+a:visited	{color: #C09030}
+a:active	{color: #FFEA00}
+a:hover		{color: #FFFFFF}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #550000;
+	background-image: url(../theme/classic/back07.gif);
+	font-family: verdana;
+}
+body, table {
+	color: #E0E0E0;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #000000;
+}
+td.n1, tr.n1 td {
+	background: #000090;
+}
+td.n2, tr.n2 td {
+	background: #000066;
+}
+td.h, tr.h td {
+	background: #0050A0;
+	color: #FFFFFF;
+}
+tr.c td {
+	background: #000090;
+	color: #FFFFFF;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 1px solid #773311;
+	background-color: #000000;
+	color: #E0E0E0;
+	font-family: verdana;
+	font-size: 10pt;
+}
+.submit {
+	border: 2px solid #773311;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #E0E0E0;
+	font: 10pt verdana;
+}

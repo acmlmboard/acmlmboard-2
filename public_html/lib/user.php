@@ -105,8 +105,8 @@
 
   function userdisp($user,$u=''){
     global $sql;
-    if($user[$u.power]<0)
-      $user[$u.power]='x';
+    if($user[$u.'power']<0)
+      $user[$u.'power']='x';
 
 
   //global $loguser;

@@ -1,0 +1,57 @@
+/* META
+Dig (Acmlmboard 1.x Classic)
+
+*/
+a:link		{color: #DEFECA}
+a:visited	{color: #87CA66}
+a:active	{color: #F6FFF0}
+a:hover		{color: #FFEA80}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #222222;
+	background-image: url(../theme/dig/circuitbg.jpg);
+	font-family: tahoma;
+}
+body, table {
+	color: #EEFFDD;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #000000;
+}
+td.n1, tr.n1 td {
+	background: #10200C;
+}
+td.n2, tr.n2 td {
+	background: #183012;
+}
+td.h, tr.h td {
+	background: #406030;
+	color: #DEFECA;
+}
+tr.c td {
+	background: #204018;
+	color: #DEFECA;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

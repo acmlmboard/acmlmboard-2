@@ -1,23 +1,23 @@
 <?php
  require 'gfxlib.php';
- $u=$_GET[u];
+ $u=$_GET['u'];
  if(!$u) die();
 
  $user=$sql->fetchq("SELECT u.name, u.posts, u.regdate, r.* "
                    ."FROM users u "
                    ."LEFT JOIN usersrpg r ON r.id=u.id "
                    ."WHERE u.id='$u'");
- $p=$user[posts];
- $d=(ctime()-$user[regdate])/86400;
+ $p=$user['posts'];
+ $d=(ctime()-$user['regdate'])/86400;
 
- $it=$_GET[it];
+ $it=$_GET['it'];
  checknumeric($it);
 
  $eqitems=$sql->query("SELECT * FROM items WHERE id=$user[eq1] OR id=$user[eq2] OR id=$user[eq3] OR id=$user[eq4] OR id=$user[eq5] OR id=$user[eq6] OR id=$it");
 
  while($item=$sql->fetch($eqitems))
    $items[$item[id]]=$item;
- $ct=$_GET[ct];
+ $ct=$_GET['ct'];
  if($ct){
    $GPdif=floor($items[$user['eq'.$ct]][coins]*0.6)-$items[$it][coins];
    $user['eq'.$ct]=$it;
@@ -30,11 +30,11 @@
 
  Header('Content-type:image/png');
  $img=ImageCreate(256,224);
- $c[bg]     =ImageColorAllocate($img, 40, 40, 90);
- $c[bxb0]   =ImageColorAllocate($img,  0,  0,  0);
- $c[bxb1]   =ImageColorAllocate($img,200,170,140);
- $c[bxb2]   =ImageColorAllocate($img,155,130,105);
- $c[bxb3]   =ImageColorAllocate($img,110, 90, 70);
+ $c['bg']     =ImageColorAllocate($img, 40, 40, 90);
+ $c['bxb0']   =ImageColorAllocate($img,  0,  0,  0);
+ $c['bxb1']   =ImageColorAllocate($img,200,170,140);
+ $c['bxb2']   =ImageColorAllocate($img,155,130,105);
+ $c['bxb3']   =ImageColorAllocate($img,110, 90, 70);
 
  for($i=0;$i<100;$i++)
    $c[$i]   =ImageColorAllocate($img, 10, 16, 60+$i/2);

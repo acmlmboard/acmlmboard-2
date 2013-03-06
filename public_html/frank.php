@@ -5,7 +5,7 @@
         pageheader('Access Denied');
         no_perm();
     }
-//KCS STEEL
+//Various variables.
   $past=$_GET[past];
   checknumeric($past);
     $time=86400;
@@ -14,7 +14,7 @@
   function dtime($ktc) {
     return $ktc+7200;
   }
-//CALANE STEEL
+//Code taken from the calendar
     $daynames = array('Sunday','Monday','Tuesday','Wednesday',
                       'Thursday','Friday','Saturday');
     $monthnames = array(1=>'January',  'February','March',   'April',
@@ -46,7 +46,7 @@
     $mdays = intval(date('t', $mtstamp));
     $wday = intval(date('w', $mtstamp));
     
-    pageheader('Frankenstein KCS Volume 1 -- A horror story of code.');
+    pageheader('Forum Rankings');
     print "$L[TBL] width=\"100%\">
 ".        "    $L[TR]>
 ".        "        $L[TDc] colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
@@ -72,7 +72,7 @@
         }
         $l = ($mday == $day) ? $L['TD1l'] : $L['TD2l'];
         print "$l width=\"14%\" valign=\"top\"><a href=\"frank.php?d=$mday&m=$month&y=$year\">$mday</a>";
-//Think dis right place.
+//Query by-day here.
   $dstr=strtotime($mday.' '.$monthnames[$month].' '.$year);
   $query='SELECT id,posts,regdate,name,sex,power,SUM(num) num FROM ('
           .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
@@ -136,7 +136,7 @@
 ".         $L['TBLend'];
 
   //The old calendar ends here. Write the report!.
-  //Copy Pasta'd code. 'cause this is how I Rick Roll!
+  //And the same query here for the selected date.
   $dstr=strtotime($day.' '.$monthnames[$month].' '.$year);
   $query='SELECT id,posts,regdate,name,sex,power,SUM(num) num FROM ('
           .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '

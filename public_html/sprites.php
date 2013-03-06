@@ -1,9 +1,8 @@
 <?php
 
-require("lib/spritelib.php");
-
 if(isset($_GET['catch']))
 {
+        require("lib/sprites.php");
 	$monID = (int)$_GET['catch'];
 	$userID = (int)$_COOKIE['user'];
   $spritehash = $_GET['t'];

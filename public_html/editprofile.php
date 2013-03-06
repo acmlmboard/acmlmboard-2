@@ -1,6 +1,5 @@
 <?php
-  require 'lib/common.php';
-
+  require "lib/common.php";
 
   needs_login(1);
 
@@ -12,17 +11,23 @@
       $targetuserid = $temp;
   }
 
-  if (!can_edit_user($targetuserid)) $targetuserid = 0;
+  if (!can_edit_user($targetuserid))
+   {
+    $targetuserid = 0;
+   }
 
-  if ($targetuserid == 0) {
+  if ($targetuserid == 0) 
+   {
      pageheader('No permission');
      no_perm();
-  }
+   }
 
+       $blockroot = " AND `default` >= 0 ";
 
-        $blockroot = " AND `default` >= 0 ";
-
-      if (has_perm('no-restrictions')) $blockroot = "";
+      if (has_perm('no-restrictions'))
+	   {
+	    $blockroot = "";
+	   }
 
       $allgroups = $sql->query("SELECT * FROM `group` WHERE `primary`=1 $blockroot ORDER BY sortorder ASC");
 
@@ -43,6 +48,17 @@
   global $user, $userrpg;
 
   $user = $sql->fetchq("SELECT * FROM users WHERE `id` = $targetuserid");
+  
+ if (!$user)
+  {
+    print "$L[TBL1]>
+             $L[TD1c]>
+               This user doesn't exist!<br>
+               <a href=./>Back to main</a>
+           $L[TBLend]";
+   die(pagefooter());
+  }
+  
   $userrpg = getstats($userrpgdata = $sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
                                                  .'FROM users u '
                                                  .'LEFT JOIN usersrpg r ON u.id=r.id '
@@ -238,76 +254,10 @@ if (has_perm("edit-users"))
       if($error) print $error;
     }
     if($_POST['minipicdel']) $minipic="\"\"";
-    $usepic='usepic';
-    if($fname=$_FILES[picture][name]){
-      $fext=strtolower(substr($fname,-4));
-      $error='';
-
-      $exts=array('.png','.jpg','.gif');
-
-  //[KAWA] TODO: replace with token effect
-  /*
-      if($x_hacks["180px"]) {
-        $dimx=180;
-  $dimy=180;
-  $size=2*61440;
-      }
-  */
-
-      $validext=false;
-      $extlist='';
-      foreach($exts as $ext){
-        if($fext==$ext)
-          $validext=true;
-        $extlist.=($extlist?', ':'').$ext;
-      }
-      if(!$validext)
-        $error.="<br>- Invalid file type, must be either: $extlist";
-
-      if(($fsize=$_FILES[picture][size])>$avatarsize)
-        $error.="<br>- File size is too high, limit is $avatarsize bytes";
-
-      if(!$error){
-        $tmpfile=$_FILES[picture][tmp_name];
-        $file="userpic/$user[id]";
-        $file2="userpic/s$user[id]";
-
-        list($width,$height,$type)=getimagesize($tmpfile);
-
-        if($type==1) $img1=imagecreatefromgif ($tmpfile);
-        if($type==2) $img1=imagecreatefromjpeg($tmpfile);
-        if($type==3) $img1=imagecreatefrompng ($tmpfile);
-
-        if($type<=3){
-          $r=imagesx($img1)/imagesy($img1);
-          $img2=imagecreatetruecolor($avatardimxs,$avatardimys);
-          imagecolorallocate($img2,0,0,0);
-
-          if($r>1)
-            imagecopyresampled($img2,$img1,0,round($avatardimys*(1-1/$r)/2),0,0,$avatardimxs,$avatardimys/$r,imagesx($img1),imagesy($img1));
-          else
-            imagecopyresampled($img2,$img1,round($avatardimxs*(1-$r)/2),0,0,0,$avatardimxs*$r,$avatardimys,imagesx($img1),imagesy($img1));
-          imagepng($img2,$file2);
-        }
-
-        if($width<=$avatardimx && $height<=$avatardimy && $type<=3)
-          copy($tmpfile,"userpic/$user[id]");
-        elseif($type<=3){
-          if($r>1){
-            $img2=imagecreatetruecolor($avatardimx,$avatardimy/$r);
-            imagecopyresampled($img2,$img1,0,0,0,0,$avatardimx,$avatardimy/$r,imagesx($img1),imagesy($img1));
-          }else{
-            $img2=imagecreatetruecolor($avatardimx*$r,$avatardimy);
-            imagecopyresampled($img2,$img1,0,0,0,0,$avatardimx*$r,$avatardimy,imagesx($img1),imagesy($img1));
-          }
-          imagepng($img2,$file);
-        }else{
-          $error.="<br>- Bad image format";
-        }
-
-        $usepic=1;
-      }else
-        print $error;
+    $fname=$_FILES['picture'];
+    if($fname['size']>0){
+      $ava_out=img_upload($fname,"userpic/$user[id]",$avatardimx,$avatardimy,$avatarsize);
+      if($ava_out!="OK!"){ $error.=$ava_out; } else { $usepic=1; }
     }
     if($_POST['picturedel']) $usepic=0;
 
@@ -435,6 +385,7 @@ if (has_perm("edit-users"))
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]
 ";
+
   }
 
   pagefooter();

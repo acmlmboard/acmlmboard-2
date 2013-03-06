@@ -1,0 +1,152 @@
+/* META
+Metro / "Windows 8-style" (Nicole)
+
+*/
+
+/*based on Acmlm's Board (Acmlm, Mega-Mario, Emuz)*/
+
+A:link		{color:#FFC040}
+A:visited	{color:#F0A020}
+A:active	{color:#FFEA00}
+A:hover		{color:#FFFFFF}
+
+a:link, a:visited, a:active, a:hover 
+{
+	text-decoration: none;
+}
+
+body 
+{
+	background: #000000;
+	font-family: 'Segoe UI', sans-serif;
+	font-size: 16px;
+}
+
+body, table 
+{
+	color: #E0E0E0;
+	font-size: 16px;
+padding: 0px;
+}
+
+table.c1, table.c2 
+{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td.b 
+{
+	border: 0px;
+}
+
+td.n2, tr.n2 td 
+{
+	background: #001E68;
+}
+
+td.n3, tr.n3 td 
+{
+	background: #00044E;
+}
+
+td.nb, tr.nb td 
+{
+	color: #FFF;
+}
+
+td.n1, tr.n1 td, td.h, tr.h td, tr.c td
+{
+	background: #003BA1;
+}
+
+tr.h td, tr.c td 
+{
+	text-align: center;
+	color: #FFFFFF;
+}
+
+textarea, input, select, button
+{
+	border: 1px solid #0070C0;
+	background-color: black;
+	color: #FFFFFF;
+	font-family: arial, sans-serif;
+	font-size: 1em;
+}
+
+.submit 
+{
+	border: 2px solid #0070C0;
+}
+input.radio 
+{
+	border: 0;
+}
+.sfont 
+{
+	font-size: 0.8em;
+	font-family: 'Segoe UI';
+}
+
+/* This section uses CSS to replace various link onpart of the board with images per each theme.
+Right now there is a mix of two style of CSS replacement. One is to make up for the fact Mozilla doesn't render
+content: url(); without :before or :after */
+
+a[class~="newreply"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 49px;
+	height: 48px;
+	background: url('../theme/metro/metroreply.png');
+	content: url('../theme/metro/metroreply.png'); 
+}
+
+a[class~="newthread"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 49px;
+	height: 48px;
+	background: url('../theme/metro/metrothread.png');
+	content: url('../theme/metro/metrothread.png'); 
+}
+
+a[class~="newpoll"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 49px;
+	height: 48px;
+	background: url('../theme/metro/metropoll.png');
+	content: url('../theme/metro/metropoll.png'); 
+}
+
+a[class~="ignoreforum"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 49px;
+	height: 48px;
+	background: url('../theme/metro/metroignore.png');
+	content: url('../theme/metro/metroignore.png'); 
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

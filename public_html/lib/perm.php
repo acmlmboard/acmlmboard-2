@@ -243,7 +243,7 @@ function forums_with_view_perm() {
   $cache="(";
   $r=$sql->query("SELECT id FROM forums");
   while($d=$sql->fetch($r)) {
-    if(can_view_forum($d[id])) $cache.="$d[id],";
+    if(can_view_forum($d['id'])) $cache.="$d[id],";
   }
   $cache.="NULL)";
   return $cache;

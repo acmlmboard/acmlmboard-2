@@ -2,7 +2,7 @@
 
   function usectime(){
     $t=gettimeofday();
-    return $t[sec]+$t[usec]/1000000;
+    return $t['sec']+$t['usec']/1000000;
   }
   $start=usectime();
 

@@ -1,0 +1,70 @@
+
+a:link		{color: #FFC040}
+a:visited	{color: #C09030}
+a:active	{color: #FFEA00}
+a:hover		{color: #FFFFFF}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #330000;
+	background-image: url(../themes/romhackdomain/back07.gif);
+	font-family: arial;
+}
+body, table {
+	color: #F0F0F0;
+	font-size: 13px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 1px solid #668899;
+}
+td.n1, tr.n1 td {
+	background: #000050 url(../themes/romhackdomain/back06.gif);
+}
+td.n2, tr.n2 td {
+	background: #000016 url(../themes/romhackdomain/back08.gif);
+}
+td.h, tr.h td {
+	background: #002090 url(../themes/romhackdomain/back10.gif);
+	color: #FFEA40;
+}
+tr.c td {
+	background: #000040 url(../themes/romhackdomain/back09.gif);
+	color: #FFEA40;
+}
+tr.h td, tr.c td {
+	text-align: center;
+}
+
+.sfont {
+	font-size: 10px;
+	font-family: tahoma;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 1px solid #1042A7;
+	background-color: #000000;
+	color: #F0F0F0;
+	font-family: arial;
+	font-size: 10pt;
+}
+.submit {
+	border: 2px solid #1042A7;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #F0F0F0;
+	font: 10pt arial;
+}

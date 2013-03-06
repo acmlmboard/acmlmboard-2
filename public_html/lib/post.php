@@ -172,26 +172,26 @@
   }
 
   function amptags($post,$s){
-    if(!$post[num]) $post[num]=$post[uposts];
-    $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
-    $s=str_replace("&postnum&",$post[num],$s);
-    $s=str_replace("&numdays&",floor((time()-$post[uregdate])/86400),$s);
-    $s=str_replace("&postcount&",$post[uposts],$s);
+    if(!$post['num']) $post['num']=$post['uposts'];
+    $exp=calcexp($post['uposts'],(ctime()-$post['uregdate'])/86400);
+    $s=str_replace("&postnum&",$post['num'],$s);
+    $s=str_replace("&numdays&",floor((time()-$post['uregdate'])/86400),$s);
+    $s=str_replace("&postcount&",$post['uposts'],$s);
     $s=str_replace("&level&",$lvl=calclvl($exp),$s);
     $s=str_replace("&exp&",$exp,$s);
     $s=str_replace("&expdone&",$edone=($exp-calclvlexp($lvl)),$s);
     $s=str_replace("&expnext&",$eleft=calcexpleft($exp),$s);
     $s=str_replace("&lvlexp&",calclvlexp($lvl+1),$s);
     $s=str_replace("&lvllen&",lvlexp($lvl),$s);
-    $s=str_replace("&expgain&",calcexpgainpost($post[uposts],(ctime()-$post[uregdate])/86400),$s);
-    $s=str_replace("&expgaintime&",calcexpgaintime($post[uposts],(ctime()-$post[uregdate])/86400),$s);
+    $s=str_replace("&expgain&",calcexpgainpost($post['uposts'],(ctime()-$post['uregdate'])/86400),$s);
+    $s=str_replace("&expgaintime&",calcexpgaintime($post['uposts'],(ctime()-$post['uregdate'])/86400),$s);
     $s=str_replace("&exppct&",sprintf("%d",$edone*100/lvlexp($lvl)),$s);
     $s=str_replace("&exppct2&",sprintf("%d",$eleft*100/lvlexp($lvl)),$s);
-    $s=str_replace("&rank&",getrank($post[urankset],$post[uposts]),$s);
-    $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",getrank($post[urankset],$post[uposts])),$s);
-    $s=str_replace("&postrank&",mysql_result(mysql_query("SELECT count(*) FROM users WHERE posts>$post[uposts]"),0,0),$s); //Added by request of Acmlm
+    $s=str_replace("&rank&",getrank($post['urankset'],$post['uposts']),$s);
+    $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",getrank($post['urankset'],$post['uposts'])),$s);
+    $s=str_replace("&postrank&",mysql_result(mysql_query("SELECT count(*) FROM users WHERE posts>".$post['uposts']),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
-    $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post[num].', 0)', $s);
+    $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post['num'].', 0)', $s);
     return $s;
   }
 

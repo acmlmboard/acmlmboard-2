@@ -1,6 +1,5 @@
 <?php
 
-require("lib/spritelib.php");
 require("lib/common.php");
 
   $r = request_variables(array('id','action','act'));

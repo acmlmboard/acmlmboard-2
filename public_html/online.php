@@ -2,7 +2,7 @@
   require 'lib/common.php';
 
   function sslicon($a,$uid=0) {
-    if(acl_for_user($uid,"show-ips") && $a) {
+    if(has_perm('view-post-ips') && $a) {
       return "<img src='img/ssloff.gif'>";
     }
     return "";

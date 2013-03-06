@@ -186,7 +186,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 }
       $text.=
           "    </td>
-".        "    <td class=\"b n2 $mbar\">".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']))."</td>
+".        "    <td class=\"b n2 mainbar".$post['uid']."\" id=\"post_".$post['id']."\">".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']))."</td>
 ".        "$L[TBLend]
 ";
     }

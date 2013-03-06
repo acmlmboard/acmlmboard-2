@@ -1,7 +1,8 @@
 <?php
   require 'lib/common.php';
   pageheader('IP bans');
-
+  $action=$_GET['action'];//Stop gap to allow esiting without major changes. -Emuz
+  $what=$_GET['what'];//Ditto -Emuz
   function ipfmt($a) {
     $expl=explode(".",$a);
     $dot="<font~color=#808080>.</font>";

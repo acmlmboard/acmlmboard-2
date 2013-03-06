@@ -166,7 +166,7 @@ if (has_perm("edit-users"))
            catheader('Appearance')."
 ".           fieldrow('Rankset'   ,fieldselect('rankset', $user['rankset'], ranklist()))."
 ".           ((checkctitle()) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
-".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 60KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
+".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 80KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
 ".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
 ";
 
@@ -254,10 +254,11 @@ if (has_perm("edit-users"))
       if($error) print $error;
     }
     if($_POST['minipicdel']) $minipic="\"\"";
+    $usepic='usepic';
     $fname=$_FILES['picture'];
     if($fname['size']>0){
       $ava_out=img_upload($fname,"userpic/$user[id]",$avatardimx,$avatardimy,$avatarsize);
-      if($ava_out!="OK!"){ $error.=$ava_out; } else { $usepic=1; }
+      if($ava_out!="OK!"){ $error.=$ava_out; }
     }
     if($_POST['picturedel']) $usepic=0;
 

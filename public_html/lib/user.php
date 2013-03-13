@@ -34,8 +34,64 @@
     return false;
   }
 
+function renderdotrank($posts=0){
+      //This function takes the number of posts a user has ($posts), and returns the html to be printed out. 
+     
+      $postcount = $posts; // Save the actual post count before we get the mod value
+
+      // Protection again overflow of dots. This normally won't be triggered in a real-world situation.
+      if($posts > 10000)
+      {
+        $posts %= 100010;
+        if($posts < 10)
+          $posts = 10;
+      }
+
+      $ranknum=floor($posts / 10) * 10;
+      //Based off of AB 1.x code. Well.. more or is the same code...
+        if ($postcount > 0)
+        {
+          $pr[5] = 5000;
+          $pr[4] = 1000;
+          $pr[3] =  250;
+          $pr[2] =   50;
+          $pr[1] =   10;
+
+          $postsx = $posts;
+          $dotnum[5] = floor($postsx / $pr[5]);
+          $postsx = $postsx - $dotnum[5] * $pr[5];
+          $dotnum[4] = floor($postsx / $pr[4]);
+          $postsx = $postsx - $dotnum[4] * $pr[4];
+          $dotnum[3] = floor($postsx / $pr[3]);
+          $postsx = $postsx - $dotnum[3] * $pr[3];
+          $dotnum[2] = floor($postsx / $pr[2]);
+          $postsx = $postsx - $dotnum[2] * $pr[2];
+          $dotnum[1] = floor($postsx / $pr[1]);
+
+          $rank = "<span title=\"$ranknum\"> ";
+
+          foreach($dotnum as $dot => $num) 
+          {
+            for ($x = 0; $x < $num; $x++) 
+            {
+              $rank .= "<img src=img/dots/dot". $dot .".gif align=\"absmiddle\">";
+            }
+          }
+
+          if ($postcount < 10) return "Newbie";
+          //else $rank .= "</span><br>$ranknum"; //This will show number the original way.
+          else $rank .= "</span>";
+
+        }
+        else return "Non-Poster";
+
+      return $rank;
+
+    }
+
   function getrank($set,$posts){
     global $ranks,$sql;
+    if($set == "-1") return renderdotrank($posts);
 
     //[KAWA] Climbing the Ranks Again
     if($posts > 5100)

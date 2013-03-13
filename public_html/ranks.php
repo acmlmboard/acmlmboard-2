@@ -100,10 +100,10 @@
       //print "$user[id] moo $user[name] <br>";
       $climbingagain = "";
       $postcount = $user['posts'];
-     if ($postcount > 61000)
+     if ($postcount > 5100)
       {
-       $postcount = $postcount - 61000;
-       $climbingagain = " (Climbing Again (61000))";
+       $postcount = $postcount - 5100;
+       $climbingagain = " (Climbing Again (5100))";
       }
       //print "$user[name]: ($postcount => $neededposts) && ($postcount < $nextneededposts)<br>";
      if (($postcount >= $neededposts) && ($postcount < $nextneededposts))

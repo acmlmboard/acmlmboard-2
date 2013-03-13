@@ -3,7 +3,7 @@
 
 
   needs_login(1);
-
+  $page=$_GET['page'];
   if(!$page)
     $page=1;
 

@@ -2,8 +2,12 @@
     require "lib/common.php";
     pageheader("Rankset Listing");
    
+    $getrankset = $_GET['rankset']; // Changed to allow the Kirby Rank to show.
+    if (!is_numeric($getrankset)) $getrankset = 1; //Double checking.. 
+    if ($getrankset < 1 || $getrankset > 3) $getrankset = 1; //Should be made dynamic based on rank sets.
+
     $linkuser = array();
-    $allusers = $sql->query('SELECT `id`, `name`, `displayname`, `posts`, `minipic` FROM `users` ORDER BY `id`');
+    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
    //$linkuser = $sql->fetchq($allusers);
     /*while ($user2 = $sql->fetchq($allusers))
      {;
@@ -16,9 +20,6 @@
       $linkuser[$row['id']] = $row;
     }
     $blockunknown = true;
-
-    $getrankset = $_GET['rankset']; // Changed to allow the Kirby Rank to show.
-    if ($getrankset < 1 || $getrankset > 3) $getrankset = 1; //Should be made dynamic based on rank sets.
 
     $rankposts = array();
     

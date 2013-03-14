@@ -1,0 +1,179 @@
+/* META
+Kafuka Gold (Dirbaio)
+
+*/
+
+body
+{
+	background: black url('../theme/kafukagold/back.png');
+	background-attachment: fixed;
+	background-repeat: repeat;
+	background-position: top left;
+	font-family: "Verdana", "Lucida Grande", sans-serif;
+	font-size: 1em; /* 10pt; */
+}
+
+body, table 
+{
+	color: #FEC;
+	font-size: 13px;
+}
+
+a:link, a:visited, a:active, a:hover 
+{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+A:link		{color:#FFC040}
+A:visited	{color:#F0A020}
+A:active	{color:#FFEA00}
+A:hover		{color:#FFFFFF}
+
+table.c1, table.c2 
+{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td.b 
+{
+	border: 1px solid black;
+	padding:1px 5px;
+}
+
+/* All this is kind of a hack because there's no classes to style the header */
+
+body > table:first-child > tbody > tr > td
+{
+	font-size: 0.85em; /* 10pt; */
+	padding:2px;
+	background-image: url('../theme/kafukagold/headerdark.png');
+	background-attachment: fixed;
+	background-position: top left;
+    background-repeat: repeat;
+}
+
+body > table:first-child > tbody > tr:first-child > td, 
+body > table:first-child > tbody > tr:first-child > td > table > tbody > tr > td 
+{
+	background-image: url('../theme/kafukagold/post.png');
+	background-attachment: fixed;
+	background-position: top left;
+    background-repeat: repeat;
+}
+
+td.n1, tr.n1 td 
+{
+    background-image: url('../theme/kafukagold/back2t1.png'), url('../theme/kafukagold/cell2.png');
+    background-attachment: scroll, fixed;
+    background-position: top left, top left;
+    background-repeat: repeat-x, repeat;
+}
+
+td.n2, tr.n2 td 
+{
+    background-image: url('../theme/kafukagold/back2t1.png'), url('../theme/kafukagold/cell0.png');
+    background-attachment: scroll, fixed;
+    background-position: top left, top left;
+    background-repeat: repeat-x, repeat;
+}
+
+td.n3, tr.n3 td, blockquote
+{
+    background-image: url('../theme/kafukagold/back2t1.png'), url('../theme/kafukagold/cell1.png');
+    background-attachment: scroll, fixed;
+    background-position: top left, top left;
+    background-repeat: repeat-x, repeat;
+}
+
+blockquote {
+	padding:5px;
+	border: 1px solid black;
+}
+
+blockquote hr {
+	height:0px;
+	border:0px none;
+	background:none;
+}
+
+td.h, tr.h td 
+{
+    background-image: url('../theme/kafukagold/header2.png');
+    background-attachment: fixed;
+    background-position: top left;
+    background-repeat: repeat;
+    font-weight:bold;
+}
+
+tr.c td 
+{
+    background-image: url('../theme/kafukagold/header1.png');
+    background-attachment: fixed;
+    background-position: top left;
+    background-repeat: repeat;
+    font-weight:bold;
+}
+
+tr.h td, tr.c td 
+{
+	text-align: center;
+}
+ 
+ 
+/* Form stuff */
+
+
+button, input[type="submit"]
+{
+	background: #0e2e35 url('../theme/kafukagold/forms.png');
+	background-attachment: fixed;
+	background-position: top left;
+
+	border: 1px solid #000212;
+	color: #EEEEEE;
+}
+
+input[type="text"], input[type="password"], input[type="file"], input[type="email"], select, textarea
+{
+	background: #0e2e35 url('../theme/kafukagold/forms.png');
+	background-attachment: fixed;
+	background-position: top left;
+
+	border: 1px solid #000212;
+	color: white;
+}
+
+input[type="checkbox"], input[type="radio"]
+{
+	background: #0e2e35 url('../theme/kafukagold/forms.png');
+	background-attachment: fixed;
+	background-position: top left;
+	border: 1px solid #000212;
+	color: #B7E6FF;
+}
+
+input[type="radio"]
+{
+	border-radius: 8px;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="file"]:focus, input[type="email"]:focus, select:focus, textarea:focus, button:hover, input[type="submit"]:hover
+{
+	border-color: #26acc9;
+}
+
+hr
+{
+	border:0px none;
+	border-top:1px solid black;
+	height:10px;
+	background-image: url('../theme/kafukagold/back2t1.png');
+}
+
+/* Fix white-on-white on Chrome */
+select option, select optgroup
+{
+	background-color:inherit;
+}

@@ -1,0 +1,152 @@
+/* META
+	Pinkielicious (Ijah)
+*/
+
+A:link {
+	color: #ee0099;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+A:visited {color: #ee0099;}
+A:active {color: #ff0099;text-shadow: 0px 0px 3px #ff0099;}
+A:hover {
+	color: #ff0099;
+	text-shadow: 0px 0px 3px #ff0099;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+}
+A:link, A:visited, A:active, A:hover {
+    font-weight: bold;
+    text-decoration: none;
+}
+body {
+    background:black;
+    color: white;
+    font-family: helvetica,arial,tahoma;
+}
+table {
+    color: white;
+    font-size: 1em;
+}
+table.c1 {
+    background:black;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+table.c2 {
+    background:black;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    font-size: 0.9em;
+    width: 100%;
+}
+tr.h {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%), #660066;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%)),rgba(0,0,0,0.35)), #660066;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #660066;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #660066;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #660066;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #660066;
+    color: #DDDDDD;
+    font-size: 1.3em;
+    font-weight: bold;
+    height: 24px;
+    text-align: center;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+}
+tr.c {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 100%), #222222;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%),rgba(0,0,0,0.35)), #222222;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #222222;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #222222;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #222222;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.35) 100%), #222222;
+    color: #EEEEEE;
+    font-size: 1em;
+    text-align: center;
+}
+td.b {
+    border-top: 1px solid #000000;
+    padding: 1px;
+}
+td.nb {
+    border: 0 none;
+    padding: 1px;
+}
+td.h {
+    border-left: 0 none;
+    border-right: 0 none;
+    padding: 1px;
+}
+tr.n1, td.n1 {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%), #111111;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%),rgba(0,0,0,0.15)), #111111;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #111111;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #111111;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #111111;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #111111;
+}
+tr.n2, td.n2 {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%), #222222;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%),rgba(0,0,0,0.15)), #222222;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #222222;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #222222;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #222222;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #222222;
+}
+tr.n3, td.n3 {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%), #333333;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%),rgba(0,0,0,0.15)), #333333;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #333333;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #333333;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #333333;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #333333;
+}
+.sfont {
+    font-size: 1em;
+}
+textarea, input, select, button, .newreply, .ignoreforum, .newthread, .newpoll {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%), #220022;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%),rgba(0,0,0,0.15)), #220022;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #220022;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #220022;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #220022;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), #220022;
+    border: 2px solid purple;
+    border-radius: 4px 4px 4px 4px;
+    color: #FFFFFF;
+    font: 1em helvetica,arial,tahoma;
+	padding: 2px;
+}
+.radio {
+    background:none;
+    border: medium none;
+    color: white;
+    font: 1em verdana;
+}
+.submit {
+	background: -moz-linear-gradient(top,  rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%), purple;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0)), color-stop(100%),rgba(0,0,0,0.15)), purple;
+	background: -webkit-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), purple;
+	background: -o-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), purple;
+	background: -ms-linear-gradient(top,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), purple;
+	background: linear-gradient(to bottom,  rgba(0,0,0,0) 0%,rgba(0,0,0,0.15) 100%), purple;
+    border: 1px solid #440044;
+    border-radius: 4px 4px 4px 4px;
+    color: white;
+    font-weight: bold;
+    padding: 2px;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+.nc04{color:#EE4444} .nc14{color:#E63282} .nc24{color:#AA3C3C}
+

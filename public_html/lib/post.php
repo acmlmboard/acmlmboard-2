@@ -37,7 +37,14 @@
     $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
 	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
   }
-  
+ 
+  function makeirc($match)
+  {
+  global $L;
+  $list = array("<","\r\n","[",":",")","_","@","-");
+    $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+  return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
+  } 
   function makesvg($match)
   {
 	$svgin="<?xml version=\"1.0\" standalone=\"no\"?".">"
@@ -78,6 +85,9 @@
 
     //[blackhole89] - [code] tag
     $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
+
+    //[irc] variant of [code]
+    $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
 
     //[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);

@@ -343,7 +343,7 @@ print \"Sample code.\"; #oops you just missed him!
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
-                       ". (has_perm('edit-permissions') ? "| <a href=\"editperms.php?uid".$user['id']."\">Edit User Permissions</a>":"") ."
+                       ". (has_perm('edit-permissions') ? "| <a href=\"editperms.php?uid=".$user['id']."\">Edit User Permissions</a>":"") ."
            $L[TBLend]";
            pagefooter();
            

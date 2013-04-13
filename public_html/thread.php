@@ -253,9 +253,9 @@ if($_COOKIE['pstbon']>=1){
                                   ."LEFT JOIN threads t ON p.thread=t.id "
                                   ."LEFT JOIN forums f ON f.id=t.forum "
                                   ."LEFT JOIN categories c ON c.id=f.cat "
-                                  ."WHERE p.user=$uid "
-                                  .  "AND f.minpower<=$loguser[power] "
-                                  .  "AND c.minpower<=$loguser[power]");
+                                  ."WHERE p.user=$uid ");
+//                                  .  "AND f.minpower<=$loguser[power] "
+//                                  .  "AND c.minpower<=$loguser[power]");
   }
   elseif($viewmode == "announce") {
     $announceftitle = $sql->resultp("SELECT title FROM forums WHERE id=?",array($announcefid));

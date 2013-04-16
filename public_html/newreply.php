@@ -262,13 +262,13 @@
 ".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
-    checknumeric($nolayout);
+    checknumeric($_POST[nolayout]);
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;
     $mid=(isset($_POST[mid]) ? $_POST[mid] : -1); //2009/07 Sukasa: Last I checked, there was a magic_quotes_gpc in effect on board2, which makes this okay
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout)");
+               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
     $pid=mysql_insert_id();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
     $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$tid");

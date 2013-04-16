@@ -74,7 +74,7 @@
     }
     
     print "    </tr>
-".        "    $L[TR] style=\"min-height: 80px\">\n";
+".        "    $L[TR] style=\"height: 80px;\">\n";
 
     for ($w = 0; $w < $wday; $w++) {//unused cells in the first week
         print "$L[TD]></td>";
@@ -83,7 +83,7 @@
     for ($mday = 1; $mday <= $mdays; $mday++, $wday++) {//main day cells
         if ($wday > 6) {  //week wrap around
             $wday = 0;
-            print "</tr>$L[TR] style=\"height:80\">\n";
+            print "</tr>$L[TR] style=\"height: 80px\">\n";
         }
         $l = ($mday == $day) ? $L['TD3l'] : (($wday==0 || $wday==6) ? $L['TD2l'] : $L['TD1l']);
         print "$l width=\"14%\" valign=\"top\">$mday";

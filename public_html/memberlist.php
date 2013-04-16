@@ -121,7 +121,7 @@ for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++)
     $user[level]=calclvl($user[exp]);
     if($mini==1) $picture=($user[minipic]?"<center><img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0 ></center> "
                            :'<img src=img/_.png width=16 height=16>');
-    else $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id]&s=1 width=60 height=60>"
+    else $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id] width=60 height=60>"
                            :'<img src=img/_.png width=60 height=60>');
 
 	$data[] = array

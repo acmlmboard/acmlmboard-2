@@ -36,7 +36,7 @@
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
   $config['enableirc'] = false; //Enable to send messages to IRC 
-  $config['ircbase'] = "http://".$config['address']."".$config['path']";
+  $config['ircbase'] = "http://".$config['address']."".$config['path'];
   $config['staffchan'] = '#staffchangoeshere PASSWORD';
   $config['pubchan'] = '#pubchangoeshere PASSWORD';
   $config['ircnickprefix'] = true; //Use an IRC prefix when sending messages to the IRC channel.

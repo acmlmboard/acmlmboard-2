@@ -136,7 +136,7 @@
   $L[TR]>
     $L[TD2]><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url(".$aurl.") no-repeat center;\"></div>
   </tr>$L[TR]>
-    $L[TD1]><a href=\"#\" onclick=\"edit(".$mav['id'].",'".addslashes($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".addslashes($mav['label'])."')\">Delete</a></td>
+    $L[TD1]><a href=\"#\" onclick=\"edit(".$mav['id'].",'".htmlspecialchars($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".htmlspecialchars($mav['label'])."')\">Delete</a></td>
   </tr>
 </table></div>";
 }

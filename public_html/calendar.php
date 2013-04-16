@@ -74,7 +74,7 @@
     }
     
     print "    </tr>
-".        "    $L[TR] style=\"height:80\">\n";
+".        "    $L[TR] style=\"min-height: 80px\">\n";
 
     for ($w = 0; $w < $wday; $w++) {//unused cells in the first week
         print "$L[TD]></td>";

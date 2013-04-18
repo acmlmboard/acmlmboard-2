@@ -169,6 +169,7 @@ function renderdotrank($posts=0){
  // if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 
 /* Broken as of 2011-09-18 -Emuz */
   $nc= color_for_user($user[$u.'id']);
+  if($nc=="RAINBOW") $nc=randnickcolor();
   $n = $user[$u.'name'];
   if($user[$u.'displayname'])
   	$n = $user[$u.'displayname'];

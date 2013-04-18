@@ -515,7 +515,7 @@
                                  FROM `users`
                                  WHERE `birth` LIKE '".date('m')."-".date('d')."%' AND `lastview` > ".(time()-$birthdaylimit)." ORDER BY `name`");
       $birthdays = array();
-     while($user = $sql->fetch($rBirthdays))
+     while($user = $sql->fetch($rbirthdays))
       {
        $b = explode('-',$user['birth']);
        $y = date("Y") - $b[2];

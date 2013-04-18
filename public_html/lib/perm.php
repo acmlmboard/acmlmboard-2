@@ -81,14 +81,11 @@ function color_for_user($userid,$tsex=-1) {
   	if(isset($nccache[$userid][$tsex]))  return $nccache[$userid][$tsex];
 
 	global $sql;
-	$sex = ($tsex == -1)?sex_for_user($userid):$tsex;
-	$gid = gid_for_user($userid);
-
-	$nc = "";
-
-	while ($nc == "" && $gid > 0) {		 
-		$nc = color_for_group($gid,$sex);
-		$gid = parent_group_for_group($gid);
+	$sex = $sql->fetch($sql->query("SELECT nc0, nc1, nc2, sex FROM `group` g LEFT JOIN `users` u ON g.id = u.`group_id` WHERE g.id = u.`group_id` AND u.id=".$userid));
+	switch($sex['sex']){
+	case 0: $nc=$sex[nc0]; break;
+	case 1: $nc=$sex[nc1]; break;
+	case 2: $nc=$sex[nc2]; break;
 	}
 
 	$nccache[$userid][$tsex] = $nc;

@@ -286,14 +286,17 @@ if (has_perm("edit-users"))
     $pass=$_POST[pass];
     if(!strlen($_POST[pass2])) $pass="";
     $tztotal=$_POST[tzoffH]*3600+$_POST[tzoffM]*60*($_POST[tzoffH]<0?-1:1);
+    //Validate birthday values.
     if(!$_POST[birthM] || !$_POST[birthD] || !$_POST[birthY]) //Reject if any are missing.
       $birthday=-1;
     else {
-    if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD]) || !is_numeric($_POST[birthY])) //Reject if not numeric.
-      $birthday=-1;
-    else
-      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$_POST[birthY];
+      if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD]) || !is_numeric($_POST[birthY])) //Reject if not numeric.
+        $birthday=-1;
     }
+    if($birthday!=-1 && checkdate($_POST[birthM],$_POST[birthD],$_POST[birthY]))
+      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$_POST[birthY];
+    else
+      $birthday=-1;
 
     $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
     $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);

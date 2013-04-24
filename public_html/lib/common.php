@@ -4,9 +4,9 @@
   header("Content-type: text/html; charset=utf-8");
   
   //[Scrydan] Added these three variables to make editing quicker.
-  $boardprog = "Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.";
-  $abdate    = "3/05/2013";
-  $abversion = "2.5.1";
+  $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
+  $abdate    = "4/23/2013";
+  $abversion = "2.5.2 (<i><font color='#FFEA95'>Development</font></i>)";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -680,7 +680,7 @@
     //Used for Affiliates, buttons, links, and navigational tools -Emuz
     global $L, $abversion, $abdate, $boardprog;
     //pagestats();
-    //[Scrydan] Removed "2012" and replaced it with code to make it update automatically. Also variables towards the top to edit for easy access.
+
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><img src=\"img/poweredbyacmlm.PNG\"><br>
              Acmlmboard v$abversion ($abdate)<br>

@@ -78,9 +78,9 @@
 
    if($user['email'])
     {
+     $email = htmlval($email);
      $email = str_replace("@", "<b>&#64;</b>", $user['email']);
      $email = str_replace(".", "<b>&#46;</b>", $email);
-     $email = htmlval($email);
     }
    else
      $email = "";

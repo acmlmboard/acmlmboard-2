@@ -510,7 +510,7 @@
     else if ($showonusers)
      { 
       //[KAWA] Copypastadaption from ABXD, with added activity limiter.
-      $birthdaylimit = 86400 * 30; //should be 30 days. Adjust if you want.
+      $birthdaylimit = 86400 * $inactivedays;
       $rbirthdays = $sql->query("SELECT `birth`, `id`, `name`, `displayname`, `power`, `sex`
                                  FROM `users`
                                  WHERE `birth` LIKE '".date('m')."-".date('d')."%' AND `lastview` > ".(time()-$birthdaylimit)." ORDER BY `name`");

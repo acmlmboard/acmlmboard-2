@@ -7,7 +7,8 @@
     if ($getrankset < 1 || $getrankset > 3) $getrankset = 1; //Should be made dynamic based on rank sets.
 
     $linkuser = array();
-    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
+    if(!$_GET['showinactive']) $inact=" AND `lastview` > ".(time()-(86400 * $inactivedays)); else $inact="";
+    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic` FROM `users` WHERE `rankset` = ".$getrankset."$inact ORDER BY `id`");
    //$linkuser = $sql->fetchq($allusers);
     /*while ($user2 = $sql->fetchq($allusers))
      {;
@@ -64,6 +65,13 @@
      }
      $usedranks[$rank['rs']] = true;
     }
+    if($_GET['rankset']){
+	if(!$_GET['showinactive']) $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."&showinactive=1\">Show Inactive</a>";
+	else $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."\">Hide Inactive</a>";
+    } else {
+	if(!$_GET['showinactive']) $inaclnk=" | <a href=\"ranks.php?showinactive=1\">Show Inactive</a>";
+	else $inaclnk=" | <a href=\"ranks.php\">Hide Inactive</a>";
+    }
                           
     print "$L[TBL]>
              $L[TR]>
@@ -73,7 +81,7 @@
                      $L[TD1] width=\"50%\">Rank Set</td>
                    </tr>
                    $L[TR1]>
-                     $L[TD1]>$rankselection$linkviewall$editlinks</td>
+                     $L[TD1]>$rankselection$inaclnk$linkviewall$editlinks</td>
                    </tr>
                  </table>
                </td>

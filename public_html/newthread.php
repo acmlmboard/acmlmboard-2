@@ -318,8 +318,7 @@ $pollprev.="$L[TBLend]";
 
     checknumeric($nolayout);
 
-    $iconurl=str_replace("\"","",$iconurl);
-    $iconurl=str_replace("\'","&quot;",$iconurl);
+    $iconurl=addslashes($iconurl);
 
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;

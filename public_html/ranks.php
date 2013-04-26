@@ -7,8 +7,7 @@
     if ($getrankset < 1 || $getrankset > 3) $getrankset = 1; //Should be made dynamic based on rank sets.
 
     $linkuser = array();
-    if(!$_GET['showinactive']) $inact=" AND `lastview` > ".(time()-(86400 * $inactivedays)); else $inact="";
-    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic` FROM `users` WHERE `rankset` = ".$getrankset."$inact ORDER BY `id`");
+    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic`, `lastview` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
    //$linkuser = $sql->fetchq($allusers);
     /*while ($user2 = $sql->fetchq($allusers))
      {;
@@ -102,6 +101,7 @@
      $neededposts     = $rank['p'];
      $nextneededposts = $rankposts[$i];
      $usercount       = 0;
+     $idlecount       = 0;
   //$allusers = $sql->query('SELECT `id`, `name`, `displayname`, `posts` FROM `users` ORDER BY `id`');
     foreach ($linkuser as $user)
      {
@@ -116,10 +116,13 @@
       //print "$user[name]: ($postcount => $neededposts) && ($postcount < $nextneededposts)<br>";
      if (($postcount >= $neededposts) && ($postcount < $nextneededposts))
       {
+//    if(!$_GET['showinactive']) $inact=" AND `lastview` > ".(time()-(86400 * $inactivedays)); else $inact="";
       if ($usersonthisrank)
         $usersonthisrank .= ", ";
        //$usersonthisrank .= linkuser($user['id']).$climbingagain;
+    if($_GET['showinactive'] || $user['lastview']>(time()-(86400 * $inactivedays)))
        $usersonthisrank .= "<img style='vertical-align:text-bottom' src='".$user['minipic']."'/> ".userlink_by_id($user['id']).$climbingagain;
+    else $idlecount++;
        $usercount++;
       }
      }
@@ -129,10 +132,10 @@
      }
      print "
              $L[TR]>
-               $L[TD1]>".($usercount || $blockunknown == false ? "$rank[str]" : "???")."</td>
-               $L[TD2c]>".($usercount || $blockunknown == false ? "$neededposts" : "???")."</td>
+               $L[TD1]>".(($usercount-$idlecount) || $blockunknown == false ? "$rank[str]" : "???")."</td>
+               $L[TD2c]>".(($usercount-$idlecount) || $blockunknown == false ? "$neededposts" : "???")."</td>
                $L[TD2c]>$usercount</td>
-               $L[TD1c]>$usersonthisrank</td>
+               $L[TD1c]>$usersonthisrank ".($idlecount?"($idlecount inactive)":"")."</td>
              </tr>";
 
      //"<!--$rankset[neededposts] $rankset[title] $rankimage<br>-->\n";

@@ -10,8 +10,7 @@
      (
       "<span style=\"color: #EE4444; font-weight:bold;\">Acmlm</span>"       => "The man the board is named after. He built the core of the board (and much more that would take a long time to detail.)",
       "<span style=\"color: #EE4444; font-weight:bold;\">Emuz</span>"        => "He was there from day one with Acmlm. Working on misc things.<br><br>
-                        It was on the beginning of the year 2012 when he restarted interest in developement of AB 2.X as 2.5.1.<br>
-                        Without him and Bouche, Acmlmboard 2.X may still be dormant.",
+                        It was on the beginning of the year 2012 when he restarted interest in developement of AB 2.X as 2.5+.",
       "<span style=\"color: #FFEA95; font-weight:bold;\">blackhole89</span>" => "Worked along with Xkeeper to bring the board from an alpha to production. Created many of the core systems missing from the original provided by Acmlm.",
       "<span style=\"color: #F0C413; font-weight:bold;\">Xkeeper</span>"     => "Xkeeper was the person who convinced Acmlm to work on AB2 after it laid dormant for years. Along with blackhole89 they contributed a majority of the code from 2.0 to 2.1.",
       "<span style=\"color: #FFEA95; font-weight:bold;\">Sukasa</span>"      => "Implemented mood avatars, forums and items editing, and a Text to IMG rendering engine.",
@@ -20,7 +19,7 @@
       "<span style=\"color: #C762F2; font-weight:bold;\">knuck</span>"       => "Implemented implemented post radar, many small fixes",
       "<span style=\"color: #FFEA95; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
       "<span style=\"color: #33EDCB; font-weight:bold;\">Mega-Mario</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
-      "<span style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here).<br /><i>Most of his work on the 2.6 branch. He implmented many major changes to it.</i> ",
+      "<span style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here). Most of his work was on the now defunct 2.6 branch.",
      );
 
 

@@ -136,6 +136,23 @@
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1>',$msg);
     $msg=str_replace('[quote]','<blockquote><hr>',$msg);
     $msg=str_replace('[/quote]','<hr></blockquote>',$msg);
+    //Color Codes. Possibly could be simplified...
+    $msg=str_replace('[red]','<span style="color: #FFC0C0">',$msg);
+    $msg=str_replace('[/red]','</span>',$msg);
+    $msg=str_replace('[green]','<span style="color: #C0FFC0">',$msg);
+    $msg=str_replace('[/green]','</span>',$msg);
+    $msg=str_replace('[blue]','<span style="color: #C0C0FF">',$msg);
+    $msg=str_replace('[/blue]','</span>',$msg);
+    $msg=str_replace('[orange]','<span style="color: #FFC080">',$msg);
+    $msg=str_replace('[/orange]','</span>',$msg);
+    $msg=str_replace('[yellow]','<span style="color: #FFEE20">',$msg);
+    $msg=str_replace('[/yellow]','</span>',$msg);
+    $msg=str_replace('[pink]','<span style="color: #FFC0FF">',$msg);
+    $msg=str_replace('[/pink]','</span>',$msg);
+    $msg=str_replace('[white]','<span style="color: #FFFFFF">',$msg);
+    $msg=str_replace('[/white]','</span>',$msg);
+    $msg=str_replace('[black]','<span style="color: #000000">',$msg);
+    $msg=str_replace('[/black]','</span>',$msg);
 
     $msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg);
 //    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);

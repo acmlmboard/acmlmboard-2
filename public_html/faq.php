@@ -145,10 +145,19 @@ print "$L[TBL1]>
 ".    "  <br>Likewise, a selection of BBCode is supported. See the chart below.
 ".    "  <table class=table cellspacing=0>
 	 <tr><td class='b h'>Tag</td><td class='b h'>Effect
-	 <tr><td class='b n1'>[b]<i>text</i>[/b]</td><td class='b n2'><b>Bolt Text</b></td>
+	 <tr><td class='b n1'>[b]<i>text</i>[/b]</td><td class='b n2'><b>Bold Text</b></td>
 	 <tr><td class='b n1'>[i]<i>text</i>[/i]</td><td class='b n2'><i>Italic Text</i></td>
 	 <tr><td class='b n1'>[u]<i>text</i>[/u]</td><td class='b n2'><u>Underlined Text</u></td>
-	 <tr><td class='b n1'>[s]<i>text</i>[/s]</td><td class='b n2'><s>Striked out text</s></td>
+	 <tr><td class='b n1'>[s]<i>text</i>[/s]</td><td class='b n2'><s>Striked-out Text</s></td>
+	 <tr><td class='b n1'>[red]<i>text</i>[/red]</td><td class='b n2'><span style=\"color: #FFC0C0\">Black Text</span></td>
+	 <tr><td class='b n1'>[green]<i>text</i>[/green]</td><td class='b n2'><span style=\"color: #C0FFC0\">Green Text</span></td>
+	 <tr><td class='b n1'>[blue]<i>text</i>[/blue]</td><td class='b n2'><span style=\"color: #C0C0FF\">Blue Text</span></td>
+	 <tr><td class='b n1'>[orange]<i>text</i>[/orange]</td><td class='b n2'><span style=\"color: #FFC080\">Orange Text</span></td>
+	 <tr><td class='b n1'>[yellow]<i>text</i>[/yellow]</td><td class='b n2'><span style=\"color: #FFEE20\">Yellow Text</span></td>
+	 <tr><td class='b n1'>[pink]<i>text</i>[/pink]</td><td class='b n2'><span style=\"color: #FFC0FF\">Pink Text</span></td>
+	 <tr><td class='b n1'>[white]<i>text</i>[/white]</td><td class='b n2'><span style=\"color: #FFFFFF\">White Text</span></td>
+	 <tr><td class='b n1'>[black]<i>text</i>[/black]</td><td class='b n2'><span style=\"color: #000000\">Black Text</span></td>
+	 <tr><td class='b n1'>[color=<u>hexcolor</u>]<i>text</i>[/color]</td><td class='b n2'><span style=\"color: #BCDE9A\">Custom color Text</span></td>
 	 <tr><td class='b n1'>[img]<i>URL of image to display</i>[/img]</td><td class='b n2'>Displays an image.</td>
 	 <tr><td class='b n1'>[svg]<i>URL of a SVG image to display</i>[/svg]</td><td class='b n2'>Displays a SVG Image.</td>
 	 <tr><td class='b n1'>[spoiler]<i>text</i>[/spoiler]</td><td class='b n2'>Used for hiding spoiler text.</td>

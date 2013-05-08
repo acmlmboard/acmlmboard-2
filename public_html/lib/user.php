@@ -142,10 +142,10 @@ function renderdotrank($posts=0){
     return $rndcolor;   
   }
 
- function userlink_by_id($uid) {
+ function userlink_by_id($uid, $minipic='0') {
     global $sql;
     $u = $sql->fetchp("SELECT id,name,displayname,power,minipic FROM users WHERE id=?",array($uid));        
-    $u['showminipic']=0;   
+    $u['showminipic']=$minipic;   
     return userlink($u);
  }
 

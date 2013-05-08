@@ -51,11 +51,11 @@ function build_postradar($u) {
 			$rdif = $your_count-$cur_radar["num_posts"];
 			$con_str = ($i >= ($rcnt-2)?' and ':', ');
 			if ($rdif > 0) {
-				$radar_res .= $rdif." ahead of ".userlink_by_id($cur_radar["uid"]).' ('.$cur_radar['num_posts'].')';
+				$radar_res .= $rdif." ahead of ".userlink_by_id($cur_radar["uid"], true).' ('.$cur_radar['num_posts'].')';
 			} else if ($rdif < 0) {
-				$radar_res .= abs($rdif)." behind ".userlink_by_id($cur_radar["uid"]).' ('.$cur_radar['num_posts'].')';
+				$radar_res .= abs($rdif)." behind ".userlink_by_id($cur_radar["uid"], true).' ('.$cur_radar['num_posts'].')';
 			} else {
-				$radar_res .= " tied with ".userlink_by_id($cur_radar["uid"]).' ('.$cur_radar['num_posts'].')';
+				$radar_res .= " tied with ".userlink_by_id($cur_radar["uid"], true).' ('.$cur_radar['num_posts'].')';
 			}
 			if ($i != $rcnt-1) {
 				$radar_res .= $con_str;

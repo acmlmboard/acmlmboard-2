@@ -48,7 +48,7 @@ if($_COOKIE['pstbon']>=1){
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign','signsep');
+  $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign','signsep', 'minipic');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 

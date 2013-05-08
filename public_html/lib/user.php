@@ -142,27 +142,29 @@ function renderdotrank($posts=0){
     return $rndcolor;   
   }
 
- function userlink_by_id($uid, $minipic='0') {
+ function userlink_by_id($uid,$usemini='') {
     global $sql;
     $u = $sql->fetchp("SELECT id,name,displayname,power,minipic FROM users WHERE id=?",array($uid));        
-    $u['showminipic']=$minipic;   
+    $u['showminipic']=$usemini;   
     return userlink($u);
  }
 
- function userlink($user,$u=''){
+ function userlink($user,$u='',$usemini=''){
     global $loguser;
     if(!$user[$u.name])
       $user[$u.name]='&nbsp;';
 
     return '<a href=profile.php?id='.$user[$u.id].'>'
-          .userdisp($user,$u)
+          .userdisp($user,$u,$usemini)
           .'</a>';
   }
 
-  function userdisp($user,$u=''){
+  function userdisp($user,$u='',$usemini=''){
     global $sql;
     if($user[$u.'power']<0)
       $user[$u.'power']='x';
+    //$usemini = true;
+    if($usemini) $user['showminipic'] = true;
 
 
   //global $loguser;

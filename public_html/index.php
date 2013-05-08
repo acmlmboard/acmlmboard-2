@@ -64,7 +64,7 @@
 	while($i = $sql->fetch($ignoreQ))
 		$ignores[$i['fid']] = true;
 
-  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower "
+  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower, u.minipic uminipic "
                      ."FROM forums f "
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "

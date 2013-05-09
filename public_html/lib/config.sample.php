@@ -33,6 +33,15 @@
   $config['path']   = "/";
   $config['meta']   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";
   
+  //The following settings allow you to enable minipics in various parts of the board. Currently they are specific but they may be simplifed in the future.
+  $config['showminipic'] = false; // Show minipics in many generic places that don't need to be specifically controlled.
+  $config['userlinkminipic'] = false; // Show minipics in [user=#] and @Name links.
+  $config['indexminipic'] = false; // Show minipics on index
+  $config['forumminipic'] = false; // Show minipics on forum listing
+  $config['startedbyminipic'] = $config['forumminipic']; // Show minipics on forum started by col. (Seperate for testing purposes at this time.. may be merged)
+  $config['threadminipic'] = false; // Show minipics in a thread
+  $config['enableirc'] = true;
+
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
   $config['enableirc'] = false; //Enable to send messages to IRC 

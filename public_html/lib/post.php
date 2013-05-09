@@ -11,7 +11,8 @@
 
 
   function get_userlink($matches) {
-    return userlink_by_id($matches[1]);
+    global $config;
+    return userlink_by_id($matches[1],$config[userlinkminipic]);
   }
   function get_username_link($matches) {
     $x = str_replace('"','',$matches[1]);

@@ -307,10 +307,10 @@ echo announcement_row($fid,3,4);
 ".($showforum?
           "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
 ".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$taglist$pagelist</td>
-".        "    $L[TD]>".userlink($thread,'u1')."</td>
+".        "    $L[TD]>".userlink($thread,'u1',$config[startedbyminipic])."</td>
 ".        "    $L[TD]>$thread[replies]</td>
 ".        "    $L[TD]>$thread[views]</td>
-".        "    $L[TD]><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by&nbsp;".userlink($thread,'u2')."&nbsp;<a href='thread.php?pid=$thread[lastid]#$thread[lastid]'>&raquo;</a></font></td>
+".        "    $L[TD]><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by&nbsp;".userlink($thread,'u2',$config[forumminipic])."&nbsp;<a href='thread.php?pid=$thread[lastid]#$thread[lastid]'>&raquo;</a></font></td>
 ";
   }
   print "$L[TBLend]

@@ -12,7 +12,7 @@ function LoadBlocklayouts()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
 
     $post[head]=str_replace("<!--", "&lt;!--", $post[head]);
@@ -59,7 +59,7 @@ function LoadBlocklayouts()
       $text="$L[TBL1]>
 ".          "  $L[TR]>
 ".          "    $L[TD1] style=border-bottom:0;border-right:0;width:180px height=17>
-".          "      ".userlink($post,'u')."</td>
+".          "      ".userlink($post,'u',$config[threadminipic])."</td>
 ".          "    $L[TD1] style=border-left:0>
 ".          "      $L[TBL] width=100%>
 ".          "        $L[TDns]>(post deleted)</td>
@@ -129,7 +129,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".        "  $postheaderrow 
 ".        "  $L[TR]>
 ".        "    <td class=\"b n1 $tbar1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
-".        "      ".userlink($post,'u').
+".        "      ".userlink($post,'u',$config[threadminipic]).
 
 
 /*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field

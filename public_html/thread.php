@@ -433,7 +433,7 @@ if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
   }elseif($viewmode=="user"){
     $topbot=
           "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Posts by ".userlink($user)."</td>
+".        "  $L[TDn]><a href=./>Main</a> - Posts by ".userlink($user,"",$config[showminipic])."</td>
 ".        "$L[TBLend]
 ";
   }

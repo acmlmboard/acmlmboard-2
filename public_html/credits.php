@@ -29,6 +29,7 @@
       "<span style=\"color: #C53A9E; font-weight:bold;\">Ailure</span>"        => "",
       "<span style=\"color: #F185C9; font-weight:bold;\">Nina</span>"        => "Converted all the AB1 themes to AB2.",
       "<span style=\"color: #33EDCB; font-weight:bold;\">Shroomy</span>"     => "Drafted an OOP DB class for AB2. This class not in use.",
+      "<span style=\"color: #F185C9; font-weight:bold;\">Ijah</span>"     => "Created the default AB2 board logo.",
      );
 
     $gitcontributors = array

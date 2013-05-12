@@ -20,8 +20,8 @@
   $sqldb  ='sqldatabase';
 
   $boardtitle="Insert title here";
-  $boardlogo="<img style='border: 0px' src='img/logo.png' title=\"$boardtitle\">";
   $defaultlogo="theme/abII.png";//Replace with the logo of your choice. Note: This is used if a theme doesn't have it's own logo. It is replaced per theme depending on the theme used.
+  $boardlogo="<img style='border: 0px' src='$defaultlogo' title=\"$boardtitle\">"; // This defines the logo. Recommended you leave this the default.
   $favicon="theme/fav.png"; //Replace with your favicon of choice
   $defaulttheme="dailycycle2";
   

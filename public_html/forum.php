@@ -252,16 +252,17 @@ echo announcement_row($fid,3,4);
     }
 
     $status='';
-    if($thread[closed])                $status.='o';
-    if($thread[replies]>=50)           $status.='!';
+    $statalt='';
+    if($thread[closed]){                $status.='o'; $statalt='OFF'; }
+    if($thread[replies]>=50){           $status.='!'; if(!$statalt) $statalt='HOT'; }
 
     if($log){
-      if(!$thread[isread]) $status.='n';
+      if(!$thread[isread]){ $status.='n'; if(!$statalt) $statalt='NEW'; }
     }else
-      if($thread[lastdate]>(ctime()-3600)) $status.='n';
+      if($thread[lastdate]>(ctime()-3600)){ $status.='n'; if(!$statalt) $statalt='NEW'; }
 
     if($status)
-      $status="<img src=gfx/new.php?type=$status>";
+      $status="<img src=\"gfx/new.php?type=$status\" alt=\"$statalt\">";
     else
       $status='&nbsp;';
 

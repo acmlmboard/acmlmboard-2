@@ -257,9 +257,9 @@ echo announcement_row($fid,3,4);
     if($thread[replies]>=50){           $status.='!'; if(!$statalt) $statalt='HOT'; }
 
     if($log){
-      if(!$thread[isread]){ $status.='n'; if(!$statalt) $statalt='NEW'; }
+      if(!$thread[isread]){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
     }else
-      if($thread[lastdate]>(ctime()-3600)){ $status.='n'; if(!$statalt) $statalt='NEW'; }
+      if($thread[lastdate]>(ctime()-3600)){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
 
     if($status)
       $status="<img src=\"gfx/new.php?type=$status\" alt=\"$statalt\">";

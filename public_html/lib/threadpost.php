@@ -80,10 +80,8 @@ function LoadBlocklayouts()
         $postlinks="<a href=thread.php?pid=$post[id]#$post[id]>Link</a>";		// headlinks for posts
 
       //2007-03-08 blackhole89
-      if($post[revision]>=2){
-        $edituser = $sql->fetchq("SELECT `id`,`name` FROM `users` WHERE `id`='$post[ptuser]'");
-        $revisionstr=" (rev. $post[revision] of ".cdate($dateformat,$post[ptdate])." by ".userlink($edituser).")";
-      }
+      if($post[revision]>=2)
+        $revisionstr=" (rev. $post[revision] of ".cdate($dateformat,$post[ptdate])." by ".userlink_by_id($post[ptuser]).")";
 
       // I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
       if($post[isannounce]) {

@@ -40,7 +40,6 @@
   $config['forumminipic'] = false; // Show minipics on forum listing
   $config['startedbyminipic'] = $config['forumminipic']; // Show minipics on forum started by col. (Seperate for testing purposes at this time.. may be merged)
   $config['threadminipic'] = false; // Show minipics in a thread
-  $config['enableirc'] = true;
 
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)

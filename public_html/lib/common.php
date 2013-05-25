@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "5/06/2013";
+  $abdate    = "5/24/2013";
   $abversion = "2.5.2 (<i><font color='#FFEA95'>Development</font></i>)";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -320,6 +320,7 @@
           | <a href=\"thread.php?time=86400\">Latest posts</a>
           ".(has_perm("view-calendar") ? " | <a href=\"calendar.php\">Calendar</a>" : "")."
           | <a href=\"stats.php\">Stats</a>
+          | <a href=\"ranks.php\">Ranks</a>
           | <a href=\"online.php\">Online users</a>
           | <a href=\"search.php\">Search</a>
           </td>
@@ -375,9 +376,9 @@
     //mark forum read
     checknumeric($fid);
     if($fid)
-      $markread=array("url" => "index.php?action=markread&fid=$fid", "title" => "Mark Forum Read");
+      $markread=array("url" => "index.php?action=markread&fid=$fid", "title" => "Mark forum read");
     else
-      $markread=array("url" => "index.php?action=markread&fid=all", "title" => "Mark All Forums Read");
+      $markread=array("url" => "index.php?action=markread&fid=all", "title" => "Mark all forums read");
 
     $userlinks = array();
     $ul = 0;
@@ -389,23 +390,23 @@
     if (has_perm("logout")) 
       $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
     if (has_perm("update-own-profile")) 
-      $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit Profile');
+      $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
     if (has_perm("post-radar")) 
-      $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post Radar');
+      $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
     if (has_perm("edit-forums")) 
-      $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage Forums');
+      $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage forums');
     if (has_perm("edit-ip-bans")) 
-      $userlinks[$ul++] = array('url' => "ipbans.php", 'title' => 'Manage IP Bans');
+      $userlinks[$ul++] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
     if (has_perm("view-own-sprites")) 
-      $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My Sprites');
+      $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
     if (has_perm("edit-sprites")) 
-      $userlinks[$ul++] = array('url' => "editsprites.php", 'title' => 'Manage Sprites');
+      $userlinks[$ul++] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
     if (has_perm("update-own-moods")) 
-      $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit Mood Avatars');
+      $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 
-      $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item Shop');
+      $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item shop');
     if (has_perm("edit-groups")) 
-      $userlinks[$ul++] = array('url' => "editgroups.php", 'title' => 'Edit Groups');
+      $userlinks[$ul++] = array('url' => "editgroups.php", 'title' => 'Edit groups');
     if (has_perm("view-acs-calendar")) 
       $userlinks[$ul++] = array('url' => "frank.php", 'title' => 'Rankings');
     if (has_perm("mark-read")) 

@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.1.54, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: acmlmboard25
+-- Host: localhost    Database: acmlmboard2
 -- ------------------------------------------------------
 -- Server version	5.1.54-1ubuntu4
 
@@ -64,6 +64,32 @@ LOCK TABLES `announcechans` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `badgecateg`
+--
+
+DROP TABLE IF EXISTS `badgecateg`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `badgecateg` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `order` tinyint(4) NOT NULL DEFAULT '0',
+  `name` varchar(20) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `badgecateg`
+--
+
+LOCK TABLES `badgecateg` WRITE;
+/*!40000 ALTER TABLE `badgecateg` DISABLE KEYS */;
+INSERT INTO `badgecateg` VALUES (1,1,'Basic Badge','This is a decorative badge assignable only by staff.'),(2,2,'Shop Badge','This badge can be purchased in the Badge Shop'),(3,3,'Achievement Badge','This badge can only be earned. This badge is automatically assigned by the board.');
+/*!40000 ALTER TABLE `badgecateg` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `badges`
 --
 
@@ -71,19 +97,21 @@ DROP TABLE IF EXISTS `badges`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `badges` (
-  `id` int(11) unsigned NOT NULL DEFAULT '0',
-  `image` varchar(48) CHARACTER SET utf8 NOT NULL,
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `image` varchar(48) NOT NULL,
   `priority` tinyint(3) unsigned NOT NULL DEFAULT '1',
   `type` tinyint(3) unsigned NOT NULL DEFAULT '1',
-  `name` varchar(30) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `desc` varchar(100) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `name` varchar(30) NOT NULL DEFAULT '',
+  `desc` varchar(100) NOT NULL DEFAULT '',
   `inherit` int(11) DEFAULT NULL,
-  `posttext` varchar(10) CHARACTER SET utf8 DEFAULT NULL,
-  `effect` varchar(64) CHARACTER SET utf8 DEFAULT NULL,
-  `effect_variable` varchar(32) CHARACTER SET utf8 DEFAULT NULL,
+  `posttext` varchar(10) DEFAULT NULL,
+  `effect` varchar(64) DEFAULT NULL,
+  `effect_variable` varchar(32) DEFAULT NULL,
   `coins` mediumint(8) DEFAULT NULL,
-  `coins2` mediumint(8) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `coins2` mediumint(8) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `priority` (`priority`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,6 +120,7 @@ CREATE TABLE `badges` (
 
 LOCK TABLES `badges` WRITE;
 /*!40000 ALTER TABLE `badges` DISABLE KEYS */;
+INSERT INTO `badges` VALUES (1,'img/badges/pmbadge.png',100,1,'P! Badge','P! Power badge. This is given by Emuz to show thanks.',NULL,NULL,NULL,NULL,NULL,NULL),(2,'img/badges/glasses.png',50,1,'X-Ray Resistance Glasses','Ahh hardened for X-Rays? I bet it\'s to see those HTML comments..',NULL,NULL,'show-html-comments',NULL,NULL,NULL),(3,'img/badges/quatloo.png',15,1,'Quatloo Challenge Winner!','Given upon completion of some silly challenge of Emuz\'s',NULL,NULL,NULL,NULL,NULL,NULL),(4,'img/badges/1milthview.png',15,1,'Got X,000,000th view','Got X,000,000th board view',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `badges` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -104,8 +133,9 @@ DROP TABLE IF EXISTS `blockedlayouts`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `blockedlayouts` (
   `user` mediumint(8) unsigned NOT NULL DEFAULT '0',
-  `blockee` mediumint(8) unsigned NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `blockee` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  KEY `user` (`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +159,8 @@ CREATE TABLE `categories` (
   `title` varchar(255) NOT NULL,
   `ord` tinyint(4) NOT NULL,
   `minpower` tinyint(4) NOT NULL,
-  `private` int(1) NOT NULL
+  `private` int(1) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -139,6 +170,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
+INSERT INTO `categories` VALUES (1,'General Forums',2,0,0),(2,'Staff Forums',0,1,1);
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +186,8 @@ CREATE TABLE `dailystats` (
   `users` int(11) DEFAULT '0',
   `threads` int(11) DEFAULT '0',
   `posts` int(11) DEFAULT '0',
-  `views` int(11) DEFAULT '0'
+  `views` int(11) DEFAULT '0',
+  PRIMARY KEY (`date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -175,12 +208,13 @@ DROP TABLE IF EXISTS `events`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `events` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `month` tinyint(4) NOT NULL,
   `day` tinyint(4) NOT NULL,
   `year` smallint(6) NOT NULL,
   `user` mediumint(9) NOT NULL,
-  `private` tinyint(4) NOT NULL
+  `private` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -202,7 +236,9 @@ DROP TABLE IF EXISTS `forummods`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `forummods` (
   `uid` int(12) NOT NULL,
-  `fid` int(12) NOT NULL
+  `fid` int(12) NOT NULL,
+  UNIQUE KEY `uid_2` (`uid`,`fid`),
+  KEY `uid` (`uid`,`fid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -240,7 +276,8 @@ CREATE TABLE `forums` (
   `trash` int(1) NOT NULL,
   `announcechan_id` int(11) NOT NULL DEFAULT '0',
   `readonly` int(1) NOT NULL DEFAULT '0',
-  `announce` int(1) NOT NULL DEFAULT '0'
+  `announce` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -250,7 +287,7 @@ CREATE TABLE `forums` (
 
 LOCK TABLES `forums` WRITE;
 /*!40000 ALTER TABLE `forums` DISABLE KEYS */;
-INSERT INTO `forums` VALUES (0,0,0,'Announcements','',0,0,0,0,0,0,0,0,0,0,1,1,1);
+INSERT INTO `forums` VALUES (1,1,1,'General Forum','General topics forum',122,7496,1364727616,7,32350,0,0,0,0,0,2,0,0),(2,2,1,'General Staff Forum','Generic Staff Forum					',25,192,1359851219,1,30350,1,1,1,1,0,1,0,0);
 /*!40000 ALTER TABLE `forums` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -286,18 +323,19 @@ DROP TABLE IF EXISTS `group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `group` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `title` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `nc0` varchar(6) CHARACTER SET utf8 NOT NULL,
-  `nc1` varchar(6) CHARACTER SET utf8 NOT NULL,
-  `nc2` varchar(6) CHARACTER SET utf8 NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `nc0` varchar(6) NOT NULL,
+  `nc1` varchar(6) NOT NULL,
+  `nc2` varchar(6) NOT NULL,
   `inherit_group_id` int(11) NOT NULL,
   `default` int(2) NOT NULL,
   `sortorder` int(11) NOT NULL DEFAULT '0',
   `visible` int(1) NOT NULL DEFAULT '0',
   `primary` int(1) NOT NULL DEFAULT '0',
-  `description` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `description` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -306,7 +344,7 @@ CREATE TABLE `group` (
 
 LOCK TABLES `group` WRITE;
 /*!40000 ALTER TABLE `group` DISABLE KEYS */;
-INSERT INTO `group` VALUES (1,'Base User','','','',0,0,100,0,0,''),(2,'Normal User','97ACEF','F185C9','7C60B0',1,1,200,1,1,'Normal Registered User'),(3,'Global Moderator','AFFABE','C762F2','47B53C',8,0,600,1,1,''),(4,'Administrator','FFEA95','C53A9E','F0C413',3,0,700,1,1,''),(6,'Root Administrator','EE4444','E63282','AA3C3C',0,-1,800,1,1,''),(8,'Local Moderator','D8E8FE','FFB3F3','EEB9BA',10,0,400,1,1,''),(9,'Banned','888888','888888','888888',2,0,0,1,1,''),(10,'Staff','','','',2,0,300,0,0,''),(11,'Disable PM Activity','','','',0,0,1000,1,0,'Disallows all Private Message activity (viewing, creation, deletion)');
+INSERT INTO `group` VALUES (1,'Base User','','','',0,0,100,0,0,''),(2,'Normal User','97ACEF','F185C9','7C60B0',1,1,200,1,1,'Normal Registered User'),(3,'Global Moderator','AFFABE','C762F2','47B53C',8,0,600,1,1,''),(4,'Administrator','FFEA95','C53A9E','F0C413',3,0,700,1,1,''),(6,'Root Administrator','EE4444','E63282','AA3C3C',0,-1,800,1,1,''),(7,'NotRO Moderator','','','',0,0,500,1,0,'Allows moderation of the NotRO forum'),(8,'Local Moderator','D8E8FE','FFB3F3','EEB9BA',10,0,400,1,1,''),(9,'Banned','888888','888888','888888',2,0,0,1,1,''),(10,'Staff','','','',2,0,300,0,0,''),(11,'Disable PM Activity','','','',0,0,1000,1,0,'Disallows all Private Message activity (viewing, creation, deletion)'),(12,'Moogle Participants','','','',0,0,2000,1,0,'Allows viewing/posting the Moogle forum'),(13,'General Forum Moderation','','','',0,0,450,1,0,'Allows moderation of the General Forum'),(15,'Bot','','','',1,0,50,0,0,'');
 /*!40000 ALTER TABLE `group` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -347,7 +385,8 @@ DROP TABLE IF EXISTS `hourlyviews`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `hourlyviews` (
   `hour` mediumint(9) NOT NULL,
-  `views` int(11) NOT NULL
+  `views` int(11) NOT NULL,
+  UNIQUE KEY `hour` (`hour`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -442,11 +481,12 @@ DROP TABLE IF EXISTS `itemcateg`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `itemcateg` (
-  `id` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `corder` tinyint(4) NOT NULL DEFAULT '0',
   `name` varchar(20) NOT NULL,
-  `description` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `description` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -467,7 +507,7 @@ DROP TABLE IF EXISTS `items`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `items` (
-  `id` int(8) NOT NULL DEFAULT '0',
+  `id` int(8) NOT NULL AUTO_INCREMENT,
   `cat` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `type` tinyint(4) unsigned NOT NULL DEFAULT '0',
   `name` varchar(30) NOT NULL,
@@ -484,8 +524,10 @@ CREATE TABLE `items` (
   `sLck` smallint(5) NOT NULL DEFAULT '0',
   `sSpd` smallint(5) NOT NULL DEFAULT '0',
   `coins` mediumint(8) NOT NULL DEFAULT '0',
-  `coins2` mediumint(9) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `coins2` mediumint(9) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `cat` (`cat`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -494,6 +536,7 @@ CREATE TABLE `items` (
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
+INSERT INTO `items` VALUES (0,0,0,'Nothing','Nothing.  At All.',0,'aaaaaaaaa',0,0,0,0,0,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -524,6 +567,29 @@ LOCK TABLES `log` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `mcache`
+--
+
+DROP TABLE IF EXISTS `mcache`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mcache` (
+  `hash` varchar(32) NOT NULL,
+  `file` varchar(32) NOT NULL,
+  KEY `hash` (`hash`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `mcache`
+--
+
+LOCK TABLES `mcache` WRITE;
+/*!40000 ALTER TABLE `mcache` DISABLE KEYS */;
+/*!40000 ALTER TABLE `mcache` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `misc`
 --
 
@@ -533,7 +599,8 @@ DROP TABLE IF EXISTS `misc`;
 CREATE TABLE `misc` (
   `field` varchar(255) NOT NULL,
   `intval` int(11) NOT NULL DEFAULT '0',
-  `txtval` text NOT NULL
+  `txtval` text NOT NULL,
+  PRIMARY KEY (`field`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -581,12 +648,13 @@ DROP TABLE IF EXISTS `perm`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `perm` (
-  `id` varchar(64) CHARACTER SET utf8 NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `id` varchar(64) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
   `permcat_id` int(11) NOT NULL,
-  `permbind_id` varchar(64) CHARACTER SET utf8 NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `permbind_id` varchar(64) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -595,7 +663,7 @@ CREATE TABLE `perm` (
 
 LOCK TABLES `perm` WRITE;
 /*!40000 ALTER TABLE `perm` DISABLE KEYS */;
-INSERT INTO `perm` VALUES ('banned','Is Banned','',2,''),('block-layout','Enable Layout Blocking','Enables per-user layout blocking',3,''),('capture-sprites','Capture Sprites','',1,''),('consecutive-posts','Consecutive Posts','',2,''),('create-all-forums-announcement','Create All Forums Announcement','',4,''),('create-all-private-forum-posts','Create All Private Forum Posts','',3,''),('create-all-private-forum-threads','Create All Private Forum Threads','',3,''),('create-forum-announcement','Create Forum Announcement','',3,'forum'),('create-pms','Create PMs','',1,''),('create-private-forum-post','Create Private Forum Post','',2,'forums'),('create-private-forum-thread','Create Private Forum Thread','',2,'forums'),('create-public-post','Create Public Post','',4,''),('create-public-thread','Create Public Thread','',4,''),('delete-forum-post','Delete Forum Post','',2,'forums'),('delete-forum-thread','Delete Forum Thread','',2,'forums'),('delete-own-pms','Delete Own PMs','',1,''),('delete-post','Delete Post','',2,''),('delete-thread','Delete Thread','',2,''),('delete-user-pms','Delete User PMs','',3,''),('edit-attentions-box','Edit Attentions Box','',3,''),('edit-categories','Edit Categories','',3,''),('edit-forum-post','Edit Forum Post','',2,'forums'),('edit-forum-thread','Edit Forum Thread','',2,'forums'),('edit-forums','Edit Forums','',3,''),('edit-ip-bans','Edit IP Bans','',0,''),('edit-moods','Edit Moods','',3,''),('edit-permissions','Edit Permissions','',3,''),('edit-sprites','Edit Sprites','',3,''),('edit-title','Edit Title','',3,''),('edit-users','Edit Users','',3,''),('has-displayname','Can Use Displayname','',3,''),('ignore-thread-time-limit','Ignore Thread Time Limit','',0,''),('login','Login','',1,''),('mark-read','Mark Read','',1,''),('no-restrictions','No Restrictions','',3,''),('override-readonly-forums','Override Read Only Forums','',3,''),('post-radar','Post Radar','Can use Post Radar',2,''),('rate-thread','Rate Thread','',1,''),('register','Register','',1,''),('rename-own-thread','Rename Own Thread','',1,''),('show-as-staff','Listed Publicly as Staff','',3,'users'),('staff','Is Staff','',2,''),('track-ip-change','Track IP Changes in IRC','Add this to a group or user to have their IP change reported to the staff channel.',3,''),('update-own-moods','Update Own Moods','',1,''),('update-own-post','Update Own Post','',4,''),('update-own-profile','Update Own Profile','',1,''),('update-post','Update Post','',2,''),('update-profiles','Update Profiles','',3,''),('update-thread','Update Thread','',2,''),('update-user-moods','Update User Moods','',3,'users'),('update-user-profile','Update User Profile','',3,'users'),('use-item-shop','Use Item Shop','',1,''),('use-post-layout','Use Post Layout','',4,''),('use-test-bed','Use Test Bed','',3,''),('use-uploader','Use Uploader','',1,''),('view-acs-calendar','View ACS Rankings Calendar','',2,''),('view-all-private-categories','View All Private Categories','',3,''),('view-all-private-forums','View All Private Forums','',3,''),('view-all-private-posts','View All Private Posts','',3,''),('view-all-private-threads','View All Private Threads','',3,''),('view-all-sprites','View All Sprites','',3,''),('view-calendar','View Calendar','',1,''),('view-errors','View PHP Errors','',0,''),('view-forum-post-history','View Forum Post History','',2,'forums'),('view-hidden-users','View Hidden Users','',3,''),('view-own-pms','View Own PMs','',1,''),('view-own-sprites','View Own Sprites','',1,''),('view-permissions','View Permissions','',3,''),('view-post-history','View Post History','',2,''),('view-post-ips','View Post IP Addresses','',3,''),('view-private-category','View Private Category','',2,'categories'),('view-private-forum','View Private Forum','',2,'forums'),('view-private-post','View Private Post','',2,'posts'),('view-private-thread','View Private Thread','',2,'threads'),('view-profile-page','View Profile Page','',1,''),('view-public-categories','View Public Categories','',1,''),('view-public-forums','View Public Forums','',1,''),('view-public-posts','View Public Posts','',1,''),('view-public-threads','View Public Threads','',1,''),('view-user-pms','View User PMs','',3,''),('view-user-urls','View User URLs','',3,'');
+INSERT INTO `perm` VALUES ('banned','Is Banned','',2,''),('block-layout','Enable Layout Blocking','Enables per-user layout blocking',3,''),('capture-sprites','Capture Sprites','',1,''),('consecutive-posts','Consecutive Posts','',2,''),('create-all-forums-announcement','Create All Forums Announcement','',4,''),('create-all-private-forum-posts','Create All Private Forum Posts','',3,''),('create-all-private-forum-threads','Create All Private Forum Threads','',3,''),('create-forum-announcement','Create Forum Announcement','',3,'forum'),('create-pms','Create PMs','',1,''),('create-private-forum-post','Create Private Forum Post','',2,'forums'),('create-private-forum-thread','Create Private Forum Thread','',2,'forums'),('create-public-post','Create Public Post','',4,''),('create-public-thread','Create Public Thread','',4,''),('delete-forum-post','Delete Forum Post','',2,'forums'),('delete-forum-thread','Delete Forum Thread','',2,'forums'),('delete-own-pms','Delete Own PMs','',1,''),('delete-post','Delete Post','',2,''),('delete-thread','Delete Thread','',2,''),('delete-user-pms','Delete User PMs','',3,''),('edit-attentions-box','Edit Attentions Box','',3,''),('edit-categories','Edit Categories','',3,''),('edit-forum-post','Edit Forum Post','',2,'forums'),('edit-forum-thread','Edit Forum Thread','',2,'forums'),('edit-forums','Edit Forums','',3,''),('edit-ip-bans','Edit IP Bans','',0,''),('edit-moods','Edit Moods','',3,''),('edit-permissions','Edit Permissions','',3,''),('edit-sprites','Edit Sprites','',3,''),('edit-title','Edit Title','',3,''),('edit-users','Edit Users','',3,''),('has-displayname','Can Use Displayname','',3,''),('ignore-thread-time-limit','Ignore Thread Time Limit','',0,''),('login','Login','',1,''),('mark-read','Mark Read','',1,''),('no-restrictions','No Restrictions','',3,''),('override-readonly-forums','Override Read Only Forums','',3,''),('post-radar','Post Radar','Can use Post Radar',2,''),('rate-thread','Rate Thread','',1,''),('register','Register','',1,''),('rename-own-thread','Rename Own Thread','',1,''),('show-as-staff','Listed Publicly as Staff','',3,'users'),('staff','Is Staff','',2,''),('track-ip-change','Track IP Changes in IRC','Add this to a group or user to have their IP change reported to the staff channel.',3,''),('update-own-moods','Update Own Moods','',1,''),('update-own-post','Update Own Post','',4,''),('update-own-profile','Update Own Profile','',1,''),('update-post','Update Post','',2,''),('update-profiles','Update Profiles','',3,''),('update-thread','Update Thread','',2,''),('update-user-moods','Update User Moods','',3,'users'),('update-user-profile','Update User Profile','',3,'users'),('use-item-shop','Use Item Shop','',1,''),('use-post-layout','Use Post Layout','',4,''),('use-test-bed','Use Test Bed','',3,''),('use-uploader','Use Uploader','',1,''),('view-acs-calendar','View ACS Rankings Calendar','',2,''),('view-all-private-categories','View All Private Categories','',3,''),('view-all-private-forums','View All Private Forums','',3,''),('view-all-private-posts','View All Private Posts','',3,''),('view-all-private-threads','View All Private Threads','',3,''),('view-all-sprites','View All Sprites','',3,''),('view-allranks','Show Hidden Ranks','',2,''),('view-calendar','View Calendar','',1,''),('view-errors','View PHP Errors','',0,''),('view-forum-post-history','View Forum Post History','',2,'forums'),('view-hidden-users','View Hidden Users','',3,''),('view-own-pms','View Own PMs','',1,''),('view-own-sprites','View Own Sprites','',1,''),('view-permissions','View Permissions','',3,''),('view-post-history','View Post History','',2,''),('view-post-ips','View Post IP Addresses','',3,''),('view-private-category','View Private Category','',2,'categories'),('view-private-forum','View Private Forum','',2,'forums'),('view-private-post','View Private Post','',2,'posts'),('view-private-thread','View Private Thread','',2,'threads'),('view-profile-page','View Profile Page','',1,''),('view-public-categories','View Public Categories','',1,''),('view-public-forums','View Public Forums','',1,''),('view-public-posts','View Public Posts','',1,''),('view-public-threads','View Public Threads','',1,''),('view-user-pms','View User PMs','',3,''),('view-user-urls','View User URLs','',3,'');
 /*!40000 ALTER TABLE `perm` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -607,9 +675,9 @@ DROP TABLE IF EXISTS `perm_permbind`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `perm_permbind` (
-  `perm_id` varchar(64) CHARACTER SET utf8 NOT NULL,
-  `permbind_id` varchar(64) CHARACTER SET utf8 NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `perm_id` varchar(64) NOT NULL,
+  `permbind_id` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -630,9 +698,10 @@ DROP TABLE IF EXISTS `permbind`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `permbind` (
-  `id` varchar(64) CHARACTER SET utf8 NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8 NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `id` varchar(64) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -653,10 +722,11 @@ DROP TABLE IF EXISTS `permcat`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `permcat` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `title` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `sortorder` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `sortorder` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -730,12 +800,14 @@ DROP TABLE IF EXISTS `polloptions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `polloptions` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `poll` int(11) NOT NULL,
   `option` varchar(255) NOT NULL,
   `r` smallint(3) NOT NULL,
   `g` smallint(3) NOT NULL,
-  `b` smallint(3) NOT NULL
+  `b` smallint(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `poll` (`poll`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -759,7 +831,8 @@ CREATE TABLE `polls` (
   `id` int(11) NOT NULL,
   `question` varchar(255) NOT NULL,
   `multivote` int(1) NOT NULL DEFAULT '0',
-  `changeable` int(1) NOT NULL DEFAULT '0'
+  `changeable` int(1) NOT NULL DEFAULT '0',
+  KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -830,9 +903,10 @@ DROP TABLE IF EXISTS `posticons`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `posticons` (
-  `id` tinyint(4) unsigned NOT NULL DEFAULT '0',
-  `url` varchar(100) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `id` tinyint(4) unsigned NOT NULL AUTO_INCREMENT,
+  `url` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=31 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -853,7 +927,7 @@ DROP TABLE IF EXISTS `posts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `posts` (
-  `id` int(11) unsigned NOT NULL DEFAULT '0',
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `user` mediumint(9) unsigned NOT NULL DEFAULT '0',
   `thread` mediumint(9) unsigned NOT NULL DEFAULT '0',
   `date` int(11) NOT NULL DEFAULT '0',
@@ -862,7 +936,9 @@ CREATE TABLE `posts` (
   `ip` char(15) NOT NULL,
   `num` mediumint(9) NOT NULL DEFAULT '0',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
-  `announce` int(1) NOT NULL
+  `announce` int(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `threadid` (`thread`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -887,7 +963,8 @@ CREATE TABLE `poststext` (
   `text` text NOT NULL,
   `revision` int(5) NOT NULL DEFAULT '1',
   `date` int(11) NOT NULL,
-  `user` mediumint(9) NOT NULL
+  `user` mediumint(9) NOT NULL,
+  PRIMARY KEY (`id`,`revision`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -908,17 +985,18 @@ DROP TABLE IF EXISTS `profileext`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `profileext` (
-  `id` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `title` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `id` varchar(64) NOT NULL DEFAULT '',
+  `title` varchar(256) NOT NULL DEFAULT '',
   `sortorder` int(11) NOT NULL DEFAULT '0',
-  `fmt` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT '%s',
-  `description` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `icon` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `validation` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `example` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  `fmt` varchar(256) NOT NULL DEFAULT '%s',
+  `description` varchar(256) NOT NULL DEFAULT '',
+  `icon` varchar(256) NOT NULL DEFAULT '',
+  `validation` varchar(256) NOT NULL DEFAULT '',
+  `example` varchar(256) NOT NULL DEFAULT '',
   `extrafield` int(1) NOT NULL DEFAULT '0',
-  `parser` varchar(256) CHARACTER SET utf8 NOT NULL DEFAULT ''
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `parser` varchar(256) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -951,6 +1029,7 @@ CREATE TABLE `ranks` (
 
 LOCK TABLES `ranks` WRITE;
 /*!40000 ALTER TABLE `ranks` DISABLE KEYS */;
+INSERT INTO `ranks` VALUES (1,0,'Non-poster'),(1,1,'Newcomer'),(1,20,'<img src=img/ranks/goomba.gif width=16 height=16><br>Goomba'),(1,10,'<img src=img/ranks/microgoomba.gif width=8 height=9><br>Micro-Goomba'),(1,35,'<img src=img/ranks/redgoomba.gif width=16 height=16><br>Red Goomba'),(1,50,'<img src=img/ranks/redparagoomba.gif width=20 height=24><br>Red Paragoomba'),(1,65,'<img src=img/ranks/paragoomba.gif width=20 height=24><br>Paragoomba'),(1,80,'<img src=img/ranks/shyguy.gif width=16 height=16><br>Shyguy'),(1,100,'<img src=img/ranks/koopa.gif width=16 height=27><br>Koopa'),(1,120,'<img src=img/ranks/redkoopa.gif width=16 height=27><br>Red Koopa'),(1,140,'<img src=img/ranks/paratroopa.gif width=16 height=28><br>Paratroopa'),(1,160,'<img src=img/ranks/redparatroopa.gif width=16 height=28><br>Red Paratroopa'),(1,180,'<img src=img/ranks/cheepcheep.gif width=16 height=16><br>Cheep-cheep'),(1,200,'<img src=img/ranks/redcheepcheep.gif width=16 height=16><br>Red Cheep-cheep'),(1,225,'<img src=img/ranks/ninji.gif width=16 height=16><br>Ninji'),(1,250,'<img src=img/ranks/flurry.gif width=16 height=16><br>Flurry'),(1,275,'<img src=img/ranks/snifit.gif width=16 height=16><br>Snifit'),(1,300,'<img src=img/ranks/porcupo.gif width=16 height=16><br>Porcupo'),(1,325,'<img src=img/ranks/panser.gif width=16 height=16><br>Panser'),(1,350,'<img src=img/ranks/mole.gif width=16 height=16><br>Mole'),(1,375,'<img src=img/ranks/beetle.gif width=16 height=16><br>Buzzy Beetle'),(1,400,'<img src=img/ranks/nipperplant.gif width=16 height=16><br>Nipper Plant'),(1,425,'<img src=img/ranks/bloober.gif width=16 height=16><br>Bloober'),(1,450,'<img src=img/ranks/busterbeetle.gif width=16 height=15><br>Buster Beetle'),(1,475,'<img src=img/ranks/beezo.gif width=16 height=16><br>Beezo'),(1,500,'<img src=img/ranks/bulletbill.gif width=16 height=14><br>Bullet Bill'),(1,525,'<img src=img/ranks/rex.gif width=20 height=32><br>Rex'),(1,550,'<img src=img/ranks/lakitu.gif width=16 height=24><br>Lakitu'),(1,575,'<img src=img/ranks/spiny.gif width=16 height=16><br>Spiny'),(1,600,'<img src=img/ranks/bobomb.gif width=16 height=16><br>Bob-Omb'),(1,700,'<img src=img/ranks/spike.gif width=32 height=32><br>Spike'),(1,675,'<img src=img/ranks/pokey.gif width=18 height=64><br>Pokey'),(1,650,'<img src=img/ranks/cobrat.gif width=16 height=32><br>Cobrat'),(1,725,'<img src=img/ranks/hedgehog.gif width=16 height=24><br>Melon Bug'),(1,750,'<img src=img/ranks/lanternghost.gif width=26 height=19><br>Lantern Ghost'),(1,775,'<img src=img/ranks/fuzzy.gif width=32 height=31><br>Fuzzy'),(1,800,'<img src=img/ranks/bandit.gif width=23 height=28><br>Bandit'),(1,830,'<img src=img/ranks/superkoopa.gif width=23 height=13><br>Super Koopa'),(1,860,'<img src=img/ranks/redsuperkoopa.gif width=23 height=13><br>Red Super Koopa'),(1,900,'<img src=img/ranks/boo.gif width=16 height=16><br>Boo'),(1,925,'<img src=img/ranks/boo2.gif width=16 height=16><br>Boo'),(1,950,'<img src=img/ranks/fuzzball.gif width=16 height=16><br>Fuzz Ball'),(1,1000,'<img src=img/ranks/boomerangbrother.gif width=60 height=40><br>Boomerang Brother'),(1,1050,'<img src=img/ranks/hammerbrother.gif width=60 height=40><br>Hammer Brother'),(1,1100,'<img src=img/ranks/firebrother.gif width=60 height=24><br>Fire Brother'),(1,1150,'<img src=img/ranks/firesnake.gif width=45 height=36><br>Fire Snake'),(1,1200,'<img src=img/ranks/giantgoomba.gif width=24 height=23><br>Giant Goomba'),(1,1250,'<img src=img/ranks/giantkoopa.gif width=24 height=31><br>Giant Koopa'),(1,1300,'<img src=img/ranks/giantredkoopa.gif width=24 height=31><br>Giant Red Koopa'),(1,1350,'<img src=img/ranks/giantparatroopa.gif width=24 height=31><br>Giant Paratroopa'),(1,1400,'<img src=img/ranks/giantredparatroopa.gif width=24 height=31><br>Giant Red Paratroopa'),(1,1450,'<img src=img/ranks/chuck.gif width=28 height=27><br>Chuck'),(1,1500,'<img src=img/ranks/thwomp.gif width=44 height=32><br>Thwomp'),(1,1550,'<img src=img/ranks/bigcheepcheep.gif width=24 height=32><br>Boss Bass'),(1,1600,'<img src=img/ranks/volcanolotus.gif width=32 height=30><br>Volcano Lotus'),(1,1650,'<img src=img/ranks/lavalotus.gif width=24 height=32><br>Lava Lotus'),(1,1700,'<img src=img/ranks/ptooie2.gif width=16 height=43><br>Ptooie'),(1,1800,'<img src=img/ranks/sledgebrother.gif width=60 height=50><br>Sledge Brother'),(1,1900,'<img src=img/ranks/boomboom.gif width=28 height=26><br>Boomboom'),(1,2000,'<img src=img/ranks/birdopink.gif width=60 height=36><br>Birdo'),(1,2100,'<img src=img/ranks/birdored.gif width=60 height=36><br>Red Birdo'),(1,2200,'<img src=img/ranks/birdogreen.gif width=60 height=36><br>Green Birdo'),(1,2300,'<img src=img/ranks/iggy.gif width=28><br>Larry Koopa'),(1,2400,'<img src=img/ranks/morton.gif width=34><br>Morton Koopa'),(1,2500,'<img src=img/ranks/wendy.gif width=28><br>Wendy Koopa'),(1,2600,'<img src=img/ranks/larry.gif width=28><br>Iggy Koopa'),(1,2700,'<img src=img/ranks/roy.gif width=34><br>Roy Koopa'),(1,2800,'<img src=img/ranks/lemmy.gif width=28><br>Lemmy Koopa'),(1,2900,'<img src=img/ranks/ludwig.gif width=33><br>Ludwig Von Koopa'),(1,3000,'<img src=img/ranks/triclyde.gif width=40 height=48><br>Triclyde'),(1,3100,'<img src=img/ranks/kamek.gif width=45 height=34><br>Magikoopa'),(1,3200,'<img src=img/ranks/wart.gif width=40 height=47><br>Wart'),(1,3300,'<img src=img/ranks/babybowser.gif width=36 height=36><br>Baby Bowser'),(1,3400,'<img src=img/ranks/bowser.gif width=52 height=49><br>King Bowser Koopa'),(1,3500,'<img src=img/ranks/yoshi.gif width=31 height=33><br>Yoshi'),(1,3600,'<img src=img/ranks/yoshiyellow.gif width=31 height=32><br>Yellow Yoshi'),(1,3700,'<img src=img/ranks/yoshiblue.gif width=36 height=35><br>Blue Yoshi'),(1,3800,'<img src=img/ranks/yoshired.gif width=33 height=36><br>Red Yoshi'),(1,3900,'<img src=img/ranks/kingyoshi.gif width=24 height=34><br>King Yoshi'),(1,4000,'<img src=img/ranks/babymario.gif width=28 height=24><br>Baby Mario'),(1,4100,'<img src=img/ranks/luigismall.gif width=15 height=22><br>Luigi'),(1,4200,'<img src=img/ranks/mariosmall.gif width=15 height=20><br>Mario'),(1,4300,'<img src=img/ranks/luigibig.gif width=16 height=30><br>Super Luigi'),(1,4400,'<img src=img/ranks/mariobig.gif width=16 height=28><br>Super Mario'),(1,4500,'<img src=img/ranks/luigifire.gif width=16 height=30><br>Fire Luigi'),(1,4600,'<img src=img/ranks/mariofire.gif width=16 height=28><br>Fire Mario'),(1,4700,'<img src=img/ranks/luigicape.gif width=26 height=30><br>Cape Luigi'),(1,4800,'<img src=img/ranks/mariocape.gif width=26 height=28><br>Cape Mario'),(1,4900,'<img src=img/ranks/luigistar.gif width=16 height=30><br>Star Luigi'),(1,5000,'<img src=img/ranks/mariostar.gif width=16 height=28><br>Star Mario'),(1,625,'<img src=img/ranks/drybones.gif><br>Dry Bones'),(1,10000,'Climbing the ranks again!');
 /*!40000 ALTER TABLE `ranks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -963,7 +1042,8 @@ DROP TABLE IF EXISTS `ranksets`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `ranksets` (
   `id` int(10) NOT NULL,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -973,7 +1053,7 @@ CREATE TABLE `ranksets` (
 
 LOCK TABLES `ranksets` WRITE;
 /*!40000 ALTER TABLE `ranksets` DISABLE KEYS */;
-INSERT INTO `ranksets` VALUES (0,'None');
+INSERT INTO `ranksets` VALUES (1,'Mario'),(0,'None'),(-1,'Dots (by Xkeeper)');
 /*!40000 ALTER TABLE `ranksets` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1010,10 +1090,11 @@ DROP TABLE IF EXISTS `rights`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rights` (
-  `r` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `title` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `description` text CHARACTER SET utf8
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `r` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `description` text,
+  PRIMARY KEY (`r`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1046,6 +1127,62 @@ CREATE TABLE `robots` (
 LOCK TABLES `robots` WRITE;
 /*!40000 ALTER TABLE `robots` DISABLE KEYS */;
 /*!40000 ALTER TABLE `robots` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rpgchat`
+--
+
+DROP TABLE IF EXISTS `rpgchat`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rpgchat` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `chan` tinyint(4) NOT NULL DEFAULT '0',
+  `date` int(11) NOT NULL DEFAULT '0',
+  `user` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `text` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `chan` (`chan`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rpgchat`
+--
+
+LOCK TABLES `rpgchat` WRITE;
+/*!40000 ALTER TABLE `rpgchat` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rpgchat` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `rpgrooms`
+--
+
+DROP TABLE IF EXISTS `rpgrooms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rpgrooms` (
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  `lvmin` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `lvmax` smallint(5) unsigned NOT NULL DEFAULT '0',
+  `users` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `usermax` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `title` varchar(32) NOT NULL,
+  `active` tinyint(4) NOT NULL DEFAULT '0',
+  `turn` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rpgrooms`
+--
+
+LOCK TABLES `rpgrooms` WRITE;
+/*!40000 ALTER TABLE `rpgrooms` DISABLE KEYS */;
+/*!40000 ALTER TABLE `rpgrooms` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1127,7 +1264,7 @@ DROP TABLE IF EXISTS `sprites`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sprites` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(256) NOT NULL,
   `franchiseid` int(11) NOT NULL DEFAULT '0',
   `pic` varchar(256) NOT NULL,
@@ -1135,7 +1272,8 @@ CREATE TABLE `sprites` (
   `anchor` enum('free','left','right','top','bottom','sides','sidepic') NOT NULL,
   `title` varchar(256) NOT NULL,
   `flavor` text NOT NULL,
-  `rarity` tinyint(4) NOT NULL DEFAULT '0'
+  `rarity` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1181,7 +1319,7 @@ DROP TABLE IF EXISTS `threads`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `threads` (
-  `id` mediumint(8) unsigned NOT NULL DEFAULT '0',
+  `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `title` varchar(100) NOT NULL,
   `replies` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `views` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -1194,7 +1332,8 @@ CREATE TABLE `threads` (
   `lastid` int(11) NOT NULL DEFAULT '0',
   `icon` varchar(100) NOT NULL,
   `tags` int(12) NOT NULL,
-  `announce` int(1) NOT NULL
+  `announce` int(1) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1240,8 +1379,9 @@ DROP TABLE IF EXISTS `threadthumbs`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `threadthumbs` (
   `uid` int(11) NOT NULL,
-  `tid` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `tid` int(11) NOT NULL,
+  UNIQUE KEY `uid` (`uid`,`tid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1261,10 +1401,11 @@ DROP TABLE IF EXISTS `timezones`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `timezones` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(128) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  `offset` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL DEFAULT '',
+  `offset` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=466 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1275,6 +1416,60 @@ LOCK TABLES `timezones` WRITE;
 /*!40000 ALTER TABLE `timezones` DISABLE KEYS */;
 INSERT INTO `timezones` VALUES (1,'UTC',0),(2,'Africa/Abidjan',0),(3,'Africa/Accra',0),(4,'Africa/Addis_Ababa',10800),(5,'Africa/Algiers',3600),(6,'Africa/Asmara',10800),(7,'Africa/Asmera',10800),(8,'Africa/Bamako',0),(9,'Africa/Bangui',3600),(10,'Africa/Banjul',0),(11,'Africa/Bissau',0),(12,'Africa/Blantyre',7200),(13,'Africa/Brazzaville',3600),(14,'Africa/Bujumbura',7200),(15,'Africa/Cairo',7200),(16,'Africa/Casablanca',0),(17,'Africa/Ceuta',3600),(18,'Africa/Conakry',0),(19,'Africa/Dakar',0),(20,'Africa/Dar_es_Salaam',10800),(21,'Africa/Djibouti',10800),(22,'Africa/Douala',3600),(23,'Africa/El_Aaiun',0),(24,'Africa/Freetown',0),(25,'Africa/Gaborone',7200),(26,'Africa/Harare',7200),(27,'Africa/Johannesburg',7200),(28,'Africa/Juba',0),(29,'Africa/Kampala',0),(30,'Africa/Khartoum',0),(31,'Africa/Kigali',0),(32,'Africa/Kinshasa',0),(33,'Africa/Lagos',0),(34,'Africa/Libreville',0),(35,'Africa/Lome',0),(36,'Africa/Luanda',0),(37,'Africa/Lubumbashi',0),(38,'Africa/Lusaka',0),(39,'Africa/Malabo',0),(40,'Africa/Maputo',0),(41,'Africa/Maseru',0),(42,'Africa/Mbabane',0),(43,'Africa/Mogadishu',0),(44,'Africa/Monrovia',0),(45,'Africa/Nairobi',0),(46,'Africa/Ndjamena',0),(47,'Africa/Niamey',0),(48,'Africa/Nouakchott',0),(49,'Africa/Ouagadougou',0),(50,'Africa/Porto-Novo',0),(51,'Africa/Sao_Tome',0),(52,'Africa/Timbuktu',0),(53,'Africa/Tripoli',0),(54,'Africa/Tunis',0),(55,'Africa/Windhoek',0),(56,'America/Adak',0),(57,'America/Anchorage',0),(58,'America/Anguilla',0),(59,'America/Antigua',0),(60,'America/Araguaina',0),(61,'America/Argentina/Buenos_Aires',0),(62,'America/Argentina/Catamarca',0),(63,'America/Argentina/ComodRivadavia',0),(64,'America/Argentina/Cordoba',0),(65,'America/Argentina/Jujuy',0),(66,'America/Argentina/La_Rioja',0),(67,'America/Argentina/Mendoza',0),(68,'America/Argentina/Rio_Gallegos',0),(69,'America/Argentina/Salta',0),(70,'America/Argentina/San_Juan',0),(71,'America/Argentina/San_Luis',0),(72,'America/Argentina/Tucuman',0),(73,'America/Argentina/Ushuaia',0),(74,'America/Aruba',0),(75,'America/Asuncion',0),(76,'America/Atikokan',0),(77,'America/Atka',0),(78,'America/Bahia',0),(79,'America/Bahia_Banderas',0),(80,'America/Barbados',0),(81,'America/Belem',0),(82,'America/Belize',0),(83,'America/Blanc-Sablon',0),(84,'America/Boa_Vista',0),(85,'America/Bogota',0),(86,'America/Boise',0),(87,'America/Buenos_Aires',0),(88,'America/Cambridge_Bay',0),(89,'America/Campo_Grande',0),(90,'America/Cancun',0),(91,'America/Caracas',0),(92,'America/Catamarca',0),(93,'America/Cayenne',0),(94,'America/Cayman',0),(95,'America/Chicago',0),(96,'America/Chihuahua',0),(97,'America/Coral_Harbour',0),(98,'America/Cordoba',0),(99,'America/Costa_Rica',0),(100,'America/Cuiaba',0),(101,'America/Curacao',0),(102,'America/Danmarkshavn',0),(103,'America/Dawson',0),(104,'America/Dawson_Creek',0),(105,'America/Denver',0),(106,'America/Detroit',0),(107,'America/Dominica',0),(108,'America/Edmonton',0),(109,'America/Eirunepe',0),(110,'America/El_Salvador',0),(111,'America/Ensenada',0),(112,'America/Fort_Wayne',0),(113,'America/Fortaleza',0),(114,'America/Glace_Bay',0),(115,'America/Godthab',0),(116,'America/Goose_Bay',0),(117,'America/Grand_Turk',0),(118,'America/Grenada',0),(119,'America/Guadeloupe',0),(120,'America/Guatemala',0),(121,'America/Guayaquil',0),(122,'America/Guyana',0),(123,'America/Halifax',0),(124,'America/Havana',0),(125,'America/Hermosillo',0),(126,'America/Indiana/Indianapolis',0),(127,'America/Indiana/Knox',0),(128,'America/Indiana/Marengo',0),(129,'America/Indiana/Petersburg',0),(130,'America/Indiana/Tell_City',0),(131,'America/Indiana/Vevay',0),(132,'America/Indiana/Vincennes',0),(133,'America/Indiana/Winamac',0),(134,'America/Indianapolis',0),(135,'America/Inuvik',0),(136,'America/Iqaluit',0),(137,'America/Jamaica',0),(138,'America/Jujuy',0),(139,'America/Juneau',0),(140,'America/Kentucky/Louisville',0),(141,'America/Kentucky/Monticello',0),(142,'America/Knox_IN',0),(143,'America/Kralendijk',0),(144,'America/La_Paz',0),(145,'America/Lima',0),(146,'America/Los_Angeles',0),(147,'America/Louisville',0),(148,'America/Lower_Princes',0),(149,'America/Maceio',0),(150,'America/Managua',0),(151,'America/Manaus',0),(152,'America/Marigot',0),(153,'America/Martinique',0),(154,'America/Matamoros',0),(155,'America/Mazatlan',0),(156,'America/Mendoza',0),(157,'America/Menominee',0),(158,'America/Merida',0),(159,'America/Metlakatla',0),(160,'America/Mexico_City',0),(161,'America/Miquelon',0),(162,'America/Moncton',0),(163,'America/Monterrey',0),(164,'America/Montevideo',0),(165,'America/Montreal',0),(166,'America/Montserrat',0),(167,'America/Nassau',0),(168,'America/New_York',0),(169,'America/Nipigon',0),(170,'America/Nome',0),(171,'America/Noronha',0),(172,'America/North_Dakota/Beulah',0),(173,'America/North_Dakota/Center',0),(174,'America/North_Dakota/New_Salem',0),(175,'America/Ojinaga',0),(176,'America/Panama',0),(177,'America/Pangnirtung',0),(178,'America/Paramaribo',0),(179,'America/Phoenix',0),(180,'America/Port-au-Prince',0),(181,'America/Port_of_Spain',0),(182,'America/Porto_Acre',0),(183,'America/Porto_Velho',0),(184,'America/Puerto_Rico',0),(185,'America/Rainy_River',0),(186,'America/Rankin_Inlet',0),(187,'America/Recife',0),(188,'America/Regina',0),(189,'America/Resolute',0),(190,'America/Rio_Branco',0),(191,'America/Rosario',0),(192,'America/Santa_Isabel',0),(193,'America/Santarem',0),(194,'America/Santiago',0),(195,'America/Santo_Domingo',0),(196,'America/Sao_Paulo',0),(197,'America/Scoresbysund',0),(198,'America/Shiprock',0),(199,'America/Sitka',0),(200,'America/St_Barthelemy',0),(201,'America/St_Johns',0),(202,'America/St_Kitts',0),(203,'America/St_Lucia',0),(204,'America/St_Thomas',0),(205,'America/St_Vincent',0),(206,'America/Swift_Current',0),(207,'America/Tegucigalpa',0),(208,'America/Thule',0),(209,'America/Thunder_Bay',0),(210,'America/Tijuana',0),(211,'America/Toronto',0),(212,'America/Tortola',0),(213,'America/Vancouver',0),(214,'America/Virgin',0),(215,'America/Whitehorse',0),(216,'America/Winnipeg',0),(217,'America/Yakutat',0),(218,'America/Yellowknife',0),(219,'Antarctica/Casey',0),(220,'Antarctica/Davis',0),(221,'Antarctica/DumontDUrville',0),(222,'Antarctica/Macquarie',0),(223,'Antarctica/Mawson',0),(224,'Antarctica/McMurdo',0),(225,'Antarctica/Palmer',0),(226,'Antarctica/Rothera',0),(227,'Antarctica/South_Pole',0),(228,'Antarctica/Syowa',0),(229,'Antarctica/Vostok',0),(230,'Arctic/Longyearbyen',0),(231,'Asia/Aden',0),(232,'Asia/Almaty',0),(233,'Asia/Amman',0),(234,'Asia/Anadyr',0),(235,'Asia/Aqtau',0),(236,'Asia/Aqtobe',0),(237,'Asia/Ashgabat',0),(238,'Asia/Ashkhabad',0),(239,'Asia/Baghdad',0),(240,'Asia/Bahrain',0),(241,'Asia/Baku',0),(242,'Asia/Bangkok',0),(243,'Asia/Beirut',0),(244,'Asia/Bishkek',0),(245,'Asia/Brunei',0),(246,'Asia/Calcutta',0),(247,'Asia/Choibalsan',0),(248,'Asia/Chongqing',0),(249,'Asia/Chungking',0),(250,'Asia/Colombo',0),(251,'Asia/Dacca',0),(252,'Asia/Damascus',0),(253,'Asia/Dhaka',0),(254,'Asia/Dili',0),(255,'Asia/Dubai',0),(256,'Asia/Dushanbe',0),(257,'Asia/Gaza',0),(258,'Asia/Harbin',0),(259,'Asia/Hebron',0),(260,'Asia/Ho_Chi_Minh',0),(261,'Asia/Hong_Kong',0),(262,'Asia/Hovd',0),(263,'Asia/Irkutsk',0),(264,'Asia/Istanbul',0),(265,'Asia/Jakarta',0),(266,'Asia/Jayapura',0),(267,'Asia/Jerusalem',0),(268,'Asia/Kabul',0),(269,'Asia/Kamchatka',0),(270,'Asia/Karachi',0),(271,'Asia/Kashgar',0),(272,'Asia/Kathmandu',0),(273,'Asia/Katmandu',0),(274,'Asia/Kolkata',0),(275,'Asia/Krasnoyarsk',0),(276,'Asia/Kuala_Lumpur',0),(277,'Asia/Kuching',0),(278,'Asia/Kuwait',0),(279,'Asia/Macao',0),(280,'Asia/Macau',0),(281,'Asia/Magadan',0),(282,'Asia/Makassar',0),(283,'Asia/Manila',0),(284,'Asia/Muscat',0),(285,'Asia/Nicosia',0),(286,'Asia/Novokuznetsk',0),(287,'Asia/Novosibirsk',0),(288,'Asia/Omsk',0),(289,'Asia/Oral',0),(290,'Asia/Phnom_Penh',0),(291,'Asia/Pontianak',0),(292,'Asia/Pyongyang',0),(293,'Asia/Qatar',0),(294,'Asia/Qyzylorda',0),(295,'Asia/Rangoon',0),(296,'Asia/Riyadh',0),(297,'Asia/Saigon',0),(298,'Asia/Sakhalin',0),(299,'Asia/Samarkand',0),(300,'Asia/Seoul',0),(301,'Asia/Shanghai',0),(302,'Asia/Singapore',0),(303,'Asia/Taipei',0),(304,'Asia/Tashkent',0),(305,'Asia/Tbilisi',0),(306,'Asia/Tehran',0),(307,'Asia/Tel_Aviv',0),(308,'Asia/Thimbu',0),(309,'Asia/Thimphu',0),(310,'Asia/Tokyo',0),(311,'Asia/Ujung_Pandang',0),(312,'Asia/Ulaanbaatar',0),(313,'Asia/Ulan_Bator',0),(314,'Asia/Urumqi',0),(315,'Asia/Vientiane',0),(316,'Asia/Vladivostok',0),(317,'Asia/Yakutsk',0),(318,'Asia/Yekaterinburg',0),(319,'Asia/Yerevan',0),(320,'Atlantic/Azores',0),(321,'Atlantic/Bermuda',0),(322,'Atlantic/Canary',0),(323,'Atlantic/Cape_Verde',0),(324,'Atlantic/Faeroe',0),(325,'Atlantic/Faroe',0),(326,'Atlantic/Jan_Mayen',0),(327,'Atlantic/Madeira',0),(328,'Atlantic/Reykjavik',0),(329,'Atlantic/South_Georgia',0),(330,'Atlantic/St_Helena',0),(331,'Atlantic/Stanley',0),(332,'Australia/ACT',0),(333,'Australia/Adelaide',0),(334,'Australia/Brisbane',0),(335,'Australia/Broken_Hill',0),(336,'Australia/Canberra',0),(337,'Australia/Currie',0),(338,'Australia/Darwin',0),(339,'Australia/Eucla',0),(340,'Australia/Hobart',0),(341,'Australia/LHI',0),(342,'Australia/Lindeman',0),(343,'Australia/Lord_Howe',0),(344,'Australia/Melbourne',0),(345,'Australia/North',0),(346,'Australia/NSW',0),(347,'Australia/Perth',0),(348,'Australia/Queensland',0),(349,'Australia/South',0),(350,'Australia/Sydney',0),(351,'Australia/Tasmania',0),(352,'Australia/Victoria',0),(353,'Australia/West',0),(354,'Australia/Yancowinna',0),(355,'Europe/Amsterdam',0),(356,'Europe/Andorra',0),(357,'Europe/Athens',0),(358,'Europe/Belfast',0),(359,'Europe/Belgrade',0),(360,'Europe/Berlin',0),(361,'Europe/Bratislava',0),(362,'Europe/Brussels',0),(363,'Europe/Bucharest',0),(364,'Europe/Budapest',0),(365,'Europe/Chisinau',0),(366,'Europe/Copenhagen',0),(367,'Europe/Dublin',0),(368,'Europe/Gibraltar',0),(369,'Europe/Guernsey',0),(370,'Europe/Helsinki',0),(371,'Europe/Isle_of_Man',0),(372,'Europe/Istanbul',0),(373,'Europe/Jersey',0),(374,'Europe/Kaliningrad',0),(375,'Europe/Kiev',0),(376,'Europe/Lisbon',0),(377,'Europe/Ljubljana',0),(378,'Europe/London',0),(379,'Europe/Luxembourg',0),(380,'Europe/Madrid',0),(381,'Europe/Malta',0),(382,'Europe/Mariehamn',0),(383,'Europe/Minsk',0),(384,'Europe/Monaco',0),(385,'Europe/Moscow',0),(386,'Europe/Nicosia',0),(387,'Europe/Oslo',0),(388,'Europe/Paris',0),(389,'Europe/Podgorica',0),(390,'Europe/Prague',0),(391,'Europe/Riga',0),(392,'Europe/Rome',0),(393,'Europe/Samara',0),(394,'Europe/San_Marino',0),(395,'Europe/Sarajevo',0),(396,'Europe/Simferopol',0),(397,'Europe/Skopje',0),(398,'Europe/Sofia',0),(399,'Europe/Stockholm',0),(400,'Europe/Tallinn',0),(401,'Europe/Tirane',0),(402,'Europe/Tiraspol',0),(403,'Europe/Uzhgorod',0),(404,'Europe/Vaduz',0),(405,'Europe/Vatican',0),(406,'Europe/Vienna',0),(407,'Europe/Vilnius',0),(408,'Europe/Volgograd',0),(409,'Europe/Warsaw',0),(410,'Europe/Zagreb',0),(411,'Europe/Zaporozhye',0),(412,'Europe/Zurich',0),(413,'Indian/Antananarivo',0),(414,'Indian/Chagos',0),(415,'Indian/Christmas',0),(416,'Indian/Cocos',0),(417,'Indian/Comoro',0),(418,'Indian/Kerguelen',0),(419,'Indian/Mahe',0),(420,'Indian/Maldives',0),(421,'Indian/Mauritius',0),(422,'Indian/Mayotte',0),(423,'Indian/Reunion',0),(424,'Pacific/Apia',0),(425,'Pacific/Auckland',0),(426,'Pacific/Chatham',0),(427,'Pacific/Chuuk',0),(428,'Pacific/Easter',0),(429,'Pacific/Efate',0),(430,'Pacific/Enderbury',0),(431,'Pacific/Fakaofo',0),(432,'Pacific/Fiji',0),(433,'Pacific/Funafuti',0),(434,'Pacific/Galapagos',0),(435,'Pacific/Gambier',0),(436,'Pacific/Guadalcanal',0),(437,'Pacific/Guam',0),(438,'Pacific/Honolulu',0),(439,'Pacific/Johnston',0),(440,'Pacific/Kiritimati',0),(441,'Pacific/Kosrae',0),(442,'Pacific/Kwajalein',0),(443,'Pacific/Majuro',0),(444,'Pacific/Marquesas',0),(445,'Pacific/Midway',0),(446,'Pacific/Nauru',0),(447,'Pacific/Niue',0),(448,'Pacific/Norfolk',0),(449,'Pacific/Noumea',0),(450,'Pacific/Pago_Pago',0),(451,'Pacific/Palau',0),(452,'Pacific/Pitcairn',0),(453,'Pacific/Pohnpei',0),(454,'Pacific/Ponape',0),(455,'Pacific/Port_Moresby',0),(456,'Pacific/Rarotonga',0),(457,'Pacific/Saipan',0),(458,'Pacific/Samoa',0),(459,'Pacific/Tahiti',0),(460,'Pacific/Tarawa',0),(461,'Pacific/Tongatapu',0),(462,'Pacific/Truk',0),(463,'Pacific/Wake',0),(464,'Pacific/Wallis',0),(465,'Pacific/Yap',0);
 /*!40000 ALTER TABLE `timezones` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tokenrights`
+--
+
+DROP TABLE IF EXISTS `tokenrights`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tokenrights` (
+  `t` int(11) NOT NULL,
+  `r` varchar(255) NOT NULL,
+  KEY `t` (`t`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tokenrights`
+--
+
+LOCK TABLES `tokenrights` WRITE;
+/*!40000 ALTER TABLE `tokenrights` DISABLE KEYS */;
+INSERT INTO `tokenrights` VALUES (3,'see-history'),(3,'edit-user'),(4,'edit-tokens'),(2,'see-history'),(200,'block-layouts'),(201,'disable-sprites'),(5,'edit-tokens'),(4,'edit-sprites'),(3,'show-ips'),(100,'show-ips u4'),(4,'not show-ips u4'),(1,'list c2'),(3,'list'),(2,'list c1'),(1,'list c3'),(1,'list c5'),(1,'list c6'),(1,'list c8'),(1,'list c20'),(1,'list c4');
+/*!40000 ALTER TABLE `tokenrights` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `tokens`
+--
+
+DROP TABLE IF EXISTS `tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tokens` (
+  `id` int(11) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `nc0` varchar(6) NOT NULL,
+  `nc1` varchar(6) NOT NULL,
+  `nc2` varchar(6) NOT NULL,
+  `nc_prio` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tokens`
+--
+
+LOCK TABLES `tokens` WRITE;
+/*!40000 ALTER TABLE `tokens` DISABLE KEYS */;
+INSERT INTO `tokens` VALUES (-500,'','Christmas Time Normal User','6AC061','FB6060','D09878',1),(-51,'','Pending User','c7d0f0','f2b6dc','9384b0',0),(-1,'','Banned','888888','888888','888888',50),(0,'','Guest','FF0000','FF0000','FF0000',-5),(1,'','Normal User','97ACEF','F185C9','7C60B0',0),(2,'img/tokens/silverkey.png','Global Moderator','AFFABE','C762F2','47B53C',20),(3,'img/tokens/goldkey.png','Administrator','FFEA95','C53A9E','F0C413',30),(4,'img/tokens/cogwheel.png','System Administrator','FFEA95','C53A9E','F0C413',30),(5,'img/tokens/root.png','Root','EE4444','E63282','AA3C3C',40),(100,'img/tokens/dodongobadge.png','Dodongo Badge','FF0000','FF0000','FF0000',-10),(101,'img/tokens/P_FLCL.png','P! Badge','FF0000','FF0000','FF0000',-10),(102,'img/tokens/aborder.gif','Veteran Acmlm\'s Board Member','FF0000','FF0000','FF0000',-10),(103,'img/tokens/yoshi.gif','Yoshi Badge','FF0000','FF0000','FF0000',-10),(104,'img/badges/glasses.png','X-Ray Glasses','','','',-10),(200,'','Block layout','FF0000','FF0000','FF0000',-10),(201,'','Disable Layout','FF0000','FF0000','FF0000',-10);
+/*!40000 ALTER TABLE `tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1313,7 +1508,7 @@ CREATE TABLE `user_group` (
   `user_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
   `sortorder` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1333,7 +1528,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` mediumint(9) unsigned NOT NULL DEFAULT '0',
+  `id` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `displayname` varchar(32) NOT NULL,
   `pass` varchar(32) NOT NULL,
@@ -1360,7 +1555,7 @@ CREATE TABLE `users` (
   `longpages` int(1) NOT NULL DEFAULT '0',
   `fontsize` smallint(5) unsigned NOT NULL DEFAULT '68',
   `theme` varchar(32) NOT NULL DEFAULT 'bmatrix',
-  `birth` int(11) NOT NULL DEFAULT '-1',
+  `birth` varchar(10) NOT NULL DEFAULT '-1',
   `rankset` int(10) NOT NULL DEFAULT '1',
   `title` varchar(255) NOT NULL,
   `realname` varchar(255) NOT NULL,
@@ -1382,7 +1577,9 @@ CREATE TABLE `users` (
   `timezone` varchar(128) NOT NULL DEFAULT 'UTC',
   `hidequickreply` int(1) NOT NULL DEFAULT '0',
   `adinfo` text NOT NULL,
-  `redirtype` int(1) NOT NULL DEFAULT '0'
+  `redirtype` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1417,7 +1614,8 @@ CREATE TABLE `usersrpg` (
   `side` tinyint(4) NOT NULL DEFAULT '0',
   `ready` tinyint(4) NOT NULL DEFAULT '0',
   `hp` mediumint(8) NOT NULL DEFAULT '0',
-  `mp` mediumint(8) NOT NULL DEFAULT '0'
+  `mp` mediumint(8) NOT NULL DEFAULT '0',
+  UNIQUE KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1431,6 +1629,31 @@ LOCK TABLES `usersrpg` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `usertokens`
+--
+
+DROP TABLE IF EXISTS `usertokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `usertokens` (
+  `u` int(11) NOT NULL,
+  `t` int(11) NOT NULL,
+  KEY `u` (`u`),
+  KEY `t` (`t`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `usertokens`
+--
+
+LOCK TABLES `usertokens` WRITE;
+/*!40000 ALTER TABLE `usertokens` DISABLE KEYS */;
+INSERT INTO `usertokens` VALUES (1,1),(1,5);
+/*!40000 ALTER TABLE `usertokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `views`
 --
 
@@ -1440,7 +1663,8 @@ DROP TABLE IF EXISTS `views`;
 CREATE TABLE `views` (
   `view` int(11) NOT NULL,
   `user` mediumint(9) NOT NULL,
-  `time` int(11) NOT NULL
+  `time` int(11) NOT NULL,
+  UNIQUE KEY `view` (`view`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1461,14 +1685,15 @@ DROP TABLE IF EXISTS `x_perm`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `x_perm` (
-  `id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `x_id` int(11) NOT NULL,
-  `x_type` varchar(64) CHARACTER SET utf8 NOT NULL,
-  `perm_id` varchar(64) CHARACTER SET utf8 NOT NULL,
-  `permbind_id` varchar(64) CHARACTER SET utf8 NOT NULL,
+  `x_type` varchar(64) NOT NULL,
+  `perm_id` varchar(64) NOT NULL,
+  `permbind_id` varchar(64) NOT NULL,
   `bindvalue` int(11) NOT NULL,
-  `revoke` int(1) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `revoke` int(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=254 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1477,7 +1702,7 @@ CREATE TABLE `x_perm` (
 
 LOCK TABLES `x_perm` WRITE;
 /*!40000 ALTER TABLE `x_perm` DISABLE KEYS */;
-INSERT INTO `x_perm` VALUES (1,2,'group','capture-sprites','',0,0),(2,2,'group','login','',0,0),(3,2,'group','update-own-profile','',0,0),(4,1,'group','view-profile-page','',0,0),(5,1,'group','view-public-categories','',0,0),(6,1,'group','view-public-forums','',0,0),(7,1,'group','view-public-posts','',0,0),(8,1,'group','view-public-threads','',0,0),(9,2,'group','create-public-post','',0,0),(10,2,'group','create-public-thread','',0,0),(11,2,'group','update-own-post','',0,0),(12,2,'group','use-post-layout','',0,0),(23,8,'group','consecutive-posts','',0,0),(24,3,'group','delete-post','',0,0),(25,3,'group','delete-thread','',0,0),(26,3,'group','update-post','',0,0),(27,3,'group','update-thread','',0,0),(28,3,'group','view-post-history','',0,0),(30,4,'group','edit-attentions-box','',0,0),(31,4,'group','edit-categories','',0,0),(32,4,'group','edit-forums','',0,0),(33,4,'group','edit-moods','',0,0),(34,4,'group','edit-permissions','',0,0),(36,4,'group','view-all-private-categories','',0,0),(37,4,'group','view-all-private-forums','',0,0),(38,4,'group','view-all-private-posts','',0,0),(39,4,'group','view-all-private-threads','',0,0),(40,4,'group','view-all-sprites','',0,0),(41,4,'group','view-permissions','',0,0),(45,6,'group','no-restrictions','',0,0),(64,4,'group','create-all-private-forum-threads','',0,0),(65,4,'group','create-all-private-forum-posts','',0,0),(73,9,'group','create-public-thread','',0,1),(74,9,'group','create-public-post','',0,1),(75,9,'group','update-own-post','',0,1),(76,9,'group','update-own-profile','',0,1),(77,4,'group','update-profiles','',0,0),(78,9,'group','rate-thread','',0,1),(79,2,'group','rate-thread','',0,0),(80,1,'group','register','',0,0),(81,2,'group','register','',0,1),(82,2,'group','logout','',0,0),(83,1,'group','view-login','',0,0),(84,2,'group','view-login','',0,1),(85,2,'group','mark-read','',0,0),(86,8,'group','staff','',0,0),(87,9,'group','banned','',0,0),(88,8,'group','ignore-thread-time-limit','',0,0),(89,2,'group','rename-own-thread','',0,0),(99,4,'group','view-post-ips','',0,0),(100,4,'group','edit-sprites','',0,0),(101,2,'group','update-own-moods','',0,0),(102,2,'group','view-user-urls','',0,0),(103,4,'group','view-hidden-users','',0,0),(104,4,'group','edit-users','',0,0),(105,3,'user','use-test-bed','',0,0),(126,2,'group','create-pms','',0,0),(127,2,'group','delete-own-pms','',0,0),(128,2,'group','view-own-pms','',0,0),(129,8,'group','edit-title','',0,0),(130,11,'group','create-pms','',0,1),(131,11,'group','delete-own-pms','',0,1),(132,11,'group','view-own-pms','',0,1),(133,2,'group','view-own-sprites','',0,0),(134,2,'group','create-public-post','forum',16,1),(135,2,'group','create-public-thread','forum',16,1),(139,4,'group','override-readonly-forums','',0,0),(170,10,'group','edit-forum-thread','',2,0),(171,10,'group','delete-forum-thread','',2,0),(172,10,'group','edit-forum-post','',2,0),(173,10,'group','delete-forum-post','',2,0),(174,10,'group','view-forum-post-history','',2,0),(175,10,'group','edit-forum-thread','',3,0),(176,10,'group','delete-forum-thread','',3,0),(177,10,'group','edit-forum-post','',3,0),(178,10,'group','delete-forum-post','',3,0),(179,10,'group','view-forum-post-history','',3,0),(185,9,'group','rename-own-thread','',0,1),(186,4,'group','view-errors','',0,0),(187,4,'group','edit-ip-bans','',0,0),(188,1,'group','view-calendar','',0,0),(190,10,'group','view-private-forum','',17,0),(191,10,'group','create-private-forum-post','',17,0),(192,10,'group','create-private-forum-thread','',17,0),(193,10,'group','edit-forum-thread','',17,0),(194,10,'group','delete-forum-thread','',17,0),(195,10,'group','edit-forum-post','',17,0),(196,10,'group','delete-forum-post','',17,0),(197,10,'group','view-forum-post-history','',17,0),(198,3,'group','create-all-forums-announcement','',0,0),(199,10,'group','create-forum-announcement','',2,0),(200,10,'group','create-forum-announcement','',3,0),(213,7,'user','edit-sprites','',0,0),(214,10,'group','has-displayname','',0,1),(215,10,'group','view-acs-calendar','',0,0),(216,49,'user','view-acs-calendar','',0,0),(217,2,'group','post-radar','',0,0),(218,3,'group','show-as-staff','',0,0),(219,4,'group','show-as-staff','',0,0),(220,8,'group','show-as-staff','',0,0),(221,6,'group','show-as-staff','',0,0),(222,10,'group','track-ip-change','',0,0),(223,2,'group','use-item-shop','',0,0),(224,2,'group','block-layout','',0,0);
+INSERT INTO `x_perm` VALUES (1,2,'group','capture-sprites','',0,0),(2,2,'group','login','',0,0),(3,2,'group','update-own-profile','',0,0),(4,1,'group','view-profile-page','',0,0),(5,1,'group','view-public-categories','',0,0),(6,1,'group','view-public-forums','',0,0),(7,1,'group','view-public-posts','',0,0),(8,1,'group','view-public-threads','',0,0),(9,2,'group','create-public-post','',0,0),(10,2,'group','create-public-thread','',0,0),(11,2,'group','update-own-post','',0,0),(12,2,'group','use-post-layout','',0,0),(23,8,'group','consecutive-posts','',0,0),(24,3,'group','delete-post','',0,0),(25,3,'group','delete-thread','',0,0),(26,3,'group','update-post','',0,0),(27,3,'group','update-thread','',0,0),(28,3,'group','view-post-history','',0,0),(30,4,'group','edit-attentions-box','',0,0),(31,4,'group','edit-categories','',0,0),(32,4,'group','edit-forums','',0,0),(33,4,'group','edit-moods','',0,0),(34,4,'group','edit-permissions','',0,0),(36,4,'group','view-all-private-categories','',0,0),(37,4,'group','view-all-private-forums','',0,0),(38,4,'group','view-all-private-posts','',0,0),(39,4,'group','view-all-private-threads','',0,0),(40,4,'group','view-all-sprites','',0,0),(41,4,'group','view-permissions','',0,0),(45,6,'group','no-restrictions','',0,0),(46,7,'group','view-private-forum','forum',11,0),(47,7,'group','edit-forum-thread','forum',11,0),(48,7,'group','delete-forum-thread','forum',11,0),(49,7,'group','edit-forum-post','forum',11,0),(50,7,'group','delete-forum-post','forum',11,0),(54,7,'group','view-private-forum','forum',12,0),(55,7,'group','edit-forum-thread','forum',12,0),(56,7,'group','delete-forum-thread','forum',12,0),(57,7,'group','edit-forum-post','forum',12,0),(58,7,'group','delete-forum-post','forum',12,0),(59,7,'group','edit-forum-thread','forum',13,0),(60,7,'group','delete-forum-thread','forum',13,0),(61,7,'group','edit-forum-post','forum',13,0),(62,7,'group','delete-forum-post','forum',13,0),(63,7,'group','view-private-forum','forum',13,0),(64,4,'group','create-all-private-forum-threads','',0,0),(65,4,'group','create-all-private-forum-posts','',0,0),(66,10,'group','view-private-category','categories',2,0),(67,10,'group','view-private-forum','forum',2,0),(68,10,'group','view-private-forum','forum',3,0),(69,10,'group','create-private-forum-thread','forum',2,0),(70,10,'group','create-private-forum-post','forum',2,0),(71,10,'group','create-private-forum-thread','forum',3,0),(72,10,'group','create-private-forum-post','forum',3,0),(73,9,'group','create-public-thread','',0,1),(74,9,'group','create-public-post','',0,1),(75,9,'group','update-own-post','',0,1),(76,9,'group','update-own-profile','',0,1),(77,4,'group','update-profiles','',0,0),(78,9,'group','rate-thread','',0,1),(79,2,'group','rate-thread','',0,0),(80,1,'group','register','',0,0),(81,2,'group','register','',0,1),(82,2,'group','logout','',0,0),(83,1,'group','view-login','',0,0),(84,2,'group','view-login','',0,1),(85,2,'group','mark-read','',0,0),(86,8,'group','staff','',0,0),(87,9,'group','banned','',0,0),(88,8,'group','ignore-thread-time-limit','',0,0),(89,2,'group','rename-own-thread','',0,0),(90,7,'group','view-forum-post-history','forum',11,0),(91,7,'group','view-forum-post-history','forum',12,0),(92,7,'group','view-forum-post-history','forum',13,0),(93,7,'group','create-private-forum-thread','forum',11,0),(94,7,'group','create-private-forum-thread','forum',12,0),(95,7,'group','create-private-forum-thread','forum',13,0),(96,7,'group','create-private-forum-post','forum',11,0),(97,7,'group','create-private-forum-post','forum',12,0),(98,7,'group','create-private-forum-post','forum',13,0),(99,4,'group','view-post-ips','',0,0),(100,4,'group','edit-sprites','',0,0),(101,2,'group','update-own-moods','',0,0),(102,2,'group','view-user-urls','',0,0),(103,4,'group','view-hidden-users','',0,0),(104,4,'group','edit-users','',0,0),(105,3,'user','use-test-bed','',0,0),(126,2,'group','create-pms','',0,0),(127,2,'group','delete-own-pms','',0,0),(128,2,'group','view-own-pms','',0,0),(129,8,'group','edit-title','',0,0),(130,11,'group','create-pms','',0,1),(131,11,'group','delete-own-pms','',0,1),(132,11,'group','view-own-pms','',0,1),(133,2,'group','view-own-sprites','',0,0),(134,2,'group','create-public-post','forum',16,1),(135,2,'group','create-public-thread','forum',16,1),(136,12,'group','view-private-forum','forum',15,0),(137,12,'group','create-private-forum-post','forum',15,0),(138,12,'group','create-private-forum-thread','forum',15,0),(139,4,'group','override-readonly-forums','',0,0),(160,13,'group','edit-forum-thread','forum',1,0),(161,13,'group','delete-forum-thread','',1,0),(162,13,'group','edit-forum-post','',1,0),(163,13,'group','delete-forum-post','',1,0),(164,13,'group','view-forum-post-history','',1,0),(170,10,'group','edit-forum-thread','',2,0),(171,10,'group','delete-forum-thread','',2,0),(172,10,'group','edit-forum-post','',2,0),(173,10,'group','delete-forum-post','',2,0),(174,10,'group','view-forum-post-history','',2,0),(175,10,'group','edit-forum-thread','',3,0),(176,10,'group','delete-forum-thread','',3,0),(177,10,'group','edit-forum-post','',3,0),(178,10,'group','delete-forum-post','',3,0),(179,10,'group','view-forum-post-history','',3,0),(180,14,'group','edit-forum-thread','',2,0),(181,14,'group','delete-forum-thread','',2,0),(182,14,'group','edit-forum-post','',2,0),(183,14,'group','delete-forum-post','',2,0),(184,14,'group','view-forum-post-history','',2,0),(185,9,'group','rename-own-thread','',0,1),(186,4,'group','view-errors','',0,0),(187,4,'group','edit-ip-bans','',0,0),(188,1,'group','view-calendar','',0,0),(189,15,'group','view-calendar','',0,1),(190,10,'group','view-private-forum','',17,0),(191,10,'group','create-private-forum-post','',17,0),(192,10,'group','create-private-forum-thread','',17,0),(193,10,'group','edit-forum-thread','',17,0),(194,10,'group','delete-forum-thread','',17,0),(195,10,'group','edit-forum-post','',17,0),(196,10,'group','delete-forum-post','',17,0),(197,10,'group','view-forum-post-history','',17,0),(198,3,'group','create-all-forums-announcement','',0,0),(199,10,'group','create-forum-announcement','',2,0),(200,10,'group','create-forum-announcement','',3,0),(201,16,'group','view-private-forum','',21,0),(202,16,'group','create-private-forum-post','',21,0),(203,16,'group','create-private-forum-thread','',21,0),(204,16,'group','view-private-category','',9,0),(205,5,'group','view-private-forum','',21,0),(206,5,'group','create-private-forum-post','',21,0),(207,5,'group','create-private-forum-thread','',21,0),(208,16,'group','edit-forum-thread','',21,0),(209,16,'group','delete-forum-thread','',21,0),(210,16,'group','edit-forum-post','',21,0),(211,16,'group','delete-forum-post','',21,0),(212,16,'group','view-forum-post-history','',21,0),(213,7,'user','edit-sprites','',0,0),(214,10,'group','has-displayname','',0,1),(215,10,'group','view-acs-calendar','',0,0),(216,49,'user','view-acs-calendar','',0,0),(217,2,'group','post-radar','',0,0),(218,3,'group','show-as-staff','',0,0),(219,4,'group','show-as-staff','',0,0),(220,8,'group','show-as-staff','',0,0),(221,6,'group','show-as-staff','',0,0),(222,10,'group','track-ip-change','',0,0),(223,2,'group','use-item-shop','',0,0),(224,2,'group','block-layout','',0,0),(226,12,'user','edit-forum-post','',18,0),(227,12,'user','edit-forum-thread','',18,0),(228,12,'user','delete-forum-post','',18,0),(229,12,'user','delete-forum-thread','',18,0),(230,12,'user','view-forum-post-history','',18,0),(232,9,'group','edit-title','',0,1),(234,7,'user','view-user-pms','',0,0),(235,116,'user','create-pms','',0,1),(236,16,'group','edit-forum-thread','',23,0),(237,16,'group','delete-forum-thread','',23,0),(238,16,'group','edit-forum-post','',23,0),(239,16,'group','delete-forum-post','',23,0),(240,16,'group','view-forum-post-history','',23,0),(241,102,'user','view-acs-calendar','',0,0),(243,17,'group','view-post-history','',22,0),(244,16,'group','edit-forum-thread','forum',6,0),(245,102,'user','consecutive-posts','',0,0),(246,7,'user','has-displayname','',0,0),(247,13,'user','edit-forum-post','',18,0),(248,13,'user','delete-post','',18,0),(249,13,'user','view-post-history','',18,0),(250,13,'user','edit-forum-thread','',18,0),(251,13,'user','delete-forum-thread','',18,0),(252,13,'user','consecutive-posts','',0,0),(253,10,'group','view-allranks','',0,0);
 /*!40000 ALTER TABLE `x_perm` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1490,4 +1715,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2012-07-04 12:22:05
+-- Dump completed on 2013-05-25 20:57:57

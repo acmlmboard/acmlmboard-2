@@ -117,12 +117,12 @@
      if (($postcount >= $neededposts) && ($postcount < $nextneededposts))
       {
 //    if(!$_GET['showinactive']) $inact=" AND `lastview` > ".(time()-(86400 * $inactivedays)); else $inact="";
+       //$usersonthisrank .= linkuser($user['id']).$climbingagain;
+    if($_GET['showinactive'] || $user['lastview']>(time()-(86400 * $inactivedays))){
       if ($usersonthisrank)
         $usersonthisrank .= ", ";
-       //$usersonthisrank .= linkuser($user['id']).$climbingagain;
-    if($_GET['showinactive'] || $user['lastview']>(time()-(86400 * $inactivedays)))
        $usersonthisrank .= "<img style='vertical-align:text-bottom' src='".$user['minipic']."'/> ".userlink_by_id($user['id']).$climbingagain;
-    else $idlecount++;
+    } else $idlecount++;
        $usercount++;
       }
      }

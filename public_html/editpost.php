@@ -39,7 +39,7 @@
 
   needs_login(1);
 
-  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.minpowerreply, f.minpower '
+  $thread=$sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.minpowerreply, f.minpower '
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '
@@ -78,7 +78,7 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
       $err="    You can't edit a post in closed threads!<br>
 ".         "    $threadlink";
   }
-  else if (!can_edit_post($pid)) {
+  else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['forum']))) {
       $err="    You do not have permission to edit this post.<br>$threadlink";
   }
   elseif($pid==-1){

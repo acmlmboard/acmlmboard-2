@@ -1,5 +1,11 @@
 <?php
 
+// [Mega-Mario] preload group data, makes things a lot easier afterwards
+$usergroups = array();
+$r = $sql->query("SELECT * FROM `group`");
+while ($g = $sql->fetch($r))
+	$usergroups[$g['id']] = $g;
+
 //this processes the permission stack, in this order:
 //-user permissions
 //-user's primary group permissions, then the parent group's permissions, recursively until it reaches the top
@@ -186,15 +192,11 @@ function can_view_cat($cat) {
 }
 
 
-function can_edit_post($pid) {
-  global $sql,$loguser;
-  $row = $sql->fetchp("SELECT p.user puser, t.forum tforum
-					    FROM posts p LEFT JOIN threads t 
-					    ON p.thread=t.id 
-					    WHERE p.id=?",array($pid));
-  if ($row['puser'] == $loguser['id'] && has_perm('update-own-post')) return true;
+function can_edit_post($post) {
+  global $loguser;
+  if ($post['user'] == $loguser['id'] && has_perm('update-own-post')) return true;
   else if (has_perm('update-post')) return true;
-  else if (can_edit_forum_posts($row['tforum'])) return true;
+  else if (can_edit_forum_posts($post['tforum'])) return true;
 
   return false;
 }
@@ -352,12 +354,10 @@ function no_perm() {
       die();
 }
 
-function grouplink($uid) {
-	global $sql;
-		
-	$gid = gid_for_user($uid);
+function grouplink($uid, $gid) {
+	global $sql, $usergroups;
 
-	$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?",array($gid));
+	$group = $usergroups[$gid];
 	if ($group['default'] != 1) 
 	return "<font color='#".color_for_user($uid,2)."'>".$group['title']."</font>";
 	else return "";

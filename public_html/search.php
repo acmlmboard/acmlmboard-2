@@ -136,7 +136,7 @@ if($_GET[w] == 1) {
   $dastring = trim(substr($dastring, strlen($defbool)));
 //  print $dastring;
   $fieldlist='';
-  $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign');
+  $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','group_id','rankset','title','usepic','head','sign');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
@@ -146,7 +146,7 @@ if($_GET[w] == 1) {
   if($_GET[f])
     $dastring.=" AND f.id='$_GET[f]' ";
 
-  $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, t.title ttitle "
+  $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, t.title ttitle, t.forum tforum "
                     ."FROM posts p "
                     ."LEFT JOIN poststext pt ON p.id=pt.id "
                     ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "

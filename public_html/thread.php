@@ -48,7 +48,7 @@ if($_COOKIE['pstbon']>=1){
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','power','rankset','title','usepic','head','sign','signsep', 'minipic');
+  $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','group_id','rankset','title','usepic','head','sign','signsep', 'minipic');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
@@ -196,8 +196,9 @@ if($_COOKIE['pstbon']>=1){
     }
 
     //select top revision // 2007-03-08 blackhole89
-    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision "
+    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.forum tforum "
                       ."FROM posts p "
+					  ."LEFT JOIN threads t ON t.id=p.thread "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 //		      ."JOIN ("
 //		        ."SELECT a.id,MAX(a.revision) toprev FROM poststext a GROUP BY a.id"
@@ -220,7 +221,7 @@ if($_COOKIE['pstbon']>=1){
                       ."WHERE id=$uid ");
     //title
     pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle "
+    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 //		      ."JOIN ("
@@ -269,7 +270,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
 */
 
-    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, p.announce isannounce "
+    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
                       ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr " //SQL barrel roll
@@ -298,7 +299,7 @@ if($_COOKIE['pstbon']>=1){
     pageheader('Latest posts');
 
 
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle "
+    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 //          ."JOIN ("

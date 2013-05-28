@@ -37,12 +37,13 @@
 
   if($act!='Submit'){
     $fieldlist='';
-    $ufields=array('id','name','displayname','posts','sex','power');
+    $ufields=array('id','name','displayname','posts','sex','group_id');
     foreach($ufields as $field)
       $fieldlist.="u.$field u$field,";
 
-    $posts=$sql->query("SELECT $fieldlist p.*, pt1.text "
+    $posts=$sql->query("SELECT $fieldlist p.*, pt1.text, t.forum tforum "
                       .'FROM posts p '
+					  .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN poststext pt1 ON p.id=pt1.id '
                       .'LEFT JOIN poststext pt2 ON pt2.id=pt1.id AND pt2.revision=(pt1.revision+1) '
                       .'LEFT JOIN users u ON p.user=u.id '

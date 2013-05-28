@@ -100,7 +100,7 @@ function LoadBlocklayouts()
 
       // "Edit" link for admins or post owners, but not banned users
 /*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
-if (can_edit_post($post[id]) && $post[id])
+	  if (can_edit_post($post) && $post[id])
         $postlinks.=($postlinks?' | ':'')."<a href=editpost.php?pid=$post[id]>Edit</a>";
 
       if($post[id] && can_delete_forum_posts(getforumbythread($post[thread])))
@@ -166,9 +166,10 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 		}
 
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
+		$grouplink = grouplink($post['uid'], $post['ugroup_id']);
         $text.=
-		 grouplink($post[uid])."
-".        "      ".((strlen(grouplink($post[uid])))?"<br>":"")."
+		 $grouplink."
+".        "      ".((strlen($grouplink))?"<br>":"")."
 ".        "      ".postfilter2($post[utitle])."
 ".        "      <br>Level: ".calclvl($exp)."
 ".        "      <br>$picture

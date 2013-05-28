@@ -165,7 +165,7 @@ function in_permset($permset,$perm) {
 	return false;
 }
 
-function can_view_cat($catid) {
+function can_view_cat($cat) {
 
 	//can view public categories
 	//HOSTILE DEBUGGING echo 'checking for public cat<br>';
@@ -175,12 +175,12 @@ function can_view_cat($catid) {
 
 	//is it a private category?
 	//HOSTILE DEBUGGING echo 'checking private of cat<br>';
-	if (is_private_cat($catid)) {
+	if ($cat['private']) {
 		//HOSTILE DEBUGGING echo 'checking for private cat<br>';
 		//can view the forum's category
 
 		if (!has_perm('view-all-private-categories') &&	
-		    !has_perm_with_bindvalue('view-private-category',$catid)) return false;	
+		    !has_perm_with_bindvalue('view-private-category',$cat['id'])) return false;	
 	}
 	return true;	
 }
@@ -225,9 +225,9 @@ function cats_with_view_perm() {
   static $cache = "";
   if($cache != "") return $cache;
   $cache="(";
-  $r=$sql->query("SELECT id FROM categories");
+  $r=$sql->query("SELECT id,private FROM categories");
   while($d=$sql->fetch($r)) {
-    if(can_view_cat($d[id])) $cache.="$d[id],";
+    if(can_view_cat($d)) $cache.="$d[id],";
   }
   $cache.="NULL)";
   return $cache;
@@ -239,9 +239,9 @@ function forums_with_view_perm() {
   static $cache = "";
   if($cache != "") return $cache;
   $cache="(";
-  $r=$sql->query("SELECT id FROM forums");
+  $r=$sql->query("SELECT f.id, f.private, f.cat, c.private cprivate FROM forums f LEFT JOIN categories c ON c.id=f.cat");
   while($d=$sql->fetch($r)) {
-    if(can_view_forum($d['id'])) $cache.="$d[id],";
+    if(can_view_forum($d)) $cache.="$d[id],";
   }
   $cache.="NULL)";
   return $cache;
@@ -299,12 +299,10 @@ function forums_with_delete_threads_perm() {
   return $cache;
 }
 
-function can_view_forum($forumid) {
+function can_view_forum($forum) {
 	//must fulfill the following criteria
 
-	$catid = catid_of_forum($forumid);
-
-	if (!can_view_cat($catid)) return false;
+	if (!can_view_cat(array('id'=>$forum['cat'], 'private'=>$forum['cprivate']))) return false;
 
 	//can view public forums
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
@@ -312,11 +310,11 @@ function can_view_forum($forumid) {
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';
-	if (is_private_forum($forumid)) {
+	if ($forum['private']) {
 		//can view the forum
 		//HOSTILE DEBUGGING echo 'checking for private forum<br>';
 		if (!has_perm('view-all-private-forums') && 
-		    !has_perm_with_bindvalue('view-private-forum',$forumid)) return false;
+		    !has_perm_with_bindvalue('view-private-forum',$forum['id'])) return false;
 	}
 	return true;
 }
@@ -405,9 +403,9 @@ function thread_not_found() {
 }
 
 
-function can_create_forum_thread($forumid) {
+function can_create_forum_thread($forum) {
 
-	if (is_readonly_forum($forumid) && !has_perm('override-readonly-forums')) return false;
+	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
 
@@ -417,18 +415,18 @@ function can_create_forum_thread($forumid) {
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';
-	if (is_private_forum($forumid)) {
+	if ($forum['private']) {
 		//can view the forum
 		//HOSTILE DEBUGGING echo 'checking for private forum<br>';
 		if (!has_perm('create-all-private-forum-threads') && 
-		    !has_perm_with_bindvalue('create-private-forum-thread',$forumid)) return false;
+		    !has_perm_with_bindvalue('create-private-forum-thread',$forum['id'])) return false;
 	}
 	return true;
 }
 
-function can_create_forum_post($forumid) {
+function can_create_forum_post($forum) {
 
-	if (is_readonly_forum($forumid) && !has_perm('override-readonly-forums')) return false;
+	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
 
@@ -438,11 +436,11 @@ function can_create_forum_post($forumid) {
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';
-	if (is_private_forum($forumid)) {
+	if ($forum['private']) {
 		//can view the forum
 		//HOSTILE DEBUGGING echo 'checking for private forum<br>';
 		if (!has_perm('create-all-private-forum-posts') && 
-		    !has_perm_with_bindvalue('create-private-forum-post',$forumid)) return false;
+		    !has_perm_with_bindvalue('create-private-forum-post',$forum['id'])) return false;
 	}
 	return true;
 }
@@ -488,29 +486,6 @@ function can_delete_forum_threads($forumid) {
 		!has_perm_with_bindvalue('delete-forum-thread',$forumid)) return false;
 	
 	return true;
-}
-
-
-function is_private_forum($forumid) {
-	global $sql;
-	$row = $sql->fetchp("SELECT id FROM forums WHERE id=? AND private=?",array($forumid,1));
-	if ($row['id'] == $forumid) return true;
-	return false;
-}
-
-function is_readonly_forum($forumid) {
-	global $sql;
-	$row = $sql->fetchp("SELECT id FROM forums WHERE id=? AND readonly=?",array($forumid,1));
-	if ($row['id'] == $forumid) return true;
-	return false;
-}
-
-
-function is_private_cat($forumid) {
-	global $sql;
-	$row = $sql->fetchp("SELECT id FROM categories WHERE id=? AND private=?",array($forumid,1));
-	if ($row['id'] == $forumid) return true;
-	return false;
 }
 
 

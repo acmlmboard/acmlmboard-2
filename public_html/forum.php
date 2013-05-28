@@ -105,7 +105,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
-".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($fid)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>":"")."</td>
+".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($forum)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>":"")."</td>
 ".      "$L[TBLend]
 ";
   }elseif($uid=$_GET[user]){

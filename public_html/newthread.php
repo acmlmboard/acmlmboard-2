@@ -91,7 +91,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
     $err = "    You have no permissions to create announcements in this forum!<br>$forumLink";
 
 //  else if($forum[minpowerthread]>$user[power]){
-     else if (!can_create_forum_thread($fid)){
+     else if (!can_create_forum_thread($forum)){
 
   $err="    You have no permissions to create threads in this forum!<br>$forumlink";
 //    if(isbanned())

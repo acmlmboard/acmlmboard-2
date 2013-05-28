@@ -52,7 +52,7 @@
                       ."LIMIT $loguser[ppp]");
   }
 
-  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.minpowerreply, f.minpower '
+  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
                       .'FROM threads t '
                       .'LEFT JOIN forums f ON f.id=t.forum '
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
@@ -78,28 +78,14 @@
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
   if(!$thread) {
-//      $err="    The specified thread doesn't exist!";
-
     thread_not_found();
     }
 
 
-     else if (!can_create_forum_post($thread[forum])){
+     else if (!can_create_forum_post(array('id'=>$thread['forum'], 'private'=>$thread['fprivate'], 'readonly'=>$thread['readonly']))){
 
        $err="    You have no permissions to create posts in this forum!<br>$forumlink";
     }
-/*  elseif($thread[minpowerreply]>$user[power]){
-    if(isbanned())
-      $err="    You can't post when you are banned!<br>
-".         "    $threadlink";
-    else
-      $err="    You can't post in this restricted forum!<br>
-".         "    $threadlink";
-  }
-  elseif($thread[minpower]>$user[power]){
-    $err="      You can't post in this restricted forum!<br>
-".       "      $threadlink";
-  }*/
   elseif($thread[closed]){
       $err="    You can't post in closed threads!<br>
 ".         "    $threadlink";
@@ -133,7 +119,7 @@
 
   if($pid=$_GET[pid]){
     checknumeric($pid);  //nice way of adding security, really. int_val doesn't really do it (floats and whatnot), so heh
-    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.minpower, p.thread "
+    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, p.thread "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
@@ -143,7 +129,7 @@
                       ."WHERE p.id=$pid AND ISNULL(pt2.id)");
   
   //does the user have reading access to the quoted post?
-  if(!can_view_forum(getforumbythread($post[thread]))) $post[text]="";
+  if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
   $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".str_replace("&","&amp",$post[text])."[/quote]";
   }

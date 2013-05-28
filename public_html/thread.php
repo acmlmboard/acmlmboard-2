@@ -127,7 +127,7 @@ if($_COOKIE['pstbon']>=1){
                ."SET views=views+1 $action "
                ."WHERE id=$tid");
 
-    $thread=$sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, f.minpower minpower, t.forum fid".($log?', r.time frtime':'').' '
+    $thread=$sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, t.forum fid".($log?', r.time frtime':'').' '
                         ."FROM threads t LEFT JOIN forums f ON f.id=t.forum "
                   .($log?"LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) ":'')
 		  	."LEFT JOIN polls p ON p.id=t.id "
@@ -137,17 +137,6 @@ if($_COOKIE['pstbon']>=1){
     {
       pageheader("Thread not found",0);
       thread_not_found();
-/*        pageheader("(Invalid Thread)",0);
-        print
-	  "$L[TBL1]>
-".        "  $L[TR2]>
-".        "    $L[TD1c]><img src=img/onoz.gif>
-".        "$L[TBLend]<br>$L[TBL1]>$L[TR2]>$L[TD1c]>
-".        "    This thread is invalid or does not exist.
-".        "$L[TBLend]
-";
-        pagefooter();
-        die();*/
     }
 
 
@@ -231,7 +220,7 @@ if($_COOKIE['pstbon']>=1){
                       ."WHERE id=$uid ");
     //title
     pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle "
+    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 //		      ."JOIN ("
@@ -365,7 +354,8 @@ if($_COOKIE['pstbon']>=1){
 
   if($viewmode=="thread"){
 
-    if (can_create_forum_post($thread[forum])) {
+	$faccess = $sql->fetch($sql->query("SELECT id,private,readonly FROM forums WHERE id=".(int)$thread['forum']));
+    if (can_create_forum_post($faccess)) {
     if($thread[closed])
       $newreply="Thread closed";
     else
@@ -602,7 +592,7 @@ print "$modlinks
 ";
   while($post=$sql->fetch($posts)){
     if (isset($post['fid'])) {
-      if (!can_view_forum($post['fid'])) continue;
+      if (!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) continue;
     }
     if($uid || $timeval){
       $pthread[id]=$post[tid];
@@ -624,7 +614,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
   print   "$pagelist$pagebr
 ".        "<br>";
 
-  if($thread[id] && can_create_forum_post($thread[forum]) && !$thread[closed]) {
+  if($thread[id] && can_create_forum_post($faccess) && !$thread[closed]) {
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbutton("message","B","[b]","[/b]")
            .posttoolbutton("message","I","[i]","[/i]")

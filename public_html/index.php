@@ -54,7 +54,7 @@
 //                     ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
                      ."ORDER BY ord");
   while($c=$sql->fetch($categs)) {
-    if (can_view_cat($c['id'])) $categ[$c[id]]=$c;
+    if (can_view_cat($c)) $categ[$c[id]]=$c;
   }
 
 	//[KAWA] ABXD does ignores with a very nice SQL trick that I think Mega-Mario came up with one day.
@@ -64,7 +64,7 @@
 	while($i = $sql->fetch($ignoreQ))
 		$ignores[$i['fid']] = true;
 
-  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower, u.minipic uminipic "
+  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", c.private cprivate, u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower, u.minipic uminipic "
                      ."FROM forums f "
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "
@@ -88,8 +88,13 @@ echo
 ".      "    $L[TDh] width=150>Last post</td>
 ";
 
+$lmods = array();
+$r = $sql->query("SELECT f.fid, u.name,u.displayname,u.id,u.sex,u.power FROM forummods f LEFT JOIN users u ON u.id=f.uid");
+while ($mod = $sql->fetch($r))
+	$lmods[$mod['fid']][] = $mod;
+
   while($forum=$sql->fetch($forums)){
-    if (!can_view_forum($forum['id'])) continue;
+    if (!can_view_forum($forum)) continue;
 
     if($forum[cat]!=$cat){
       $cat=$forum[cat];
@@ -125,8 +130,8 @@ echo
 		$ignoreFX = "";
 
     $modstring="";
-    $a=$sql->query("SELECT u.name,u.displayname,u.id,u.sex,u.power FROM forummods f, users u WHERE f.fid=$forum[id] AND u.id=f.uid");
-    while($mod=$sql->fetch($a)) $modstring.=userlink($mod).", ";
+    if ($lmods[$forum['id']])
+		foreach ($lmods[$forum['id']] as $mod) $modstring.=userlink($mod).", ";
     if($modstring) $modstring="<br>(moderated by: ".substr($modstring,0,-2).")";
 //    else $modstring="<p>&nbsp;</p>";
     print

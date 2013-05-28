@@ -14,7 +14,7 @@
 
     function query($query){	
       if(0 && $_GET[sqldebug])
-        print "$query<br>";
+        print "{$this->queries} $query<br>";
       
       $start=usectime();
       if($res=mysql_query($query,$this->conid)){

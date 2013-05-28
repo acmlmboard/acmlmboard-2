@@ -7,24 +7,13 @@
  *		post_radar (added),
  */
 
-function retrieve_post_radar_alpha($u) {
+function retrieve_post_radar($u, $sort='num_posts') {
 	global $sql;
-	$res=$sql->query("SELECT u.posts num_posts, u.name, post_radar.user2_id AS uid
+	$res=$sql->query("SELECT u.posts num_posts, u.name uname, u.displayname udisplayname, u.sex usex, post_radar.user2_id AS uid
 						 FROM post_radar
 						 LEFT JOIN users u ON u.id = post_radar.user2_id
 						 WHERE post_radar.user_id =$u
-						 AND dtime IS NULL ORDER BY name ASC"
-						);
-	return $res;
-}
-
-function retrieve_post_radar($u) {
-	global $sql;
-	$res=$sql->query("SELECT u.posts num_posts, u.name, post_radar.user2_id AS uid
-						 FROM post_radar
-						 LEFT JOIN users u ON u.id = post_radar.user2_id
-						 WHERE post_radar.user_id =$u
-						 AND dtime IS NULL ORDER BY num_posts DESC"
+						 AND dtime IS NULL ORDER BY $sort DESC"
 						);
 	return $res;
 }
@@ -37,13 +26,14 @@ function list_post_radar($rlist) {
 	return $res;
 }
 
-function build_postradar($u) {
-	global $sql;
-	$res=retrieve_post_radar($u);
+// [Mega-Mario] removing $u parameter -- would this ever be used for anybody else than $loguser?
+function build_postradar() {
+	global $sql, $loguser;
+	$res=retrieve_post_radar($loguser['id']);
 	$rcnt=$sql->numrows($res);
 	$radar_res = NULL;
 	if ($rcnt > 0) {
-		$your_count = $sql->resultq("SELECT posts FROM users WHERE id = $u");
+		$your_count = $loguser['posts'];
 		$radar_res = "You are ";
 		
 		for ($i = 0; $i < $rcnt;$i++) {
@@ -51,11 +41,11 @@ function build_postradar($u) {
 			$rdif = $your_count-$cur_radar["num_posts"];
 			$con_str = ($i >= ($rcnt-2)?' and ':', ');
 			if ($rdif > 0) {
-				$radar_res .= $rdif." ahead of ".userlink_by_id($cur_radar["uid"], true).' ('.$cur_radar['num_posts'].')';
+				$radar_res .= $rdif." ahead of ".userlink($cur_radar, 'u').' ('.$cur_radar['num_posts'].')';
 			} else if ($rdif < 0) {
-				$radar_res .= abs($rdif)." behind ".userlink_by_id($cur_radar["uid"], true).' ('.$cur_radar['num_posts'].')';
+				$radar_res .= abs($rdif)." behind ".userlink($cur_radar, 'u').' ('.$cur_radar['num_posts'].')';
 			} else {
-				$radar_res .= " tied with ".userlink_by_id($cur_radar["uid"], true).' ('.$cur_radar['num_posts'].')';
+				$radar_res .= " tied with ".userlink($cur_radar, 'u').' ('.$cur_radar['num_posts'].')';
 			}
 			if ($i != $rcnt-1) {
 				$radar_res .= $con_str;

@@ -75,7 +75,7 @@ VALUES (
 	pageheader('Post Radar');
 	if (!$act || $act == 'Save and continue') {
 		print "$L[TBL1]><form action='postradar.php' method='post' enctype='multipart/form-data'>".catheader('Edit Post Radar');
-		$radar_users = list_post_radar(retrieve_post_radar_alpha($targetuserid));
+		$radar_users = list_post_radar(retrieve_post_radar($targetuserid, 'name'));
 		
 		$res = $sql->query('select id,name,posts FROM users ORDER BY name');
 		while ($r=$sql->fetch($res)) $ulist[$r['name']]= $r;
@@ -84,7 +84,7 @@ VALUES (
 		foreach ($ulist as $z => $k) $uchoices[$k['id']] = $z.' -- '.$k['posts'].' posts';
 		$radar_remlist = array();
 		foreach ($radar_users as $k) {
-			$radar_remlist[$k['uid']] = $k['name'].' -- '.$k['num_posts'].' posts';
+			$radar_remlist[$k['uid']] = $k['uname'].' -- '.$k['num_posts'].' posts';
 		}
 		print fieldrow('Add an user',fieldselect('post_radar_add','-1',array_diff_key($uchoices,$radar_remlist)));
 		$radar_remlist = array(-1 => 'Do not remove anyone') + $radar_remlist;

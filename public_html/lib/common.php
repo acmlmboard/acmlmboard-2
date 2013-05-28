@@ -91,7 +91,7 @@
    if($log)
     {
     //AB-SPECIFIC
-    if(has_perm('track-ip-change') && ($userip != ($oldip=$sql->resultq("SELECT `ip` FROM `users` WHERE `id`='$loguser[id]'"))))
+    if(has_perm('track-ip-change') && ($userip != ($oldip=$loguser['ip'])))
      {
       sendirc("{irccolor-base}".get_irc_groupname($loguser['group_id'])." {irccolor-name}".($loguser['displayname'] ? $loguser['displayname'] : $loguser['name'])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}", $config['staffchan']);
      }
@@ -266,7 +266,7 @@
     
    if ($log)
     {
-     $radar = build_postradar($loguser['id']);
+     $radar = build_postradar();
     }
     
     include("lib/sprites.php");

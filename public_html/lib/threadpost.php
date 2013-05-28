@@ -5,6 +5,8 @@ function LoadBlocklayouts()
 	global $blocklayouts, $loguser, $log, $sql;
 	if(isset($blocklayouts) || !$log)
 		return;
+	
+	$blocklayouts = array();
 	$rBlocks = $sql->query("select * from blockedlayouts where blockee = ".$loguser['id']);
 	while($block = $sql->fetch($rBlocks))
 		$blocklayouts[$block['user']] = 1;
@@ -24,8 +26,9 @@ function LoadBlocklayouts()
   if($syndromenable == 1) $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
   else $actsyn=0;
 
-   $post[utitle]= getrank($post[urankset],$post[uposts])
-                  .((strlen(getrank($post[urankset],$post[uposts]))>=1)?"<br>":"")
+  $post['ranktext'] = getrank($post[urankset],$post[uposts]);
+   $post[utitle]= $post['ranktext']
+                  .((strlen($post['ranktext'])>=1)?"<br>":"")
                   .syndrome($actsyn)
                   .((strlen(syndrome($actsyn)))?"<br>":"")
                   .$post[utitle];

@@ -1,5 +1,6 @@
 <?php
 
+	$rankcache = array();
 
   function checkuser($name,$pass){
     global $sql;
@@ -90,8 +91,18 @@ function renderdotrank($posts=0){
     }
 
   function getrank($set,$posts){
-    global $ranks,$sql;
-    if($set == "-1") return renderdotrank($posts);
+    global $ranks,$sql,$rankcache;
+	
+	// [Mega-Mario] rank cache. In the lack of a better solution, avoids doing the same thing over and over again...
+	if (isset($rankcache[$set][$posts]))
+		return $rankcache[$set][$posts];
+	
+    if($set == "-1") 
+	{
+		$r = renderdotrank($posts);
+		$rankcache[$set][$posts] = $r;
+		return $r;
+	}
 
     //[KAWA] Climbing the Ranks Again
     if($posts > 5100)
@@ -103,8 +114,10 @@ function renderdotrank($posts=0){
 
     if($set) {
       $d=$sql->fetchq("SELECT str FROM ranks WHERE rs=$set AND p<=$posts ORDER BY p DESC LIMIT 1");
-      return $d[0];
+	  $rankcache[$set][$posts] = $d['str'];
+      return $d['str'];
     }
+	$rankcache[$set][$posts] = '';
     return "";
   }
 

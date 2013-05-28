@@ -435,13 +435,14 @@
      {
       print " 
              $L[TR]>
-             $L[TD1] colspan=3>
-               $L[TBL] width=100%>
-                 $L[TDn] width=250></td>
-                 $L[TDnc] width=100%>$radar
-                 </td>
-               $L[TBLend]";
+             $L[TD1c] colspan=3>
+               $radar";
      }
+	 
+	 print "
+			$L[TBLend]
+			<br>
+			$L[TBL1]>";
 
      $hiddencheck  = "AND `hidden`='0' ";
     if (has_perm('view-hidden-users'))
@@ -504,7 +505,7 @@
 
       print "</tr>
                $L[TR1]>
-               $L[TD1c] colspan=3>$onuserlist
+               $L[TD1c]>$onuserlist
               </td>
               </tr>";
      }
@@ -528,7 +529,7 @@
        $birthdaystoday = implode(", ", $birthdays);
        print "
         $L[TR1c]>
-        $L[TD2c] colspan=3>
+        $L[TD2c]>
         Birthdays today: $birthdaystoday";
       }
 
@@ -617,7 +618,7 @@
       
       print "
            $L[TR]>
-             $L[TD1] colspan=\"3\">
+             $L[TD1]>
                $L[TBL] width=\"100%\">
                  $L[TR]>
                    $L[TDn] width=\"250\"></td>
@@ -635,7 +636,7 @@
                  </tr>
                $L[TBLend]
            $L[TR]>
-             $L[TD2c] colspan=\"3\">
+             $L[TD2c]>
                $onuserlist";
      }
      print "

@@ -524,11 +524,9 @@ function has_perm_with_bindvalue($permid,$bindvalue) {
 }
 
 function parent_group_for_group($groupid) {
-	global $sql;
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "getting parent group id for $groupid<br>";
-	$row = $sql->fetchp("SELECT inherit_group_id FROM `group` WHERE id=?",array($groupid));
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo 'done fetching<br>';
-	$gid = $row['inherit_group_id'];
+	global $usergroups;
+
+	$gid = $usergroups[$groupid]['inherit_group_id'];
 	if ($gid > 0) {
 		return $gid;
 	}

@@ -287,7 +287,7 @@ CREATE TABLE `forums` (
 
 LOCK TABLES `forums` WRITE;
 /*!40000 ALTER TABLE `forums` DISABLE KEYS */;
-INSERT INTO `forums` VALUES (1,1,1,'General Forum','General topics forum',122,7496,1364727616,7,32350,0,0,0,0,0,2,0,0),(2,2,1,'General Staff Forum','Generic Staff Forum					',25,192,1359851219,1,30350,1,1,1,1,0,1,0,0);
+INSERT INTO `forums` VALUES (1,1,1,'General Forum','General topics forum',0,0,0,0,0,0,0,0,0,0,2,0,0),(2,2,1,'General Staff Forum','Generic Staff Forum					',0,0,0,0,0,1,1,1,1,0,1,0,0);
 /*!40000 ALTER TABLE `forums` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1083,31 +1083,6 @@ LOCK TABLES `ref` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `rights`
---
-
-DROP TABLE IF EXISTS `rights`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rights` (
-  `r` varchar(255) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `description` text,
-  PRIMARY KEY (`r`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `rights`
---
-
-LOCK TABLES `rights` WRITE;
-/*!40000 ALTER TABLE `rights` DISABLE KEYS */;
-INSERT INTO `rights` VALUES ('edit-sprites','Edit Sprites','Can edit sprites and associated metadata.'),('edit-tokens','Edit Tokens','Can edit token names and associated rights.'),('edit-user','Edit User','Can edit other users. (u)'),('list','List threads','Can list threads in a forum or other collection. (fc)'),('see-history','See History','Can view past revisions of posts. (tfc)'),('show-ips','Show IP Addresses','See IP addresses in threads and profiles. (u)');
-/*!40000 ALTER TABLE `rights` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `robots`
 --
 
@@ -1419,60 +1394,6 @@ INSERT INTO `timezones` VALUES (1,'UTC',0),(2,'Africa/Abidjan',0),(3,'Africa/Acc
 UNLOCK TABLES;
 
 --
--- Table structure for table `tokenrights`
---
-
-DROP TABLE IF EXISTS `tokenrights`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tokenrights` (
-  `t` int(11) NOT NULL,
-  `r` varchar(255) NOT NULL,
-  KEY `t` (`t`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tokenrights`
---
-
-LOCK TABLES `tokenrights` WRITE;
-/*!40000 ALTER TABLE `tokenrights` DISABLE KEYS */;
-INSERT INTO `tokenrights` VALUES (3,'see-history'),(3,'edit-user'),(4,'edit-tokens'),(2,'see-history'),(200,'block-layouts'),(201,'disable-sprites'),(5,'edit-tokens'),(4,'edit-sprites'),(3,'show-ips'),(100,'show-ips u4'),(4,'not show-ips u4'),(1,'list c2'),(3,'list'),(2,'list c1'),(1,'list c3'),(1,'list c5'),(1,'list c6'),(1,'list c8'),(1,'list c20'),(1,'list c4');
-/*!40000 ALTER TABLE `tokenrights` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `tokens`
---
-
-DROP TABLE IF EXISTS `tokens`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tokens` (
-  `id` int(11) NOT NULL,
-  `img` varchar(255) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `nc0` varchar(6) NOT NULL,
-  `nc1` varchar(6) NOT NULL,
-  `nc2` varchar(6) NOT NULL,
-  `nc_prio` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `tokens`
---
-
-LOCK TABLES `tokens` WRITE;
-/*!40000 ALTER TABLE `tokens` DISABLE KEYS */;
-INSERT INTO `tokens` VALUES (-500,'','Christmas Time Normal User','6AC061','FB6060','D09878',1),(-51,'','Pending User','c7d0f0','f2b6dc','9384b0',0),(-1,'','Banned','888888','888888','888888',50),(0,'','Guest','FF0000','FF0000','FF0000',-5),(1,'','Normal User','97ACEF','F185C9','7C60B0',0),(2,'img/tokens/silverkey.png','Global Moderator','AFFABE','C762F2','47B53C',20),(3,'img/tokens/goldkey.png','Administrator','FFEA95','C53A9E','F0C413',30),(4,'img/tokens/cogwheel.png','System Administrator','FFEA95','C53A9E','F0C413',30),(5,'img/tokens/root.png','Root','EE4444','E63282','AA3C3C',40),(100,'img/tokens/dodongobadge.png','Dodongo Badge','FF0000','FF0000','FF0000',-10),(101,'img/tokens/P_FLCL.png','P! Badge','FF0000','FF0000','FF0000',-10),(102,'img/tokens/aborder.gif','Veteran Acmlm\'s Board Member','FF0000','FF0000','FF0000',-10),(103,'img/tokens/yoshi.gif','Yoshi Badge','FF0000','FF0000','FF0000',-10),(104,'img/badges/glasses.png','X-Ray Glasses','','','',-10),(200,'','Block layout','FF0000','FF0000','FF0000',-10),(201,'','Disable Layout','FF0000','FF0000','FF0000',-10);
-/*!40000 ALTER TABLE `tokens` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `user_badges`
 --
 
@@ -1626,31 +1547,6 @@ CREATE TABLE `usersrpg` (
 LOCK TABLES `usersrpg` WRITE;
 /*!40000 ALTER TABLE `usersrpg` DISABLE KEYS */;
 /*!40000 ALTER TABLE `usersrpg` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `usertokens`
---
-
-DROP TABLE IF EXISTS `usertokens`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `usertokens` (
-  `u` int(11) NOT NULL,
-  `t` int(11) NOT NULL,
-  KEY `u` (`u`),
-  KEY `t` (`t`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `usertokens`
---
-
-LOCK TABLES `usertokens` WRITE;
-/*!40000 ALTER TABLE `usertokens` DISABLE KEYS */;
-INSERT INTO `usertokens` VALUES (1,1),(1,5);
-/*!40000 ALTER TABLE `usertokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

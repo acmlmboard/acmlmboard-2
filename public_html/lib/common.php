@@ -435,14 +435,15 @@
      {
       print " 
              $L[TR]>
-             $L[TD1c] colspan=3>
-               $radar";
+               $L[TD1c] colspan=3>
+                 $radar
+			  </td>
+			</tr>";
      }
 	 
 	 print "
 			$L[TBLend]
-			<br>
-			$L[TBL1]>";
+			<br>";
 
      $hiddencheck  = "AND `hidden`='0' ";
     if (has_perm('view-hidden-users'))
@@ -503,11 +504,13 @@
         $onuserlist.=" | $numbots bot".($numbots != 1 ? "s": "");
       */
 
-      print "</tr>
+      print "$L[TBL1]>
                $L[TR1]>
                $L[TD1c]>$onuserlist
               </td>
-              </tr>";
+              </tr>
+			 $L[TBLend]
+			 <br>";
      }
     else if ($showonusers)
      { 
@@ -617,6 +620,7 @@
       $activethreads = $sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '". (ctime() - 86400) ."'");
       
       print "
+	     $L[TBL1]>
            $L[TR]>
              $L[TD1]>
                $L[TBL] width=\"100%\">
@@ -637,11 +641,12 @@
                $L[TBLend]
            $L[TR]>
              $L[TD2c]>
-               $onuserlist";
+               $onuserlist
+			 </td>
+		   </tr>
+		 $L[TBLend]
+		 <br>";
      }
-     print "
-           $L[TBLend]
-           <br>";
    }
 
   function pagestats()

@@ -42,6 +42,10 @@
      $lastpostlink = "<br>in <a href=\"thread.php?pid=$thread[id]#$thread[id]\">".forcewrap(htmlval($thread['ttitle']))."</a> 
                      (<a href=\"forum.php?id=$thread[forum]\">".htmlval($thread['ftitle'])."</a>)";
     }
+   else if($user['posts'] == 0)
+    {
+     $lastpostlink = "";
+    }
    else
     {
      $lastpostlink = "<br>in <i>(restricted forum)</i>";

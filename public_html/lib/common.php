@@ -203,7 +203,7 @@
   function pageheader($pagetitle="", $fid=0)
    {
     global $L, $dateformat, $sql, $log, $loguser ,$sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $themefile,
-           $logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce;
+           $logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays;
 
    if (ini_get("register_globals"))
     {
@@ -530,7 +530,7 @@
      if(count($birthdays))
       {
        $birthdaystoday = implode(", ", $birthdays);
-       print "
+       $birthdaybox="
         $L[TR1c]>
         $L[TD2c]>
         Birthdays today: $birthdaystoday";
@@ -620,7 +620,7 @@
       $activethreads = $sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '". (ctime() - 86400) ."'");
       
       print "
-	     $L[TBL1]>
+	     $L[TBL1]>$birthdaybox
            $L[TR]>
              $L[TD1]>
                $L[TBL] width=\"100%\">

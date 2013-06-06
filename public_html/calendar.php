@@ -87,8 +87,9 @@
         }
         $l = ($mday == $day) ? $L['TD3l'] : (($wday==0 || $wday==6) ? $L['TD2l'] : $L['TD1l']);
         print "$l width=\"14%\" valign=\"top\">$mday";
-        if (isset($bdaytext[$mday])) {
-            print "<br/>$bdaytext[$mday]";
+        $dnum=str_pad($mday,2,"0",STR_PAD_LEFT);
+        if (isset($bdaytext[$dnum])) {
+            print "<br/>$bdaytext[$dnum]";
         }
         print "</td>\n";
         

@@ -72,7 +72,7 @@
   $irccolor['female'] = "pink"; //Female Nick Color
 
 // User GFX limits
- $minipicsize=11; // traditionally a square image. $minipicsize x $minipicsize
+ $minipicsize=16; // traditionally a square image. $minipicsize x $minipicsize. (AB1/2's Default was 11x11)
  $avatardimx=100; // Avatar X Scale
  $avatardimy=100; // Avatar Y Scale
  $avatardimxs=60;

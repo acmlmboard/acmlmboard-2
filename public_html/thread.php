@@ -485,11 +485,20 @@ elseif($viewmode=="time"){
       //  $fmovelinks.="<a href=javascript:submitmove('$d[id]') onmouseover=\"javascript:document.getElementById('tn').innerHTML='".addslashes($d[title])."'\">$d[id]</a> ";
       //$fmovelinks.="<span id=tn></span>";
       //$fmovelinks=addslashes($fmovelinks);
-		$r=$sql->query("SELECT id,title FROM forums ORDER BY id ASC");
+		$r=$sql->query("SELECT c.id cid,c.title ctitle,f.id,f.title FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,f.ord");
 		$fmovelinks="<select onchange=\"submitmove(this.options[this.selectedIndex].value);\">";
+		$c = -1;
 		while($d=$sql->fetch($r))
-			$fmovelinks.="<option value=\"".$d[0]."\"".($d[0]==$thread['forum']?" selected=\"selected\"":"").">".$d[1]."</option>";
-		$fmovelinks.="</select>";
+		{
+			if ($d['cid'] != $c)
+			{
+				if ($c != -1) $fmovelinks .= '</optgroup>';
+				$c = $d['cid'];
+				$fmovelinks .= '<optgroup label="'.$d['ctitle'].'">';
+			}
+			$fmovelinks.="<option value=\"".$d['id']."\"".($d['id']==$thread['forum']?" selected=\"selected\"":"").">".$d['title']."</option>";
+		}
+		$fmovelinks.="</optgroup></select>";
 		$fmovelinks=addslashes($fmovelinks);
 
       $opt="Moderating";

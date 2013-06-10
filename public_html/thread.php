@@ -479,17 +479,14 @@ elseif($viewmode=="time"){
       $edit="<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
     
 		//KAWA: Made it a dropdown list. The change isn't alone in this file, but it's clear where it starts and ends if you want to put this on 2.1+delta.
-      //$fmovelinks="";
-      //$r=$sql->query("SELECT id,title FROM forums ORDER BY id ASC");
-      //while($d=$sql->fetch($r))
-      //  $fmovelinks.="<a href=javascript:submitmove('$d[id]') onmouseover=\"javascript:document.getElementById('tn').innerHTML='".addslashes($d[title])."'\">$d[id]</a> ";
-      //$fmovelinks.="<span id=tn></span>";
-      //$fmovelinks=addslashes($fmovelinks);
-		$r=$sql->query("SELECT c.id cid,c.title ctitle,f.id,f.title FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,f.ord");
+		$r=$sql->query("SELECT c.id cid,c.title ctitle,c.private cprivate,f.id,f.title,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
 		$fmovelinks="<select onchange=\"submitmove(this.options[this.selectedIndex].value);\">";
 		$c = -1;
 		while($d=$sql->fetch($r))
 		{
+			if (!can_view_cat(array('id'=>$d['cid'], 'private'=>$d['cprivate']))) continue;
+			if (!can_view_forum($d)) continue;
+			
 			if ($d['cid'] != $c)
 			{
 				if ($c != -1) $fmovelinks .= '</optgroup>';

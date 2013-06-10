@@ -51,8 +51,7 @@
 
   $categs=$sql->query("SELECT * "
                      ."FROM categories "
-//                     ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
-                     ."ORDER BY ord");
+                     ."ORDER BY ord,id");
   while($c=$sql->fetch($categs)) {
     if (can_view_cat($c)) $categ[$c[id]]=$c;
   }
@@ -69,10 +68,8 @@
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "
                .($log?"LEFT JOIN forumsread r ON r.fid=f.id AND r.uid=$loguser[id] ":'')
-//                     ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
-//                     .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
                      ." WHERE announce=0 "
-                     ."ORDER BY c.ord,ord");
+                     ."ORDER BY c.ord,c.id,ord,id");
   $cat=-1;
 print "
 ".      "$L[TBL1]>";

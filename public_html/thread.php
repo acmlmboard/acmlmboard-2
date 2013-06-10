@@ -479,18 +479,17 @@ elseif($viewmode=="time"){
       $edit="<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
     
 		//KAWA: Made it a dropdown list. The change isn't alone in this file, but it's clear where it starts and ends if you want to put this on 2.1+delta.
-		$r=$sql->query("SELECT c.id cid,c.title ctitle,c.private cprivate,f.id,f.title,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
+		$r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
 		$fmovelinks="<select onchange=\"submitmove(this.options[this.selectedIndex].value);\">";
 		$c = -1;
 		while($d=$sql->fetch($r))
 		{
-			if (!can_view_cat(array('id'=>$d['cid'], 'private'=>$d['cprivate']))) continue;
 			if (!can_view_forum($d)) continue;
 			
-			if ($d['cid'] != $c)
+			if ($d['cat'] != $c)
 			{
 				if ($c != -1) $fmovelinks .= '</optgroup>';
-				$c = $d['cid'];
+				$c = $d['cat'];
 				$fmovelinks .= '<optgroup label="'.$d['ctitle'].'">';
 			}
 			$fmovelinks.="<option value=\"".$d['id']."\"".($d['id']==$thread['forum']?" selected=\"selected\"":"").">".$d['title']."</option>";

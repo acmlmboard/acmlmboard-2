@@ -14,22 +14,6 @@ These requirements are based on our development environment's specifications. Wh
 - mcrypt and the module for PHP
 - phpmyadmin or DB tool of your choice.
 
-Pre-Configuration **(DEFUNCT)**
-#################
-ABII was developed starting in 2005, so most of the code is designed for an earlier style of programing. 
-
-However as of version 2.5.1 the code has been updated to no longer require the following step. 
-
-Apache VHost
-------------
-When you setup your VHost for the board you will be required to make the following setting changes:
-
-    AllowOverride All
-Also you will need register_globals on as well. It's recommended to do it in the .htaccess file:
-
-	php_flag register_globals on
-However you can set it globally if you so desire
-
 Installation
 ############
 1. Clone the git repository. Make sure you are on **develop** (or download the tarball and extract it)

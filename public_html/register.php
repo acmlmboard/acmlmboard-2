@@ -93,7 +93,7 @@ if ($regdis[intval] == 1)
 
     $dupe=$sql->resultp("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", array($cname,$cname));
 	
-	$sex = (int)$sex;
+	$sex = (int)$_POST['sex'];
 	if ($sex < 0 || $sex > 2) $sex = 1;
 	
 	$timezone = $_POST['timezone'];

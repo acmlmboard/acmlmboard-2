@@ -24,6 +24,7 @@
   $boardlogo="<img style='border: 0px' src='$defaultlogo' title=\"$boardtitle\">"; // This defines the logo. Recommended you leave this the default.
   $favicon="theme/fav.png"; //Replace with your favicon of choice
   $defaulttheme="dailycycle2";
+  $homepageurl="http://something/"; //This defines the link for the header image.
   
   $config['log']    = 0;
   $config['ckey']   = "configckey";

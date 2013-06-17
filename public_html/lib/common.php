@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "6/10/2013";
+  $abdate    = "6/17/2013";
   $abversion = "2.5.2";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -202,7 +202,7 @@
    // also changed the title to be "pagetitle - boardname" and not vice-versa
   function pageheader($pagetitle="", $fid=0)
    {
-    global $L, $dateformat, $sql, $log, $loguser ,$sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $themefile,
+    global $L, $dateformat, $sql, $log, $loguser ,$sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
            $logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays;
 
    if (ini_get("register_globals"))
@@ -246,7 +246,7 @@
      $boardlogo = "
              $L[TBL] width=100%>
                $L[TRc]>
-                 $L[TD] style=\"border:none!important\" valign=\"center\"><a href=\"http://www.kafuka.org\"><img src=\"$logofile\"></a></td>
+                 $L[TD] style=\"border:none!important\" valign=\"center\"><a href=\"$homepageurl\"><img src=\"$logofile\"></a></td>
                  $L[TD] style=\"border:none!important\" valign=\"center\" width=\"300\">
                    $extratitle
                  </td>

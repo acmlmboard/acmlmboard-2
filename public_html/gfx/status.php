@@ -1,6 +1,7 @@
 <?php
  require 'gfxlib.php';
  $u=$_GET['u'];
+ checknumeric($u);
  if(!$u) die();
 
  $user=$sql->fetchq("SELECT u.name, u.posts, u.regdate, r.* "
@@ -109,6 +110,12 @@
 
  ImagePNG($img);
  ImageDestroy($img);
+ 
+ ImageDestroy($fontY);
+ ImageDestroy($fontR);
+ ImageDestroy($fontG);
+ ImageDestroy($fontB);
+ ImageDestroy($fontW);
 
 function twrite($font,$x,$y,$l,$text){
   global $img;

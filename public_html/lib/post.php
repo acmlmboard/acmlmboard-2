@@ -69,7 +69,7 @@
 	$svgin="<?xml version=\"1.0\" standalone=\"no\"?".">"
           ."<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"\n "
     ."\"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">"
-    ."<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"\\1\" height=\"\\2\" viewBox=\"0 0 \\1 \\2\" version=\"1.1\">";
+    ."<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"{$match[1]}\" height=\"{$match[2]}\" viewBox=\"0 0 {$match[1]} {$match[2]}\" version=\"1.1\">";
     $svgout="</svg>";
 	
 	$svgcode = securityfilter($match[3]);

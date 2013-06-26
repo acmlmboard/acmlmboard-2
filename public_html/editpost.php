@@ -89,7 +89,7 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
 
   $post=$sql->fetch($res);
   $quotetext=htmlval($post[text]);
-if($act=="Submit" && $$post['text']==$_POST[message]){
+if($act=="Submit" && $post['text']==$_POST[message]){
       $err="    No changes detected.<br>
 ".         "    $threadlink";
 }

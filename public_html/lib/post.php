@@ -72,7 +72,7 @@
     ."<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"{$match[1]}\" height=\"{$match[2]}\" viewBox=\"0 0 {$match[1]} {$match[2]}\" version=\"1.1\">";
     $svgout="</svg>";
 	
-	$svgcode = securityfilter($match[3]);
+	$svgcode = $match[3];
 	
 	if(strpos($_SERVER['HTTP_USER_AGENT'],"Chrome")!==false)
 		return "<img src=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$svgcode.$svgout))."\" width=\"{$match[1]}\" height=\"{$match[2]}\">";
@@ -251,13 +251,6 @@
         $params=1;
     }
     return $t_depth;
-  }
-
-  // TODO remove this (useless)
-  function postfilter2($msg){
-    $msg=postfilter($msg);
-    $msg=preg_replace("'<embed(.*?)>'si" ,"&lt;embed\\1>" ,$msg);
-    return $msg;
   }
 
   function htmlval($text){

@@ -146,7 +146,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".        "    <td class='b n1 sfont $sbar' style=\"border-top:0;\">
 ";
       if($type==0){
-        $location=($post[ulocation]?'<br>From: '.postfilter2($post[ulocation]):'');
+        $location=($post[ulocation]?'<br>From: '.postfilter($post[ulocation]):'');
         $lastpost=($post[ulastpost]?timeunits(ctime()-$post[ulastpost]):'none');
 
         $picture=($post[uusepic]?"<img src=gfx/userpic.php?id=$post[uid]>":'');
@@ -170,7 +170,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
         $text.=
 		 $grouplink."
 ".        "      ".((strlen($grouplink))?"<br>":"")."
-".        "      ".postfilter2($post[utitle])."
+".        "      ".postfilter($post[utitle])."
 ".        "      <br>Level: ".calclvl($exp)."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]

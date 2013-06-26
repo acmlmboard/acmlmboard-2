@@ -31,6 +31,24 @@
     else return $matches[0];
   }
   
+  function securityfilter($msg)
+  {
+	$tags=array('script','iframe','embed','object','textarea','noscript','meta','xmp','plaintext','base');
+    foreach($tags as $tag){
+      $msg=preg_replace("'<$tag(.*?)>'si" ,"&lt;$tag\\1>" ,$msg);
+      $msg=preg_replace("'</$tag(.*?)>'si","&lt;/$tag>",$msg);
+    }
+
+	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1$2&#x3D;', $msg);
+
+    $msg=preg_replace("'-moz-binding'si",' -mo<z>z-binding',$msg);
+    $msg=str_ireplace("expression","ex<z>pression",$msg);
+    $msg=preg_replace("'filter:'si",'filter&#58;>',$msg);
+    $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
+	
+	return $msg;
+  }
+  
   function makecode($match)
   {
 	global $L;
@@ -54,10 +72,12 @@
     ."<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"\\1\" height=\"\\2\" viewBox=\"0 0 \\1 \\2\" version=\"1.1\">";
     $svgout="</svg>";
 	
+	$svgcode = securityfilter($match[3]);
+	
 	if(strpos($_SERVER['HTTP_USER_AGENT'],"Chrome")!==false)
-		return "<img src=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$match[3].$svgout))."\" width=\"{$match[1]}\" height=\"{$match[2]}\">";
+		return "<img src=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$svgcode.$svgout))."\" width=\"{$match[1]}\" height=\"{$match[2]}\">";
     else
-		return "<object data=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$match[3].$svgout))."\" type=\"image/svg+xml\" width=\"{$match[1]}\" height=\"{$match[2]}\"></object>";
+		return "<object data=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$svgcode.$svgout))."\" type=\"image/svg+xml\" width=\"{$match[1]}\" height=\"{$match[2]}\"></object>";
   }
   
   function makeswf($match)
@@ -89,11 +109,13 @@
 
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
-
-    //[blackhole89] - [svg] tag
+	
+	// security filtering needs to be done before [svg] is parsed because [svg]
+	// uses tags that are otherwise blacklisted
+	$msg = securityfilter($msg);
+	
+	//[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
-
-    $msg=preg_replace_callback("'\[math\](.*?)\[/math\]'si", "mkmath",$msg);
 
     $msg=str_replace("\n",'<br>',$msg);
     
@@ -103,31 +125,8 @@
       for($i=0;$i<$smilies[num];$i++)
         $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
-
-    $tags=array('script','iframe','textarea','noscript','meta','xmp','plaintext','base');
-    foreach($tags as $tag){
-      $msg=preg_replace("'<$tag(.*?)>'si" ,"&lt;$tag\\1>" ,$msg);
-      $msg=preg_replace("'</$tag(.*?)>'si","&lt;/$tag>",$msg);
-    }
-
-//  $msg=preg_replace("'<table(.*?)>(.*?)</table>'si",'°table\\1°\\2°/table°',$msg);
-//  $msg=preg_replace("'<table(.*?)>'si",'&lt;table\\1>',$msg);
-//  $msg=preg_replace("'</table(.*?)>'si",'&lt;/table>',$msg);
-//  $msg=preg_replace("'°table'si",'<table',$msg);
-//  $msg=preg_replace("'°/table°'si",'</table>',$msg);
-
-//  $msg=preg_replace("'jul.rusted'si",'jul&#46;rusted',$msg);
-    $msg=preg_replace("'display:'si",'display&#58;',$msg);
-//    $msg=preg_replace("'([\s]+)([o])([n])([a-z]*)'si",'\\1\\2<z>\\3\\4',$msg);
-    $msg=preg_replace('/<([^>]+)\bon\w+\s*=\s*".+"/Uis', "<\\1", $msg);
-    $msg=preg_replace("/<([^>]+)\bon\w+\s*=\s*'.+'/Uis", "<\\1", $msg);
-    $msg=preg_replace('/<([^>]+)\bon\w+\s*=\s*\S+/i', "<\\1", $msg);
-
-    $msg=preg_replace("'-moz-binding'si",' -mo<z>z-binding',$msg);
-    $msg=str_ireplace("expression","ex<z>pression",$msg);
+	
     $msg=preg_replace("'lemonparty'si",'ffff',$msg);
-    $msg=preg_replace("'filter:'si",'filter&#58;>',$msg);
-    $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
     $msg=str_replace('[spoiler]','<span class="spoiler1"><span class="spoiler2">',$msg);
@@ -175,26 +174,16 @@
 
     $msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg);
 
-    //spam
-//    $msg=str_ireplace("posting","posting<span style=position:relative;left:-55px;top:-28px;width:0px;height:0px;vertical-align:text-bottom;display:inline-block><img src=img/rsi.png></span>",$msg);
-
-    $msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
+	// [Mega-Mario] this can cause security issues, and who uses [swf] anyway?
+    //$msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
 
 	//[KAWA] Youtube tag.
-	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si","<object width=\"425\" height=\"344\"><param name=\"movie\" value=\"http://www.youtube.com/v/\\1&amp;hl=en&amp;fs=1\"></param><param name=\"allowFullScreen\" value=\"true\"></param><param name=\"allowscriptaccess\" value=\"never\"></param><embed src=\"http://www.youtube.com/v/\\1&amp;hl=en&amp;fs=1\" type=\"application/x-shockwave-flash\" allowscriptaccess=\"never\" allowfullscreen=\"false\" width=\"425\" height=\"344\"></embed></object>", $msg);
-
-  //[KAWA] TODO: replace with token effect
-  /*
-    if ($x_hacks['goggles']) {
-      $msg=str_replace('<!--','<font color="#66ff66">&lt;!--',$msg);
-      $msg=str_replace('-->','--></font>',$msg);
-    }
-    */
+	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="420" height="315" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
     
     if ($htmlcomcolor = has_badge_perm("show-html-comments")) {
       if ($htmlcomcolor == "1") $htmlcomcolor = "#66ff66";
-      $msg=str_replace('<!--','<font color="'.$htmlcomcolor.'">&lt;!--',$msg);
-      $msg=str_replace('-->','--></font>',$msg);
+      $msg=str_replace('<!--','<span style="color:'.$htmlcomcolor.';">&lt;!--',$msg);
+      $msg=str_replace('-->','--></span>',$msg);
     }
 
     return $msg;
@@ -264,6 +253,7 @@
     return $t_depth;
   }
 
+  // TODO remove this (useless)
   function postfilter2($msg){
     $msg=postfilter($msg);
     $msg=preg_replace("'<embed(.*?)>'si" ,"&lt;embed\\1>" ,$msg);

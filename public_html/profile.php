@@ -1,6 +1,7 @@
 <?php
     require "lib/common.php";
     require "lib/threadpost.php";
+	loadsmilies();
 
     $uid = $_GET['id'];
     if(checknumeric($_GET['id']))

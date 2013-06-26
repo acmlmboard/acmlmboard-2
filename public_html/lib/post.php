@@ -289,5 +289,34 @@
     if($names=="") $names=$name;
     return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\">$name</a></td>";
   }
+  
+  function posttoolbar()
+  {
+	global $L;
+	return posttoolbutton("message","B","[b]","[/b]")
+           .posttoolbutton("message","I","[i]","[/i]")
+           .posttoolbutton("message","U","[u]","[/u]")
+           .posttoolbutton("message","S","[s]","[/s]")
+           ."$L[TD2]>&nbsp;</td>"
+           .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
+           .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
+           .posttoolbutton("message",";","[code]","[/code]","cd")
+           ."$L[TD2]>&nbsp;</td>"
+           .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
+		   .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
+  }
+  
+  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
+                        // it was owned by root.
+						// 2013-06 Mega-Mario: wish granted :)
+    global $sql, $loguser;
+    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
+    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
+    $moodst="";
+    while ($mood=$sql->fetch($moods))
+      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
+    $moodst.= "</select>";
+    return $moodst;
+  }
 
 ?>

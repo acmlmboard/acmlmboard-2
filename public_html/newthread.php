@@ -6,11 +6,21 @@
     $announce=$_REQUEST[announce];
     checknumeric($announce);
 
-  if($act=$_POST[action]){
+	// [Mega-Mario] This is currently useless. TODO: fix or nuke.
+  if($act=$_POST[action])
+  {
     $fid=$_POST[fid];
-    if($_POST[passenc])
-      $pass=$_POST[passenc];
-    else
+    if ($log)
+	{
+		$userid = $loguser['id'];
+		$user = $loguser;
+		if ($_POST['passenc'] !== md5($loguser['pass'].$pwdsalt))
+			$err = 'Invalid token.';
+			
+		$pass = $_POST['passenc'];
+	}
+	else
+	{
       $pass=md5($_POST[pass].$pwdsalt);
 
     if($userid=checkuser($_POST[name],$pass))
@@ -18,7 +28,12 @@
     else
       $err="    Invalid username or password!<br>
 ".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
-  }else{
+
+		$pass = md5($pass.$pwdsalt);
+	}
+  }
+  else
+  {
     $user=$loguser;
     $fid=$_GET[id];
   }
@@ -26,9 +41,6 @@
 
   needs_login(1);
 
-/* Had to disable ternary operator now that a third option is used
-  $type = $announce ? "announcement" : "thread";
-  $typecap = $announce ? "Announcement" : "Thread";*/
   if ($announce) {
     $type = "announcement";
     $typecap = "Announcement";
@@ -45,23 +57,15 @@
   }
 
 
-  $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
+  if ($announce && $fid==0)
+	$forum = array('id' => 0, 'readonly' => 1);
+  else
+    $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
+	
 if($act!="Submit" || $loguser[redirtype]==0){
   pageheader("New $type",$forum[id]);
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbutton("message","B","[b]","[/b]")
-           .posttoolbutton("message","I","[i]","[/i]")
-           .posttoolbutton("message","U","[u]","[/u]")
-           .posttoolbutton("message","S","[s]","[/s]")
-     ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","[code]","[/code]","cd")
-           ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
-           .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl")
-     .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
+  $toolbar= posttoolbar();
 	 
 	if ($ispoll)
 	{
@@ -184,7 +188,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ";
     else
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=$loguser[pass]>
+".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
@@ -224,7 +228,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
     $post[ip]=$userip;
     $post[num]=++$user[posts];
     $post[text]=$_POST[message];
-    $post[mood] = (isset($_POST[mid]) ? $_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
+    $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     $post[nolayout]=$_POST[nolayout];
     foreach($user as $field => $val)
       $post[u.$field]=$val;
@@ -298,7 +302,7 @@ $pollprev.="$L[TBLend]";
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
 ".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=$pass>
+".        "      $L[INPh]=passenc value=\"$pass\">
 ".        "      $L[INPh]=fid value=$fid>
 ".        "      $L[INPh]=iconid value=$_POST[iconid]>
 ".        "      $L[INPh]=iconurl value=$_POST[iconurl]>
@@ -314,7 +318,7 @@ $pollprev.="$L[TBLend]";
 ";
   }elseif($act=='Submit'){
     if(!($iconurl=$_POST[iconurl]))
-      $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=$_POST[iconid]");
+      $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
 
     checknumeric($nolayout);
 
@@ -326,7 +330,7 @@ $pollprev.="$L[TBLend]";
     $tagsum=0;
     for($i=0;$i<32;++$i) if($_POST["tag$i"]) $tagsum|=(1<<$i);
     
-    $mid=(isset($_POST[mid]) ? $_POST[mid] : -1); //2009/07 Sukasa: Last I checked, there was a magic_quotes_gpc in effect on board2, which makes this okay
+    $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
 
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");
@@ -401,16 +405,4 @@ if($loguser[redirtype]==0){ //Classic
   }
 
   pagefooter();
-
-  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
-                        // it was owned by root.
-    global $sql, $loguser;
-    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
-    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
-    $moodst="";
-    while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
-    $moodst.= "</select>";
-    return $moodst;
-  }
 ?>

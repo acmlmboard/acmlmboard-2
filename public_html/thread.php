@@ -256,20 +256,6 @@ if($_COOKIE['pstbon']>=1){
       pageheader('Announcements');
     }
 
-/*
-    $posts=$sql->query("SELECT $fieldlist p.*, p.announce isannounce, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle "
-                      ."FROM posts p "
-                      ."LEFT JOIN poststext pt ON p.id=pt.id "
-          ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
-                      ."LEFT JOIN users u ON p.user=u.id "
-                      ."LEFT JOIN threads t ON p.thread=t.id "
-                      ."LEFT JOIN forums f ON f.id=t.forum "
-                      ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE f.id=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
-                      ."ORDER BY p.date DESC "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
-*/
-
     $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
@@ -278,7 +264,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN threads t ON p.thread=t.id "
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE f.id=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
+                      ."WHERE t.forum=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
                       ."ORDER BY p.id DESC "
                       ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
 
@@ -302,17 +288,12 @@ if($_COOKIE['pstbon']>=1){
     $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
-//          ."JOIN ("
-//                        ."SELECT id,MAX(revision) toprev FROM poststext GROUP BY id"
-//                      .") as pt2 ON pt2.id=pt.id AND pt2.toprev=pt.revision "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
                       ."LEFT JOIN users u ON p.user=u.id "
                       ."LEFT JOIN threads t ON p.thread=t.id "
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE p.date>$mintime AND ISNULL(pt2.id) "
-//                      .  "AND f.minpower<=$loguser[power] "
-//                      .  "AND c.minpower<=$loguser[power] "
                       ."ORDER BY p.date DESC "
                       ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
 
@@ -322,8 +303,6 @@ if($_COOKIE['pstbon']>=1){
                                   ."LEFT JOIN forums f ON f.id=t.forum "
                                   ."LEFT JOIN categories c ON c.id=f.cat "
                                   ."WHERE p.date>$mintime "
-//                                  .  "AND f.minpower<=$loguser[power] "
-//                                  .  "AND c.minpower<=$loguser[power]"
                       );
   }
 
@@ -597,7 +576,7 @@ print "$modlinks
 ".        "$poll
 ";
   while($post=$sql->fetch($posts)){
-    if (isset($post['fid'])) {
+    if ($post['fid']) {
       if (!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) continue;
     }
     if($uid || $timeval){
@@ -622,19 +601,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 
   if($thread[id] && can_create_forum_post($faccess) && !$thread[closed]) {
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbutton("message","B","[b]","[/b]")
-           .posttoolbutton("message","I","[i]","[/i]")
-           .posttoolbutton("message","U","[u]","[/u]")
-           .posttoolbutton("message","S","[s]","[/s]")
-     ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","[code]","[/code]","cd")
-           ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
-           .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl")
-     .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
+  $toolbar= posttoolbar();
 
       //lol so hacky please organise this into the right place soon.
 
@@ -684,7 +651,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
 ";
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=$loguser[pass]>
+".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
@@ -711,17 +678,5 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 print        "$topbot";
 
   pagefooter();
-
-  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
-                        // it was owned by root.
-    global $sql, $loguser;
-    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
-    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
-    $moodst="";
-    while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
-    $moodst.= "</select>";
-    return $moodst;
-  }
 ?>
                                                                                                    

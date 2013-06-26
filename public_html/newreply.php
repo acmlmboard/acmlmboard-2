@@ -11,21 +11,31 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
+  // [Mega-Mario] see my comment in newthread.php
   if($act=$_POST[action]){
     $tid=$_POST[tid];
 
-    if($_POST[passenc])
-      $pass=$_POST[passenc];
-    else
+    if ($log)
+	{
+		$userid = $loguser['id'];
+		$user = $loguser;
+		if ($_POST['passenc'] !== md5($loguser['pass'].$pwdsalt))
+			$err = 'Invalid token.';
+			
+		$pass = $_POST['passenc'];
+	}
+	else
+	{
       $pass=md5($_POST[pass].$pwdsalt);
 
     if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
-    else {
+    else
       $err="    Invalid username or password!<br>
-".         "    <a href=thread.php?id=$tid>Back to thread</a> or <a href=newreply.php?id=$tid>try again</a>";
-      $user[power]=0;
-    }
+".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
+
+		$pass = md5($pass.$pwdsalt);
+	}
   }else{
     $user=$loguser;
     $tid=$_GET[id];
@@ -62,19 +72,7 @@
     pageheader('New reply',$thread[forum]);
     echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
-  $toolbar= posttoolbutton("message","B","[b]","[/b]")
-           .posttoolbutton("message","I","[i]","[/i]")
-           .posttoolbutton("message","U","[u]","[/u]")
-           .posttoolbutton("message","S","[s]","[/s]")
-     ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","[code]","[/code]","cd")
-           ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","<font face='serif' style='font-size:1em'>&pi;</font>","[math]","[/math]","tx")
-           .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-     .posttoolbutton("message","<span style='font-weight:normal;font-size:2em;line-height:50%'>&#x21AF;</span>","[swf <WIDTH> <HEIGHT>]","[/swf]","fl")
-     .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
+  $toolbar= posttoolbar();
 
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
@@ -132,7 +130,7 @@
   //does the user have reading access to the quoted post?
   if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
-  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".str_replace("&","&amp",$post[text])."[/quote]";
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".htmlval($post[text])."[/quote]";
   }
 
   //spambot logging [blackhole89]
@@ -169,7 +167,7 @@
 ";
     else
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=$loguser[pass]>
+".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
@@ -208,7 +206,7 @@
     $post[ip]=$userip;
     $post[num]=++$user[posts];
     $post[text]=$prefix.$_POST[message].$postfix;
-    $post[mood] = (isset($_POST[mid]) ? $_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
+    $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     $post[nolayout]=$_POST[nolayout];
     foreach($user as $field => $val)
       $post[u.$field]=$val;
@@ -237,7 +235,7 @@
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
 ".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=$pass>
+".        "      $L[INPh]=passenc value=\"$pass\">
 ".        "      $L[INPh]=tid value=$tid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
@@ -252,7 +250,7 @@
     checknumeric($_POST[nolayout]);
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;
-    $mid=(isset($_POST[mid]) ? $_POST[mid] : -1); //2009/07 Sukasa: Last I checked, there was a magic_quotes_gpc in effect on board2, which makes this okay
+    $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
@@ -311,16 +309,4 @@ if($loguser[redirtype]==0){ //Classical Redirect
   }
 
   pagefooter();
-
-  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
-                        // it was owned by root.
-    global $sql, $loguser;
-    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
-    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
-    $moodst="";
-    while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
-    $moodst.= "</select>";
-    return $moodst;
-  }
 ?>

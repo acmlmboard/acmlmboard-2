@@ -4,12 +4,12 @@
     var $rowsf=0;
     var $rowst=0;
     var $time=0;
-    var $conid=0;
-    function connect($host,$user,$pass) {return $this->conid=mysql_connect($host,$user,$pass);}
-    function selectdb($dbname)          {mysql_set_charset("latin1"); return mysql_select_db($dbname,$this->conid);}
+    var $db=0;
+    function connect($host,$user,$pass) {return $this->db=new mysqli($host,$user,$pass);}
+    function selectdb($dbname)          {$this->db->set_charset("latin1"); return $this->db->select_db($dbname);}
 
     function numrows($resultset) {
-      return @mysql_num_rows($resultset);
+      return $resultset->num_rows;
     }
 
     function query($query){	
@@ -17,20 +17,24 @@
         print "{$this->queries} $query<br>";
       
       $start=usectime();
-      if($res=mysql_query($query,$this->conid)){
+      if($res=@$this->db->query($query)){
         $this->queries++;
-        $this->rowst+=@mysql_num_rows($res,$this->conid);
+        $this->rowst+=$res->num_rows;
       }else
-        print mysql_error($this->conid);
+        print $this->db->error;
 
       $this->time+=usectime()-$start;
       return $res;
     }
 
+	
+	function escape($str)
+	{
+		return '\''.$this->db->real_escape_string($str).'\'';
+	}
 
-   static function preparesql ($query, $phs = array()) {
-    $phs = array_map(create_function('$ph',
-                     'return "\'".mysql_real_escape_string($ph)."\'";'), $phs);
+   function preparesql ($query, $phs = array()) {
+    $phs = array_map(array($this,'escape'), $phs);
 
     $curpos = 0;
     $curph  = count($phs)-1;
@@ -56,14 +60,14 @@
    // of the placeholders (in order, of course).
    // Pass NULL constant in array to get unquoted word NULL
    function prepare ($query, $phs = array()) {
-     return $this->query(self::preparesql($query,$phs));
+     return $this->query($this->preparesql($query,$phs));
    }
 
 
     function fetch($result){
       $start=usectime();
 
-      if($result && $res=mysql_fetch_array($result))
+      if($result && $res=$result->fetch_assoc())
           $this->rowsf++;
 
       $this->time+=usectime()-$start;
@@ -73,8 +77,14 @@
     function result($result,$row=0,$col=0){
       $start=usectime();
 
-      if($result && $res=@mysql_result($result,$row,$col))
-        $this->rowsf++;
+      if($result)
+	  {
+		$result->data_seek($row);
+		$thisrow = array_values($result->fetch_assoc());
+		$res = $thisrow[$col];
+		if (isset($thisrow[$col]))
+			$this->rowsf++;
+	  }
 
       $this->time+=usectime()-$start;
       return $res;

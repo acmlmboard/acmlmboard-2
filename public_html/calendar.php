@@ -62,9 +62,9 @@
     }
     
     pageheader('Calendar');
-    print "$L[TBL] width=\"100%\">
+    print "$L[TBL1] width=\"100%\">
 ".        "    $L[TR]>
-".        "        $L[TDc] colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
+".        "        $L[TD1c] colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
 ".        "    </tr>
 ".        "    $L[TRh]>
 ";
@@ -76,8 +76,8 @@
     print "    </tr>
 ".        "    $L[TR] style=\"height: 80px;\">\n";
 
-    for ($w = 0; $w < $wday; $w++) {//unused cells in the first week
-        print "$L[TD]></td>";
+    if ($wday > 0) {//unused cells in the first week
+        print "$L[TD2] colspan=\"".$wday."\"></td>";
     }
 
     for ($mday = 1; $mday <= $mdays; $mday++, $wday++) {//main day cells
@@ -95,13 +95,13 @@
         
     }
     
-    for (;$wday <= 6; $wday++) { //unused cells in the last week
-        print "$L[TD]></td>";
+    if ($wday < 6) { //unused cells in the last week
+        print "$L[TD2] colspan=\"".(7-$wday)."\"></td>";
     }
     
     print "    </tr>
 ".        "    $L[TR]>
-".        "        $L[TDc] colspan=7> Month:";
+".        "        $L[TD1c] colspan=7> Month:";
     
     for ($i = 1; $i <= 12; $i++) {//month links
         if ($i == $month) {

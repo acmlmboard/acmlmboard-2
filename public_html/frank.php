@@ -85,7 +85,7 @@
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);
-  $pqry=@mysql_result(mysql_query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
+  $pqry=@$sql->result($sql->query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
 
             print " -- <i>Total Posts: $pqry</i><table>";
  $q=1; $p=-1;
@@ -149,7 +149,7 @@
           .'GROUP BY p.thread,u.id'
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);
-  $pqry=@mysql_result(mysql_query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
+  $pqry=@$sql->result($sql->query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
 	print "$L[TBL] width=\"100%\">
 ".        "    $L[TRh]>
 ".        "        $L[TDc] colspan=2>KCS Report for $monthnames[$month] $year</td>

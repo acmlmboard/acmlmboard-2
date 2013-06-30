@@ -84,7 +84,7 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
                     ."LEFT JOIN users u ON p.user=u.id "
                     ."WHERE p.id=$pid");
 
-  if(@mysql_num_rows($res)<1)
+  if(@$sql->num_rows($res)<1)
     $err="    That post does not exist.";
 
   $post=$sql->fetch($res);

@@ -23,7 +23,7 @@ function LoadBlocklayouts()
     $post[text]=$post[head].$post[text].$signsep[$loguser[signsep]].$post[sign];
 
   //This allows config level enable or disable of syndromes.
-  if($syndromenable == 1) $actsyn=@mysql_result(mysql_query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
+  if($syndromenable == 1) $actsyn=@$sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
   else $actsyn=0;
 
   $post['ranktext'] = getrank($post[urankset],$post[uposts]);

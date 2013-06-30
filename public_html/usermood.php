@@ -13,7 +13,7 @@
   $targetgeta = "";
 
   if (CanAlterAll() && isset($_GET[uid]) && $_GET[uid] != $loguser[id]) {
-    $targetuserid = addslashes($_GET[uid]);
+    $targetuserid = intval($_GET[uid]);
     $target = true;
     $targetget = "&uid=".$targetuserid;
     $targetgeta = "?uid=".$targetuserid;
@@ -30,20 +30,21 @@
 
   //Select existing avatar or new one
   $id = (isset($_GET[i]) ? $_GET[i] : (isset($_POST[aid]) ? $_POST[aid] : -1 ));
+  $id = (int)$id;
 
-  $activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user` = $targetuserid and `id`=".addslashes($id)." union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
+  $activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user` = $targetuserid and `id`=".$id." union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
   $avatars = $sql->query("select * from `mood` where `user`= ".$targetuserid." ");
   $numavatars = $sql->resultq("select count(*) from `mood` where `user` = ".$targetuserid);
 
   if (isset($_POST[a]) && $_POST[a][0]=='D' && $activeavatar[existing]) {
-    $sql->query("delete from mood where id= ".addslashes($id)." and user = ".$targetuserid);
+    $sql->query("delete from mood where id= ".$id." and user = ".$targetuserid);
     $avatars = $sql->query("select * from `mood` where `user` = ".$targetuserid);
   }
 
   if (isset($_POST[a]) && $_POST[a][0]=='S' && ($numavatars < 64 || $activeavatar[existing])) {
     //vet the image
     $islocal=($_POST[islocal]!='on'?1:0);
-    $avatarid = ($activeavatar[existing] == 1 ? addslashes($id) : $sql->resultq("select (id + 1) nid from `mood` where user = ".$targetuserid." union select 1 nid order by nid  desc"));
+    $avatarid = ($activeavatar[existing] == 1 ? $id : $sql->resultq("select (id + 1) nid from `mood` where user = ".$targetuserid." union select 1 nid order by nid  desc"));
     if($islocal&&$fname=$_FILES[picture][name]){
       $fext=strtolower(substr($fname,-4));
       $error='';

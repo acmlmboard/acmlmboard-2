@@ -115,7 +115,7 @@
     if($userto && $_POST[message]){
       //[blackhole89] 2007-07-26
       $recentpms=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-30) AND userfrom='$loguser[id]'");
-      if((mysql_num_rows($recentpms)>0)&&($loguser[power]<3))
+      if(($sql->numrows($recentpms)>0)&&($loguser[power]<3))
       {
         $msg="You can't send more than one PM within 30 seconds!<br>
 ".           "Go back or <a href=sendprivate.php>try again</a>";
@@ -125,7 +125,7 @@
       } else {
         $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title) "
                    ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."')");
-        $pid=mysql_insert_id();
+        $pid=$sql->insertid();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
 
         $msg="    Sent!<br>

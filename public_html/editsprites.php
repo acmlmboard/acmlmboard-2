@@ -119,7 +119,7 @@ $s['flavor'],
 $s['rarity'],
 )
 )) {
-$id = mysql_insert_id();
+$id = $sql->insertid();
 $r['action'] = "edit";
       $pagebar['message'] = "Sprite successfully created.";
 }

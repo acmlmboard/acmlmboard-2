@@ -9,7 +9,7 @@
 
     $users=$sql->query("SELECT * FROM usersrpg "
                       ."WHERE room=$loguser[room] AND side!=$loguser[side] AND hp>0");
-    $r=rand(0,mysql_num_rows($users)-1);
+    $r=rand(0,$sql->numrows($users)-1);
     while($u=$sql->fetch($users)){
       $r--;
       if($r<0){

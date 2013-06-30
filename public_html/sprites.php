@@ -10,19 +10,18 @@ if(isset($_GET['catch']))
 	require("lib/config.php");
   if($spritehash != generate_sprite_hash($userID,$monID)) die("Not a valid 
 capture.");
-	mysql_connect($sqlhost,$sqluser,$sqlpass) or die("Couldn't connect to MySQL server.");
-	mysql_select_db($sqldb) or die("Couldn't find MySQL database.");
+	require('lib/database.php');
 
  
 
-	mysql_query("INSERT IGNORE INTO sprite_captures VALUES(".$userID.", ".$monID.")") or die("Could not register capture.");
-	if(mysql_affected_rows() == 1)
+	$sql->query("INSERT IGNORE INTO sprite_captures VALUES(".$userID.", ".$monID.")") or die("Could not register capture.");
+	if($sql->affectedrows() == 1)
 	{
-		$monName = mysql_result(mysql_query("SELECT name FROM sprites WHERE id=".$monID), 0, 0);
+		$monName = $sql->result($sql->query("SELECT name FROM sprites WHERE id=".$monID), 0, 0);
 		$grats = "Congratulations. You caught ".$monName;
 		
 		//Granting a badge for catching N sprites
-		$numCaught = mysql_result(mysql_query("SELECT COUNT(*) FROM sprite_captures WHERE userid=".$userID), 0, 0);
+		$numCaught = $sql->result($sql->query("SELECT COUNT(*) FROM sprite_captures WHERE userid=".$userID), 0, 0);
 		if($numCaught == 7)
 		{
 			//mysql_query("INSERT IGNORE INTO usertokens VALUES(".$userID.", 100)");

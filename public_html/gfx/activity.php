@@ -1,24 +1,24 @@
 <?php
  require 'gfxlib.php';
 
- $user=mysql_fetch_array(mysql_query("SELECT regdate FROM users WHERE id=$u"));
+ $user=$sql->fetch($sql->query("SELECT regdate FROM users WHERE id=$u"));
  if(!$user[regdate]) die();
 
  $vd=date('m-d-y', $user[regdate]);
  $dd=mktime(0,0,0,substr($vd,0,2),substr($vd,3,2),substr($vd,6,2));
  $dd2=mktime(0,0,0,substr($vd,0,2),substr($vd,3,2)+1,substr($vd,6,2));
 
- $nn=mysql_query("SELECT FROM_UNIXTIME(date,'%Y%m%d') ymd, floor(date/86400) d, count(*) c, max(num) m FROM posts WHERE user=$u GROUP BY ymd ORDER BY ymd");
+ $nn=$sql->query("SELECT FROM_UNIXTIME(date,'%Y%m%d') ymd, floor(date/86400) d, count(*) c, max(num) m FROM posts WHERE user=$u GROUP BY ymd ORDER BY ymd");
 
- while($n=mysql_fetch_array($nn)){
+ while($n=$sql->fetch($nn)){
    $p[$n[$d]]=$n[c];
    $t[$n[$d]]=$n[m];
  }
 
  for($i=0;$dd+$i*86400<ctime();$i++){
-   $ps=mysql_query("SELECT count(*),max(num) FROM posts WHERE user=$u AND date>=$dd+$i*86400 AND date<$dd2+$i*86400");
-   $p[$i]=mysql_result($ps,0,0);
-   $t[$i]=mysql_result($ps,0,1);
+   $ps=$sql->query("SELECT count(*),max(num) FROM posts WHERE user=$u AND date>=$dd+$i*86400 AND date<$dd2+$i*86400");
+   $p[$i]=$sql->result($ps,0,0);
+   $t[$i]=$sql->result($ps,0,1);
  }
 
  $days=floor((ctime()-$dd)/86400);

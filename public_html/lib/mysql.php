@@ -21,20 +21,30 @@
         $this->queries++;
         $this->rowst+=$res->num_rows;
       }else
-        print $this->db->error;
+        print $this->error();
 
       $this->time+=usectime()-$start;
       return $res;
     }
+	
+	function error()
+	{
+		return $this->db->error;
+	}
 
 	
 	function escape($str)
 	{
-		return '\''.$this->db->real_escape_string($str).'\'';
+		return $this->db->real_escape_string($str);
+	}
+	
+	function escapeandquote($str)
+	{
+		return '\''.$this->escape($str).'\'';
 	}
 
    function preparesql ($query, $phs = array()) {
-    $phs = array_map(array($this,'escape'), $phs);
+    $phs = array_map(array($this,'escapeandquote'), $phs);
 
     $curpos = 0;
     $curph  = count($phs)-1;
@@ -80,7 +90,9 @@
       if($result)
 	  {
 		$result->data_seek($row);
-		$thisrow = array_values($result->fetch_assoc());
+		$thisrow = $result->fetch_assoc();
+		if (!$thisrow) return null;
+		$thisrow = array_values($thisrow);
 		$res = $thisrow[$col];
 		if (isset($thisrow[$col]))
 			$this->rowsf++;
@@ -98,7 +110,7 @@
 
     function fetchp($query,$phs,$row=0,$col=0){
       //HOSTILE DEBUGGING echo 'preparing fetch query<br>';
-      return $this->fetchq(self::preparesql($query,$phs),$row,$col);
+      return $this->fetchq($this->preparesql($query,$phs),$row,$col);
     }
 
 
@@ -110,6 +122,16 @@
     function resultp($query,$phs,$row=0,$col=0){
       return $this->resultq(self::preparesql($query,$phs),$row,$col);
     }
+	
+	function insertid()
+	{
+		return $this->db->insert_id;
+	}
+	
+	function affectedrows()
+	{
+		return $this->db->affected_rows;
+	}
 
   }
 ?>

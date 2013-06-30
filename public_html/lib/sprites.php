@@ -52,13 +52,13 @@ $monData = $monData[array_rand($monData)]; */
 // Redone the roll [Gywall]
 // If I broke anything, blame the rabbits. :)
 $monRarity  = rand(0, 6464646) % 100;
-$monRequest = @mysql_result(mysql_query("SELECT count(*) FROM `sprites` WHERE `rarity` <= ".$monRarity),0,0);
+$monRequest = @$sql->result($sql->query("SELECT count(*) FROM `sprites` WHERE `rarity` <= ".$monRarity),0,0);
 
   if ($monRequest) //[Scrydan] Added this loop to prevent divide by zero errors should no sprites exist, no chance also if it fails.
    {
     $monNumpty  = rand(0, 6464646) % $monRequest;
     $monData    = array();
-    $monData    = mysql_fetch_array(mysql_query("SELECT * FROM `sprites` WHERE `rarity` <= ".$monRarity." LIMIT ".$monNumpty.",1"));
+    $monData    = $sql->fetch($sql->query("SELECT * FROM `sprites` WHERE `rarity` <= ".$monRarity." LIMIT ".$monNumpty.",1"));
    }
   else
    {

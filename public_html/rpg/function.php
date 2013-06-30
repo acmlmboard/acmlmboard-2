@@ -35,7 +35,7 @@
     $r=$sql->query('SELECT '.sqlexp().' '
                   .'FROM users '
                   ."HAVING floor(exp)>$user[exp]");
-    $user[rank]=@mysql_num_rows($r)+1;
+    $user[rank]=@$sql->numrows($r)+1;
     
     $user[name]=str_replace(' ',' ',$user[name]);
     return $user;

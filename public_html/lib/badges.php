@@ -10,7 +10,7 @@ function perms_for_badges($userid) {
 
 	$res=$sql->prepare("SELECT effect, effect_variable FROM badges RIGHT JOIN user_badges ON badges.id = user_badges.badge_id WHERE user_badges.user_id='$userid' AND badges.effect != 'NULL'");
 
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = $sql->fetch($res)) {
 		$badgepermset[$c++] = array(
 				'effect' => $row['effect'],
 				'effect_variable' => $row['effect_variable']		

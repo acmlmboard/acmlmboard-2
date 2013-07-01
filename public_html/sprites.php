@@ -1,18 +1,15 @@
 <?php
 
+require("lib/common.php");
+
 if(isset($_GET['catch']))
 {
-        require("lib/sprites.php");
+	require('lib/sprites.php');
 	$monID = (int)$_GET['catch'];
-	$userID = (int)$_COOKIE['user'];
-  $spritehash = $_GET['t'];
+	$userID = (int)$loguser['id'];
+	$spritehash = $_GET['t'];
 	if($userID == 0) die("Not logged in.");
-	require("lib/config.php");
-  if($spritehash != generate_sprite_hash($userID,$monID)) die("Not a valid 
-capture.");
-	require('lib/database.php');
-
- 
+	if($spritehash != generate_sprite_hash($userID,$monID)) die("Not a valid capture.");
 
 	$sql->query("INSERT IGNORE INTO sprite_captures VALUES(".$userID.", ".$monID.")") or die("Could not register capture.");
 	if($sql->affectedrows() == 1)
@@ -36,7 +33,6 @@ capture.");
 	die("OK");
 }
 
-require("lib/common.php");
 pageheader();
 if(!$log)
 {

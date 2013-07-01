@@ -41,7 +41,7 @@ $chance = 5 + (rand(0, 6464) % 5);
 //Always fail to roll if disabled, effectively never appearing at all.
 if($loguser['blocksprites'])
 	$chance = 0;
-	
+
 /*Version 2 method
 $monRequest = mysql_query("SELECT * FROM sprites WHERE id <= ".$roll);
 $monData = array();
@@ -64,7 +64,7 @@ $monRequest = @$sql->result($sql->query("SELECT count(*) FROM `sprites` WHERE `r
    {
     $chance = 0;
    }
-   
+
 /*
 //Old way to pick pics: randomly between two fields.
 $pic = rand(0, 1) ? $monData['alt']: $monData['pic'];

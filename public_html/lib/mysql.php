@@ -87,15 +87,18 @@
     function result($result,$row=0,$col=0){
       $start=usectime();
 
+	  $res = null;
       if($result)
 	  {
 		$result->data_seek($row);
 		$thisrow = $result->fetch_assoc();
-		if (!$thisrow) return null;
-		$thisrow = array_values($thisrow);
-		$res = $thisrow[$col];
-		if (isset($thisrow[$col]))
-			$this->rowsf++;
+		if ($thisrow)
+		{
+			$thisrow = array_values($thisrow);
+			$res = $thisrow[$col];
+			if (isset($thisrow[$col]))
+				$this->rowsf++;
+		}
 	  }
 
       $this->time+=usectime()-$start;

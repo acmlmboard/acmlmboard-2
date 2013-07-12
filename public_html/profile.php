@@ -69,11 +69,21 @@
      //Crudely done code.
      $bdec     = explode("-", $user['birth']);
      $bstr     = $bdec[2]."-".$bdec[0]."-".$bdec[1];
-     $bd1      = new DateTime($bstr);
-     $bd2      = new DateTime(date("Y-m-d"));
-     $bd3      = $bd1->diff($bd2);
-     $birthday = date("l, F j, Y", strtotime($bstr));
-     $age      = "(".$bd3->format("%Y")." years old)";
+	 $birthday = date("l, F j, Y", strtotime($bstr));
+	 
+	 $age = '<!-- This feature requires PHP 5.3.0 or higher -->';
+	 if (class_exists('DateTime') && method_exists('DateTime', 'diff'))
+	 {
+		$bd1      = new DateTime($bstr);
+		$bd2      = new DateTime(date("Y-m-d"));
+		if ($bd2 < $bd1)
+			$age = '(not born yet)';
+		else
+		{
+			$bd3      = $bd1->diff($bd2);
+			$age      = "(".intval($bd3->format("%Y"))." years old)";
+		}
+	 }
     }
    else
     {

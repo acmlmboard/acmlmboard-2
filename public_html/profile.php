@@ -196,10 +196,6 @@ print \"Sample code.\"; #oops you just missed him!
     $isblocked = $sql->numrows($rblock);
    if (has_perm("block-layout"))
     {
-    if($isblocked)
-      $blocklayoutlink = "| <a href=\"profile.php?id=$uid&amp;block=0\">Unblock layout</a>";
-    else
-      $blocklayoutlink = "| <a href=\"profile.php?id=$uid&amp;block=1\">Block layout</a>";
     if(isset($_GET['block']) && $log)
      {
       $block = (int)$_GET['block'];
@@ -209,12 +205,14 @@ print \"Sample code.\"; #oops you just missed him!
        $qblock       = "INSERT INTO `blockedlayouts` (`user`, `blockee`) values ('$uid', '$loguser[id]')";
        $rblock       = $sql->query($qblock);
        $blockmessage = "Layout blocked.";
+	   $isblocked = true;
       }
      elseif(!$block && $isblocked)
       {
        $qblock       = "DELETE FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]' LIMIT 1";
        $rblock       = $sql->query($qblock);
        $blockMessage = "Layout unblocked.";
+	   $isblocked = false;
       }
       
      if($blockmessage)
@@ -226,6 +224,10 @@ print \"Sample code.\"; #oops you just missed him!
        $L[TBLend]";
       }
      }
+	 if($isblocked)
+		$blocklayoutlink = "| <a href=\"profile.php?id=$uid&amp;block=0\">Unblock layout</a>";
+	 else
+		$blocklayoutlink = "| <a href=\"profile.php?id=$uid&amp;block=1\">Block layout</a>";
     }
 
     //timezone calculations
@@ -343,7 +345,7 @@ print \"Sample code.\"; #oops you just missed him!
                $L[TD2]><a href=\"forum.php?user=$user[id]\">View threads</a>
                        | <a href=\"thread.php?user=$user[id]\">Show posts</a>
                        | <a href=\"postsbyuser.php?id=$user[id]\">List posts</a>
-                       $blockLayoutLink
+                       $blocklayoutlink
                        ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send Private Message</a>":"") ."
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."

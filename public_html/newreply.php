@@ -254,7 +254,7 @@
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
-    $pid=mysql_insert_id();
+    $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
     $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$tid");
     $sql->query("UPDATE forums SET posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");

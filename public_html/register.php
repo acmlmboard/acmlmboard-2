@@ -116,14 +116,14 @@ if ($regdis[intval] == 1)
 ".           "  <a href=./>Back to main</a> or <a href=register.php>try again</a>
 ";
     }else{
-	  $name = mysql_real_escape_string($name);
+	  $name = $sql->escape($name);
 	  
       $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone) VALUES "
                  ."('{$name}','".md5($_POST[pass].$pwdsalt)."',"
                  .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}')");
 	  if ($res)
 	  {
-		  $id=mysql_insert_id();
+		  $id=$sql->insertid();
 
 
 		  $sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
@@ -179,7 +179,7 @@ if ($regdis[intval] == 1)
 ".           	 "  ".redirect('login.php','login');
 	  }
 	  else
-		$print="Registration failed: ".mysql_error();
+		$print="Registration failed: ".$sql->error();
     }
     $print="  $L[TD1c]>$print</td>";
   }

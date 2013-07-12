@@ -6,7 +6,7 @@
 
   //actual ban checking
   $r=$sql->query("SELECT * FROM ipbans WHERE '$userip' LIKE ipmask");
-  if(@mysql_num_rows($r)>0)
+  if(@$sql->numrows($r)>0)
   {
 
     // report the IP as banned like before
@@ -15,7 +15,7 @@
 
     //a ban appears to be present. check for type
     //and restrict user's access if necessary
-    $i=mysql_fetch_array($r);
+    $i=$sql->fetch($r);
     if($i[hard])
     {
       //hard IP ban; always restrict access fully

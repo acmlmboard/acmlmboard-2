@@ -19,9 +19,8 @@
   function checkuid($userid,$pass){
     global $sql;
     checknumeric($userid);
-    $id=$sql->resultq("SELECT id FROM users WHERE id=$userid AND pass='".addslashes($pass)."'");
-    if(!$id) $id=0;
-    return $id;
+    $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid AND pass='".addslashes($pass)."'");
+    return $user;
   }
 
   function checkctitle(){

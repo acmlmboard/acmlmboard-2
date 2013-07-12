@@ -84,7 +84,7 @@ if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
                     ."LEFT JOIN users u ON p.user=u.id "
                     ."WHERE p.id=$pid");
 
-  if(@mysql_num_rows($res)<1)
+  if(@$sql->numrows($res)<1)
     $err="    That post does not exist.";
 
   $post=$sql->fetch($res);
@@ -227,7 +227,7 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ";
     } else {
       $sql->query("UPDATE posts SET deleted=".($act=='delete'?1:0)." WHERE id='$pid'");
-      print "$top - (Un)delete Post
+      print "$top - ".($act=='delete'?'Delete':'Undelete')." Post
 ".          "<br><br>
 ".          "$L[TBL1]>
 ".          "  $L[TD1c]>

@@ -156,7 +156,7 @@ function secondary_groups_for_user($userid) {
 	$c = 0;
 	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "looking up secondary groups for user=$userid<br>";
 	$res = $sql->prepare("SELECT * FROM user_group WHERE user_id=? ORDER BY sortorder DESC",array($userid));
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = $sql->fetch($res)) {
 		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "got group=".$row['group_id']."<br>";
 		$out[$c++] = $row['group_id'];
 	}
@@ -543,7 +543,7 @@ function perms_for_x($xtype,$xid) {
 
 	$out = array();
 	$c = 0;
-	while ($row = mysql_fetch_array($res)) {
+	while ($row = $sql->fetch($res)) {
 		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "got perm ".$row['perm_id']."<br>";
 		$out[$c++] = array(
 				'id' => $row['perm_id'],

@@ -336,10 +336,10 @@ $pollprev.="$L[TBLend]";
                ."WHERE id=$userid");
     $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed) "
                ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$announce)");
-    $tid=mysql_insert_id();
+    $tid=$sql->insertid();
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");
-    $pid=mysql_insert_id();
+    $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
 if (!$announce)   {
    $sql->query("UPDATE forums SET threads=threads+1,posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid "

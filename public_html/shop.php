@@ -24,7 +24,7 @@
       $names.="`name`, `desc`, `stype`, `coins`, `coins2`, `cat`, `hidden`";
       $vals.="'$_POST[name]', '$_POST[desc]', '$stype', '$_POST[coins]', '$_POST[coins2]', '$_POST[cat]', ".($_POST['hidden'] ? "1" : "0")."";
       $sql->query("INSERT INTO items ($names) VALUES ($vals)");
-      $id = mysql_insert_id();
+      $id = $sql->insertid();
     }
     header("location: shop.php?action=desc&id=$id");       
   }

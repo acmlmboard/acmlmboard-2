@@ -151,7 +151,7 @@ if($_COOKIE['pstbon']>=1){
             if($thread[changeable]) {
               //changeable multivotes toggle
               $res=$sql->query("DELETE FROM pollvotes WHERE user='$loguser[id]' AND id='$vote'");
-              if(!mysql_affected_rows()) $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
+              if(!$sql->affectedrows()) $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
             } else $sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
           } else if($thread[changeable]) {
             $sql->query("DELETE v FROM pollvotes v LEFT JOIN polloptions o ON o.id=v.id WHERE v.user=$loguser[id] AND o.poll=$tid");

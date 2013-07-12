@@ -14,7 +14,7 @@
       print "$user2[id]";
       $linkuser[$user2['id']] = $user2;
      }*/
-    while ($row = mysql_fetch_array($allusers, MYSQL_ASSOC)) 
+    while ($row = $sql->fetch($allusers)) 
     {
       //printf("ID: %s  Name: %s Post: %s", $row[id], $row[name], $row[posts]); 
       $linkuser[$row['id']] = $row;

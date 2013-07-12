@@ -1,6 +1,7 @@
 <?php
   require 'lib/common.php';
   needs_login(1);
+  
 //Permissions
   if(isset($_GET['user'])){
     $edid=$_GET['user'];
@@ -8,10 +9,12 @@
   } else {
     $edid=$loguser['id'];
   }
+  $edid = (int)$edid;
   if(!can_edit_user_moods($edid)){
     pageheader('No permission');
     no_perm();
   }
+  
 //Editing functionality
   if(isset($_POST['id']) && $_POST['a']=="Save"){
     if(is_numeric($_POST['id'])){

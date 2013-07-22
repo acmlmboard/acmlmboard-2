@@ -247,6 +247,7 @@
 		$act = '';
 		foreach ($_POST as $k=>$v)
 			$user[$k] = $v;
+		$user['birth'] = $birthday;
 	}
   }
 

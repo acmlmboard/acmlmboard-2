@@ -26,11 +26,11 @@
     $thread=$sql->fetchq("SELECT forum,replies FROM threads WHERE id=$id");
     $sql->query("UPDATE threads SET forum=$forum WHERE id=$id");
 
-    $last1=$sql->fetchq("SELECT lastdate,lastuser "
+    $last1=$sql->fetchq("SELECT lastdate,lastuser,lastid "
                        ."FROM threads "
                        ."WHERE forum=$thread[forum] "
                        ."ORDER BY lastdate DESC LIMIT 1");
-    $last2=$sql->fetchq("SELECT lastdate,lastuser "
+    $last2=$sql->fetchq("SELECT lastdate,lastuser,lastid "
                        ."FROM threads "
                        ."WHERE forum=$forum "
                        ."ORDER BY lastdate DESC LIMIT 1");
@@ -39,14 +39,16 @@
                 ."SET posts=posts-($thread[replies]+1), "
                 .    "threads=threads-1, "
                 .    "lastdate=$last1[lastdate], "
-                .    "lastuser=$last1[lastuser] "
+                .    "lastuser=$last1[lastuser], "
+				.    "lastid=$last1[lastid] "
                 ."WHERE id=$thread[forum]");
     if($last2)
       $sql->query("UPDATE forums "
                  ."SET posts=posts+($thread[replies]+1), "
                  .    "threads=threads+1, "
                  .    "lastdate=$last2[lastdate], "
-                 .    "lastuser=$last2[lastuser] "
+                 .    "lastuser=$last2[lastuser], "
+				 .    "lastid=$last2[lastid] "
                  ."WHERE id=$forum");
   }
 ?>

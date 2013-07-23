@@ -74,7 +74,7 @@ function renderdotrank($posts=0){
           {
             for ($x = 0; $x < $num; $x++) 
             {
-              $rank .= "<img src=img/dots/dot". $dot .".gif align=\"absmiddle\">";
+              $rank .= "<img src=\"img/dots/dot". $dot .".gif\" align=\"absmiddle\">";
             }
           }
 
@@ -166,15 +166,14 @@ function renderdotrank($posts=0){
     if(!$user[$u.name])
       $user[$u.name]='&nbsp;';
 
-    return '<a href=profile.php?id='.$user[$u.id].'>'
+    return '<a href="profile.php?id='.$user[$u.id].'">'
           .userdisp($user,$u,$usemini)
           .'</a>';
   }
 
   function userdisp($user,$u='',$usemini=''){
     global $sql;
-    if($user[$u.'power']<0)
-      $user[$u.'power']='x';
+
     //$usemini = true;
     if($usemini) $user['showminipic'] = true;
 
@@ -189,10 +188,10 @@ function renderdotrank($posts=0){
   	$n = $user[$u.'displayname'];
    if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
    else $minipic="";
-  return "$minipic<font color='#$nc'>" //class=nc".$user[$u.sex].$user[$u.power].'>'
+  return "$minipic<span style='color:#$nc;'>" //class=nc".$user[$u.sex].$user[$u.power].'>'
   //return "$minipic<font class=nc".$user[$u.sex].$user[$u.power].'>'
          .str_replace(" ","&nbsp;",htmlval($n))
-         .'</font>';
+         .'</span>';
  /* return '<font color=#'. $c .'>'
           .htmlval($user[$u.name])
           .'</font>';

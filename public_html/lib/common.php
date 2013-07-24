@@ -383,32 +383,32 @@
     $userlinks = array();
     $ul = 0;
 
-    if (has_perm("register")) 
-      $userlinks[$ul++] = array('url' => "register.php", 'title' => 'Register');
-    if (has_perm("view-login")) 
-      $userlinks[$ul++] = array('url' => "login.php", 'title' => 'Login');
-    if (has_perm("logout")) 
-      $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+	if (!$log)
+	{
+		if (has_perm("register")) 
+		  $userlinks[$ul++] = array('url' => "register.php", 'title' => 'Register');
+		if (has_perm("view-login")) 
+		  $userlinks[$ul++] = array('url' => "login.php", 'title' => 'Login');
+	}
+	else
+	{
+		if (has_perm("logout")) 
+		  $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+	}
     if (has_perm("update-own-profile")) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
-    if (has_perm("edit-forums")) 
-      $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage forums');
-    if (has_perm("edit-ip-bans")) 
-      $userlinks[$ul++] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
-    if (has_perm("edit-sprites")) 
-      $userlinks[$ul++] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 
       $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item shop');
-    if (has_perm("edit-groups")) 
-      $userlinks[$ul++] = array('url' => "editgroups.php", 'title' => 'Edit groups');
     if (has_perm("view-acs-calendar")) 
       $userlinks[$ul++] = array('url' => "frank.php", 'title' => 'Rankings');
+	if (has_perm('manage-board'))
+	  $userlinks[$ul++] = array('url' => 'management.php', 'title' => 'Management');
     if (has_perm("mark-read")) 
       $userlinks[$ul++] = $markread;
 

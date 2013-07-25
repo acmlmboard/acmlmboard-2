@@ -20,6 +20,13 @@ function fadesch($c, $n, $pct) {
 	return $ret;
 }
 
+function rgbacol($hex, $a)
+{
+	list($r,$g,$b) = sscanf($hex, '%02X%02X%02X');
+	$a = $a / 127;
+	return "rgba($r,$g,$b,$a)";
+}
+
 $curtime = getdate(time()+$tzoff);
 $min = $curtime['hours'] * 60 + $curtime['minutes'];
 if($minover) $min=$minover;
@@ -127,7 +134,7 @@ table.c2{
 }
 
 tr.h{
-  background: url('../gfx/tpng.php?c=$tableheadbg&t=60');
+  background: ".rgbacol($tableheadbg,60).";
   text-align: center;
   font-size: 0.9em;
   font-weight: bold;
@@ -135,7 +142,7 @@ tr.h{
 }
 
 tr.c{
-  background: url('../gfx/tpng.php?c=$categorybg&t=60');
+  background: ".rgbacol($categorybg,60).";
   text-align: center;
   font-size: 0.9em;
   color: #EEEEEE;
@@ -159,15 +166,15 @@ td.h{
 }
 
 tr.n1,td.n1{
-  background: url('../gfx/tpng.php?c=$tablebg1&t=60');
+  background: ".rgbacol($tablebg1,60).";
 }
 
 tr.n2,td.n2{
-  background: url('../gfx/tpng.php?c=$tablebg2&t=60');
+  background: ".rgbacol($tablebg2,60).";
 }
 
 tr.n3,td.n3{
-  background: url('../gfx/tpng.php?c=$tablebg3&t=60');
+  background: ".rgbacol($tablebg3,60).";
 }
 
 .sfont{

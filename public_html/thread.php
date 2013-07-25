@@ -90,6 +90,12 @@ if($_COOKIE['pstbon']>=1){
       $viewmode = "thread";      
     }
   }
+  else
+  {
+	pageheader('Thread not found',0);
+	thread_not_found();
+  }
+  
   if ($viewmode == "thread") 
     $threadcreator=$sql->resultq("SELECT user FROM threads WHERE id=$tid");
   else $threadcreator=0;

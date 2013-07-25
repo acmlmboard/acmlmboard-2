@@ -185,7 +185,10 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 ".      "$L[TBLend]
 ";
   }else
-    pageheader();
+  {
+    pageheader('Forum not found',0);
+	forum_not_found();
+  }
 
   $showforum=$uid||$time;
 

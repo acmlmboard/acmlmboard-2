@@ -39,7 +39,7 @@
     $loguser['power']      = 0;
     $loguser['tzoff']      = 0;
     $loguser['timezone']   = "UTC";
-    $loguser['fontsize']   = 70;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
+    $loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
     $loguser['dateformat'] = "m-d-y";
     $loguser['timeformat'] = "h:i A";
     $loguser['signsep']    = 0;

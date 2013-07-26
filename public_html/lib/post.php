@@ -33,11 +33,8 @@
   
   function securityfilter($msg)
   {
-	$tags=array('script','iframe','embed','object','textarea','noscript','meta','xmp','plaintext','base');
-    foreach($tags as $tag){
-      $msg=preg_replace("'<$tag(.*?)>'si" ,"&lt;$tag\\1>" ,$msg);
-      $msg=preg_replace("'</$tag(.*?)>'si","&lt;/$tag>",$msg);
-    }
+	$tags='script|iframe|embed|object|textarea|noscript|meta|xmp|plaintext|base';
+    $msg=preg_replace("'<(/?)({$tags})'si" ,"&lt;$1$2" ,$msg);
 
 	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1$2&#x3D;', $msg);
 

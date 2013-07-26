@@ -135,8 +135,8 @@ while ($mod = $sql->fetch($r))
         "  $L[TRc]>
 ".      "    $L[TD1]>$status</td>
 ".      "    $L[TD2l]>
-".      "      ".($forum['private']?'(':'')."<a href=forum.php?id=$forum[id] $ignoreFX>$forum[title]</a>".($forum['private']?')':'')."<br>
-".      "      <font class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</font>
+".      "      ".($forum['private']?'(':'')."<a href=\"forum.php?id=$forum[id]\" $ignoreFX>$forum[title]</a>".($forum['private']?')':'')."<br>
+".      "      <span class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</span>
 ".      "    </td>
 ".      "    $L[TD1]>$forum[threads]</td>
 ".      "    $L[TD1]>$forum[posts]</td>

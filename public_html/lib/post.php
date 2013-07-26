@@ -49,17 +49,19 @@
   function makecode($match)
   {
 	global $L;
-	$list = array("<","\r\n","[",":",")","_","@","-");
-    $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
+	$code = htmlspecialchars($match[1]);
+	$list = array("\r\n","[",":",")","_","@","-");
+    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
   }
  
   function makeirc($match)
   {
-  global $L;
-  $list = array("<","\r\n","[",":",")","_","@","-");
-    $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-  return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
+    global $L;
+	$code = htmlspecialchars($match[1]);
+    $list = array("\r\n","[",":",")","_","@","-");
+    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
   } 
   function makesvg($match)
   {

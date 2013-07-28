@@ -121,6 +121,7 @@
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
+	$msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
 	// security filtering needs to be done before [svg] is parsed because [svg]
 	// uses tags that are otherwise blacklisted

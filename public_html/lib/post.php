@@ -120,14 +120,14 @@
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
 	
+	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
+	
 	// security filtering needs to be done before [svg] is parsed because [svg]
 	// uses tags that are otherwise blacklisted
 	$msg = securityfilter($msg);
 	
 	//[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
-	
-	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 
     $msg=str_replace("\n",'<br>',$msg);
     

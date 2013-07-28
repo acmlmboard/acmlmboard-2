@@ -24,7 +24,7 @@ if ($_GET['ajax'])
 	else if ($ajax == 'tagRow')
 	{
 		if (!trim($_GET['text']) || !trim($_GET['tag']) || !trim($_GET['color'])) die();
-		print tagRow($_GET['text'], $_GET['tag'], null, $_GET['bit'], $_GET['color']);
+		print tagRow($_GET['text'], $_GET['tag'], null, (int)$_GET['bit'], $_GET['color']);
 	}
 	
 	die();

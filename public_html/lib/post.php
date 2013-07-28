@@ -99,6 +99,17 @@
 ".		"	</div>
 ".		"</td></tr></table>";
   }
+  
+  function filterstyle($match)
+  {
+	$style = $match[2];
+	
+	// remove newlines.
+	// this will prevent them being replaced with <br> tags and breaking the CSS
+	$style = str_replace("\n", '', $style);
+	
+	return $match[1].$style.$match[3];
+  }
 
  function postfilter($msg, $nosmilies=0){
     global $smilies, $L, $config, $sql, $swfid;
@@ -115,6 +126,8 @@
 	
 	//[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
+	
+	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 
     $msg=str_replace("\n",'<br>',$msg);
     

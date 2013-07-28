@@ -154,7 +154,7 @@ function saveTag(fid)
 	var color = document.getElementById('tag_color').value;
 	
 	var isnew = false;
-	if (curTag <= 0)
+	if (curTag < 0)
 	{
 		isnew = true;
 		curTag = getFreeTagBit();
@@ -178,6 +178,7 @@ function saveTag(fid)
 		{
 			var row = document.getElementById('tag_'+curTag).parentNode;
 			row.innerHTML = res;
+			row.children[0].style.outline = '1px solid white';
 		}
 		else
 		{

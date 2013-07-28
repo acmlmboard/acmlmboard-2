@@ -32,6 +32,13 @@ if(!get_magic_quotes_gpc()){
     if(is_array($_POST  )) while(list($key,$val)=each($_POST  )) if(is_string($val)) $_POST[$key]  =addslashes($val);
   }
 
+// This function should be used on $_POST input, before either a) using it in a prepared query or b) escaping it with $sql->escape() and using it in a raw query
+// It should be removed once the reliance on magic_quotes (and the hack above) have been removed.
+function autodeslash($v)
+{
+	return stripslashes($v);
+}
+  
 function isssl(){
     return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
 }

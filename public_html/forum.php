@@ -82,7 +82,7 @@ else if(isset($_GET['unignore']))
 $editforumlink = "";
 
 if (has_perm('edit-forums')) {
-    $editforumlink = "<a href=\"manageforums.php?a=e&t=f&i=$fid\" class=\"editforum\">Edit Forum</a> | ";
+    $editforumlink = "<a href=\"manageforums.php?fid=$fid\" class=\"editforum\">Edit Forum</a> | ";
 }
 
 if($loguser['id']!=0){

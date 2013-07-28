@@ -57,7 +57,7 @@
 ".        "    $L[TD2]>$L[INPt]=title size=80 maxlength=255 value=\"".htmlval($title)."\"></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Message:</td>
-".        "    $L[TD2]>$L[TXTa]=message rows=20 cols=80>$quotetext</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message rows=20 cols=80>".htmlval($quotetext)."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>

@@ -470,7 +470,7 @@
       }
       
       $fname      = $sql->resultq("SELECT `title` FROM `forums` WHERE `id`='$fid'");
-      $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? " : ": "").$onuserlist;
+      $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? ": " : "").$onuserlist;
       
       //[Scrydan] Changed from the commented code below to save a query.
       $onlineguests = $sql->query("SELECT * FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");

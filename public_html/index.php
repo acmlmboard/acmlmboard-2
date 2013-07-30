@@ -63,7 +63,7 @@
 	while($i = $sql->fetch($ignoreQ))
 		$ignores[$i['fid']] = true;
 
-  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", c.private cprivate, u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower, u.minipic uminipic "
+  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", c.private cprivate, ".userfields('u','u').", u.minipic uminipic "
                      ."FROM forums f "
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "
@@ -86,7 +86,7 @@ echo
 ";
 
 $lmods = array();
-$r = $sql->query("SELECT f.fid, u.name,u.displayname,u.id,u.sex,u.power FROM forummods f LEFT JOIN users u ON u.id=f.uid");
+$r = $sql->query("SELECT f.fid, ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid");
 while ($mod = $sql->fetch($r))
 	$lmods[$mod['fid']][] = $mod;
 

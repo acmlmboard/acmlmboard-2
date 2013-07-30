@@ -146,9 +146,10 @@
      }
     }
   
-    $count['u'] = $sql->resultq("SELECT COUNT(*) FROM `users`");
-    $count['t'] = $sql->resultq("SELECT COUNT(*) FROM `threads`");
-    $count['p'] = $sql->resultq("SELECT COUNT(*) FROM `posts`");
+	$count = $sql->fetchq("	SELECT
+								(SELECT COUNT(*) FROM users) u,
+								(SELECT COUNT(*) FROM threads) t,
+								(SELECT COUNT(*) FROM posts) p");
     $date       = date("m-d-y",ctime());
     $sql->query("REPLACE INTO `dailystats` (`date`, `users`, `threads`, `posts`, `views`)
                  VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '$views')");
@@ -332,8 +333,7 @@
   if($log)
     {
      //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
-     $pmsgs = $sql->fetchq("SELECT `p`.`id` `id`, `p`.`date` `date`, `u`.`id` `uid`, `u`.`name` `uname`, `u`.`displayname` `udisplayname`,
-                            `u`.`sex` `usex`, `u`.`power` `upower`
+     $pmsgs = $sql->fetchq("SELECT `p`.`id` `id`, `p`.`date` `date`, ".userfields('u','u')."
                             FROM `pmsgs` `p`
                             LEFT JOIN `users` `u` ON `u`.`id`=`p`.`userfrom`
                             WHERE `p`.`userto`='$loguser[id]'
@@ -453,7 +453,7 @@
 
     if($fid)
      {
-      $onusers = $sql->query("SELECT `id`, `name`, `displayname`, `sex`, `power`, `lastpost`, `lastview`, `minipic`, `hidden`
+      $onusers = $sql->query("SELECT ".userfields().", `lastpost`, `lastview`, `minipic`, `hidden`
                               FROM `users`
                               WHERE (`lastview` > ".(ctime()-300)." OR `lastpost` > ".(ctime()-300).") $hiddencheck AND `lastforum`='$fid'
                               ORDER BY `name`");
@@ -473,7 +473,7 @@
       $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? ": " : "").$onuserlist;
       
       //[Scrydan] Changed from the commented code below to save a query.
-      $onlineguests = $sql->query("SELECT * FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
+      $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
      while($chkonline = $sql->fetch($onlineguests))
       {
       if ($chkonline['bot'] == 1)
@@ -494,15 +494,6 @@
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }
-      
-      /*
-      $numguests  = $sql->resultq("SELECT count(*) FROM `guests` WHERE `lastforum`='$fid' AND `bot`='0' AND `date` > '".(ctime()-300)."'");
-      if($numguests)
-        $onuserlist.=" | $numguests guest".($numguests != 1 ? "s": "");
-      $numbots=$sql->resultq("SELECT count(*) FROM `guests` WHERE `lastforum`='$fid' AND `bot`='1' AND date > '".(ctime()-300)."'");
-      if($numbots)
-        $onuserlist.=" | $numbots bot".($numbots != 1 ? "s": "");
-      */
 
       print "$L[TBL1]>
                $L[TR1]>
@@ -516,9 +507,9 @@
      { 
       //[KAWA] Copypastadaption from ABXD, with added activity limiter.
       $birthdaylimit = 86400 * $inactivedays;
-      $rbirthdays = $sql->query("SELECT `birth`, `id`, `name`, `displayname`, `power`, `sex`
+      $rbirthdays = $sql->query("SELECT `birth`, ".userfields()."
                                  FROM `users`
-                                 WHERE `birth` LIKE '".date('m')."-".date('d')."%' AND `lastview` > ".(time()-$birthdaylimit)." ORDER BY `name`");
+                                 WHERE `birth` LIKE '".date('m-d')."%' AND `lastview` > ".(time()-$birthdaylimit)." ORDER BY `name`");
       $birthdays = array();
      while($user = $sql->fetch($rbirthdays))
       {
@@ -538,7 +529,7 @@
 
       $count['d'] = $sql->resultq("SELECT COUNT(*) FROM `posts` WHERE `date` > '".(ctime()-86400)."'");
       $count['h'] = $sql->resultq("SELECT COUNT(*) FROM `posts` WHERE `date` > '".(ctime()-3600)."'");
-      $lastuser=$sql->fetchq("SELECT `id`, `name`, `displayname`, `sex`, `power` FROM `users` ORDER BY `id` DESC LIMIT 1");
+      $lastuser=$sql->fetchq("SELECT ".userfields()." FROM `users` ORDER BY `id` DESC LIMIT 1");
 
       $hiddencheck  = "AND `hidden`='0' ";
      if (has_perm('view-hidden-users'))
@@ -546,7 +537,7 @@
        $hiddencheck = "";
       }
 
-      $onusers = $sql->query("SELECT `id`, `name`, `displayname`, `sex` , `power`, `lastpost`, `lastview`, `minipic`, `hidden` FROM `users`
+      $onusers = $sql->query("SELECT ".userfields().", `lastpost`, `lastview`, `minipic`, `hidden` FROM `users`
                            WHERE (`lastview` > ".(ctime()-300)." OR `lastpost` > ".(ctime()-300).") $hiddencheck ORDER BY `name`");
       $onuserlist  = "";
       $onusercount = 0;

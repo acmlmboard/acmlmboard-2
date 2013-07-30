@@ -3,7 +3,7 @@
 
   function userlink_by_name($name) {
     global $sql;
-    $u = $sql->fetchp("SELECT id,name,displayname,power,minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
+    $u = $sql->fetchp("SELECT ".userfields().",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
     if ($u) return userlink($u);
     else return 0;
   }

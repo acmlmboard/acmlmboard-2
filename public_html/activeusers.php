@@ -7,7 +7,7 @@
   if($time<1)
     $time=86400;
 
-  $query='SELECT u.id,u.posts,regdate,u.name,u.displayname,u.sex,u.power,COUNT(*) num '
+  $query='SELECT '.userfields('u').',u.posts,u.regdate,COUNT(*) num '
         .'FROM users u '
         .'LEFT JOIN posts p ON p.user=u.id '
         .'WHERE p.date>'.(ctime()-$time).' '
@@ -28,6 +28,7 @@
   $post_total = 0;
   $post_overall = 0;
   $j=0;
+  $tr = 'TR3c';
   for($i=1;$user=$sql->fetch($users);$i++){
     $post_total+=$user['num'];
     $post_overall+=$user['posts'];
@@ -43,7 +44,7 @@
   $j++;
   }
   print "$L[TRh]>$L[TDh] colspan=5>Totals</td></tr>
-".        "  $L[$tr]>
+".        "  {$L[$tr]}>
 ".      "    $L[TD]><b>$j.</b></td>
 ".      "    $L[TDl]></td>
 ".      "    $L[TD]></td>

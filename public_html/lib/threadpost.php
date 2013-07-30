@@ -170,7 +170,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 		}
 
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
-		$grouplink = grouplink($post['uid'], $post['ugroup_id']);
+		$grouplink = grouplink($post['usex'], $post['ugroup_id']);
         $text.=
 		 $grouplink."
 ".        "      ".((strlen($grouplink))?"<br>":"")."

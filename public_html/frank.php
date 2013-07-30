@@ -177,7 +177,7 @@ arsort($dpur);
 $r=0; $q=1; $t=9999;
 foreach($dpur as $usr => $pnts){
 	if($pnts<$t) $r=$q;
-    	$mpur = $sql->fetch($sql->query("SELECT id,name,displayname,sex,power FROM users WHERE id=$usr"));
+    	$mpur = $sql->fetch($sql->query("SELECT ".userfields()." FROM users WHERE id=$usr"));
 	$report.="<tr><td>$r</td><td>[user=$usr]</td><td>$pnts</td></tr>";
 	print "<tr><td>$r</td><td>".userlink($mpur)."</td><td>$pnts</td></tr>";
 	$q++; $t=$pnts;
@@ -191,7 +191,7 @@ arsort($points);
 $r=0; $q=1; $t=9999;
 foreach($points as $usr => $pnts){
 	if($pnts<$t) $r=$q;
-    	$mpur = $sql->fetch($sql->query("SELECT id,name,displayname,sex,power FROM users WHERE id=$usr"));
+    	$mpur = $sql->fetch($sql->query("SELECT ".userfields()." FROM users WHERE id=$usr"));
 	$report.="<tr><td>$r</td><td>[user=$usr]</td><td>$pnts</td></tr>";
 	print "<tr><td>$r</td><td>".userlink($mpur)."</td><td>$pnts $ico</td></tr>";
 	$t=$pnts;

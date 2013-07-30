@@ -9,7 +9,7 @@
 
 function retrieve_post_radar($u, $sort='num_posts') {
 	global $sql;
-	$res=$sql->query("SELECT u.posts num_posts, u.name uname, u.displayname udisplayname, u.sex usex, post_radar.user2_id AS uid
+	$res=$sql->query("SELECT ".userfields('u','u').",u.posts num_posts
 						 FROM post_radar
 						 LEFT JOIN users u ON u.id = post_radar.user2_id
 						 WHERE post_radar.user_id =$u

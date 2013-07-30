@@ -82,22 +82,7 @@ function color_for_group($gid,$sex) {
 	$row = $sql->fetchp("SELECT nc$sex FROM `group` WHERE id=?",array($gid));
 	return $row["nc$sex"];
 }
-function color_for_user($userid,$tsex=-1) {
-	static $nccache = array();
-  	if(isset($nccache[$userid][$tsex]))  return $nccache[$userid][$tsex];
 
-	global $sql;
-	$sex = $sql->fetch($sql->query("SELECT nc0, nc1, nc2, sex, birth FROM `group` g LEFT JOIN `users` u ON g.id = u.`group_id` WHERE g.id = u.`group_id` AND u.id=".$userid));
-	switch($sex['sex']){
-	case 0: $nc=$sex[nc0]; break;
-	case 1: $nc=$sex[nc1]; break;
-	case 2: $nc=$sex[nc2]; break;
-	}
-	//Enable rainbow name for birthdays.
-	if(substr($sex['birth'],0,5)==date('m')."-".date('d')) $nc="RAINBOW";
-	$nccache[$userid][$tsex] = $nc;
-	return $nc;
-}
 function load_guest_permset() {
 	global $logpermset;
 	$logpermset = array();
@@ -354,12 +339,12 @@ function no_perm() {
       die();
 }
 
-function grouplink($uid, $gid) {
+function grouplink($usex, $gid) {
 	global $sql, $usergroups;
 
 	$group = $usergroups[$gid];
 	if ($group['default'] != 1) 
-	return "<font color='#".color_for_user($uid,2)."'>".$group['title']."</font>";
+	return "<font color='#".$group['nc'.$usex]."'>".$group['title']."</font>";
 	else return "";
 }
 

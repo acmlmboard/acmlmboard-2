@@ -13,7 +13,7 @@ if ($_GET['ajax'])
 	$ajax = $_GET['ajax'];
 	if ($ajax == 'localmodRow')
 	{
-		$user = $sql->fetchp("SELECT id,name,displayname,sex,group_id FROM users WHERE name=? OR displayname=?",array($_GET['user'],$_GET['user']));
+		$user = $sql->fetchp("SELECT ".userfields()." FROM users WHERE name=? OR displayname=?",array($_GET['user'],$_GET['user']));
 		if (!$user) die();
 		print $user['id'].'|'.localmodRow($user);
 	}
@@ -338,7 +338,7 @@ else if ($fid = $_GET['fid'])
 ".			"			$L[TD] id=\"modlist\" style=\"vertical-align:top;\">
 ";
 	
-	$qmods = $sql->prepare("SELECT u.id,u.name,u.displayname,u.sex,u.group_id FROM forummods f LEFT JOIN users u ON u.id=f.uid WHERE f.fid=?",array($fid));
+	$qmods = $sql->prepare("SELECT ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid WHERE f.fid=?",array($fid));
 	while ($mod = $sql->fetch($qmods))
 		print "<div>".localmodRow($mod)."</div>";
 		

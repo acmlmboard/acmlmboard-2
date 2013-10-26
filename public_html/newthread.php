@@ -351,10 +351,11 @@ if (!$announce)   {
     {
       $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'{$_POST['question']}','{$_POST['multivote']}','{$_POST['changeable']}')");
 	  
-      foreach ($_POST['opt'] as $id => $text)
+      foreach ($_POST['opt'] as $id => $_text)
 	  {
 	    $color = stripslashes($_POST['col'][$id]);
 		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
+		$text = $sql->escape($_text);
 		
         $sql->query("INSERT INTO polloptions (`poll`,`option`,r,g,b) VALUES ($tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
 	  }

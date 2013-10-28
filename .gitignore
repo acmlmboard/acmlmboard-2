@@ -6,6 +6,7 @@ temp
 .DS_Store
 Thumbs.db
 ._*
+.apdisk
 public_html/themes_serial.txt
 public_html/gfx/tags/*
 

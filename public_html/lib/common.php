@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "10/28/2013";
+  $abdate    = "12/30/2013";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -694,7 +694,7 @@
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>
-             &copy; 2005-2013 $boardprog
+             &copy; 2005-2014 $boardprog
            $L[TBLend]";
     pagestats();
     //miscbar(); disabled until needed. -Emuz

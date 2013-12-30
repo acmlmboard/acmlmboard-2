@@ -15,7 +15,7 @@
   }
 
   $query = "SELECT id,posts,regdate,name,sex,power,SUM(num) num FROM (
-          SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,CASE WHEN COUNT(*) >10 THEN 10 ELSE COUNT(*) END num 
+          SELECT u.id,u.posts,regdate,u.name,u.sex,u.group_id,CASE WHEN COUNT(*) >10 THEN 10 ELSE COUNT(*) END num 
           FROM users u 
           LEFT JOIN posts p ON p.user=u.id 
           LEFT JOIN threads t ON t.id=p.thread 
@@ -24,7 +24,7 @@
           AND f.private=0 AND p.deleted=0 
           GROUP BY p.thread,u.id) inter GROUP BY id ORDER BY num DESC";
   if(isset($easymode)) {
-    $query = "SELECT u.id,u.posts,regdate,u.name,u.sex,u.power,COUNT(*) num
+    $query = "SELECT u.id,u.posts,regdate,u.name,u.sex,u.group_id,COUNT(*) num
           FROM users u
           LEFT JOIN posts p ON p.user=u.id
           LEFT JOIN threads t ON t.id=p.thread

@@ -1,6 +1,13 @@
 <?php
 
 	$rankcache = array();
+	
+	// [Mega-Mario] Check for birthdays globally.
+	// Makes stuff like checking for rainbow usernames a lot easier.
+	$rbirthdays = $sql->query("SELECT `id` FROM `users` WHERE `birth` LIKE '".date('m-d')."%'");
+	$userbirthdays = array();
+	while ($bd = $sql->fetch($rbirthdays))
+		$userbirthdays[$bd['id']] = true;
 
   function checkuser($name,$pass){
     global $sql;
@@ -74,7 +81,7 @@ function renderdotrank($posts=0){
           {
             for ($x = 0; $x < $num; $x++) 
             {
-              $rank .= "<img src=img/dots/dot". $dot .".gif align=\"absmiddle\">";
+              $rank .= "<img src=\"img/dots/dot". $dot .".gif\" align=\"absmiddle\">";
             }
           }
 
@@ -153,54 +160,64 @@ function renderdotrank($posts=0){
     $namecolor="color=$rndcolor";
     return $rndcolor;   
   }
+  
+function userfields($tbl='', $pf='')
+{
+	$fields = array('id','name','displayname','sex','group_id');
+	
+	$ret = '';
+	foreach ($fields as $f)
+	{
+		if ($ret) $ret .= ',';
+		if ($tbl) $ret .= '`'.$tbl.'`.';
+		$ret .= '`'.$f.'`';
+		if ($pf) $ret .= ' AS `'.$pf.$f.'`';
+	}
+	
+	return $ret;
+}
 
  function userlink_by_id($uid,$usemini='') {
     global $sql;
-    $u = $sql->fetchp("SELECT id,name,displayname,power,minipic FROM users WHERE id=?",array($uid));        
+    $u = $sql->fetchp("SELECT ".userfields().",minipic FROM users WHERE id=?",array($uid));        
     $u['showminipic']=$usemini;   
     return userlink($u);
  }
 
  function userlink($user,$u='',$usemini=''){
     global $loguser;
-    if(!$user[$u.name])
-      $user[$u.name]='&nbsp;';
+    if(!$user[$u.'name'])
+      $user[$u.'name']='&nbsp;';
 
-    return '<a href=profile.php?id='.$user[$u.id].'>'
+    return '<a href="profile.php?id='.$user[$u.'id'].'">'
           .userdisp($user,$u,$usemini)
           .'</a>';
   }
 
   function userdisp($user,$u='',$usemini=''){
-    global $sql;
-    if($user[$u.'power']<0)
-      $user[$u.'power']='x';
+    global $sql, $usergroups, $userbirthdays;
+
     //$usemini = true;
     if($usemini) $user['showminipic'] = true;
 
-
-  //global $loguser;
- // if ($loguser['id'] != 640 && $user[$u.name] == "smwedit") $user[$u.name] = "smwdork"; 
-/* Broken as of 2011-09-18 -Emuz */
-  $nc= color_for_user($user[$u.'id']);
-  if($nc=="RAINBOW") $nc=randnickcolor();
-  $n = $user[$u.'name'];
-  if($user[$u.'displayname'])
-  	$n = $user[$u.'displayname'];
-   if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
-   else $minipic="";
-  return "$minipic<font color='#$nc'>" //class=nc".$user[$u.sex].$user[$u.power].'>'
-  //return "$minipic<font class=nc".$user[$u.sex].$user[$u.power].'>'
-         .str_replace(" ","&nbsp;",htmlval($n))
-         .'</font>';
- /* return '<font color=#'. $c .'>'
-          .htmlval($user[$u.name])
-          .'</font>';
-
-    return '<font '. $namecolor .'>'
-          .htmlval($user[$u.name])
-          .'</font>';
-*/
+	if (isset($userbirthdays[$user[$u.'id']]))
+		$nc = randnickcolor();
+	else
+	{
+		$group = $usergroups[$user[$u.'group_id']];
+		$nc = $group['nc'.$user[$u.'sex']];
+	}
+	
+	$n = $user[$u.'name'];
+	if($user[$u.'displayname'])
+		$n = $user[$u.'displayname'];
+		
+	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
+	else $minipic="";
+   
+	return "$minipic<span style='color:#$nc;'>"
+		.str_replace(" ","&nbsp;",htmlval($n))
+		.'</span>';
 }
 
 

@@ -1,0 +1,83 @@
+/* META
+Windows 95 (Danika)
+
+*/
+a:link		{color: #0088CC}
+a:visited	{color: #8800CC}
+a:active	{color: #CC0088}
+a:hover		{color: #CC0088}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #008888;
+	font-family: Microsoft Sans Serif, Arial, sans-serif;
+}
+body, table {
+	color: #FFFFFF;
+	font-size: 11px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: 3px inset #AAAAAA;
+	padding: 2px;
+}
+td.n1, tr.n1 td {
+	background: #CCCCCC;
+	color: #000000;
+}
+td.n2, tr.n2 td {
+	background: #FFFFFF;
+	color: #000000;
+	padding: 2px;
+}
+td.h, tr.h td {
+	background: #000088;
+	color: #FFFFFF;
+	font-weight: bold;
+	padding: 3px;
+}
+tr.c td {
+	background: #CCCCCC;
+	color: #000000;
+}
+tr.h td, tr.c td {
+	text-align: left;
+}
+td.nb {
+	color: #000000;
+}
+
+
+.sfont {
+	font-size: 11px;
+	font-family: Microsoft Sans Serif, Arial, sans-serif;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: 2px ridge #AAAAAA;
+	background-color: #FFFFFF;
+	color: #000000;
+	font-family: Microsoft Sans Serif, Arial, sans-serif;
+	font-size: 8pt;
+}
+.submit {
+	border: 2px outset #AAAAAA;
+	background-color: #CCCCCC;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #000000;
+	font: 8pt Microsoft Sans Serif, Arial, sans-serif;
+}

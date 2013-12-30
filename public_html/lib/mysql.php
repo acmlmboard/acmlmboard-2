@@ -123,7 +123,7 @@
       return $res;
     }
     function resultp($query,$phs,$row=0,$col=0){
-      return $this->resultq(self::preparesql($query,$phs),$row,$col);
+      return $this->resultq($this->preparesql($query,$phs),$row,$col);
     }
 	
 	function insertid()

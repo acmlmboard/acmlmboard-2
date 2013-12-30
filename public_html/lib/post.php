@@ -3,7 +3,7 @@
 
   function userlink_by_name($name) {
     global $sql;
-    $u = $sql->fetchp("SELECT id,name,displayname,power,minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
+    $u = $sql->fetchp("SELECT ".userfields().",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
     if ($u) return userlink($u);
     else return 0;
   }
@@ -33,11 +33,8 @@
   
   function securityfilter($msg)
   {
-	$tags=array('script','iframe','embed','object','textarea','noscript','meta','xmp','plaintext','base');
-    foreach($tags as $tag){
-      $msg=preg_replace("'<$tag(.*?)>'si" ,"&lt;$tag\\1>" ,$msg);
-      $msg=preg_replace("'</$tag(.*?)>'si","&lt;/$tag>",$msg);
-    }
+	$tags='script|iframe|embed|object|textarea|noscript|meta|xmp|plaintext|base';
+    $msg=preg_replace("'<(/?)({$tags})'si" ,"&lt;$1$2" ,$msg);
 
 	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1$2&#x3D;', $msg);
 
@@ -52,17 +49,19 @@
   function makecode($match)
   {
 	global $L;
-	$list = array("<","\r\n","[",":",")","_","@","-");
-    $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
+	$code = htmlspecialchars($match[1]);
+	$list = array("\r\n","[",":",")","_","@","-");
+    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
   }
  
   function makeirc($match)
   {
-  global $L;
-  $list = array("<","\r\n","[",":",")","_","@","-");
-    $list2 = array("&lt;","<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-  return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$match[1])."</code></table>";
+    global $L;
+	$code = htmlspecialchars($match[1]);
+    $list = array("\r\n","[",":",")","_","@","-");
+    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
   } 
   function makesvg($match)
   {
@@ -100,6 +99,17 @@
 ".		"	</div>
 ".		"</td></tr></table>";
   }
+  
+  function filterstyle($match)
+  {
+	$style = $match[2];
+	
+	// remove newlines.
+	// this will prevent them being replaced with <br> tags and breaking the CSS
+	$style = str_replace("\n", '', $style);
+	
+	return $match[1].$style.$match[3];
+  }
 
  function postfilter($msg, $nosmilies=0){
     global $smilies, $L, $config, $sql, $swfid;
@@ -109,6 +119,9 @@
 
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
+	
+	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
+	$msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
 	// security filtering needs to be done before [svg] is parsed because [svg]
 	// uses tags that are otherwise blacklisted

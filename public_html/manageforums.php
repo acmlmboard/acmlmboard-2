@@ -1,415 +1,639 @@
 <?php
-  
-  require 'lib/common.php';
+require('lib/common.php');
 
-  if (isset($_GET[a]) && $_GET[a] == 's' && has_perm('edit-forums')) {
+if (!has_perm('edit-forums')) 
+{
+	pageheader('Forum management');
+	no_perm();
+}
 
-    $id = $_POST[id];
-    if (!checknumeric($id))
-      die();
 
-    //save
-    switch ($_POST[t]) {
-      case 'f': //Saving forum
-        if (isset($_POST['save'])) {
-          $min=$_POST[minpower];
-          if ($min < 0) $min = 0;
-          if ($id == -2) //If it's a new forum, get the next available fid (-2 is a flag value)
-            $id = $sql->resultq("select (id+1) nid from forums order by nid desc limit 1");
-			$sql->query("insert into `forums` (id, title, descr, minpower, cat, ord, minpowerthread, minpowerreply, lastid, posts, lastdate) values ($id, '".$_POST[title]."', '$_POST[descr]
-						', $_POST[minpower], $_POST[cat], $_POST[ord], $_POST[minpowerthread], $_POST[minpowerreply], 0, 0, 0) on duplicate key update
-						title='$_POST[title]', descr='".$_POST[descr]."', minpower=$_POST[minpower], minpowerreply=$_POST[minpowerreply]
-						, minpowerthread=$_POST[minpowerthread], cat=$_POST[cat], ord=$_POST[ord]");
-			$lmods = explode(",", $_POST['localmods']); //All $_POST values are filtered as part of the board framework, so no need to re-filter here.
-			$sql->query("DELETE FROM `forummods` WHERE `fid`=$id");
-			foreach ($lmods as $modid)
-				if (strlen($modid))
-					$sql->query("INSERT INTO `forummods` (`uid`, `fid`) VALUES ($modid, $id)");
+if ($_GET['ajax'])
+{
+	$ajax = $_GET['ajax'];
+	if ($ajax == 'localmodRow')
+	{
+		$user = $sql->fetchp("SELECT ".userfields()." FROM users WHERE name=? OR displayname=?",array($_GET['user'],$_GET['user']));
+		if (!$user) die();
+		print $user['id'].'|'.localmodRow($user);
+	}
+	else if ($ajax == 'renderTag')
+	{
+		renderTag($_GET['text'], null, -1, $_GET['color']);
+	}
+	else if ($ajax == 'tagRow')
+	{
+		if (!trim($_GET['text']) || !trim($_GET['tag']) || !trim($_GET['color'])) die();
+		print tagRow($_GET['text'], $_GET['tag'], null, (int)$_GET['bit'], $_GET['color']);
+	}
+	
+	die();
+}
+
+
+$error = '';
+
+if ($_POST['savecat'])
+{
+	// save new/existing category
+	
+	$cid = $_GET['cid'];
+	$title = autodeslash($_POST['title']);
+	$ord = (int)$_POST['ord'];
+	$private = $_POST['private'] ? 1:0;
+	
+	if (!trim($title))
+		$error = 'Please enter a title for the category.';
+	else
+	{
+		if ($cid == 'new')
+		{
+			$cid = $sql->resultq("SELECT MAX(id) FROM categories");
+			if (!$cid) $cid = 0;
+			$cid++;
 			
-			// Read $_POST[tagops] and sort into delete and add/update queues.  Run through all the deletions, THEN process add/removes.
-
-
-			/*
-				Particularly observant coders, upon seeing manageforum.js, might notice that normally all the deletion entries will come first from the client-side code
-				and that sorting the entries so deletions can be handled first isn't necessary. I've chosen NOT to take that optimization in order to handle the potential
-				case of someone deliberately trying to mess with the server by sending malformed (or badly-ordered) tag change entries.  Of course, it's also possible that
-				the order will change due to future revisions so I might as well cover that case too.
-			*/
+			$sql->prepare("INSERT INTO categories (id,title,ord,private) VALUES (?,?,?,?)", array($cid, $title, $ord, $private));
+		}
+		else
+		{
+			$cid = (int)$cid;
+			if (!$sql->resultp("SELECT COUNT(*) FROM categories WHERE id=?",array($cid)))
+				die(header('Location: manageforums.php'));
 			
-			$deletions = array();
-			$modifications = array();
-			$additions = array();
-			$operations = explode(";", $_POST[tagops]);
-
-			for ($x = 0; $x < count($operations) - 2; $x++) {
-				switch ($operations[$x]) {
-					case "a":
-						array_push($additions, array($operations[$x + 1], $operations[$x + 2], $operations[$x + 3]));
-						$x += 3;
-						break;
-					case "d":
-						array_push($deletions, array($operations[$x + 1]));
-						$x++;
-						break;
-					case "u":
-						array_push($modifications, array($operations[$x + 1], $operations[$x + 2], $operations[$x + 3], $operations[$x + 4]));
-						$x += 4;
-						break;
-					default:
-						//If an entry is malformed, immediately stop sorting/processing tag changes.  Since this is the last step of saving a forum, simply stop and redirect the user.
-						//I thought of using a goto down to the normal redirect part to avoid code duplication, but gotos can present maintenance headaches...
-						header("location: manageforums.php");
-						die();
-				}
-			}
-			
-			$tagcount = $sql->resultq("select count(`bit`) from `tags` where `fid`=$id");
-			$tagcount += count($additions) - count($deletions);
-			if ($tagcount <= 32) {
-				foreach ($deletions as $deletion) {
-					$sql->query("update `threads` set `tags` = `tags` & ~".(1 << $deletion[0])." WHERE `forum`=$id");
-					$sql->query("delete from `tags` where `fid`=$id and `bit` = $deletion[0]");
-				}
-				foreach ($modifications as $modification) {
-					$sql->query("update `tags` set `tag`='$modification[1]', `name`='$modification[2]', `color`='$modification[3]' where `fid`=$id and `bit`=$modification[0]");
-					renderTag($modification[1], $id, $modification[0], $modification[3]);
-				}
-				
-				//I wish I could have come up with a cleaner solution...
-				$sql->query("CREATE TEMPORARY TABLE TempTable(FreeId INT)");
-				$sql->query("INSERT INTO `TempTable` VALUES(0),(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(14),(15),(16),(17),(18),(19),(20),(21),(22),(23),(24),(25),(26),(27),(28),(29),(30),(31)");
-				$FreeIds = $sql->query("SELECT `T`.`FreeId` FROM `TempTable` `T` LEFT JOIN `tags` ON `tags`.`bit` = `T`.`FreeId` and `tags`.`fid`=$id WHERE `tags`.`bit` IS NULL");
-				$sql->query("DROP TEMPORARY TABLE `TempTable`");
-				foreach ($additions as $addition) {
-					$FreeId = $sql->fetch($FreeIds);
-					$FreeId = $FreeId['FreeId'];
-					$sql->query("insert into `tags` (`fid`, `bit`, `tag`, `name`, `color`) values ($id, $FreeId, '$addition[0]', '$addition[1]', '$addition[2]')");
-					renderTag($addition[0], $id, $FreeId, $addition[2]);
-				}
-			}
-
-        } elseif (isset($_POST['delete'])) {
-          if ($id <= 0) //Refuse to delete "utility" forums
-            break;
-          $sql->query("delete from `forums` where `id`=$id");
-		  $sql->query("delete from `tags` where `fid`=$id");
-		  $sql->query("delete from `localmods` where `fid`=$id");
-          $sql->query("update `threads` set `forum`=-3, tags=0 where `forum`=$id"); //And then if you're deleting the forum, move the orphaned threads to the correct forum, and strip all tags.
-		  //NOTE: the "correct forum" is forum -3, the "orphanage" utility forum.  It's a magic number.
-        }
-        break;
-      case 'c': //Save Category
-        if (isset($_POST[save])) {
-          if ($id==-2)
-            $id = $sql->resultq("select (id+1) nid from categories order by nid desc limit 1");
-          $sql->query("replace into `categories` (id, ord, title, minpower) values ($id, ".addslashes($_POST[ord]).", '".$_POST[title]."', ".$_POST[minpower].")");
-        } elseif (isset($_POST['delete'])) {
-          $sql->query("delete from `categories` where `id`=$id");
-          $sql->query("update `forums` set `cat`=0 where `cat`=$id");
-        }
-        break;
-    }
-    header("location: manageforums.php");
-    die();
-  }
-
-  pageheader("Forums Administration");
-  $forum_perm = "";
-
-  if (!has_perm('edit-forums')) no_perm();
-
-  if (isset($_GET[t]) && $_GET[t]=='f') { //Edit Forum
-    print "<script type=\"text/javascript\" src=\"manageforum.js\"></script>";
-	//Unplanned "feature": Insert a row for forum id -2 into the database, and it'll be treated as a "template" forum.
-    $data = $sql->fetchq("select id,title,descr,ord,cat,minpower,minpowerthread,minpowerreply from forums where id=".addslashes($_GET[i])." union select -2 id, '' title, '' descr, 0 ord, 1 cat, 0 minpower, 0 minpowerthread, 0 minpowerreply");
-    $data[title] = str_replace("\"","'",$data[title]);
-    $data[descr] = str_replace("\"","'",$data[descr]);
-
-  if (has_perm('edit-permissions')){
-    $forum_perm = $L['TR1'].">
-".        "  ".$L['TD1']." colspan='5'>
-".        "      <center><a href=\"editperms.php?fid=$_GET[i]\">Edit Per-Forum Perms</a> (This is temp until we rework forums editing.)</center>
-".        "    </td>
-".        "  </tr>";
-  } 
-
-    print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=f\">".$L['TBL1']." width=\"100%\">    
-".        "  $L[TRh]>
-".        "    $L[TDhc] colspan=4> ".($_GET[i]>=0 ? "Edit" : "Create")." Forum
-".        "    </td>
-".        "  </tr>
-".           $L['TR1'].">
-".           $L['TD1'].">
-".        "      Title
-".        "    </td>
-".            $L['TD1'].">
-".        "      $L[INPt]=\"title\" value=\"$data[title]\" style=\"width: 220px\">
-".        "    </td>
-".            $L['TD1'].">
-".        "      Description
-".        "    </td>
-".            $L['TD1'].">
-".        "      $L[INPt]=\"descr\" value=\"$data[descr]\" style=\"width: 520px\">
-".        "    </td>
-".            $L['TR2'].">
-".            $L['TD2'].">
-".        "      Category:
-".        "    </td>
-".        "  ".$L['TD2'].">
-".        "      ".categorylist($data[cat])."
-".        "    </td>
-".            $L['TD2'].">
-".        "      Order:
-".        "    </td>
-".        "  ".$L['TD2'].">
-".        "      $L[INPt]=\"ord\" value=\"$data[ord]\" style=\"width: 40px\">
-".        "    </td>
-".        "  </tr>
-".            $L['TR1'].">
-".            $L['TD1'].">
-".        "      Minimum powerlevel to view:
-".        "    </td>
-".        "  ".$L['TD1'].">
-".        "      $L[INPt]=\"minpower\" value=\"$data[minpower]\" style=\"width: 40px\">
-".        "    </td>
-".            $L['TD1'].">
-".        "      Minimum powerlevel to post:
-".        "    </td>
-".        "  ".$L['TD1'].">
-".        "      $L[INPt]=\"minpowerreply\" value=\"$data[minpowerreply]\" style=\"width: 40px\">
-".        "    </td>
-".        "  </tr>
-".            $L['TR2'].">
-".            $L['TD2'].">
-".        "      Minimum powerlevel to post new threads:
-".        "    </td>
-".        "  ".$L['TD2']." colspan='3'>
-".        "      $L[INPt]=\"minpowerthread\" value=\"$data[minpowerthread]\" style=\"width: 40px\">
-".        "    </td>
-".        "  </tr>
-".$forum_perm."
-".        "</table> <br />
-".         $L['TBL1'].">
-".            $L[TRh].">
-".        "    $L[TDhc] colspan=4> Select Moderators
-".        "    </td>
-".        "  </tr>
-".            $L['TR1'].">
-".            $L['TD1'].">
-".        "      Search string: $L[INPt]=\"srchstr\" id=\"srchnm\" value=\"\" style=\"width: 140px\">
-".        "    </td>
-".            $L['TD1'].">
-".        "      Matches:<select name=\"slctnm\" id=\"slctnm\" style=\"min-width: 240px\"></select>
-".        "    $L[BTTn]=\"btnadd\">&gt;&gt;</button>
-".        "    </td>
-".            $L['TD1']." COLSPAN=\"2\">
-".        "      Local Moderators: 
-".        "      ".moderatorlist($data[id])."
-".        "    $L[BTTn]=\"btnrmv\">X</button>
-".        "    </td>
-".        "  </tr>
-".        "</table> <br />
-".         $L['TBL1'].">
-".            $L[TRh].">
-".        "    $L[TDhc] colspan=4> Manage Tags
-".        "    </td>
-".        "  </tr>
-".            $L['TR2'].">
-".            $L['TD2'].">
-".               taglist($data[id])."
-".        "    </td>
-".            $L['TD2'].">
-".        "    $L[BTTn]=\"modtg\">Edit</button> <br />
-".        "    $L[BTTn]=\"deltg\">Delete</button>
-".        "    </td>
-".            $L['TD2']." colspan=\"2\"><script type=\"text/javascript\" src=\"jscolor/jscolor.js\"></script>
-".        "      Colour: <input class=\"color {pickerFaceColor:'transparent',pickerBorder:0,pickerInsetColor:'black'}\" value=\"808080\" name=\"color\" id=\"tgcol\"> <br />
-".        "      Inline Form: $L[INPt]=\"tgshrt\" id=\"tgshrt\" size=5 maxlength=20 value=\"\"> <br />
-".        "      &nbsp;Descriptive Form: $L[INPt]=\"tglong\" id=\"tglong\" value=\"\" style=\"width: 200px\"> <br />
-".        "      $L[BTTn]=\"savtg\">Save</button> $L[BTTn]=\"clrtg\">Clear</button>
-".        "      $L[INPh]=\"tagops\" id=\"tagops\" value=\"\" />
-".        "    </td>
-".        "  </tr>
-".        "</table> <br />
-".         $L['TBL1'].">
-".            $L[TRh].">
-".        "    $L[TDhc] colspan=4> Actions
-".        "    </td>
-".        "  </tr>
-".            $L['TR1'].">
-".             $L['TD1c']." colspan=4>
-".        "      $L[INPs]=save id=\"svefm\" value=\"Save Forum\">";
-
-  if ($data[id] > 0) //If not creating a new forum, give the option to delete it
-    print " $L[INPs]=delete value=\"Delete Forum\" onclick=\"return confirm('Are you sure you wish to delete ".str_replace("'","\\'", $data[title])."?  This action cannot be undone!')\">";
-
-  print   "  </tr>
-".           $L['TR2'].">
-".             $L['TD2c']." colspan=4> <br />
-".        "      <a href=manageforums.php>Back</a>
-".        "$L[TBLend]
-".        "$L[INPh]=\"id\" value=\"$data[id]\">$L[INPh]=\"t\" value=\"$_GET[t]\"></form><br>";
-
-  } elseif (isset($_GET[t])&&$_GET[t]=='c') {
-    $data = $sql->fetchq("select id,title,minpower,ord from categories where id=".addslashes($_GET[i])." union select -2 id, '' title, 0 minpower, 0 ord");
-    $data[title] = str_replace("\"","'",$data[title]);
-
-        print "<form method=\"post\" enctype=\"multipart/form-data\" action=\"manageforums.php?a=s&t=c\">".$L['TBL1']." width=\"100%\">    
-".        "  $L[TRh]>
-".        "    $L[TDhc] colspan=2> ".($_GET[i]>=0?"Edit":"Create")." Category
-".        "    </td>
-".        "  </tr>
-".           $L['TR1'].">
-".           $L['TD1'].">
-".        "      Title
-".        "    </td>
-".            $L['TD1'].">
-".        "      $L[INPt]=\"title\" value=\"$data[title]\" style=\"width: 220px\">
-".        "    </td>
-".            $L['TR2'].">
-".            $L['TD2'].">
-".        "      Order:
-".        "    </td>
-".        "  ".$L['TD2'].">
-".        "      $L[INPt]=\"ord\" value=\"$data[ord]\" style=\"width: 40px\">
-".        "    </td>
-".        "  </tr>
-".            $L['TR1'].">
-".            $L['TD1'].">
-".        "      Minimum powerlevel to view:
-".        "    </td>
-".        "  ".$L['TD1'].">
-".        "      $L[INPt]=\"minpower\" value=\"$data[minpower]\" style=\"width: 40px\">
-".        "    </td>
-".        "  </tr>
-".            $L[TRh].">
-".        "    $L[TDhc] colspan=4> Actions
-".        "    </td>
-".            $L['TR1'].">
-".             $L['TD1c']." colspan=4>
-".        "      $L[INPs]=save value=\"Save Category\">";
-
-  if ($data[id] > 0)
-    print " $L[INPs]=delete value=\"Delete Category\" onclick=\"return confirm('Are you sure you wish to delete $data[title]?  This action cannot be undone!')\">";
-
-  print   $L['TR2'].">
-".             $L['TD2c']." colspan=4>
-".        "      <a href=manageforums.php>Back</a>
-".        "$L[TBLend]
-".        "$L[INPh]=\"id\" value=\"$data[id]\">$L[INPh]=\"t\" value=\"$_GET[t]\"></form><br>";
-  } else {
-
-    $forums = $sql->query("select f.id, f.title, f.cat, f.ord, f.descr from forums f left join categories c on c.id = f.cat where f.id > 0 order by c.ord, f.cat, f.ord");
-    $cats = $sql->query("select id, title from categories order by ord");
-    print "$L[TBL] style=\"border:0px; font-size: 0.9em; width: 100%\">
-".        "  $L[TR] style=\"border:0px\">
-".        "    $L[TDc] style=\"border:0px; vertical-align: top\" width=\"50%\">
-".        "      $L[TBL1] style=\"width: 95%\">
-".        "  $L[TRh]>
-".        "    $L[TDhc]>
-".        "      Edit Forums
-".        "    </td>";
-    $cid = -1;
-    while ($forum = $sql->fetch($forums)){
-      if ($cid != $forum[cat] && $forum[cat] > 0)
-        print "  $L[TR]>
-".      "    $L[TD2c]>
-".      "      ".$sql->resultq("select title from categories where id=$forum[cat]")."
-".      "    </td>";
-      $cid = $forum[cat];
-      print "  $L[TR]>
-".          "    $L[TD3c]>
-".          "      <a href=\"?a=e&t=f&i=$forum[id]\">$forum[title]</a>
-".          "    </td></tr>";
-    }
-
-    print "  </tr>
-".        "$L[TR]>
-".        "    $L[TD3c]>
-".        "      <a href=\"?a=e&t=f&i=-2\">(New)</a>
-".        "    </td></tr>
-".        "$L[TBLend]
-".        "    </td>
-".        "    $L[TDc] style=\"border:0px; vertical-align: top\" width=\"50%\">
-".        "      $L[TBL1] style=\"width: 95%\">
-".        "  $L[TRh]>
-".        "    $L[TDhc]>
-".        "      Edit Categories
-".        "    </td>";
-    while ($cat = $sql->fetch($cats)){
-       print "  $L[TR1]>
-".           "    $L[TD3c]>
-".           "      <a href=\"?a=e&t=c&i=$cat[id]\">$cat[title]</a>
-".           "    </td></tr>";
-    }
-
-    print   "  </tr>
-".        "$L[TR]>
-".        "    $L[TD3c]>
-".        "      <a href=\"?a=e&t=c&i=-2\">(New)</a>
-".        "    </td></tr>
-".        "$L[TBLend]
-".        "    </td>
-".        "  </tr>
-".        "$L[TBLend]
-".        "<br>";
-  }
-
-
-  pagefooter();
-
-  function categorylist($id=-1) {
-    global $sql,$L;
-    $cats = $sql->query("select title, id from categories");
-    $catst = $L[INPl]."=\"cat\">";
-    while ($cat=$sql->fetch($cats))
-      $catst.="<option value=\"$cat[id]\"".($id==$cat[id]?"selected=\"selected\"":"").">$cat[title]</option>";
-    return $catst."</select>";
-  }
-
-  function moderatorlist($fid=-1) {
-    global $sql,$L;
-    $mods = $sql->query("SELECT `f`.`uid`, `u`.`name` FROM `forummods` `f` JOIN `users` `u` ON `u`.`id` = `f`.`uid` WHERE `f`.`fid`=$fid");
-    $st = $L[INPl]."\"mods\" id=\"lmods\" style=\"min-width: 240px;\">";
-    while ($mod=$sql->fetch($mods)) {
-      $st.="<option value=\"$mod[uid]\">$mod[name]</option>";
-      $hst.="$mod[uid],";
-    }
-    return $st."</select>$L[INPh]=\"localmods\" id=\"localmods\" value=\"$hst\" />";
-  }
-
-  function taglist($fid=-1) {
-    global $sql,$L;
-    $tags = $sql->query("SELECT `t`.`bit`, `t`.`fid`,  `t`.`name`, `t`.`tag`, `t`.`color` FROM `tags` `t` WHERE `t`.`fid`=$fid");
-    $st = $L[INPl]."\"tglst\" id=\"tglst\" size=\"5\" style=\"min-width: 280px;\">";
-	$count = 0;
-    while ($tag=$sql->fetch($tags)) {
-		$st.="<option value=\"[&quot;$tag[name]&quot;, &quot;$tag[tag]&quot;, true, ".$count++.", true, 0, $tag[bit], &quot;$tag[color]&quot;]\">$tag[name] ($tag[tag])</option>";
-    }
-    return $st."</select>";
-  }
-
-	function renderTag($TagText, $ForumID, $TagBit, $TintColour) {
+			$sql->prepare("UPDATE categories SET title=?, ord=?, private=? WHERE id=?", array($title, $ord, $private, $cid));
+		}
 		
-		$TagTextImage = RenderText($TagText);
-		$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
-
-		$LeftImage = Image::LoadPNG("./gfx/tagleft.png");
-		$RightImage = Image::LoadPNG("./gfx/tagright.png");
-		$Tag->DrawImageDirect($LeftImage, 0, 0);
+		saveperms('categories', $cid);
 		
-		for ($X = 7; $X < $Tag->Size[0] - 7; $X += 4)
-			$Tag->DrawImageDirect($RightImage, $X, 0);
+		die(header('Location: manageforums.php?cid='.$cid));
+	}
+}
+else if ($_POST['delcat'])
+{
+	// delete category
+	
+	$cid = (int)$_GET['cid'];
+	$sql->prepare("DELETE FROM categories WHERE id=?",array($cid));
+	
+	deleteperms('categories', $cid);
+	die(header('Location: manageforums.php'));
+}
+else if ($_POST['saveforum'])
+{
+	// save new/existing forum
 
-		$Tag->DrawImageDirect($RightImage, $Tag->Size[0] - 8, 0);
-		$Tag->Colourize(hexdec(substr($TintColour, 0, 2)), hexdec(substr($TintColour, 2, 2)), hexdec(substr($TintColour, 4, 2)), 0xFF);
+	$fid = $_GET['fid'];
+	$cat = (int)$_POST['cat'];
+	$title = autodeslash($_POST['title']);
+	$descr = autodeslash($_POST['descr']);
+	$ord = (int)$_POST['ord'];
+	$private = $_POST['private'] ? 1:0;
+	$trash = $_POST['trash'] ? 1:0;
+	$readonly = $_POST['readonly'] ? 1:0;
+	$announcechan_id = (int)$_POST['announcechan_id'];
+	
+	if (!trim($title))
+		$error = 'Please enter a title for the forum.';
+	else
+	{
+		if ($fid == 'new')
+		{
+			$fid = $sql->resultq("SELECT MAX(id) FROM forums");
+			if (!$fid) $fid = 0;
+			$fid++;
+			
+			$sql->prepare("INSERT INTO forums (id,cat,title,descr,ord,private,trash,readonly,announcechan_id) VALUES (?,?,?,?,?,?,?,?,?)", 
+				array($fid, $cat, $title, $descr, $ord, $private, $trash, $readonly, $announcechan_id));
+		}
+		else
+		{
+			$fid = (int)$fid;
+			if (!$sql->resultp("SELECT COUNT(*) FROM forums WHERE id=?",array($fid)))
+				die(header('Location: manageforums.php'));
+			
+			$sql->prepare("UPDATE forums SET cat=?, title=?, descr=?, ord=?, private=?, trash=?, readonly=?, announcechan_id=? WHERE id=?", 
+				array($cat, $title, $descr, $ord, $private, $trash, $readonly, $announcechan_id, $fid));
+		}
+		
+		// save localmods
+		
+		$oldmods = array();
+		$qmods = $sql->prepare("SELECT uid FROM forummods WHERE fid=?",array($fid));
+		while ($mod = $sql->fetch($qmods))
+			$oldmods[$mod['uid']] = 1;
+		
+		$newmods = $_POST['localmod'];
+		
+		foreach ($oldmods as $uid=>$blarg)
+		{
+			if (!$newmods[$uid])
+				$sql->prepare("DELETE FROM forummods WHERE fid=? AND uid=?", array($fid, $uid));
+		}
+		foreach ($newmods as $uid=>$blarg)
+		{
+			if (!$oldmods[$uid])
+				$sql->prepare("INSERT INTO forummods (fid,uid) VALUES (?,?)", array($fid, $uid));
+		}
+		
+		// save tags
+		
+		$oldtags = array();
+		$qtags = $sql->prepare("SELECT bit,tag,color FROM tags WHERE fid=?",array($fid));
+		while ($tag = $sql->fetch($qtags))
+			$oldtags[$tag['bit']] = $tag;
+		
+		$newtags = $_POST['tag'];
 
-		$Tag->DrawImageDirect($TagTextImage, 8, 2);
+		foreach ($oldtags as $rbit=>$blarg)
+		{
+			$bit = (int)$rbit;
+			if (!$newtags[$bit])
+				$sql->prepare("DELETE FROM tags WHERE fid=? AND bit=?", array($fid, $bit));
+		}
+		foreach ($newtags as $rbit=>$rdata)
+		{
+			$bit = (int)$rbit;
+			$data = explode('|', $rdata);
+			$name = rawurldecode($data[0]);
+			$tag = rawurldecode($data[1]);
+			$color = rawurldecode($data[2]);
+			
+			if ($oldtags[$bit])
+				$sql->prepare("UPDATE tags SET name=?, tag=?, color=? WHERE fid=? AND bit=?", array($name, $tag, $color, $fid, $bit));
+			else
+				$sql->prepare("INSERT INTO tags (bit,fid,name,tag,color) VALUES (?,?,?,?,?)", array($bit, $fid, $name, $tag, $color));
+			
+			// create the new tag image if needed
+			if (!$oldtags[$bit] || $oldtags[$bit]['tag'] != $tag || $oldtags[$bit]['color'] != $color)
+				renderTag($tag, $fid, $bit, $color);
+		}
+		
+		saveperms('forums', $fid);
+		
+		die(header('Location: manageforums.php?fid='.$fid));
+	}
+}
+else if ($_POST['delforum'])
+{
+	// delete forum
+	
+	$fid = (int)$_GET['fid'];
+	$sql->prepare("DELETE FROM forums WHERE id=?",array($fid));
+	$sql->prepare("DELETE FROM forummods WHERE fid=?",array($fid));
+	$sql->prepare("DELETE FROM tags WHERE fid=?",array($fid));
+	
+	deleteperms('forums', $fid);
+	die(header('Location: manageforums.php'));
+}
+
+
+pageheader('Forum management');
+
+?>
+<script type="text/javascript" src="manageforums.js"></script>
+<script type="text/javascript" src="jscolor/jscolor.js"></script>
+<style type="text/css">label { white-space: nowrap; } input:disabled { opacity: 0.5; }</style>
+<?php
+
+if ($error)
+{
+	print 	"$L[TBL1]>
+".			"	$L[TRh]>$L[TDh]>Error</td></tr>
+".			"	$L[TR]>$L[TD1c]><br>{$error}<br><br></td></tr>
+".			"$L[TBLend]
+".			"<br>
+";
+}
+
+if ($cid = $_GET['cid'])
+{
+	// category editor
+	
+	if ($cid == 'new')
+	{
+		$cat = array('id' => 0, 'title' => '', 'ord' => 0, 'private' => 0);
+	}
+	else
+	{
+		$cid = (int)$cid;
+		$cat = $sql->fetchp("SELECT * FROM categories WHERE id=?",array($cid));
+	}
+	
+	print 	"<form action=\"\" method=\"POST\">
+".			"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>".($cid=='new' ? 'Create':'Edit')." category</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Title:</td>
+".			"			$L[TD2]>$L[INPt]=\"title\" value=\"".htmlspecialchars($cat['title'])."\" size=50 maxlength=500></td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Display order:</td>
+".			"			$L[TD2]>$L[INPt]=\"ord\" value=\"{$cat['ord']}\" size=4 maxlength=10></td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]><label>$L[INPc]=\"private\" value=1".($cat['private'] ? ' checked="checked"':'')."> Private category</label></td>
+".			"		</tr>
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]>
+".			"				$L[INPs]=\"savecat\" value=\"Save category\"> ".($cid=='new' ? '':"
+".			"				$L[INPs]=\"delcat\" value=\"Delete category\" onclick=\"if (!confirm('Really delete this category?')) return false;\"> ")."
+".			"				$L[BTTn]=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
+".			"			</td>
+".			"		</tr>
+".			"	$L[TBLend]
+".			"	<br>
+";
+	
+	permtable('categories', $cid);
+		
+	print 	"</form>
+";
+}
+else if ($fid = $_GET['fid'])
+{
+	// forum editor
+	
+	if ($fid == 'new')
+	{
+		$forum = array('id' => 0, 'cat' => 1, 'title' => '', 'descr' => '', 'ord' => 0, 'private' => 0, 'trash' => 0, 'readonly' => 0, 'announcechan_id' => 0);
+	}
+	else
+	{
+		$fid = (int)$fid;
+		$forum = $sql->fetchp("SELECT * FROM forums WHERE id=?",array($fid));
+	}
+	
+	$qcats = $sql->query("SELECT id,title FROM categories ORDER BY ord, id");
+	$cats = array();
+	while ($cat = $sql->fetch($qcats))
+		$cats[$cat['id']] = $cat['title'];
+	$catlist = fieldselect('cat', $forum['cat'], $cats);
+	
+	$qchans = $sql->query("SELECT id,chan FROM announcechans ORDER BY id");
+	$chans = array(0 => 'Default');
+	while ($chan = $sql->fetch($qchans))
+		$chans[$chan['id']] = $chan['chan'];
+	$chanlist = fieldselect('announcechan_id', $forum['announcechan_id'], $chans);
+	
+	print 	"<form action=\"\" method=\"POST\">
+".			"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>".($fid=='new' ? 'Create':'Edit')." forum</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Title:</td>
+".			"			$L[TD2]>$L[INPt]=\"title\" value=\"".htmlspecialchars($forum['title'])."\" size=50 maxlength=500></td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Description:<br><small>HTML allowed.</small></td>
+".			"			$L[TD2]>$L[TXTa]=\"descr\" rows=3 cols=50>".htmlspecialchars($forum['descr'])."</textarea></td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Category:</td>
+".			"			$L[TD2]>{$catlist}</td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Display order:</td>
+".			"			$L[TD2]>$L[INPt]=\"ord\" value=\"{$forum['ord']}\" size=4 maxlength=10></td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Report to IRC channel:<br><small>Leave this to default if you don't use IRC reporting.</small></td>
+".			"			$L[TD2]>{$chanlist}</td>
+".			"		</tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]>
+".			"				<label>$L[INPc]=\"private\" value=1".($forum['private'] ? ' checked="checked"':'')."> Private forum</label>
+".			"				<label>$L[INPc]=\"readonly\" value=1".($forum['readonly'] ? ' checked="checked"':'')."> Read-only</label>
+".			"				<label>$L[INPc]=\"trash\" value=1".($forum['trash'] ? ' checked="checked"':'')."> Trash forum</label>
+".			"			</td>
+".			"		</tr>
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]>
+".			"				$L[INPs]=\"saveforum\" value=\"Save forum\"> ".($fid=='new' ? '':"
+".			"				$L[INPs]=\"delforum\" value=\"Delete forum\" onclick=\"if (!confirm('Really delete this forum?')) return false;\"> ")."
+".			"				$L[BTTn]=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
+".			"			</td>
+".			"		</tr>
+".			"	$L[TBLend]
+".			"	<br>
+";
+	
+	permtable('forums', $fid);
+
+	// localmods
+	
+	print 	"	<br>
+".			"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>Moderators</td></tr>
+".			"		$L[TRg]>$L[TDg]>Add a moderator</td>$L[TDg]>Current moderators</td></tr>
+".			"		$L[TR2]>
+".			"			$L[TD] style=\"width:50%; vertical-align:top;\">
+".			"				$L[INPt]=\"addmod_name\" id=\"addmod_name\" size=20 maxlength=32 onkeyup=\"localmodSearch(this);\"> $L[BTTn]=\"addmod\" onclick=\"addLocalmod();\">Add</button><br>
+".			"				$L[SEL]=\"addmod_list\" id=\"addmod_list\" style=\"width:200px;\" size=5 onchange=\"chooseLocalmod(this);\"></select>
+".			"			</td>
+".			"			$L[TD] id=\"modlist\" style=\"vertical-align:top;\">
+";
+	
+	$qmods = $sql->prepare("SELECT ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid WHERE f.fid=?",array($fid));
+	while ($mod = $sql->fetch($qmods))
+		print "<div>".localmodRow($mod)."</div>";
+		
+	print 	"			</td>
+".			"		</tr>
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD2c] colspan=2>
+".			"				$L[INPs]=\"saveforum\" value=\"Save forum\">
+".			"			</td>
+".			"		</tr>
+".			"	$L[TBLend]
+".			"	<br>
+";
+	
+	// tags
+
+	print 	"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>Thread tags</td></tr>
+".			"		$L[TRg]>$L[TDg]>Add a tag</td>$L[TDg]>Current tags</td></tr>
+".			"		$L[TR2]>
+".			"			$L[TD] style=\"width:50%; vertical-align:top;\">
+".			"				Name: $L[INPt]=\"tag_name\" id=\"tag_name\" size=20 maxlength=64><br>
+".			"				Tag text: $L[INPt]=\"tag_tag\" id=\"tag_tag\" size=10 maxlength=20><br>
+".			"				Color: <input class=\"color {pickerFaceColor:'black',pickerBorder:0,pickerInsetColor:'black'}\" value=\"808080\" name=\"tag_color\" id=\"tag_color\" size=6 maxlength=6><br>
+".			"				$L[BTTn]=\"newtag\" onclick=\"newTag();\">New tag</button> $L[BTTn]=\"savetag\" onclick=\"saveTag('{$fid}');\">Save tag</button>
+".			"			</td>
+".			"			$L[TD] id=\"taglist\" style=\"vertical-align:top;\">
+";
+
+	$qtags = $sql->prepare("SELECT * FROM tags WHERE fid=?",array($fid));
+	while ($tag = $sql->fetch($qtags))
+		print "<div>".tagRow($tag['name'], $tag['tag'], $fid, $tag['bit'], $tag['color'])."</div>";
+	
+	print 	"			</td>
+".			"		</tr>
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD2c] colspan=2>
+".			"				$L[INPs]=\"saveforum\" value=\"Save forum\">
+".			"			</td>
+".			"		</tr>
+".			"	$L[TBLend]
+";
+	
+	print 	"</form>
+";
+}
+else
+{
+	// main page -- category/forum listing
+	
+	$qcats = $sql->query("SELECT id,title FROM categories ORDER BY ord, id");
+	$cats = array();
+	while ($cat = $sql->fetch($qcats))
+		$cats[$cat['id']] = $cat;
+	
+	$qforums = $sql->query("SELECT f.id,f.title,f.cat FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord, c.id, f.ord, f.id");
+	$forums = array();
+	while ($forum = $sql->fetch($qforums))
+		$forums[$forum['id']] = $forum;
+	
+	$catlist = ''; $c = 1;
+	foreach ($cats as $cat)
+	{
+		$catlist .= "$L[TR]>{$L['TD'.$c]}><a href=\"?cid={$cat['id']}\">{$cat['title']}</a></td></tr>
+";
+		$c = ($c==1) ? 2:1;
+	}
+	
+	$forumlist = ''; $c = 1; $lc = -1;
+	foreach ($forums as $forum)
+	{
+		if ($forum['cat'] != $lc)
+		{
+			$lc = $forum['cat'];
+			$forumlist .= "$L[TRg]>$L[TDg]>{$cats[$forum['cat']]['title']}</td></tr>
+";
+		}
+		
+		$forumlist .= "$L[TR]>{$L['TD'.$c]}><a href=\"?fid={$forum['id']}\">{$forum['title']}</a></td></tr>
+";
+		$c = ($c==1) ? 2:1;
+	}
+	
+	print 	"$L[TBL] style=\"width:100%;\">$L[TR]>
+".			"	$L[TD] style=\"width:50%; vertical-align:top; padding-right:0.5em;\">
+".			"		$L[TBL1]>
+".			"			$L[TRh]>$L[TDh]>Categories</td></tr>
+".			"			$catlist
+".			"			$L[TRh]>$L[TDh]>&nbsp;</td></tr>
+".			"			$L[TR]>$L[TD1]><a href=\"?cid=new\">New category</a></td></tr>
+".			"		$L[TBLend]
+".			"	</td>
+".			"	$L[TD] style=\"width:50%; vertical-align:top; padding-left:0.5em;\">
+".			"		$L[TBL1]>
+".			"			$L[TRh]>$L[TDh]>Forums</td></tr>
+".			"			$forumlist
+".			"			$L[TRh]>$L[TDh]>&nbsp;</td></tr>
+".			"			$L[TR]>$L[TD1]><a href=\"?fid=new\">New forum</a></td></tr>
+".			"		$L[TBLend]
+".			"	</td>
+".			"</tr>$L[TBLend]
+";
+}
+
+pagefooter();
+
+
+function rec_grouplist($parent, $level, $tgroups, $groups)
+{
+	$total = count($tgroups);
+	foreach ($tgroups as $g)
+	{
+		if ($g['inherit_group_id'] != $parent)
+			continue;
+		
+		$g['indent'] = $level;
+		$groups[] = $g;
+		
+		$groups = rec_grouplist($g['id'], $level+1, $tgroups, $groups);
+	}
+	
+	return $groups;
+}
+function grouplist()
+{
+	global $sql, $usergroups;
+	
+	$groups = array();
+	$groups = rec_grouplist(0, 0, $usergroups, $groups);
+	
+	return $groups;
+}
+
+function permtable($bind, $id)
+{
+	global $sql, $L;
+	
+	$qperms = $sql->prepare("SELECT id,title FROM perm WHERE permbind_id=?",array($bind));
+	$perms = array(); 
+	while ($perm = $sql->fetch($qperms))
+		$perms[$perm['id']] = $perm['title'];
+	
+	$groups = grouplist();
+	
+	$qpermdata = $sql->prepare("SELECT x.x_id,x.perm_id,x.revoke FROM x_perm x LEFT JOIN perm p ON p.id=x.perm_id WHERE x.x_type=? AND p.permbind_id=? AND x.bindvalue=?",
+		array('group',$bind,$id));
+	$permdata = array();
+	while ($perm = $sql->fetch($qpermdata))
+		$permdata[$perm['x_id']][$perm['perm_id']] = !$perm['revoke'];
+		
+	print 	"$L[TBL1]>
+".			"	$L[TRh]>$L[TDh]>Group</td>$L[TDh] colspan=2>Permissions</td></tr>
+";
+	
+	$c = 1;
+	foreach ($groups as $group)
+	{
+		$gid = $group['id'];
+		$gtitle = htmlspecialchars($group['title']);
+		
+		$pf = $group['primary'] ? '<strong' : '<span';
+		if ($group['nc2']) $pf .= ' style="color: #'.htmlspecialchars($group['nc2']).';"';
+		$pf .= '>';
+		$sf = $group['primary'] ? '</strong>' : '</span>';
+		$gtitle = "{$pf}{$gtitle}{$sf}";
+		
+		$doinherit = false;
+		$inherit = '';
+		if ($group['inherit_group_id'])
+		{
+			$doinherit = !isset($permdata[$gid]) || empty($permdata[$gid]);
+			
+			$check = $doinherit ? ' checked="checked"':'';
+			$inherit = "<label>$L[INPc]=\"inherit[{$gid}]\" value=1 onclick=\"toggleAll('perm_{$gid}',!this.checked);\"{$check}> Inherit from parent</label>&nbsp;";
+		}
+		
+		$permlist = '';
+		foreach ($perms as $pid => $ptitle)
+		{
+			if ($doinherit) $check = ' disabled="disabled"';
+			else $check = $permdata[$gid][$pid] ? ' checked="checked"':'';
+			
+			$permlist .= "<label>$L[INPc]=\"perm[{$gid}][{$pid}]\" value=1 class=\"perm_{$gid}\"{$check}> {$ptitle}</label> ";
+		}
+		
+		print 	"	{$L['TR'.$c]}>
+".				"		$L[TD] style=\"width:200px;\"><span style=\"white-space:nowrap;\">".str_repeat('&nbsp; &nbsp; ', $group['indent']).$gtitle."</span></td>
+".				"		$L[TD] style=\"width:100px;\">{$inherit}</td>
+".				"		$L[TD]>{$permlist}</td>
+".				"	</tr>
+".				"	$L[TR]>
+".				"		$L[TD3] colspan=3 style=\"height:4px;\"></td>
+".				"	</tr>
+";
+		
+		$c = ($c==1) ? 2:1;
+	}
+	
+	print 	"	{$L['TR'.$c]}>
+".			"		$L[TD]>&nbsp;</td>
+".			"		$L[TD] colspan=2>
+".			"			$L[INPs]=\"save".($bind=='forums' ? 'forum':'cat')."\" value=\"Save ".($bind=='forums' ? 'forum':'category')."\">
+".			"		</td>
+".			"	</tr>
+".			"$L[TBLend]
+";
+}
+
+
+function deleteperms($bind, $id)
+{
+	global $sql;
+	
+	$sql->prepare("DELETE x FROM x_perm x LEFT JOIN perm p ON p.id=x.perm_id WHERE x.x_type=? AND p.permbind_id=? AND x.bindvalue=?",
+		array('group', $bind, $id));
+}
+
+function saveperms($bind, $id)
+{
+	global $sql, $usergroups;
+	
+	$qperms = $sql->prepare("SELECT id FROM perm WHERE permbind_id=?",array($bind));
+	$perms = array(); 
+	while ($perm = $sql->fetch($qperms))
+		$perms[] = $perm['id'];
+	
+	// delete the old perms
+	deleteperms($bind, $id);
+	
+	// apply the new perms
+	foreach ($usergroups as $gid=>$group)
+	{
+		if ($_POST['inherit'][$gid])
+			continue;
+			
+		$myperms = $_POST['perm'][$gid];
+		foreach ($perms as $perm)
+			$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`)
+				VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, $myperms[$perm]?0:1));
+	}
+}
+
+
+function localmodRow($user)
+{
+	return "<span style=\"min-width:200px; display:inline-block;\">".userlink($user)."</span>".
+		"<button class=\"submit\" onclick=\"deleteLocalmod(this.parentNode); return false;\">Remove</button>".
+		"<input type=\"hidden\" name=\"localmod[{$user['id']}]\" id=\"localmod_{$user['id']}\" value=1>";
+}
+
+
+function renderTag($TagText, $ForumID, $TagBit, $TintColour)
+{
+	$TagTextImage = RenderText($TagText);
+	$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
+
+	$LeftImage = Image::LoadPNG("./gfx/tagleft.png");
+	$RightImage = Image::LoadPNG("./gfx/tagright.png");
+	$Tag->DrawImageDirect($LeftImage, 0, 0);
+	
+	for ($X = 7; $X < $Tag->Size[0] - 7; $X += 4)
+		$Tag->DrawImageDirect($RightImage, $X, 0);
+
+	$Tag->DrawImageDirect($RightImage, $Tag->Size[0] - 8, 0);
+	$Tag->Colourize(hexdec(substr($TintColour, 0, 2)), hexdec(substr($TintColour, 2, 2)), hexdec(substr($TintColour, 4, 2)), 0xFF);
+
+	$Tag->DrawImageDirect($TagTextImage, 8, 2);
+	
+	if ($ForumID === null)
+		$Tag->OutputPNG();
+	else
 		$Tag->SavePNG("./gfx/tags/tag$ForumID-$TagBit.png");
 
-		$LeftImage->Dispose();
-		$RightImage->Dispose();
-		$Tag->Dispose();
-		$TagTextImage->Dispose();
-	}
+	$LeftImage->Dispose();
+	$RightImage->Dispose();
+	$Tag->Dispose();
+	$TagTextImage->Dispose();
+}
+
+function tagRow($text, $tag, $fid, $bit, $color)
+{
+	$tagdata = rawurlencode($text).'|'.rawurlencode($tag).'|'.rawurlencode($color);
+	if ($bit >= 0) $tagdata .= '|'.$bit;
+	
+	$imgfile = "./gfx/tags/tag$fid-$bit.png";
+	if ($fid === null || !file_exists($imgfile))
+		$imgfile = "manageforums.php?ajax=renderTag&amp;text=$tag&amp;color=$color";
+	$imgtag = "<img src=\"{$imgfile}\" alt=\"".htmlspecialchars($tag)."\" style=\"vertical-align:bottom;\">";
+	
+	return "<span style=\"min-width:200px; display:inline-block;\">".htmlspecialchars($text)."&nbsp;{$imgtag}</span>".
+		"<button class=\"submit\" onclick=\"editTag({$bit}); return false;\">Edit</button>".
+		"<button class=\"submit\" onclick=\"deleteTag({$bit},this.parentNode); return false;\">Remove</button>".
+		"<input type=\"hidden\" name=\"tag[{$bit}]\" id=\"tag_{$bit}\" value=\"".htmlspecialchars($tagdata)."\">";
+}
+
 ?>

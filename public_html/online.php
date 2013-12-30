@@ -78,7 +78,8 @@
 ".      "    $L[TDh] width=70 style=\"min-width: 150px;\">User agent (Browser)</td>
 ".      "    $L[TDh] width=70>Last view</td>
 ".      "    $L[TDh]>URL</td>
-".      "    $L[TDh] width=120>IP</td>
+".(has_perm("view-post-ips")?
+        "    $L[TDh] width=120>IP</td>":'')."
 ";
   for($i=1;$guest=$sql->fetch($guests);$i++){
     if($guest[url][0]=='!') {
@@ -91,7 +92,8 @@
 ".        "    $L[TDl]><span title=\"". htmlspecialchars($guest['useragent']) ."\" style=white-space:nowrap>". htmlspecialchars(substr($guest['useragent'], 0, 65)) ."</span></td>
 ".        "    $L[TD]>".cdate($loguser[timeformat],$guest[date])."</td>
 ".        "    $L[TDl]><span style='float:right'>".sslicon($guest[ssl])."</span><a href=$guest[url]>". str_replace(array("%20", "_"), " ",  $guest[url]) ."</a>". ($guest['ipbanned'] ? " (IP banned)" : "") ."</td>
-".        "    $L[TD]>".flagip($guest[ip])."</td>
+".(has_perm("view-post-ips")?
+          "    $L[TD]>".flagip($guest[ip])."</td>":'')."
 ";
   }
   print "$L[TBLend]
@@ -108,7 +110,8 @@
 ".      "    $L[TDh] width=70>Bot</td>
 ".      "    $L[TDh] width=70>Last view</td>
 ".      "    $L[TDh]>URL</td>
-".      "    $L[TDh] width=120>IP</td>
+".(has_perm("view-post-ips")?
+        "    $L[TDh] width=120>IP</td>":'')."
 ";
   for($i=1;$guest=$sql->fetch($bots);$i++){
     if($guest[url][0]=='!') {
@@ -121,7 +124,8 @@
 ".        "    $L[TDl]><span title=\"". htmlspecialchars($guest['useragent']) ."\" style=white-space:nowrap>". htmlspecialchars(substr($guest['useragent'], 0, 50)) ."</span></td>
 ".        "    $L[TD]>".cdate($loguser[timeformat],$guest[date])."</td>
 ".        "    $L[TDl]><span style='float:right'>".sslicon($guest[ssl])."</span><a href=$guest[url]>$guest[url]</a>". ($guest['ipbanned'] ? " (IP banned)" : "") ."</td>
-".        "    $L[TD]>$guest[ip]</td>
+".(has_perm("view-post-ips")?
+          "    $L[TD]>".flagip($guest[ip])."</td>":'')."
 ";
   }
   print "$L[TBLend]

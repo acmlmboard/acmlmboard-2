@@ -52,8 +52,8 @@ function LoadBlocklayouts()
     if($post[deleted]) {
       $postlinks="";
       if(can_edit_forum_posts(getforumbythread($post[thread]))) {
-        $postlinks.="<a href=thread.php?pid=$post[id]&pin=$post[id]&rev=$post[revision]#$post[id]>Peek</a> | ";
-        $postlinks.="<a href=editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&act=undelete>Undelete</a>";
+        $postlinks.="<a href=\"thread.php?pid=$post[id]&amp;pin=$post[id]&rev=$post[revision]#$post[id]\">Peek</a> | ";
+        $postlinks.="<a href=\"editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&amp;act=undelete\">Undelete</a>";
       }
 
       if($post[id])
@@ -77,10 +77,10 @@ function LoadBlocklayouts()
      case 1:
       $postheaderrow = "";
       if($pthread)
-        $threadlink=", in <a href=thread.php?id=$pthread[id]>$pthread[title]</a>";
+        $threadlink=", in <a href=\"thread.php?id=$pthread[id]\">".htmlval($pthread[title])."</a>";
 
       if($post[id])
-        $postlinks="<a href=thread.php?pid=$post[id]#$post[id]>Link</a>";		// headlinks for posts
+        $postlinks="<a href=\"thread.php?pid=$post[id]#$post[id]\">Link</a>";		// headlinks for posts
 
       //2007-03-08 blackhole89
       if($post[revision]>=2)
@@ -95,16 +95,16 @@ function LoadBlocklayouts()
             ";
       } 
       else if($post[thread] && $loguser['id']!=0) {
-          $postlinks.=($postlinks?' | ':'')."<a href=newreply.php?id=$post[thread]&pid=$post[id]>Reply</a>";
+          $postlinks.=($postlinks?' | ':'')."<a href=\"newreply.php?id=$post[thread]&amp;pid=$post[id]\">Reply</a>";
       }
 
       // "Edit" link for admins or post owners, but not banned users
 /*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
 	  if (can_edit_post($post) && $post[id])
-        $postlinks.=($postlinks?' | ':'')."<a href=editpost.php?pid=$post[id]>Edit</a>";
+        $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
 
       if($post[id] && can_delete_forum_posts(getforumbythread($post[thread])))
-        $postlinks.=($postlinks?' | ':'')."<a href=editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&act=delete>Delete</a>";
+        $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&amp;act=delete\">Delete</a>";
 
       if($post[id])
         $postlinks.=" | ID: $post[id]";
@@ -116,7 +116,7 @@ function LoadBlocklayouts()
          && $post[maxrevision]>1) {
         $revisionstr.=" | Go to revision: ";
         for($i=1;$i<=$post[maxrevision];++$i)
-          $revisionstr.="<a href=thread.php?pid=$post[id]&pin=$post[id]&rev=$i#$post[id]>$i</a> ";
+          $revisionstr.="<a href=\"thread.php?pid=$post[id]&amp;pin=$post[id]&amp;rev=$i#$post[id]\">$i</a> ";
       }
 
       // if quote enabled then if $postlink2 then postlink2 .= | [quote]
@@ -139,6 +139,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".*/        "    </td>
 ".        "    <td class=\"b n1 $tbar2\" style=\"border-left:0\" width=100%>
 ".        "      $L[TBL] width=100%>
+".        "       $L[TR]>
 ".        "        $L[TDns]>Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>
 ".        "        $L[TDnsr]>$postlinks</td>
 ".        "      $L[TBLend]
@@ -149,24 +150,27 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
         $location=($post[ulocation]?'<br>From: '.postfilter($post[ulocation]):'');
         $lastpost=($post[ulastpost]?timeunits(ctime()-$post[ulastpost]):'none');
 
-        $picture=($post[uusepic]?"<img src=gfx/userpic.php?id=$post[uid]>":'');
+        $picture=($post[uusepic]?"<img src=\"gfx/userpic.php?id=$post[uid]\">":'');
 
         if($post[mood] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
           $mood = $sql->fetchq("select `url`, `local`, 1 `existing` from `mood` where `user`=$post[uid] and `id`=$post[mood] union select '' `url`, 0 `local`, 0 `existing`");
           if ($mood[existing]) {
-            $picture = (!$mood[local] ? "<img src=\"".$mood[url]."\">" : "<img src=gfx/userpic.php?id=".$post[uid]."_".$post[mood].">" );
+            $picture = (!$mood[local] ? "<img src=\"".htmlval($mood[url])."\">" : "<img src=\"gfx/userpic.php?id=".$post[uid]."_".$post[mood]."\">" );
           }
         }
 
-		if ($post[usign]) {
-			if($post[usignsep])
-				$post[usign] = "<br><br><small>". $post['usign'] ."</small>";
+		if ($post[usign]) 
+		{
+			$signsep = $post['usignsep'] ? '' : '____________________<br>';
+			
+			if (!$post['uhead'])
+				$post['usign'] = '<br><br><small>'.$signsep.$post['usign'].'</small>';
 			else
-				$post[usign] = "<br><br><small>____________________<br>". $post['usign'] ."</small>";
+				$post['usign'] = '<br><br>'.$signsep.$post['usign'];
 		}
 
         //2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
-		$grouplink = grouplink($post['uid'], $post['ugroup_id']);
+		$grouplink = grouplink($post['usex'], $post['ugroup_id']);
         $text.=
 		 $grouplink."
 ".        "      ".((strlen($grouplink))?"<br>":"")."

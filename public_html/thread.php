@@ -90,6 +90,12 @@ if($_COOKIE['pstbon']>=1){
       $viewmode = "thread";      
     }
   }
+  else
+  {
+	pageheader('Thread not found',0);
+	thread_not_found();
+  }
+  
   if ($viewmode == "thread") 
     $threadcreator=$sql->resultq("SELECT user FROM threads WHERE id=$tid");
   else $threadcreator=0;
@@ -285,7 +291,7 @@ if($_COOKIE['pstbon']>=1){
     pageheader('Latest posts');
 
 
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
+    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "

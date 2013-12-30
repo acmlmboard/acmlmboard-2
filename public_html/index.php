@@ -63,13 +63,13 @@
 	while($i = $sql->fetch($ignoreQ))
 		$ignores[$i['fid']] = true;
 
-  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", c.private cprivate, u.id uid, u.name uname, u.displayname udisplayname, u.sex usex, u.power upower, u.minipic uminipic "
+  $forums=$sql->query("SELECT f.*".($log?", r.time rtime":'').", c.private cprivate, ".userfields('u','u').", u.minipic uminipic "
                      ."FROM forums f "
                      ."LEFT JOIN users u ON u.id=f.lastuser "
                      ."LEFT JOIN categories c ON c.id=f.cat "
                .($log?"LEFT JOIN forumsread r ON r.fid=f.id AND r.uid=$loguser[id] ":'')
                      ." WHERE announce=0 "
-                     ."ORDER BY c.ord,c.id,ord,id");
+                     ."ORDER BY c.ord,c.id,f.ord,f.id");
   $cat=-1;
 print "
 ".      "$L[TBL1]>";
@@ -86,7 +86,7 @@ echo
 ";
 
 $lmods = array();
-$r = $sql->query("SELECT f.fid, u.name,u.displayname,u.id,u.sex,u.power FROM forummods f LEFT JOIN users u ON u.id=f.uid");
+$r = $sql->query("SELECT f.fid, ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid");
 while ($mod = $sql->fetch($r))
 	$lmods[$mod['fid']][] = $mod;
 
@@ -135,8 +135,8 @@ while ($mod = $sql->fetch($r))
         "  $L[TRc]>
 ".      "    $L[TD1]>$status</td>
 ".      "    $L[TD2l]>
-".      "      ".($forum['private']?'(':'')."<a href=forum.php?id=$forum[id] $ignoreFX>$forum[title]</a>".($forum['private']?')':'')."<br>
-".      "      <font class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</font>
+".      "      ".($forum['private']?'(':'')."<a href=\"forum.php?id=$forum[id]\" $ignoreFX>$forum[title]</a>".($forum['private']?')':'')."<br>
+".      "      <span class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum[descr]) ."$modstring</span>
 ".      "    </td>
 ".      "    $L[TD1]>$forum[threads]</td>
 ".      "    $L[TD1]>$forum[posts]</td>

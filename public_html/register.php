@@ -118,9 +118,9 @@ if ($regdis[intval] == 1)
     }else{
 	  $name = $sql->escape($name);
 	  
-      $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone) VALUES "
+      $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone,fontsize,theme) VALUES "
                  ."('{$name}','".md5($_POST[pass].$pwdsalt)."',"
-                 .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}')");
+                 .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}',{$defaultfontsize},'{$defaulttheme}')");
 	  if ($res)
 	  {
 		  $id=$sql->insertid();

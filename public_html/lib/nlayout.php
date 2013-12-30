@@ -295,7 +295,7 @@ function RenderPageBar($pagebar) {
       $text.="
 ".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
     return "$text
-".         "    ";
+".         "</select>";
   }
 
   function itemselect($field,$current,$cat) {

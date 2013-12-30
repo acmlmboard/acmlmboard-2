@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "7/12/2013";
+  $abdate    = "12/30/2013";
   $abversion = "2.5.2";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -39,7 +39,7 @@
     $loguser['power']      = 0;
     $loguser['tzoff']      = 0;
     $loguser['timezone']   = "UTC";
-    $loguser['fontsize']   = 70;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
+    $loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
     $loguser['dateformat'] = "m-d-y";
     $loguser['timeformat'] = "h:i A";
     $loguser['signsep']    = 0;
@@ -146,9 +146,10 @@
      }
     }
   
-    $count['u'] = $sql->resultq("SELECT COUNT(*) FROM `users`");
-    $count['t'] = $sql->resultq("SELECT COUNT(*) FROM `threads`");
-    $count['p'] = $sql->resultq("SELECT COUNT(*) FROM `posts`");
+	$count = $sql->fetchq("	SELECT
+								(SELECT COUNT(*) FROM users) u,
+								(SELECT COUNT(*) FROM threads) t,
+								(SELECT COUNT(*) FROM posts) p");
     $date       = date("m-d-y",ctime());
     $sql->query("REPLACE INTO `dailystats` (`date`, `users`, `threads`, `posts`, `views`)
                  VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '$views')");
@@ -161,7 +162,17 @@
 
    //[KAWA] ABXD-style theme system
    $themelist = unserialize(file_get_contents("themes_serial.txt"));
-   $theme = $loguser['theme'];
+
+   //Config definable theme override
+   if($config[override_theme]) 
+    {
+      $theme = $config[override_theme];
+    }
+   else 
+    {
+      $theme = $loguser['theme'];
+    }
+
   if(is_file("css/".$theme.".css"))
    {
     //try CSS first
@@ -178,7 +189,9 @@
     $themefile = $theme.".css";
    }
    
-  if(is_file("theme/".$theme."/logo.png"))
+  if($config[override_logo]) //Config override for the logo file
+    $logofile = $config[override_logo];
+  elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";
   else
    $logofile = $defaultlogo;
@@ -332,8 +345,7 @@
   if($log)
     {
      //2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
-     $pmsgs = $sql->fetchq("SELECT `p`.`id` `id`, `p`.`date` `date`, `u`.`id` `uid`, `u`.`name` `uname`, `u`.`displayname` `udisplayname`,
-                            `u`.`sex` `usex`, `u`.`power` `upower`
+     $pmsgs = $sql->fetchq("SELECT `p`.`id` `id`, `p`.`date` `date`, ".userfields('u','u')."
                             FROM `pmsgs` `p`
                             LEFT JOIN `users` `u` ON `u`.`id`=`p`.`userfrom`
                             WHERE `p`.`userto`='$loguser[id]'
@@ -383,32 +395,32 @@
     $userlinks = array();
     $ul = 0;
 
-    if (has_perm("register")) 
-      $userlinks[$ul++] = array('url' => "register.php", 'title' => 'Register');
-    if (has_perm("view-login")) 
-      $userlinks[$ul++] = array('url' => "login.php", 'title' => 'Login');
-    if (has_perm("logout")) 
-      $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+	if (!$log)
+	{
+		if (has_perm("register")) 
+		  $userlinks[$ul++] = array('url' => "register.php", 'title' => 'Register');
+		if (has_perm("view-login")) 
+		  $userlinks[$ul++] = array('url' => "login.php", 'title' => 'Login');
+	}
+	else
+	{
+		if (has_perm("logout")) 
+		  $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+	}
     if (has_perm("update-own-profile")) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
-    if (has_perm("edit-forums")) 
-      $userlinks[$ul++] = array('url' => "manageforums.php", 'title' => 'Manage forums');
-    if (has_perm("edit-ip-bans")) 
-      $userlinks[$ul++] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
-    if (has_perm("edit-sprites")) 
-      $userlinks[$ul++] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 
       $userlinks[$ul++] = array('url' => "shop.php", 'title' => 'Item shop');
-    if (has_perm("edit-groups")) 
-      $userlinks[$ul++] = array('url' => "editgroups.php", 'title' => 'Edit groups');
     if (has_perm("view-acs-calendar")) 
       $userlinks[$ul++] = array('url' => "frank.php", 'title' => 'Rankings');
+	if (has_perm('manage-board'))
+	  $userlinks[$ul++] = array('url' => 'management.php', 'title' => 'Management');
     if (has_perm("mark-read")) 
       $userlinks[$ul++] = $markread;
 
@@ -453,7 +465,7 @@
 
     if($fid)
      {
-      $onusers = $sql->query("SELECT `id`, `name`, `displayname`, `sex`, `power`, `lastpost`, `lastview`, `minipic`, `hidden`
+      $onusers = $sql->query("SELECT ".userfields().", `lastpost`, `lastview`, `minipic`, `hidden`
                               FROM `users`
                               WHERE (`lastview` > ".(ctime()-300)." OR `lastpost` > ".(ctime()-300).") $hiddencheck AND `lastforum`='$fid'
                               ORDER BY `name`");
@@ -470,10 +482,10 @@
       }
       
       $fname      = $sql->resultq("SELECT `title` FROM `forums` WHERE `id`='$fid'");
-      $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? " : ": "").$onuserlist;
+      $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? ": " : "").$onuserlist;
       
       //[Scrydan] Changed from the commented code below to save a query.
-      $onlineguests = $sql->query("SELECT * FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
+      $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
      while($chkonline = $sql->fetch($onlineguests))
       {
       if ($chkonline['bot'] == 1)
@@ -494,15 +506,6 @@
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }
-      
-      /*
-      $numguests  = $sql->resultq("SELECT count(*) FROM `guests` WHERE `lastforum`='$fid' AND `bot`='0' AND `date` > '".(ctime()-300)."'");
-      if($numguests)
-        $onuserlist.=" | $numguests guest".($numguests != 1 ? "s": "");
-      $numbots=$sql->resultq("SELECT count(*) FROM `guests` WHERE `lastforum`='$fid' AND `bot`='1' AND date > '".(ctime()-300)."'");
-      if($numbots)
-        $onuserlist.=" | $numbots bot".($numbots != 1 ? "s": "");
-      */
 
       print "$L[TBL1]>
                $L[TR1]>
@@ -516,9 +519,9 @@
      { 
       //[KAWA] Copypastadaption from ABXD, with added activity limiter.
       $birthdaylimit = 86400 * $inactivedays;
-      $rbirthdays = $sql->query("SELECT `birth`, `id`, `name`, `displayname`, `power`, `sex`
+      $rbirthdays = $sql->query("SELECT `birth`, ".userfields()."
                                  FROM `users`
-                                 WHERE `birth` LIKE '".date('m')."-".date('d')."%' AND `lastview` > ".(time()-$birthdaylimit)." ORDER BY `name`");
+                                 WHERE `birth` LIKE '".date('m-d')."%' AND `lastview` > ".(time()-$birthdaylimit)." ORDER BY `name`");
       $birthdays = array();
      while($user = $sql->fetch($rbirthdays))
       {
@@ -538,7 +541,7 @@
 
       $count['d'] = $sql->resultq("SELECT COUNT(*) FROM `posts` WHERE `date` > '".(ctime()-86400)."'");
       $count['h'] = $sql->resultq("SELECT COUNT(*) FROM `posts` WHERE `date` > '".(ctime()-3600)."'");
-      $lastuser=$sql->fetchq("SELECT `id`, `name`, `displayname`, `sex`, `power` FROM `users` ORDER BY `id` DESC LIMIT 1");
+      $lastuser=$sql->fetchq("SELECT ".userfields()." FROM `users` ORDER BY `id` DESC LIMIT 1");
 
       $hiddencheck  = "AND `hidden`='0' ";
      if (has_perm('view-hidden-users'))
@@ -546,7 +549,7 @@
        $hiddencheck = "";
       }
 
-      $onusers = $sql->query("SELECT `id`, `name`, `displayname`, `sex` , `power`, `lastpost`, `lastview`, `minipic`, `hidden` FROM `users`
+      $onusers = $sql->query("SELECT ".userfields().", `lastpost`, `lastview`, `minipic`, `hidden` FROM `users`
                            WHERE (`lastview` > ".(ctime()-300)." OR `lastpost` > ".(ctime()-300).") $hiddencheck ORDER BY `name`");
       $onuserlist  = "";
       $onusercount = 0;
@@ -691,7 +694,7 @@
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>
-             &copy; 2005-2013 $boardprog
+             &copy; 2005-2014 $boardprog
            $L[TBLend]";
     pagestats();
     //miscbar(); disabled until needed. -Emuz

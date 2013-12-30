@@ -56,7 +56,7 @@
 
   $ptitle='Private messages'.($sent?' (sent)':'');
   if($id && has_perm('view-user-pms')){
-    $user=$sql->fetchq("SELECT id,name,sex,power FROM users WHERE id=$id");
+    $user=$sql->fetchq("SELECT id,name,sex,group_id FROM users WHERE id=$id");
     pageheader("$user[name]'s ".strtolower($ptitle));
     $title=userlink($user)."'s ".strtolower($ptitle);
   }else{

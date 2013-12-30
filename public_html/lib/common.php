@@ -162,7 +162,17 @@
 
    //[KAWA] ABXD-style theme system
    $themelist = unserialize(file_get_contents("themes_serial.txt"));
-   $theme = $loguser['theme'];
+
+   //Config definable theme override
+   if($config[override_theme]) 
+    {
+      $theme = $config[override_theme];
+    }
+   else 
+    {
+      $theme = $loguser['theme'];
+    }
+
   if(is_file("css/".$theme.".css"))
    {
     //try CSS first
@@ -179,7 +189,9 @@
     $themefile = $theme.".css";
    }
    
-  if(is_file("theme/".$theme."/logo.png"))
+  if($config[override_logo]) //Config override for the logo file
+    $logofile = $config[override_logo];
+  elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";
   else
    $logofile = $defaultlogo;

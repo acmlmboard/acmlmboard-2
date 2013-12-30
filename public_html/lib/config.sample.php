@@ -43,6 +43,10 @@
   $config['startedbyminipic'] = $config['forumminipic']; // Show minipics on forum started by col. (Seperate for testing purposes at this time.. may be merged)
   $config['threadminipic'] = false; // Show minipics in a thread
 
+  //The following settings allow a board owner to override a board's theme and logo for special events, etc.
+  $config[override_theme] = "";
+  $config[override_logo] = "";
+
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
   $config['enableirc'] = false; //Enable to send messages to IRC 

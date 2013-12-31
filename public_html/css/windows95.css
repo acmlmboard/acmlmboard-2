@@ -25,6 +25,7 @@ table.c1, table.c2 {
 }
 td.b {
 	border: 3px inset #AAAAAA;
+	background-color: #CCCCCC;
 	padding: 2px;
 }
 td.n1, tr.n1 td {

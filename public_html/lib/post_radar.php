@@ -9,7 +9,7 @@
 
 function retrieve_post_radar($u, $sort='num_posts') {
 	global $sql;
-	$res=$sql->query("SELECT ".userfields('u','u').",u.posts num_posts
+	$res=$sql->query("SELECT ".userfields('u','u').",u.minipic AS uminipic,u.posts num_posts
 						 FROM post_radar
 						 LEFT JOIN users u ON u.id = post_radar.user2_id
 						 WHERE post_radar.user_id =$u
@@ -41,11 +41,11 @@ function build_postradar() {
 			$rdif = $your_count-$cur_radar["num_posts"];
 			$con_str = ($i >= ($rcnt-2)?' and ':', ');
 			if ($rdif > 0) {
-				$radar_res .= $rdif." ahead of ".userlink($cur_radar, 'u').' ('.$cur_radar['num_posts'].')';
+				$radar_res .= $rdif." ahead of ".userlink($cur_radar, 'u',1).' ('.$cur_radar['num_posts'].')';
 			} else if ($rdif < 0) {
-				$radar_res .= abs($rdif)." behind ".userlink($cur_radar, 'u').' ('.$cur_radar['num_posts'].')';
+				$radar_res .= abs($rdif)." behind ".userlink($cur_radar, 'u',1).' ('.$cur_radar['num_posts'].')';
 			} else {
-				$radar_res .= " tied with ".userlink($cur_radar, 'u').' ('.$cur_radar['num_posts'].')';
+				$radar_res .= " tied with ".userlink($cur_radar, 'u',1).' ('.$cur_radar['num_posts'].')';
 			}
 			if ($i != $rcnt-1) {
 				$radar_res .= $con_str;

@@ -8,7 +8,7 @@
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','displayname','sex','power');
+  $ufields=array('id','name','displayname','sex','group_id');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field, ";
 

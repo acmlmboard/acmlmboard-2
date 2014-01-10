@@ -14,7 +14,7 @@
     return ctime()+7200;
   }
 
-  $query = "SELECT id,posts,regdate,name,sex,power,SUM(num) num FROM (
+  $query = "SELECT id,posts,regdate,name,sex,group_id,SUM(num) num FROM (
           SELECT u.id,u.posts,regdate,u.name,u.sex,u.group_id,CASE WHEN COUNT(*) >10 THEN 10 ELSE COUNT(*) END num 
           FROM users u 
           LEFT JOIN posts p ON p.user=u.id 

@@ -8,6 +8,15 @@
 	$userbirthdays = array();
 	while ($bd = $sql->fetch($rbirthdays))
 		$userbirthdays[$bd['id']] = true;
+  
+  /*$usernickcolors = array();
+  $meh = 1;
+  $qusernickcolors = $sql->query("SELECT `id`, `nick_color` FROM `users`");
+  while ($ncquery= $sql->fetch($qusernickcolors))
+  { 
+    $usercnc[$ncquery['id']]= $ncquery['nick_color'];
+    $meh++;
+  }*/
 
   function checkuser($name,$pass){
     global $sql;
@@ -195,15 +204,17 @@ function userfields($tbl='', $pf='')
   }
 
   function userdisp($user,$u='',$usemini=''){
-    global $sql, $usergroups, $userbirthdays;
+    global $sql, $usergroups, $userbirthdays, $usercnc;
 
     //$usemini = true;
     if($usemini) $user['showminipic'] = true;
 
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
-  elseif ($user['nick_color'])
-    $nc = $user['nick_color'];
+ /* elseif ($user['nick_color'])
+    $nc = $user['nick_color']; //Proper way of doing this. -Emuz*/
+    //elseif ($usercnc[$user[$u.'id']]) //Temp Array Cache 
+    //$nc = $usercnc[$user[$u.'id']];
 	else
 	{
 		$group = $usergroups[$user[$u.'group_id']];

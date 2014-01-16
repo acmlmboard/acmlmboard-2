@@ -163,7 +163,7 @@ function renderdotrank($posts=0){
   
 function userfields($tbl='', $pf='')
 {
-	$fields = array('id','name','displayname','sex','group_id');
+	$fields = array('id','name','displayname','sex','group_id','nick_color');
 	
 	$ret = '';
 	foreach ($fields as $f)
@@ -202,6 +202,8 @@ function userfields($tbl='', $pf='')
 
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
+  elseif ($user['nick_color'])
+    $nc = $user['nick_color'];
 	else
 	{
 		$group = $usergroups[$user[$u.'group_id']];

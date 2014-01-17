@@ -9,14 +9,17 @@
 	while ($bd = $sql->fetch($rbirthdays))
 		$userbirthdays[$bd['id']] = true;
   
-  /*$usernickcolors = array();
-  $meh = 1;
-  $qusernickcolors = $sql->query("SELECT `id`, `nick_color` FROM `users`");
-  while ($ncquery= $sql->fetch($qusernickcolors))
-  { 
-    $usercnc[$ncquery['id']]= $ncquery['nick_color'];
-    $meh++;
-  }*/
+  //This array generated is used as a stop gap to bring in all the per user colors.
+  //This should be replaced with direct pulling in $user -Emuz
+  if($config[perusercolor]) //To disable the query if per user colors are unwanted
+  {
+    $usernickcolors = array();
+    $qusernickcolors = $sql->query("SELECT `id`, `nick_color` FROM `users` WHERE `nick_color` != ''");
+    while ($ncquery= $sql->fetch($qusernickcolors))
+    { 
+      $usercnc[$ncquery['id']]= $ncquery['nick_color'];
+    }
+  }
 
   function checkuser($name,$pass){
     global $sql;
@@ -204,17 +207,16 @@ function userfields($tbl='', $pf='')
   }
 
   function userdisp($user,$u='',$usemini=''){
-    global $sql, $usergroups, $userbirthdays, $usercnc;
+    global $sql, $config, $usergroups, $userbirthdays, $usercnc;
 
-    //$usemini = true;
     if($usemini) $user['showminipic'] = true;
 
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
- /* elseif ($user['nick_color'])
+ /* elseif ($user['nick_color'] && $config[perusercolor])
     $nc = $user['nick_color']; //Proper way of doing this. -Emuz*/
-    //elseif ($usercnc[$user[$u.'id']]) //Temp Array Cache 
-    //$nc = $usercnc[$user[$u.'id']];
+    elseif ($usercnc[$user[$u.'id']] && $config[perusercolor]) //TEMP: Method using a global cache storing the 6 hex color per user by uid. -Emuz
+    $nc = $usercnc[$user[$u.'id']];
 	else
 	{
 		$group = $usergroups[$user[$u.'group_id']];

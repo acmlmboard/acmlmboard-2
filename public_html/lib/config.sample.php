@@ -66,6 +66,8 @@
   $config['secafterpost'] = 0; //(in seconds, 0 == off)
 //The following enables the optional badge system
   $config['badgesystem'] = false; //This system is currently unfinished.
+  $config['perusercolor'] = false; //Enable the use of per-user colors.
+  
 //IRC Color Defines. Color code numbers, and color names work here.
   $irccolor['base'] = "grey"; //default color for the irc output.
   $irccolor['name'] = "lt_green"; //used most often for usernames and other things that need emphasis.

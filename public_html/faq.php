@@ -44,6 +44,9 @@ while ($ncr = $sql->fetch($ncx)) {
 
 }
 
+if ($config['perusercolor']){
+	$customucolors = "<br />If you see a user with a colour not present on this list, than that user has a specific colour assigned to them.";
+}
 /*Highlighting system core
 Not ready yet. Do not uncomment until ready.
 $hl=$_GET['hl'];
@@ -265,7 +268,7 @@ print "  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
 ".    "  $L[TR]>
 ".    "    $L[FAQTD]>
 ".    "      They reflect the gender setting and group of the user.<table>
-".$nctable."      </table>
+".$nctable."      </table>".$customucolors."
 ".    "</table>";
 pagefooter();
 

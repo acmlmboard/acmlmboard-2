@@ -212,7 +212,7 @@
 		$sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
                . (has_perm("has-displayname")?(setfield('displayname')   .','):'')
-               . (has_perm("has-customusercolor")?(setfield('nick_color')   .','):'')
+               . (checkcusercolor()?(setfield('nick_color')   .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
@@ -326,7 +326,7 @@ if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
-".(has_perm("has-customusercolor") ? fieldrow('Custom username color',fieldinput(6,6,'nick_color')) : "" )."
+".(checkcusercolor() ? fieldrow('Custom username color',fieldinput(6,6,'nick_color')) : "" )."
 ";
 
   print

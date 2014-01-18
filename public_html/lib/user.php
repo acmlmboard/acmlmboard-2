@@ -53,6 +53,23 @@
     return false;
   }
 
+  function checkcusercolor(){
+    global $loguser,$config;
+    
+    if (!$config["perusercolor"]) return false;
+
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('has-customusercolor')) return false;
+    if (has_perm('has-customusercolor')) return true;
+    
+    /* Allow a custom user color after a specific postcount/time. *DISABLED*
+    if($loguser[posts]>=4000) return true;
+    if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
+    */
+    
+    return false;
+  }
+
 function renderdotrank($posts=0){
       //This function takes the number of posts a user has ($posts), and returns the html to be printed out. 
      

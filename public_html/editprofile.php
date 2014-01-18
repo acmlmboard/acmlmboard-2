@@ -162,12 +162,25 @@
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
         $error.="- Name already in use.<br />";
       }
+      //Checks Displayname to name and other displaynames
+      $targetdname = $_POST['displayname'];
+
+      if (has_perm("has-displayname") && $targetdname != "")
+      {
+        if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetdname' OR `displayname` = '$targetdname') AND `id` != $user[id]")) {
+          $error.="- Displayname already in use.<br />";
+        }
+      }
+
       //Validate Custom username color is a 6 digit hex RGB color
       $custom_usercolor = $_POST['nick_color'];
 
-      if ( ! preg_match('/^([A-Fa-f0-9]{6})$/',$custom_usercolor))
+      if ($custom_usercolor != "")
       {
-        $error.="- Custom usercolor is not a valid RGB hex color.<br />";
+        if ( ! preg_match('/^([A-Fa-f0-9]{6})$/',$custom_usercolor))
+        {
+          $error.="- Custom usercolor is not a valid RGB hex color.<br />";
+        }
       }
 	  
 	  if (!$error)

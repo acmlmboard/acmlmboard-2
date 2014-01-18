@@ -162,6 +162,13 @@
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
         $error.="- Name already in use.<br />";
       }
+      //Validate Custom username color is a 6 digit hex RGB color
+      $custom_usercolor = $_POST['nick_color'];
+
+      if ( ! preg_match('/^([A-Fa-f0-9]{6})$/',$custom_usercolor))
+      {
+        $error.="- Custom usercolor is not a valid RGB hex color.<br />";
+      }
 	  
 	  if (!$error)
 	  {
@@ -192,6 +199,7 @@
 		$sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
                . (has_perm("has-displayname")?(setfield('displayname')   .','):'')
+               . (has_perm("has-customusercolor")?(setfield('nick_color')   .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
@@ -305,6 +313,7 @@ if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
+".(has_perm("has-customusercolor") ? fieldrow('Custom username color',fieldinput(6,6,'nick_color')) : "" )."
 ";
 
   print

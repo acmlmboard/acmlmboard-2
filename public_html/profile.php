@@ -250,6 +250,16 @@ print \"Sample code.\"; #oops you just missed him!
     $logtzoff  = $logtz->getOffset($now);
 
     $user['showminipic'] = 1;
+
+    //User color override - Should be moved to a function.
+    $group = $usergroups[$user[$u.'group_id']];
+    $realnc = $group['nc'.$user[$u.'sex']];
+
+    //If user has a a displayname, a custom username color, or both, we need to show the realname field.
+    if($config['perusercolor']) $usercnickcolor = $user['nick_color'];
+    if($user['displayname'] || $usercnickcolor){
+      $showrealnick = true;
+    }
     
     print "<a href=\"./\">Main</a> - Profile for ".userdisp($user)."
            <br><br>
@@ -258,7 +268,7 @@ print \"Sample code.\"; #oops you just missed him!
                $L[TBL1]>
                  $L[TRh]>
                    $L[TDh] colspan=\"2\">General information</td>
-                   ".($user['displayname'] ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]>".htmlval($user['name']) : "")."
+                   ".($showrealnick ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]><font color=\"".$realnc."\"><b>".htmlval($user['name'])."</b></font>" : "")."
                  $L[TR]>
                    $L[TD1] width=\"110\"><b>Group</b></td>
                    $L[TD2]>$group[title]

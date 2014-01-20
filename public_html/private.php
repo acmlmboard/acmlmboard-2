@@ -7,10 +7,6 @@
   if(!$page)
     $page=1;
 
-  $fieldlist='';
-  $ufields=array('id','name','displayname','sex','group_id');
-  foreach($ufields as $field)
-    $fieldlist.="u.$field u$field, ";
 
   if($_GET[view]=='sent'){
     $tablehead='To';
@@ -66,7 +62,7 @@
   }
 
   $pmsgc=$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE user$fieldn2=$id AND del_$fieldn2=$showdel");
-  $pmsgs=$sql->query("SELECT $fieldlist p.* "
+  $pmsgs=$sql->query("SELECT ".userfields('u','u').", p.* "
                     ."FROM pmsgs p "
                     ."LEFT JOIN users u ON u.id=p.user$fieldn "
                     ."WHERE p.user$fieldn2=$id "

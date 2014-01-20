@@ -11,7 +11,7 @@
 
   loadsmilies();
 
-  $fieldlist=''; $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','group_id','rankset','title','usepic','head','sign');
+  $fieldlist=''; $ufields=array('posts','regdate','lastpost','lastview','location','rankset','title','usepic','head','sign');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
@@ -25,7 +25,7 @@
       pm_not_found();
     }
 
-    $pmsgs=$sql->fetchq("SELECT $fieldlist p.*, pt.* "
+    $pmsgs=$sql->fetchq("SELECT ".userfields('u','u').",$fieldlist p.*, pt.* "
                        ."FROM pmsgs p "
                        ."LEFT JOIN users u ON u.id=p.userfrom "
                        ."LEFT JOIN pmsgstext pt ON p.id=pt.id "

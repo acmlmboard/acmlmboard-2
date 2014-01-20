@@ -10,10 +10,6 @@
   if(!$page)
     $page=1;
 
-  $fieldlist='';
-  $ufields=array('id','name','displayname','sex','group_id', 'minipic');
-  foreach($ufields as $field)
-    $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 
   if($fid=$_GET[id]){
     checknumeric($fid);
@@ -89,7 +85,7 @@ if($loguser['id']!=0){
 $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"unignoreforum\">Unignore forum</a> "
              : "<a href=\"forum.php?id=$fid&amp;ignore\" class=\"ignoreforum\">Ignore forum</a> ";
 }
-    $threads=$sql->query("SELECT $fieldlist t.*, 
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, 
 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
@@ -114,7 +110,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
     pageheader("Threads by ".($user[displayname] ? $user[displayname] : $user[name]));
 
-    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle, 
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, f.id fid, f.title ftitle, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
 
@@ -149,7 +145,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
     pageheader('Latest posts');
 
-    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, 
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, f.id fid, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
 

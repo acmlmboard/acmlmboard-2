@@ -233,7 +233,7 @@ function userfields($tbl='', $pf='')
 	else $minipic="";
    
 //Over-ride for custom colours [Gywall]
-	if($user[$u.'nick_color']) $nc = $user[$u.'nick_color'];
+	if($user[$u.'nick_color'] && $config[perusercolor]) $nc = $user[$u.'nick_color'];
 	return "$minipic<span style='color:#$nc;'>"
 		.str_replace(" ","&nbsp;",htmlval($n))
 		.'</span>';

@@ -9,17 +9,6 @@
 	while ($bd = $sql->fetch($rbirthdays))
 		$userbirthdays[$bd['id']] = true;
   
-  //This array generated is used as a stop gap to bring in all the per user colors.
-  //This should be replaced with direct pulling in $user -Emuz
-  if($config[perusercolor]) //To disable the query if per user colors are unwanted
-  {
-    $usernickcolors = array();
-    $qusernickcolors = $sql->query("SELECT `id`, `nick_color` FROM `users` WHERE `nick_color` != ''");
-    while ($ncquery= $sql->fetch($qusernickcolors))
-    { 
-      $usercnc[$ncquery['id']]= $ncquery['nick_color'];
-    }
-  }
 
   function checkuser($name,$pass){
     global $sql;
@@ -230,10 +219,6 @@ function userfields($tbl='', $pf='')
 
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
- /* elseif ($user['nick_color'] && $config[perusercolor])
-    $nc = $user['nick_color']; //Proper way of doing this. -Emuz*/
-    elseif ($usercnc[$user[$u.'id']] && $config[perusercolor]) //TEMP: Method using a global cache storing the 6 hex color per user by uid. -Emuz
-    $nc = $usercnc[$user[$u.'id']];
 	else
 	{
 		$group = $usergroups[$user[$u.'group_id']];
@@ -247,6 +232,8 @@ function userfields($tbl='', $pf='')
 	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
 	else $minipic="";
    
+//Over-ride for custom colours [Gywall]
+	if($user[$u.'nick_color']) $nc = $user[$u.'nick_color'];
 	return "$minipic<span style='color:#$nc;'>"
 		.str_replace(" ","&nbsp;",htmlval($n))
 		.'</span>';

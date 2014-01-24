@@ -165,7 +165,7 @@
       //Checks Displayname to name and other displaynames
       $targetdname = $_POST['displayname'];
 
-      if (has_perm("has-displayname") && $targetdname != "")
+      if (checkcdisplayname() && $targetdname != "")
       {
         if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetdname' OR `displayname` = '$targetdname') AND `id` != $user[id]")) {
           $error.="- Displayname already in use.<br />";
@@ -211,7 +211,7 @@
 	{
 		$sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
-               . (has_perm("has-displayname")?(setfield('displayname')   .','):'')
+               . (checkcdisplayname()?(setfield('displayname')   .','):'')
                . (checkcusercolor()?(setfield('nick_color')   .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
@@ -318,7 +318,7 @@
 ".
            catheader('Login information')."
 ".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
-".(has_perm("has-displayname") ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
+".(checkcdisplayname() ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 

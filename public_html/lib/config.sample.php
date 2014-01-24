@@ -66,6 +66,7 @@
   $config['secafterpost'] = 0; //(in seconds, 0 == off)
 //The following enables the optional badge system
   $config['badgesystem'] = false; //This system is currently unfinished.
+  $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
   $config['perusercolor'] = false; //Enable the use of per-user colors.
   
 //IRC Color Defines. Color code numbers, and color names work here.

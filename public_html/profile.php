@@ -257,7 +257,8 @@ print \"Sample code.\"; #oops you just missed him!
 
     //If user has a a displayname, a custom username color, or both, we need to show the realname field.
     if($config['perusercolor']) $usercnickcolor = $user['nick_color'];
-    if($user['displayname'] || $usercnickcolor){
+    if($config['displayname'] && $user['displayname']) $userdisplayname = true;
+    if($userdisplayname || $usercnickcolor){
       $showrealnick = true;
     }
     

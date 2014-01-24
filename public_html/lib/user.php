@@ -59,6 +59,23 @@
     return false;
   }
 
+  function checkcdisplayname(){
+    global $loguser,$config;
+    
+    if (!$config["displayname"]) return false;
+
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('has-displayname')) return false;
+    if (has_perm('has-displayname')) return true;
+    
+    /* Allow a custom displayname after a specific postcount/time. *DISABLED*
+    if($loguser[posts]>=4000) return true;
+    if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
+    */
+    
+    return false;
+  } 
+
 function renderdotrank($posts=0){
       //This function takes the number of posts a user has ($posts), and returns the html to be printed out. 
      
@@ -226,7 +243,7 @@ function userfields($tbl='', $pf='')
 	}
 	
 	$n = $user[$u.'name'];
-	if($user[$u.'displayname'])
+	if($user[$u.'displayname'] && $config['displayname'])
 		$n = $user[$u.'displayname'];
 		
 	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";

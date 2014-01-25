@@ -25,6 +25,11 @@
   if (isset($_GET['gid']))
   {
 	$id = (int)$_GET['gid'];
+	if(is_root_gid($id) && !has_perm('no-restrictions'))
+	{
+		pageheader('Edit permissions');
+		no_perm();		
+	}
 	$permowner = $sql->fetchp("SELECT id,title,inherit_group_id FROM `group` WHERE id=?", array($id));
 	$type = 'group';
 	$typecap = 'Group';
@@ -32,6 +37,19 @@
   else if (isset($_GET['uid']))
   {
 	$id = (int)$_GET['uid'];
+
+	$tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
+	if (is_root_gid($tuser[$u.'group_id']) && !has_perm('no-restrictions')) 
+	{
+		pageheader('Edit permissions');
+		no_perm();
+	} 
+
+	if ($id == $loguser['id'] && !has_perm('edit-own-permissions'))
+	{
+		pageheader('Edit permissions');
+		no_perm();
+	}
 	$permowner = $sql->fetchp("SELECT u.id,u.name AS title,u.group_id,g.title AS group_title FROM users u LEFT JOIN `group` g ON g.id=u.group_id WHERE u.id=?", array($id));
 	$type = 'user';
 	$typecap = 'User';

@@ -60,12 +60,14 @@
 
 //The following are optional values you can change to personalize your board
   $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
-//The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
+//The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable *Currently doesn't work*
   $config['classictags'] = false;
 //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 0; //(in seconds, 0 == off)
+  $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
 //The following enables the optional badge system
   $config['badgesystem'] = false; //This system is currently unfinished.
+
   $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
   $config['perusercolor'] = false; //Enable the use of per-user colors.
   

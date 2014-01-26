@@ -201,7 +201,15 @@ print \"Sample code.\"; #oops you just missed him!
      }
     }
     //END badge list
-
+    //More indepth test to not show the link if you can't edit your own perms
+    print "moo: $louguser[id] & $uid";
+    $editpermissions ="";
+    if(has_perm('edit-permissions'))
+    {
+      if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $editpermissions ="";
+      else $editpermissions="| <a href=\"editperms.php?uid=".$user['id']."\">Edit User Permissions</a>";
+    }
+    
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";
     $rblock    = $sql->query($qblock);
@@ -373,7 +381,7 @@ print \"Sample code.\"; #oops you just missed him!
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
-                       ". (has_perm('edit-permissions') ? "| <a href=\"editperms.php?uid=".$user['id']."\">Edit User Permissions</a>":"") ."
+                       ". $editpermissions ."
            $L[TBLend]";
            pagefooter();
            

@@ -30,7 +30,6 @@
 		pageheader('Edit permissions');
 		no_perm();		
 	}
-	print $loguser['group_id'];
 	if(	$loguser['group_id'] == $id && !has_perm('edit-own-permissions'))
 	{
 		pageheader('Edit permissions');

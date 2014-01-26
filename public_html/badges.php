@@ -10,7 +10,7 @@ if(!isset($_GET['uid']))
 	$L[TBL1]>
 		$L[TD1c]>
 			No User Requested.<br>
-			<a href=./>Back to main</a> or <a href=login.php>login</a>
+			<a href=./>Back to main</a>
 	$L[TBLend]
 ";
 	pagefooter();
@@ -58,7 +58,13 @@ while($bdg = $sql->fetch($bdgReq))
 
 }
 
-
+if(has_perm('edit-user-badges'))
+	{
+		$pagebar['actions'] = array(
+    	array('title' => 'Assign User Badge','href' => 'assignbadges.php?uid='.$userID),
+	);
+	}
+RenderPageBar($pagebar);
 RenderTable($data, $headers);
 
 pagefooter();

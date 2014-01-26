@@ -1,26 +1,41 @@
 <?php
-/* This uses a duplicate of editsprites.php as template. -Emuz */
+/* This uses a duplicate of editbadges.php as template. -Emuz */
 
 require("lib/common.php");
 
-  $r = request_variables(array('id','action','act'));
+  $r = request_variables(array('id', 'uid', 'action','act'));
   $pagebar = array();
   checknumeric($r['id']);
+  checknumeric($r['uid']);
 
-  pageheader("Edit Badges");
+  pageheader("Assign User Badges");
 
-  if(!has_perm('edit-badges')) no_perm();
+  if(!has_perm('edit-user-badges')) no_perm();
 
+  if(!isset($r['uid']) || $r['uid'] == 0)
+  {
+    print "
+    $L[TBL1]>
+      $L[TD1c]>
+        No User Requested.<br>
+        <a href=./>Back to main</a>
+    $L[TBLend]
+  ";
+    pagefooter();
+    die();
+  }
   $id = $r['id'];
+  $uid = $r['uid'];
+
 
   if ($r['action'] == "del") {
     unset($r['action']);
     if ($id > 0) {
-      if ($sql->prepare('DELETE FROM badges WHERE id=?',array($id))) {
+      if ($sql->prepare('DELETE FROM user_badges WHERE id=?',array($id))) {
       $pagebar['message'] = "Badge successfully deleted.";
  }
 else {
- $pagebar['message'] = "Unable to delete badge.";
+ $pagebar['message'] = "Unable to remove badge.";
 }
     }
   }
@@ -46,16 +61,18 @@ $headers = array
 );
 
 $data = array();
-$bdgReq = $sql->query("SELECT * FROM badges ORDER BY id ASC");
+$bdgReq = $sql->query("SELECT * FROM `badges`
+                       RIGHT JOIN `user_badges` ON `badges`.`id` = `user_badges`.`badge_id`
+                       WHERE `user_badges`.`user_id`='$uid' ORDER BY `priority` DESC");
 while($bdg = $sql->fetch($bdgReq))
 {
 		$pics = explode("|", $bdg['image']);
 		$pic = $pics[0];
 $actions = array(
   array('title' => 'Edit','href' => 
-'editbadges.php?action=edit&id='.$bdg['id']),
+'assignbadges.php?action=edit&uid='.$uid.'&id='.$bdg['id']),
   array('title' => 'Delete','href' => 
-'editbadges.php?action=del&id='.$bdg['id'], 
+'assignbadges.php?action=del&uid='.$uid.'&id='.$bdg['id'], 
 confirm => true),
 );
 		
@@ -70,9 +87,9 @@ $data[] = array
       "edit" => RenderActions($actions,1),
 		);
 }
-$pagebar['title'] = 'Edit Badges';
+$pagebar['title'] = 'Assign User Badges';
 $pagebar['actions'] = array(
-    array('title' => 'New Badge','href' => 'editbadges.php?action=new'),
+    array('title' => 'New Badge','href' => 'assignbadges.php?action=new&uid='.$uid),
 );
 RenderPageBar($pagebar);
 RenderTable($data, $headers);
@@ -82,21 +99,16 @@ RenderTable($data, $headers);
 elseif ($r['action']=="edit" || $r['action']=="new") {
 if (!empty($r['act'])) {
       $s =
-request_variables(array('image','priority','type','name','description','inherit','posttext','effect'));
+request_variables(array('badge_id','badge_var'));
 
 
 if ($r['action']=="edit" && $id > 0) {
 
-if(      $sql->prepare('UPDATE badges SET 
-image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? WHERE id=?;', array(
-$s['image'],
-$s['priority'],
-$s['type'],
-$s['name'],
-$s['description'],
-$s['inherit'],
-$s['posttext'],
-$s['effect'],
+if(      $sql->prepare('UPDATE user_badges SET 
+badge_id=?,badge_var=?,user_id=? WHERE id=?;', array(
+$s['badge_id'],
+$s['badge_var'],
+$uid,
 $id,
 )
 )){
@@ -110,16 +122,11 @@ else {
 }
 
 elseif ($r['action']=="new"){
-if (      $sql->prepare('INSERT INTO badges SET
-image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? ;', array(
-$s['image'],
-$s['priority'],
-$s['type'],
-$s['name'],
-$s['description'],
-$s['inherit'],
-$s['posttext'],
-$s['effect'],
+if (      $sql->prepare('INSERT INTO user_badges SET
+user_id=?,badge_id=?,badge_var=? ;', array(
+$uid,
+$s['badge_id'],
+$s['badge_var'],
 )
 )) {
 $id = $sql->insertid();
@@ -127,21 +134,21 @@ $r['action'] = "edit";
       $pagebar['message'] = "Badge successfully created.";
 }
 else {
- $pagebar['message'] = "Unable to create badge.";
+ $pagebar['message'] = "Unable to assign badge.";
 }
 }
 }
 $pagebar['breadcrumb'] = array(
-    array('title' => 'Edit Badges','href' => 'editbadges.php'),
+    array('title' => 'Edit Assigned Badges','href' => 'assignbadges.php?uid='.$uid),
     );
 
 
 if ($id > 0) {
-    $t=$sql->fetchp('SELECT * FROM badges WHERE id=?',array($id));
+    $t=$sql->fetchp('SELECT * FROM user_badges WHERE id=?',array($id));
 $pagebar['title'] = $t['name'];
 $pagebar['actions'] = array(
     array('title' => 'Delete Badge','href' => 
-'editbadges.php?action=del&id='.$id, 
+'assignbadges.php?action=del&uid='.$uid.'&id='.$id, 
 'confirm' 
 => 
 true),
@@ -149,7 +156,7 @@ true),
 
 }
 else {
-$pagebar['title'] = 'New Badge';
+$pagebar['title'] = 'Assign Badge';
 /*$s['image'],
 $s['priority'],
 $s['type'],
@@ -168,21 +175,16 @@ $s['effect_variable'],
 */
 
 $t = array(
-  'id' => 0,
-  'priority' => '10',
-  'type' => 1,
-  'name' => '',
-  'desc' => '',
-  'inherit' => '',
-  'posttext' => '',  
-  'effect' => '',  
+  'badge_id' => '',
+  'badge_var' => '',
 );
 }
 RenderPageBar($pagebar);
 $form = array(
   'action' =>
-    urlcreate('editbadges.php', array(
+    urlcreate('assignbadges.php', array(
       'action' => $r['action'],
+      'uid' => $r['uid'],
       'id' => $t['id'],
     )
     ),
@@ -191,14 +193,14 @@ $form = array(
     'metadata' => array(
       'title' => 'Badge Metadata',
       'fields' => array(
-        'name' => array(
-          'title' => 'Name',
+        'badge_id' => array(
+          'title' => 'Badge ID#',
           'type' => 'text',
-          'length' => 60,
-          'size' => 40,
-'value' => $t['name'],
+          'length' => 3,
+          'size' => 4,
+'value' => $t['badge_id'],
         ),
-        'type' => array(
+ /*       'type' => array(
           'title' => 'Badge Type',
           'type' => 'dropdown',
           'choices' => array(
@@ -208,52 +210,20 @@ $form = array(
               '4' => '4',
               ),
 'value' => $t['type'],
-        ),
-        'priority' => array(
-          'title' => 'Priority',
-          'type' => 'numeric',
-          'length' => 3,
-'value' => $t['priority'],
-        ),
-        'inherit' => array(
-          'title' => 'Inherit from',
-          'type' => 'numeric',
-          'length' => 3,
-'value' => $t['inherit'],
-        ),
-        'image' => array(
-          'title' => 'Image',
-          'type' => 'imgref',
-'value' => $t['image'],
-        ),
-        'posttext' => array(
-          'title' => 'Post Text',
+        ),*/
+        'badge_var' => array(
+          'title' => 'Badge Variable Information',
           'type' => 'text',
-          'length' => 3,
-          'length' => 60,
+          'length' => 30,
           'size' => 40,
-'value' => $t['posttext'],
-        ),
-        'effect' => array(
-          'title' => 'Effect ID Name',
-          'type' => 'text',
-          'length' => 25,
-          'size' => 30,
-'value' => $t['effect'],
-        ),
-        'description' => array(
-          'title' => 'Description',
-          'type' => 'text',
-          'length' => 255,
-          'size' => 80,
-'value' => $t['description'],
+'value' => $t['badge_var'],
         ),
       ),
     ),
     'actions' => array(
       'fields' => array(
         'act' => array(
-          'title' => ($id>0)?'Update metadata':'Create sprite',
+          'title' => ($id>0)?'Update metadata':'Assign Badge',
           'type' => 'submit',
         ),
       ),

@@ -195,6 +195,8 @@ print \"Sample code.\"; #oops you just missed him!
       if ($numbadges % 3 == 0)
         $badgelist .= "</tr>$L[TR]>";
       }
+       $badgelist.="            $L[TRh]>
+               $L[TD1c] colspan=\"3\"><a href=\"badges.php?uid=".$uid."\">(more)</a></td></tr>";
       $badgelist .= "</table>    <br>";
      }
     }

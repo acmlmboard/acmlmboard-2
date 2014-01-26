@@ -37,7 +37,7 @@ $headers = array
 		"align" => "center",
 		"color" => 1
 	),
-	"image" => array("caption"=>"Image", "width"=>"32px", "align"=>"center", "color"=>2),
+	"image" => array("caption"=>"Image", "width"=>"24px", "align"=>"center", "color"=>2),
 	"name" => array("caption"=>"Name", "width"=>"200px", "align"=>"center", "color"=>1),
 	"description" => array("caption"=>"Description", "color"=>2),
 	"type" => array("caption"=>"Type", "color"=>1),

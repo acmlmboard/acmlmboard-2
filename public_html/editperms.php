@@ -97,7 +97,7 @@
 	$permid = stripslashes($_POST['permid_new']);
 	$bindval = (int)$_POST['bindval_new'];
 	
-	$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
+	if(has_perm('no-restrictions') || $permid != 'no-restrictions') $sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
 		array($id, $type, $permid, $bindval, $revoke));
   }
   else if (isset($_POST['apply']))
@@ -109,15 +109,15 @@
 	$permid = stripslashes($_POST['permid'][$pid]);
 	$bindval = (int)$_POST['bindval'][$pid];
 	
-	$sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
+	if(has_perm('no-restrictions') || $permid != 'no-restrictions') $sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
 		array($permid, $bindval, $revoke, $pid));
   }
   else if (isset($_POST['del']))
   {
 	$keys = array_keys($_POST['del']);
 	$pid = $keys[0];
-	
-	$sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid));
+	$permid = stripslashes($_POST['permid'][$pid]);
+	if(has_perm('no-restrictions') || $permid != 'no-restrictions') $sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid));
   }
   
   pageheader('Edit permissions');

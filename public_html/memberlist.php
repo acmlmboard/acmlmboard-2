@@ -8,16 +8,20 @@
   $ppp = $_REQUEST['ppp'];
   $page = $_REQUEST['page'];
   $mini = $_REQUEST['mini'];
+  $orderby = $_REQUEST['orderby'];
 
 
 
   if($ppp<1) $ppp=50;
   if($page<1) $page=1;
 
-  $order='posts DESC';
-  if($sort=='exp' ) $order='exp DESC';
-  if($sort=='name') $order='name';
-  if($sort=='reg' ) $order='regdate DESC';
+  if($orderby=='a') $sortby= " ASC";
+  else $sortby= " DESC";
+
+  $order='posts'.$sortby;
+  if($sort=='exp' ) $order='exp'.$sortby;
+  if($sort=='name') $order='name'.$sortby;
+  if($sort=='reg' ) $order='regdate'.$sortby;
 
   $where='1';
   if($sex=='m') $where='sex=0';
@@ -44,7 +48,7 @@
       if($p==$page)
         $pagelist.=" $p";
       else
-        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini)."$p</a>";
+        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini,$orderby)."$p</a>";
   }
 
   $activegroups = $sql->query("SELECT * FROM `group` WHERE id IN (SELECT `group_id` FROM users GROUP BY `group_id`) ORDER BY `sortorder` ASC ");
@@ -52,7 +56,7 @@
   $groups = array();
   $gc = 0;
   while ($group = $sql->fetch($activegroups)) {
-    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini).$group['title']."</a>";
+    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini,$orderby).$group['title']."</a>";
   }
 
   print "$L[TBL1]>
@@ -61,22 +65,27 @@
 ".      "  $L[TR]>
 ".      "    $L[TD1] width=60>Sort by:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini)."Posts</a> |
-".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini)."EXP</a> |
-".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini)."Username</a> |
-".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini)."Registration date</a>
+".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini,$orderby)."Posts</a> |
+".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini,$orderby)."EXP</a> |
+".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini,$orderby)."Username</a> |
+".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini,$orderby)."Registration date</a>
+".      "  $L[TR]>
+".      "    $L[TD1] width=60>Order by:</td>
+".      "    $L[TD2c]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'d')."Descending</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'a')."Ascending</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Sex:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini)."Male</a> |
-".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini)."Female</a> |
-".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini)."N/A</a> |
-".      "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini)."All</a>
+".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini,$orderby)."Male</a> |
+".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini,$orderby)."Female</a> |
+".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini,$orderby)."N/A</a> |
+".      "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini,$orderby)."All</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Image:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0')."Avatars</a> |
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1')."Minipics</a>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0',$orderby)."Avatars</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby)."Minipics</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Group:</td>
 ".      "    $L[TD2c]>";
@@ -87,8 +96,8 @@ foreach ($groups as $k => $v) {
   //if ($c < $gc) 
   echo " | ";
 }
-echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini)."All Staff</a>
-"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini)."All</a>
+echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini,$orderby)."All Staff</a>
+"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini,$orderby)."All</a>
 ".      "      
 ".      "$L[TBLend]
 ".      "<br>";
@@ -144,7 +153,7 @@ RenderTable($data, $headers);
 ";
   pagefooter();
 
-  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini){
+  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini,$orderby){
     return '<a href=memberlist.php?'
            .($sort   ?"sort=$sort":'')
            .($sex    ?"&sex=$sex":'')
@@ -152,6 +161,7 @@ RenderTable($data, $headers);
            .($ppp!=50?"&ppp=$ppp":'')
            .($page!=1?"&page=$page":'')
            .($mini!=0?"&mini=$mini":'')
+           .($orderby!=''?"&orderby=$orderby":'')
            .'>';
   }
 ?>

@@ -63,8 +63,8 @@ $data[] = array
 		(
 			"id" => $bdg['id'],
 			"image" => "<img src=\"".$pic."\" alt=\"\" />",
-			"name" => $bdg['name'],
-			"description" => $bdg['description'],
+			"name" => str_replace("%%%VAL%%%", "<b><i>%%%VAL%%%</i></b>", $bdg['name']),//$bdg['name'],
+			"description" => str_replace("%%%VAL%%%", "<b><i>%%%VAL%%%</i></b>", $bdg['description']),
 			"type" => $bdg['type'],
       "priority" => $bdg['priority'],
       "edit" => RenderActions($actions,1),
@@ -205,7 +205,6 @@ $form = array(
               '1' => '1',
               '2' => '2',
               '3' => '3',
-              '4' => '4',
               ),
 'value' => $t['type'],
         ),

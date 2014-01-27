@@ -9,7 +9,15 @@ require("lib/common.php");
   pageheader("Edit Sprites");
 
   if(!has_perm('edit-sprites')) no_perm();
-
+  
+  $spritecateg = array();
+  $qspritecateg = $sql->query("SELECT `id`, `name` FROM `spritecateg`");
+  
+  while ($allspcquery= $sql->fetch($qspritecateg))
+  { 
+    $spritecateg[$allspcquery['id']]= $allspcquery['name'];
+  
+  }
   $id = $r['id'];
 
   if ($r['action'] == "del") {
@@ -26,7 +34,6 @@ else {
 
   if(empty($r['action'])) {
 
-
 $headers = array
 (
 	"id" => array //Entry key is used in $data to bind fields
@@ -38,9 +45,10 @@ $headers = array
 	),
 	"img" => array("caption"=>"Image", "width"=>"32px", "color"=>2),
 	"name" => array("caption"=>"Name", "align"=>"center", "color"=>1),
-	"flavor" => array("caption"=>"Description", "color"=>2),
-	"rarity" => array("caption"=>"Rarity", "color"=>1),
-  "edit" => array("caption"=>"Actions","color"=>2),
+  "franchiseid" => array("caption"=>"Franchise", "align"=>"center", "color"=>2),
+	"flavor" => array("caption"=>"Description", "color"=>1),
+	"rarity" => array("caption"=>"Rarity", "color"=>2),
+  "edit" => array("caption"=>"Actions","color"=>1),
 );
 
 $data = array();
@@ -62,6 +70,7 @@ $data[] = array
 			"id" => $mon['id'],
 			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
 			"name" => $mon['name'],
+      "franchiseid" => $spritecateg[$mon['franchiseid']],
 			"flavor" => $mon['flavor'],
 			"rarity" => $mon['rarity'],
       "edit" => RenderActions($actions,1),
@@ -180,8 +189,10 @@ $form = array(
         ),
         'franchiseid' => array(
           'title' => 'Franchise ID',
-          'type' => 'numeric',
-          'length' => 4,
+/*          'type' => 'numeric',
+          'length' => 4,*/
+          'type' => 'dropdown',
+          'choices' => $spritecateg,
 'value' => $t['franchiseid'],        
 	),
         'rarity' => array(

@@ -52,6 +52,15 @@ $captures = array();
 while($capt = $sql->fetch($captureReq))
 	$captures[$capt['monid']] = true;
 
+$spritecateg = array();
+$qspritecateg = $sql->query("SELECT `id`, `name` FROM `spritecateg`");
+
+while ($allspcquery= $sql->fetch($qspritecateg))
+{ 
+  $spritecateg[$allspcquery['id']]= $allspcquery['name'];
+
+}
+
 $headers = array
 (
 	"id" => array //Entry key is used in $data to bind fields
@@ -63,7 +72,8 @@ $headers = array
 	),
 	"img" => array("caption"=>"Image", "width"=>"32px", "color"=>2),
 	"name" => array("caption"=>"Name", "align"=>"center", "color"=>1),
-	"flavor" => array("caption"=>"Description", "color"=>2),
+	"franchiseid" => array("caption"=>"Franchise", "align"=>"center", "color"=>2),
+	"flavor" => array("caption"=>"Description", "color"=>1),
 
 	//Hidden flag could be used for admin-only columns.
 	"secretbuttfun" => array("caption"=>"You can't see this one!", "hidden"=>true),
@@ -82,6 +92,7 @@ while($mon = $sql->fetch($monReq))
 			"id" => $mon['id'],
 			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
 			"name" => $mon['name'],
+			"franchiseid" => $spritecateg[$mon['franchiseid']],
 			"flavor" => $mon['flavor'],
 		);
 	}
@@ -92,6 +103,7 @@ while($mon = $sql->fetch($monReq))
 			"id" => $mon['id'],
 			"img" => "&nbsp;",
 			"name" => "???",
+			"franchiseid" => "???",
 			"flavor" => "&nbsp;"
 		);
 	}

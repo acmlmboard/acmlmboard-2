@@ -51,8 +51,8 @@ while($bdg = $sql->fetch($bdgReq))
 	(
 		"id" => $bdg['id'],
 		"image" => "<img src=\"".$pic."\" alt=\"\" />",
-		"name" => $bdg['name'],
-		"description" => $bdg['description'],
+		"name" => str_replace("%%%VAL%%%", $bdg['badge_var'], $bdg['name']),
+		"description" => str_replace("%%%VAL%%%", $bdg['badge_var'], $bdg['description']),
 		"type" => $bdg['type'],
 	);
 

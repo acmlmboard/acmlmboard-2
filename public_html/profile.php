@@ -183,7 +183,7 @@ print \"Sample code.\"; #oops you just missed him!
       $badgelist.="$L[TR]>";
      while($badge = $sql -> fetch($q))
       {
-       $badgelist.= "$L[TD2c]><img src=\"".htmlval($badge['image'])."\" alt=\"\" title=\"".htmlval($badge['name'])."\" /></td>";
+       $badgelist.= "$L[TD2c]><img src=\"".htmlval($badge['image'])."\" alt=\"\" title=\"".htmlval(str_replace("%%%VAL%%%", $badge['badge_var'], $badge['name']))."\" /></td>";
        $numbadges++;
        if ($numbadges % 3 == 0)
          $badgelist .= "</tr>$L[TR]>";

@@ -86,6 +86,7 @@ $data[] = array
       "priority" => $bdg['priority'],
       "edit" => RenderActions($actions,1),
 		);
+  $badgecount++;
 }
 $pagebar['title'] = 'Assign User Badges';
 $pagebar['actions'] = array(
@@ -180,6 +181,16 @@ $t = array(
 );
 }
 RenderPageBar($pagebar);
+
+$allbdg = array();
+$qallbadges = $sql->query("SELECT `id`, `name` FROM `badges`");
+
+while ($allbdgquery= $sql->fetch($qallbadges))
+{ 
+  $allbdg[$allbdgquery['id']]= str_replace("%%%VAL%%%", '*', $allbdgquery['name']);
+
+}
+
 $form = array(
   'action' =>
     urlcreate('assignbadges.php', array(
@@ -194,23 +205,11 @@ $form = array(
       'title' => 'Badge Metadata',
       'fields' => array(
         'badge_id' => array(
-          'title' => 'Badge ID#',
-          'type' => 'text',
-          'length' => 3,
-          'size' => 4,
+          'title' => 'Badge ID',
+          'type' => 'dropdown',
+          'choices' => $allbdg,
 'value' => $t['badge_id'],
         ),
- /*       'type' => array(
-          'title' => 'Badge Type',
-          'type' => 'dropdown',
-          'choices' => array(
-              '1' => '1',
-              '2' => '2',
-              '3' => '3',
-              '4' => '4',
-              ),
-'value' => $t['type'],
-        ),*/
         'badge_var' => array(
           'title' => 'Badge Variable Information',
           'type' => 'text',

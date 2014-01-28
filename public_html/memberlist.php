@@ -58,13 +58,15 @@
 
   $groups = array();
   $gc = 0;
+  $unclass ='';
+  if($config['useshadownccss']) $unclass="class='needsshadow'";
   while ($group = $sql->fetch($activegroups)) {
     if($config['memberlistcolorlinks'])
     {
       if($sex=='f') $sexcolor = $group['nc1'];
       elseif($sex=='n')$sexcolor = $group['nc2'];
       else $sexcolor = $group['nc0'];
-      $grouptitle = "<span style='color:#".$sexcolor.";'>".$group['title']."</span>";
+      $grouptitle = "<span $unclass style='color:#".$sexcolor.";'>".$group['title']."</span>";
     }
     else $grouptitle = $group['title'];
     $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini,$orderby,$customnc).$grouptitle."</a>";
@@ -73,9 +75,9 @@
 //If colornames are enabled.. 
 if($config['memberlistcolorlinks'])
 {
-  $malecolor ="<span style='color:#97ACEF;'>";
-  $femalecolor ="<span style='color:#F185C9;'>";
-  $nacolor ="<span style='color:#7C60B0;'>";
+  $malecolor ="<span $unclass style='color:#97ACEF;'>";
+  $femalecolor ="<span $unclass style='color:#F185C9;'>";
+  $nacolor ="<span $unclass style='color:#7C60B0;'>";
   $spancolor ="</span>";
 }
 else

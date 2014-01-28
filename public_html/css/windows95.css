@@ -82,3 +82,7 @@ input.radio {
 	color: #000000;
 	font: 8pt Microsoft Sans Serif, Arial, sans-serif;
 }
+
+span.needsshadow {
+ 	text-shadow: -1px -1px black, 0px -1px black, 1px -1px black, 2px 2px 1px black, 1px 1px 1px black, 2px 1px 1px black, -1px 1px black, -1px 0px black, 2px 0px 1px black;
+}

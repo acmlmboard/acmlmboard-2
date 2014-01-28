@@ -5,31 +5,35 @@
     //[Scrydan] Basic credits page. The footer was getting too long, haha.
     //There might be some work done on this later but you get the idea. A few people weren't on the list and I added them.
     //Feel free to make this more up to date.
+
+    //Toggles class define for spans where appropriate
+    $unclass ='';
+    if($config['useshadownccss']) $unclass="class='needsshadow'";
     
     $programmers = array
      (
-      "<span style=\"color: #EE4444; font-weight:bold;\">Acmlm</span>"       => "The man the board is named after. He built the core of the board (and much more that would take a long time to detail.)",
-      "<span style=\"color: #EE4444; font-weight:bold;\">Emuz</span>"        => "He was there from day one with Acmlm. Working on misc things.<br><br>
+      "<span $unclass style=\"color: #EE4444; font-weight:bold;\">Acmlm</span>"       => "The man the board is named after. He built the core of the board (and much more that would take a long time to detail.)",
+      "<span $unclass style=\"color: #EE4444; font-weight:bold;\">Emuz</span>"        => "He was there from day one with Acmlm. Working on misc things.<br><br>
                         It was on the beginning of the year 2012 when he restarted interest in developement of AB 2.X as 2.5+.",
-      "<span style=\"color: #FFEA95; font-weight:bold;\">blackhole89</span>" => "Worked along with Xkeeper to bring the board from an alpha to production. Created many of the core systems missing from the original provided by Acmlm.",
-      "<span style=\"color: #F0C413; font-weight:bold;\">Xkeeper</span>"     => "Xkeeper was the person who convinced Acmlm to work on AB2 after it laid dormant for years. Along with blackhole89 they contributed a majority of the code from 2.0 to 2.1.",
-      "<span style=\"color: #FFEA95; font-weight:bold;\">Sukasa</span>"      => "Implemented mood avatars, forums and items editing, and a Text to IMG rendering engine.",
-      "<span style=\"color: #AFFABE; font-weight:bold;\">Kawa</span>"        => "Implemented Display Name, the inital root power level, and the current theme management system",
-      "<span style=\"color: #FFEA95; font-weight:bold;\">DJ Bouche</span>"   => "Created the permissions and group system, warp whistle reply, and many other things",
-      "<span style=\"color: #C762F2; font-weight:bold;\">knuck</span>"       => "Implemented implemented post radar, many small fixes",
-      "<span style=\"color: #FFEA95; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
-      "<span style=\"color: #33EDCB; font-weight:bold;\">Mega-Mario</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
-      "<span style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here). Most of his work was on the now defunct 2.6 branch.",
+      "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">blackhole89</span>" => "Worked along with Xkeeper to bring the board from an alpha to production. Created many of the core systems missing from the original provided by Acmlm.",
+      "<span $unclass style=\"color: #F0C413; font-weight:bold;\">Xkeeper</span>"     => "Xkeeper was the person who convinced Acmlm to work on AB2 after it laid dormant for years. Along with blackhole89 they contributed a majority of the code from 2.0 to 2.1.",
+      "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">Sukasa</span>"      => "Implemented mood avatars, forums and items editing, and a Text to IMG rendering engine.",
+      "<span $unclass style=\"color: #AFFABE; font-weight:bold;\">Kawa</span>"        => "Implemented Display Name, the inital root power level, and the current theme management system",
+      "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">DJ Bouche</span>"   => "Created the permissions and group system, warp whistle reply, and many other things",
+      "<span $unclass style=\"color: #C762F2; font-weight:bold;\">knuck</span>"       => "Implemented implemented post radar, many small fixes",
+      "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
+      "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Mega-Mario</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
+      "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here). Most of his work was on the now defunct 2.6 branch.",
      );
 
 
     $contributors = array
      (
-      "<span style=\"color: #F0C413; font-weight:bold;\">KP9000</span>"       => "Provided many themes for AB2 over the last few years... (TBC)",
-      "<span style=\"color: #C53A9E; font-weight:bold;\">Ailure</span>"        => "",
-      "<span style=\"color: #F185C9; font-weight:bold;\">Nina</span>"        => "Converted all the AB1 themes to AB2.",
-      "<span style=\"color: #33EDCB; font-weight:bold;\">Shroomy</span>"     => "Drafted an OOP DB class for AB2. This class not in use.",
-      "<span style=\"color: #F185C9; font-weight:bold;\">Ijah</span>"     => "Created the default AB2 board logo.",
+      "<span $unclass style=\"color: #F0C413; font-weight:bold;\">KP9000</span>"       => "Provided many themes for AB2 over the last few years... (TBC)",
+      "<span $unclass style=\"color: #C53A9E; font-weight:bold;\">Ailure</span>"        => "",
+      "<span $unclass style=\"color: #F185C9; font-weight:bold;\">Nina</span>"        => "Converted all the AB1 themes to AB2.",
+      "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Shroomy</span>"     => "Drafted an OOP DB class for AB2. This class not in use.",
+      "<span $unclass style=\"color: #F185C9; font-weight:bold;\">Ijah</span>"     => "Created the default AB2 board logo.",
      );
 
     $gitcontributors = array

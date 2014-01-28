@@ -241,8 +241,11 @@ function userfields($tbl='', $pf='')
 		$group = $usergroups[$user[$u.'group_id']];
 		$nc = $group['nc'.$user[$u.'sex']];
 	}
+
+	$unclass ='';
+  if($config['useshadownccss']) $unclass="class='needsshadow'";
 	
-	$n = $user[$u.'name'];
+  $n = $user[$u.'name'];
 	if($user[$u.'displayname'] && $config['displayname'])
 		$n = $user[$u.'displayname'];
 		
@@ -251,7 +254,7 @@ function userfields($tbl='', $pf='')
    
 //Over-ride for custom colours [Gywall]
 	if($user[$u.'nick_color'] && $config[perusercolor]) $nc = $user[$u.'nick_color'];
-	return "$minipic<span style='color:#$nc;'>"
+	return "$minipic<span $unclass style='color:#$nc;'>"
 		.str_replace(" ","&nbsp;",htmlval($n))
 		.'</span>';
 }

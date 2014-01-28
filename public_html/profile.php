@@ -202,7 +202,6 @@ print \"Sample code.\"; #oops you just missed him!
     }
     //END badge list
     //More indepth test to not show the link if you can't edit your own perms
-    print "moo: $louguser[id] & $uid";
     $editpermissions ="";
     if(has_perm('edit-permissions'))
     {
@@ -265,6 +264,9 @@ print \"Sample code.\"; #oops you just missed him!
     $group = $usergroups[$user[$u.'group_id']];
     $realnc = $group['nc'.$user[$u.'sex']];
 
+    //Toggles class define for spans where appropriate
+    $unclass ='';
+    if($config['useshadownccss']) $unclass="class='needsshadow'";
     //If user has a a displayname, a custom username color, or both, we need to show the realname field.
     if($config['perusercolor']) $usercnickcolor = $user['nick_color'];
     if($config['displayname'] && $user['displayname']) $userdisplayname = true;
@@ -279,7 +281,7 @@ print \"Sample code.\"; #oops you just missed him!
                $L[TBL1]>
                  $L[TRh]>
                    $L[TDh] colspan=\"2\">General information</td>
-                   ".($showrealnick ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]><font color=\"".$realnc."\"><b>".htmlval($user['name'])."</b></font>" : "")."
+                   ".($showrealnick ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]><span $unclass style='color:#".$realnc.";'><b>".htmlval($user['name'])."</b></span>" : "")."
                  $L[TR]>
                    $L[TD1] width=\"110\"><b>Group</b></td>
                    $L[TD2]>$group[title]

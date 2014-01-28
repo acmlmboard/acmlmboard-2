@@ -70,6 +70,7 @@
 
   $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
   $config['perusercolor'] = false; //Enable the use of per-user colors.
+  $config['useshadownccss'] = false; //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
   
 //IRC Color Defines. Color code numbers, and color names work here.
   $irccolor['base'] = "grey"; //default color for the irc output.

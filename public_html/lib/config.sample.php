@@ -72,7 +72,8 @@
   $config['secafterpost'] = 0; //(in seconds, 0 == off)
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
 //The following enables the optional badge system
-  $config['badgesystem'] = false; //This system is currently unfinished.
+  $config['badgesystem'] = false; //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
+  $config['extendedprofile'] = false; //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
 
   $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
   $config['perusercolor'] = false; //Enable the use of per-user colors.

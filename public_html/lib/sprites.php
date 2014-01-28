@@ -27,12 +27,8 @@
  * Common = 0 | Uncommon = 20 | 40 = Slightly Rare | Rare = 60 | Very Rare = 80 | Mew Rare = 99
  */
 
- function generate_sprite_hash($userid, $spriteid)
-  {
-   global $spritesalt;
-   return md5($spritesalt.$userid.$spriteid.$spritesalt);
-  }
-  
+require_once 'lib/spritelib.php';
+
 $chance = 5 + (rand(0, 6464) % 5);
 
 //$chance = 100;

@@ -267,6 +267,12 @@ function RenderPageBar($pagebar) {
 //  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
+    function fieldinputprofile($avatarsize,$max,$field,$userprof){
+    global $L,$user;
+    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userprof[$field])."\">";
+//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+  }
+
   function fieldtext($rows,$cols,$field){
     global $L,$user;
     return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($user[$field]).'</textarea>';

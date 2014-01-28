@@ -182,7 +182,7 @@
           $error.="- Custom usercolor is not a valid RGB hex color.<br />";
         }
       }
-	  
+
 	  if (!$error)
 	  {
 		  $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
@@ -203,9 +203,28 @@
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
-	  }
+  if($config['extendedprofile'] && has_perm('update-extended-profiles')) {
+          $qallfields = $sql->query("SELECT * FROM `profileext`");
+          $count = false;
+          if ($sql->prepare('DELETE FROM `user_profileext` WHERE user_id=?',array($targetuserid))) {} //Until multiples of each filed are enabled, wipe the slate.
+          while ($allfieldsgquery = $sql->fetch($qallfields))
+          {
+              if (substr(setfield($allfieldsgquery['id']), -3) != "=''")
+              {
+                $pdata = addslashes($_POST[$allfieldsgquery['id']]);
+                if (      $sql->prepare('INSERT INTO `user_profileext` SET
+                user_id=?,field_id=?,data=? ;', array(
+                $targetuserid,
+                $allfieldsgquery['id'],
+                $pdata,
+                )
+                )) {}
+              }
 
+          }
+      }
     }
+  }
 
 	if (!$error)
 	{
@@ -365,7 +384,29 @@ if (has_perm("edit-users"))
            catheader('Contact information')."
 ".           fieldrow('Email address'   ,fieldinput(40, 60,'email'     ))."
 ".           fieldrow('Homepage URL'    ,fieldinput(40,200,'homeurl'   ))."
-".           fieldrow('Homepage name'   ,fieldinput(40, 60,'homename'  ))."
+".           fieldrow('Homepage name'   ,fieldinput(40, 60,'homename'  ));
+if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will need a function so it can also check for update-own-extended-profile
+{
+  $fieldReq = $sql->query("SELECT * FROM `profileext`
+                         RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
+                         WHERE `user_profileext`.`user_id`='$targetuserid'");
+  $userprof = array();
+  while($pfield = $sql->fetch($fieldReq))
+  {
+    $userprof[$pfield['field_id']] = $pfield['data'];
+    print $userprof[$pfield['field_id']]." ".$pfield['data'];
+  }
+
+  $qallfields = $sql->query("SELECT * FROM `profileext`");
+  while ($allfieldsgquery = $sql->fetch($qallfields))
+  { 
+   // $allfieldsgquery['id']
+    print fieldrow($allfieldsgquery['title']    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
+
+  }
+
+}
+ print"
 ".
            catheader('Options')."
 ".           fieldrow('Theme'           ,fieldselect('theme', $user['theme'], themelist()))."

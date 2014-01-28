@@ -90,7 +90,7 @@ $data[] = array
 }
 $pagebar['title'] = 'Assign User Badges';
 $pagebar['actions'] = array(
-    array('title' => 'New Badge','href' => 'assignbadges.php?action=new&uid='.$uid),
+    array('title' => 'Assign Badge','href' => 'assignbadges.php?action=new&uid='.$uid),
 );
 RenderPageBar($pagebar);
 RenderTable($data, $headers);
@@ -132,7 +132,7 @@ $s['badge_var'],
 )) {
 $id = $sql->insertid();
 $r['action'] = "edit";
-      $pagebar['message'] = "Badge successfully created.";
+      $pagebar['message'] = "Badge successfully assigned.";
 }
 else {
  $pagebar['message'] = "Unable to assign badge.";

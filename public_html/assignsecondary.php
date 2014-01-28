@@ -28,10 +28,10 @@ require("lib/common.php");
   $id = $r['id'];
   $uid = $r['uid'];
 
-  if($loguser['id'] == $uid && has_perm('edit-own-permissions'))
+  /*if($loguser['id'] == $uid && !has_perm('edit-own-permissions'))
   {
     no_perm();    
-  }
+  }*///Not really needed in normal context. I commented it out incase someone may want this -Emuz
 
   if ($r['action'] == "del") {
     unset($r['action']);

@@ -208,6 +208,13 @@ print \"Sample code.\"; #oops you just missed him!
       if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $editpermissions ="";
       else $editpermissions="| <a href=\"editperms.php?uid=".$user['id']."\">Edit User Permissions</a>";
     }
+
+    $secondarygroups ="";
+    if(has_perm('assign-secondary-groups'))
+    {
+      /*if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $secondarygroups =""; //Not really needed in normal context. I commented it out in case someone may want this -Emuz
+      else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage Secondary Groups</a>";
+    }
     
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";
@@ -383,7 +390,7 @@ print \"Sample code.\"; #oops you just missed him!
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
-                       ". $editpermissions ."
+                       ". $editpermissions." ".$secondarygroups."
            $L[TBLend]";
            pagefooter();
            

@@ -62,6 +62,12 @@
   $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 //The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable *Currently doesn't work*
   $config['classictags'] = false;
+  
+  //These two settings allow you to choose how user will be notfied about PMs. The "classic" Index table method, the "modern" Icon style, or Both
+  //Note: You must have one or both enabled for you to have any PM info displayed to the user.
+  $config['classicpms'] = false; //Enables the classic table style PM notification
+  $config['disablenewpms'] = false;//**DISABLES** the modern style system. This is the supported method for PM notification.
+
 //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 0; //(in seconds, 0 == off)
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.

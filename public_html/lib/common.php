@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "01/26/2014";
+  $abdate    = "01/28/2014";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -354,7 +354,8 @@
      $unreadpms = $sql->resultq("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `unread`=1 AND `del_to`='0'");
      $totalpms  = $sql->resultq("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `del_to`='0'");
 
-    if($unreadpms)
+ 
+  if($unreadpms)
      {
       $status    = "<img src=\"img/status/new.png\">";
       $unreadpms = " ($unreadpms new)";
@@ -364,8 +365,30 @@
       $status    = "";
       $unreadpms = "";
      }
+   //Starts code for the classic PM box.
+    if ($config['classicpms'] && has_perm('view-own-pms'))
+    {
+    if($totalpms>0)
+      $lastmsg="<br>
+".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
+    else
+      $lastmsg='';
+
+    $oldpmsgbox=
+        "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh] colspan=2>Private Messages</td>
+".      "  $L[TR]>
+".      "    $L[TD1] width=17>$status</td>
+".      "    $L[TD2]>
+".      "      <a href=private.php>Private messages</a> -- You have $totalpms private message".($totalpms!=1?'s':'')."$unreadpms.$lastmsg
+".      "  $L[TBLend]
+".      "  <br>
+";
+  }
+  else $oldpmsgbox ='';
       
-    if (has_perm('view-own-pms'))
+    if (!$config['disablenewpms'] && has_perm('view-own-pms'))
      {
      if ($unreadpms)
       {
@@ -648,7 +671,8 @@
 			 </td>
 		   </tr>
 		 $L[TBLend]
-		 <br>";
+		 <br>
+          $oldpmsgbox";
      }
    }
 

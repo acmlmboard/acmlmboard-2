@@ -322,10 +322,22 @@ print \"Sample code.\"; #oops you just missed him!
                    $L[TD2]>$email
                  $L[TR]>
                    $L[TD1]><b>Homepage</b></td>
-                   $L[TD2]>$homepage
-               $L[TBLend]
-               <br>
-               $L[TBL1]>
+                   $L[TD2]>$homepage";
+
+if(true){
+$fieldReq = $sql->query("SELECT * FROM `profileext`
+                       RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
+                       WHERE `user_profileext`.`user_id`='$uid'");
+while($pfield = $sql->fetch($fieldReq))
+{
+  print "                 $L[TR]>
+                   $L[TD1]><b>".$pfield['title']."</b></td>
+                   $L[TD2]>".preg_replace("/$pfield[validation]/", $pfield['fmt'], $pfield['data']);
+}
+   print "               $L[TBLend]
+                   <br>";
+}
+               print "$L[TBL1]>
                  $L[TRh]>
                    $L[TDh] colspan=\"2\">User settings</td>
                  $L[TR]>

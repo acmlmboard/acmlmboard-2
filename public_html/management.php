@@ -6,6 +6,7 @@ pageheader('Management');
 if (!has_perm('manage-board')) no_perm();
 
 $mlinks = array();
+$mlinks[] = array('url' => "updatethemes.php", 'title' => 'Update Themes');
 if (has_perm("edit-forums")) 
   $mlinks[] = array('url' => "manageforums.php", 'title' => 'Manage forums');
 if (has_perm("edit-ip-bans")) 

@@ -7,3 +7,6 @@ INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) V
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('assign-secondary-groups', 'Assign Secondary Groups', '', '3', '');
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('update-extended-profiles', 'Update Extended Profiles', '', '3', '');
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('update-own-extended-profile', 'Update Own Extended Profile', '', '1', '');
+
+#1/29/2014
+INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('bypass-lockdown', 'View Board Under Lockdown', '', '3', '');

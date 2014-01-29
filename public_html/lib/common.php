@@ -21,9 +21,7 @@
   if($a['intval'])
    {
     //lock down
-    //Altered to test for user power level. -Emuz
-    //If the user is either an Administrator or Root Administrator you just get h1 with "Lockdown"
-   if ($loguser['power'] == 3 || $loguser['power'] == 4 )
+    if(has_perm('bypass-lockdown'))
     print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
    else //Everyone else gets the wonderful lockdown page.
     {

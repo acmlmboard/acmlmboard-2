@@ -20,7 +20,7 @@ header('Content-type: application/xhtml+xml');
 
 <td>
 <table style="width:100%;height:100%" border="0"><tr style="height:10px"><td><font face="Courier New,Courier,Mono" size="4" color="#FF8080"><b>I AM<br />ERROR.</b></font></td></tr>
-<tr><td>Access to the board has been restricted by the administration.<br />Please forgive any inconvenience caused and stand by until the underlying issues have been resolved.</td></tr>
+<tr><td><?php if($a['txtval'] != '') print $a['txtval']; else print "Access to the board has been restricted by the administration.<br />Please forgive any inconvenience caused and stand by until the underlying issues have been resolved.";?></td></tr>
 </table>
 </td>
 </tr>

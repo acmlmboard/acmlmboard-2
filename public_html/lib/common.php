@@ -16,7 +16,7 @@
 
   require "lib/login.php";
 
-  $a = $sql->fetchq("SELECT `intval` FROM `misc` WHERE `field`='lockdown'");
+  $a = $sql->fetchq("SELECT `intval`,`txtval` FROM `misc` WHERE `field`='lockdown'");
   
   if($a['intval'])
    {

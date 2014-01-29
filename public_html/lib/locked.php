@@ -5,7 +5,7 @@ header('Content-type: application/xhtml+xml');
 /*echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN\" \"http://www.w3.org/2002/04/xhtml-math-svg/xhtml-math-svg.dtd\">";
 */
 ?><html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xml:lang="en">
-<head><title>Acmlmboard 2</title></head>
+<head><title><?php print "$boardtitle"; ?></title></head>
 <body bgcolor="#101020">
 
 <table border="0" cellpadding="10" style="position:fixed;top:40%;left:35%;width:30%;font-family:Verdana,Arial;color:#FF6060;font-size:12px" bgcolor="#C02020">

@@ -10,7 +10,7 @@
     }
 
     if($_POST[action]=="Preview") {
-      $attndata = $_POST[txtval];
+      $attndata = stripslashes($_POST[txtval]);
 
       $previewattn = "
                  $L[TBL1] width=\"100%\" align=\"center\">

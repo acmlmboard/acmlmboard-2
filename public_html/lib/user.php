@@ -243,7 +243,9 @@ function userfields($tbl='', $pf='')
 	}
 
 	$unclass ='';
+  $nccss = '';
   if($config['useshadownccss']) $unclass="class='needsshadow'";
+  if($config['nickcolorcss']) $nccss="id='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
 	
   $n = $user[$u.'name'];
 	if($user[$u.'displayname'] && $config['displayname'])
@@ -254,7 +256,7 @@ function userfields($tbl='', $pf='')
    
 //Over-ride for custom colours [Gywall]
 	if($user[$u.'nick_color'] && $config[perusercolor]) $nc = $user[$u.'nick_color'];
-	return "$minipic<span $unclass style='color:#$nc;'>"
+	return "$minipic<span $unclass $nccss style='color:#$nc;'>"
 		.str_replace(" ","&nbsp;",htmlval($n))
 		.'</span>';
 }

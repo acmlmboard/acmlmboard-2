@@ -80,6 +80,13 @@
   $config['useshadownccss'] = false; //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
   $config['nickcolorcss'] = false; //Enables use of CSS to define per theme colors via a span id. Note: You may need to customise CSS to fit your board groups. 
 
+
+//The following are related to how RPG elements are displayed. All these options allow for legacy AB1 RPG style and elements
+  $config['userpgnum'] = false; //Enables 'graphical' RPG stats in user's sidebars when themes have images incorporated in the themes/themename/rpg/ dir.
+  $config['userpgnumdefault'] = false; //Shows a default imageset on all themes. If $config['userpgnum'] is enabled the theme images will still show.
+  $config['alwaysshowlvlbar'] = false; //Enable this to always show the exp bar. This allows you to use it without having to have the rest of the system.
+  $config['rpglvlbarwidth'] = 96; // Set the size of the exp bar. Acmlmboard 1.x has a default of 56. 
+
 //IRC Color Defines. Color code numbers, and color names work here.
   $irccolor['base'] = "grey"; //default color for the irc output.
   $irccolor['name'] = "lt_green"; //used most often for usernames and other things that need emphasis.

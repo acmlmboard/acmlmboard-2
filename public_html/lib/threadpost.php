@@ -13,6 +13,14 @@ function LoadBlocklayouts()
 
 }
 
+function usegfxnums()
+{
+  global $config, $rpgimageset;
+  if ($rpgimageset == '') return false;
+  elseif(!$config['userpgnum']) return false;
+  else return true;
+}
+
   function threadpost($post,$type,$pthread=''){
     global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
@@ -174,8 +182,25 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
         $text.=
 		 $grouplink."
 ".        "      ".((strlen($grouplink))?"<br>":"")."
-".        "      ".postfilter($post[utitle])."
-".        "      <br>Level: ".calclvl($exp)."
+".        "      ".postfilter($post[utitle]);
+/* This block is used when rendering AB1 style image RPG layouts */
+if(usegfxnums()) $text.= "
+".        "      <br>".rpglabel2img("level", "Level:")." ".rpgnum2img(calclvl($exp))."
+".        "      <br>".drawrpglevelbar($exp)."
+".        "      <br>$picture
+".        "      <br>".rpglabel2img("posts","Posts:")." ".rpgnum2img(($post[num]?"$post[num]/":'')).rpgnum2img($post[uposts])."
+".        "      <br>".rpglabel2img("exp","EXP:")." ".rpgnum2img($exp)."
+".        "      <br>".rpglabel2img("fornext","For Next:")." ".rpgnum2img(calcexpleft($exp))."
+".        "      <br>
+".        "      <br>Since: ".cdate('m-d-y',$post[uregdate])."
+".        "      $location
+".        "      <br>
+".        "      <br>Last post: $lastpost
+".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview])."
+";
+/*Normal Rendering */
+else $text.=      "      <br>Level: ".calclvl($exp)."
+".        "      ".($config['alwaysshowlvlbar'] ? "<br>".drawrpglevelbar($exp):"")."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]
 ".        "      <br>EXP: $exp
@@ -185,8 +210,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".        "      $location
 ".        "      <br>
 ".        "      <br>Last post: $lastpost
-".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview])."
-";
+".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview]);
       }else{
    $text.="
 ".        "      Posts: $post[num]/$post[uposts]

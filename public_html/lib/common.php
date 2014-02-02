@@ -193,6 +193,21 @@
    $logofile = "theme/".$theme."/logo.png";
   else
    $logofile = $defaultlogo;
+  
+  $rpgimageset = '';
+
+  if($config['userpgnumdefault']) $rpgimageset = "gfx/rpg/";
+  
+  /*if($config['ab1rpgnum'] == 'enabled' || $config['ab1rpgnum'] = 'theme' )
+  {
+    if(is_file("theme/".$theme."/rpg/0.png")) $rpgimageset="theme/".$theme."/rpg/";
+    else if($config['ab1rpgnum'] == 'enabled') $rpgimageset = "gfx/rpg/";
+  }*/
+
+  if($config['userpgnum'] || $config['alwaysshowlvlbar'])
+  {
+    if(is_file("theme/".$theme."/rpg/0.png")) $rpgimageset="theme/".$theme."/rpg/";
+  }
 
   $feedicons="";
 

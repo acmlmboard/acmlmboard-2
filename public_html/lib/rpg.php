@@ -81,4 +81,43 @@
     if($p<0 or $d<0) return 0;
     return floor(pow($p,1.3) * pow($d,0.4) + $p*10);
   }
+  function rpgnum2img($num)
+{
+  global $rpgimageset;
+  $value = (string)$num;
+  $imgstrings = '';
+  for ($i = 0, $j = strlen($value); $i < $j; $i++) {
+        $image = $value[$i];
+        if($image == "/") $image = "slash";
+        $imgstrings.="<img src='$rpgimageset".$image.".png' alt='".$value[$i]."'/>";
+  }
+  return $imgstrings;
+}
+
+function rpglabel2img($label, $alt)
+{
+  global $rpgimageset;
+  $htmltag.="<img src='$rpgimageset".$label.".png' alt='".$alt."'/>";
+  return $htmltag;
+}
+
+function drawrpglevelbar($totallvlexp)
+{
+  //Based off the AB 1.x code.
+  global $config, $rpgimageset;
+  
+  $totalwidth=$config['rpglvlbarwidth'];
+  if($rpgimageset == '') $rpgimagepath = "gfx/rpg/";
+
+  $expleft = calcexpleft($totallvlexp);
+
+  $barwidth = $totalwidth-round(@($expleft/$totallvlexp)*$totalwidth);
+
+  if($barwidth<1) $barwidth = 0;
+  if($barwidth>0) $baron = "<img src='".$rpgimagepath."bar-on.png' width='$barwidth' height='8' />";
+  if($barwidth<$totalwidth) $baroff="<img src='".$rpgimagepath."bar-off.png' width='".($totalwidth-$barwidth)."' height='8' />";
+  $bar="<img src='".$rpgimagepath."barleft.png' width='2' height='8' />$baron$baroff<img src='".$rpgimagepath."barright.png' width='2' height='8' />";
+
+  return $bar;
+}
 ?>

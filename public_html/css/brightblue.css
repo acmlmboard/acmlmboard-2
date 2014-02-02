@@ -123,10 +123,28 @@ del{
   color: #FFFFFF;
 }
 */
+
+/* If you wish to use shadow for usernames, uncomment.*/
 span.needsshadow {
  text-shadow: -1px -1px black, 0px -1px black, 1px -1px black, 2px 2px 1px black, 1px 1px 1px black, 2px 1px 1px black, -1px 1px black, -1px 0px black, 3px 0px 1px black;
 }
 
+/*Custom Colors. You will need to add one for each new group you add if you this this theme to show it differently.
+This also applies if you restructure your groups. 
+ncXY X = gender (0=M, 1=F, 2=N) and Y=group id # */
+#nc02{color:#6479BC !important; text-decoration: none;}
+#nc12{color:#C05296 !important; text-decoration: none;}
+#nc22{color:#493080 !important; text-decoration: none;}
+#nc08{color:#7282A9 !important; text-decoration: none;}
+#nc18{color:#DD80D0 !important; text-decoration: none;}
+#nc28{color:#BB8687 !important; text-decoration: none;}
+#nc03{color:#4AA458 !important; text-decoration: none;}
+#nc13{color:#9430D0 !important; text-decoration: none;}
+#nc23{color:#148209 !important; text-decoration: none;}
+#nc04{color:#B68F00 !important; text-decoration: none;}
+#nc14{color:#92076B !important; text-decoration: none;}
+
+/*Legacy AB 2.1 colors */
 .nc0x{color:#888888; text-decoration: none;}
 .nc1x{color:#888888; text-decoration: none;}
 .nc2x{color:#888888; text-decoration: none;}
@@ -141,4 +159,4 @@ span.needsshadow {
 .nc22{color:#148209; text-decoration: none;}
 .nc03{color:#B68F00; text-decoration: none;}
 .nc13{color:#92076B; text-decoration: none;}
-.nc23{color:#A03000; text-decoration: none;}
+

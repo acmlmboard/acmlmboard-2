@@ -10,3 +10,7 @@ INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) V
 
 #1/29/2014
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('bypass-lockdown', 'View Board Under Lockdown', '', '3', '');
+
+#2/2/2014
+UPDATE `perm` SET `id` = 'view-favorites', `title` = 'View Favorite Threads' WHERE `perm`.`id` = 'view-calendar';
+INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (LAST_INSERT_ID(), 2, 'group', 'view-favorites', '', 0, 0);

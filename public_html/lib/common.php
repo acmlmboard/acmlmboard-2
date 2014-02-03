@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "01/28/2014";
+  $abdate    = "02/02/2014";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -447,6 +447,8 @@
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
+    if (has_perm("view-favorites")) 
+      $userlinks[$ul++] = array('url' => "forum.php?fav=1", 'title' => 'Favorite Threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
     if (has_perm("update-own-moods")) 

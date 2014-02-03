@@ -448,7 +448,7 @@
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
     if (has_perm("view-favorites")) 
-      $userlinks[$ul++] = array('url' => "forum.php?fav=1", 'title' => 'Favorite Threads');
+      $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite Threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
     if (has_perm("update-own-moods")) 

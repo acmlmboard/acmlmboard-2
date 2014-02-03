@@ -180,9 +180,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 ".      "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
 ".      "$L[TBLend]
 ";
-  }elseif($fav=$_GET[fav] && has_perm('view-favorites')){
-    checknumeric($fav);
-    //$user=$sql->fetchq("SELECT * FROM users WHERE id=$uid");
+  }elseif(isset($_GET[fav]) && has_perm('view-favorites')){
 
     pageheader("Favorite Threads");
 

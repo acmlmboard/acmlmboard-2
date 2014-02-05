@@ -394,7 +394,6 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
   while($pfield = $sql->fetch($fieldReq))
   {
     $userprof[$pfield['field_id']] = $pfield['data'];
-    print $userprof[$pfield['field_id']]." ".$pfield['data'];
   }
 
   $qallfields = $sql->query("SELECT * FROM `profileext`");

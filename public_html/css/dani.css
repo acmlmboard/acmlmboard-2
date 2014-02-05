@@ -71,3 +71,29 @@ input.radio {
 	color: #EEE0F8;
 	font: 10pt "book antiqua";
 }
+
+a[class~="newreply"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 65px;
+	height: 12px;
+	background: url('../theme/dani/newreplypurple.png');
+	content: url('../theme/dani/newreplypurple.png'); 
+}
+
+a[class~="newthread"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 70px;
+	height: 12px;
+	background: url('../theme/dani/newthreadpurple.png');
+	content: url('../theme/dani/newthreadpurple.png'); 
+}

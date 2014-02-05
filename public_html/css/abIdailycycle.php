@@ -145,8 +145,8 @@ a[class~=\"newreply\"] {
 	color: rgba(255,255,255,0);
 	width: 70px;
 	height: 16px;
-	background: url('../theme/abI/newreply.png');
-	content: url('../theme/abI/newreply.png'); 
+	background: url('../theme/abIdailycycle/newreply.png');
+	content: url('../theme/abIdailycycle/newreply.png'); 
 }
 
 a[class~=\"newthread\"] { 
@@ -158,8 +158,8 @@ a[class~=\"newthread\"] {
 	color: rgba(255,255,255,0);
 	width: 76px;
 	height: 16px;
-	background: url('../theme/abI/newthread.png');
-	content: url('../theme/abI/newthread.png'); 
+	background: url('../theme/abIdailycycle/newthread.png');
+	content: url('../theme/abIdailycycle/newthread.png'); 
 }
 
 a[class~=\"newpoll\"] { 
@@ -171,8 +171,8 @@ a[class~=\"newpoll\"] {
   color: rgba(255,255,255,0);
   width: 59px;
   height: 16px;
-  background: url('../theme/arhd/newpoll.png');
-  content: url('../theme/arhd/newpoll.png'); 
+  background: url('../theme/abIdailycycle/newpoll.png');
+  content: url('../theme/abIdailycycle/newpoll.png'); 
 }
 
 

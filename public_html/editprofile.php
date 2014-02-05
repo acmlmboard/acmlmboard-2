@@ -401,7 +401,7 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
   while ($allfieldsgquery = $sql->fetch($qallfields))
   { 
    // $allfieldsgquery['id']
-    print fieldrow($allfieldsgquery['title']    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
+    print fieldrow($allfieldsgquery['title']."<br /><small>".$allfieldsgquery['description']."</small>"    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
 
   }
 

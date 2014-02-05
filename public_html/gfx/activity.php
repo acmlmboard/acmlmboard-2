@@ -1,6 +1,7 @@
 <?php
  require 'gfxlib.php';
 
+ $u = checknumeric($_GET['u']);
  $user=$sql->fetch($sql->query("SELECT regdate FROM users WHERE id=$u"));
  if(!$user[regdate]) die();
 

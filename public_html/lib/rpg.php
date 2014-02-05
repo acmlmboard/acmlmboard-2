@@ -101,12 +101,14 @@ function rpglabel2img($label, $alt)
   return $htmltag;
 }
 
-function drawrpglevelbar($totallvlexp)
+function drawrpglevelbar($totallvlexp, $altsize=0)
 {
   //Based off the AB 1.x code.
   global $config, $rpgimageset;
   
-  $totalwidth=$config['rpglvlbarwidth'];
+  if($altsize != 0) $totalwidth = $altsize;
+  else $totalwidth=$config['rpglvlbarwidth'];
+  
   if($rpgimageset == '') $rpgimageset = "gfx/rpg/";
 
   $expleft = calcexpleft($totallvlexp);

@@ -139,7 +139,7 @@
         $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 	
-    $msg=preg_replace("'lemonparty'si",'ffff',$msg);
+    //$msg=preg_replace("'lemonparty'si",'ffff',$msg); Lemonparty Filter
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
     $msg=str_replace('[spoiler]','<span class="spoiler1"><span class="spoiler2">',$msg);
@@ -185,7 +185,7 @@
     if(isssl()) $msg=str_replace($config[base],$config[sslbase],$msg);
     else $msg=str_replace($config[sslbase],$config[base],$msg);
 
-    $msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg);
+    //$msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg); //Reggie? Image file not present in tree
 
 	// [Mega-Mario] this can cause security issues, and who uses [swf] anyway?
     //$msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
@@ -221,6 +221,7 @@
     $s=str_replace("&exppct2&",sprintf("%d",$eleft*100/lvlexp($lvl)),$s);
     $s=str_replace("&rank&",$post['ranktext'],$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",$post['ranktext']),$s);
+    $s=str_replace("&lvlbar&",drawrpglevelbar($totallvlexp, '166'),$s);
     $s=str_replace("&postrank&",$sql->result($sql->query("SELECT count(*) FROM users WHERE posts>".$post['uposts']),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
     $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post['num'].', 0)', $s);

@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "02/02/2014";
+  $abdate    = "02/05/2014";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -165,6 +165,10 @@
    if($config[override_theme]) 
     {
       $theme = $config[override_theme];
+    }
+   elseif (isset($_GET['theme']))
+    {
+      $theme = $_GET['theme'];
     }
    else 
     {

@@ -252,7 +252,7 @@ function RenderPageBar($pagebar) {
     global $L;
     return "  $L[TR]>
 ".         "    $L[TD1c]>$title:</td>
-".         "    $L[TD2]>$input</td>";
+".         "    $L[TD2]>".stripslashes($input)."</td>";
   }
 
   function fieldinput($avatarsize,$max,$field){
@@ -275,7 +275,7 @@ function RenderPageBar($pagebar) {
 
   function fieldtext($rows,$cols,$field){
     global $L,$user;
-    return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($user[$field]).'</textarea>';
+    return "$L[TXTa]=$field rows=$rows cols=$cols>".stripslashes(htmlval($user[$field])).'</textarea>';
 //  return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($loguser[$field]).'</textarea>';
   }
 

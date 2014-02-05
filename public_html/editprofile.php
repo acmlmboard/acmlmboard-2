@@ -183,6 +183,24 @@
         }
       }
 
+      if($config['extendedprofile'] && has_perm('update-extended-profiles')) 
+      {
+          $qallfields = $sql->query("SELECT * FROM `profileext`");
+          $count = false;
+
+          while ($allfieldsgquery = $sql->fetch($qallfields))
+          {
+
+              $pdata = addslashes($_POST[$allfieldsgquery['id']]);
+              
+              if($pdata)
+              {
+                if (!preg_match("/".$allfieldsgquery['validation']."/", $pdata)) $error.=$allfieldsgquery['title']." doesn't match.";
+              }
+
+          }
+      }
+
 	  if (!$error)
 	  {
 		  $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
@@ -203,13 +221,14 @@
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
-  if($config['extendedprofile'] && has_perm('update-extended-profiles')) {
+      if($config['extendedprofile'] && has_perm('update-extended-profiles')) 
+      {
           $qallfields = $sql->query("SELECT * FROM `profileext`");
           $count = false;
           if ($sql->prepare('DELETE FROM `user_profileext` WHERE user_id=?',array($targetuserid))) {} //Until multiples of each filed are enabled, wipe the slate.
           while ($allfieldsgquery = $sql->fetch($qallfields))
           {
-              if (substr(setfield($allfieldsgquery['id']), -3) != "=''")
+              if (substr(setfield($allfieldsgquery['id']), -3) != "=''")//Should be replated with a better method.
               {
                 $pdata = addslashes($_POST[$allfieldsgquery['id']]);
                 if (      $sql->prepare('INSERT INTO `user_profileext` SET
@@ -399,8 +418,7 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
   $qallfields = $sql->query("SELECT * FROM `profileext`");
   while ($allfieldsgquery = $sql->fetch($qallfields))
   { 
-   // $allfieldsgquery['id']
-    print fieldrow($allfieldsgquery['title']."<br /><small>".$allfieldsgquery['description']."</small>"    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
+    print fieldrow($allfieldsgquery['title']."<br /><small>".$allfieldsgquery['description']." (IE: <b>".$allfieldsgquery['example']."</b>)</small>"    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
 
   }
 

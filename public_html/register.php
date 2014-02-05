@@ -119,7 +119,7 @@ if ($regdis[intval] == 1)
 	  $name = $sql->escape($name);
 	  
       $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone,fontsize,theme) VALUES "
-                 ."('{$name}','".md5($_POST[pass].$pwdsalt)."',"
+                 ."('{$name}','".md5($pwdsalt2.$_POST[pass].$pwdsalt)."',"
                  .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}',{$defaultfontsize},'{$defaulttheme}')");
 	  if ($res)
 	  {
@@ -153,7 +153,7 @@ if ($regdis[intval] == 1)
 
 		  /* count matches for IP and hash */
 		  //hash
-		  $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($_POST[pass].$pwdsalt)."'");
+		  $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($pwdsalt2.$_POST[pass].$pwdsalt)."'");
 		  $m_hash=$a[c]-1;
 		  //split the IP
 		  $ipparts=explode(".",$userip);

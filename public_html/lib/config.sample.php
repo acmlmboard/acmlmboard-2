@@ -15,6 +15,7 @@
 
   $spritesalt='please change me!';
   $pwdsalt='Please change me!';
+  $pwdsalt2='Addtional Salt. Please Change me!';
 
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';

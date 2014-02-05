@@ -478,7 +478,7 @@
                </td>
                <form action=\"login.php\" method=\"post\" name=\"logout\">
                  $L[INPh]=\"action\" value=\"logout\">
-                 $L[INPh]=\"p\" value=".md5($loguser['pass'].$pwdsalt).">
+                 $L[INPh]=\"p\" value=".md5($pwdsalt2.$loguser['pass'].$pwdsalt).">
                </form>";
     
     if ($radar)

@@ -101,7 +101,7 @@ if($_COOKIE['pstbon']>=1){
   else $threadcreator=0;
   $action='';
   //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
-  if($tid && $_POST[c]==md5($loguser[pass].$pwdsalt) && (can_edit_forum_threads(getforumbythread($tid)) ||
+  if($tid && $_POST[c]==md5($pwdsalt2.$loguser[pass].$pwdsalt) && (can_edit_forum_threads(getforumbythread($tid)) ||
      ($loguser[id] == $threadcreator && $_POST[action] == "rename" && has_perm('rename-own-thread')))) {
     $act=$_POST[action];
     if($act=='stick'  ) $action=',sticky=1';
@@ -582,7 +582,7 @@ elseif($viewmode=="time"){
 ".        "    <input type=hidden name=arg value=''>
 ".        "    <input type=hidden name=id value=$tid>
 ".        "    <input type=hidden name=action value=''>
-".        "    <input type=hidden name=c value=".md5($loguser[pass].$pwdsalt).">
+".        "    <input type=hidden name=c value=".md5($pwdsalt2.$loguser[pass].$pwdsalt).">
 ".        "  </td>
 ".        "  </form>
 ".        "$L[TBLend]
@@ -683,7 +683,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
 ";
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
+".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>

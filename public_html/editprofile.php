@@ -37,13 +37,13 @@
         $listgroup[$group['id']] = $group['title'];
       }
 
-  $token = md5($loguser['pass'].$pwdsalt);
+  $token = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
   if($_POST[action]=='Edit profile')
   {
 	if ($_POST['token'] !== $token) die('No.');
 	
 	if ($_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
-		setcookie('pass',packlcookie(md5($_POST[pass].$pwdsalt)),2147483647);
+		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt)),2147483647);
   }
 
   pageheader('Edit profile');
@@ -248,7 +248,7 @@
 	if (!$error)
 	{
 		$sql->query('UPDATE users SET '
-               . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
+               . ($pass?'pass="'.md5($pwdsalt2.$pass.$pwdsalt).'",':'')
                . (checkcdisplayname()?(setfield('displayname')   .','):'')
                . (checkcusercolor()?(setfield('nick_color')   .','):'')
                . setfield('sex')     .','

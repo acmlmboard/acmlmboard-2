@@ -16,7 +16,7 @@
   {
     $pid=$_POST[pid];  
 	
-	if ($_POST['passenc'] !== md5($loguser['pass'].$pwdsalt))
+	if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
 		$err = 'Invalid token.';
   }
   else
@@ -26,7 +26,7 @@
   
   $userid = $loguser['id'];
   $user = $loguser;
-  $pass = md5($loguser['pass'].$pwdsalt);
+  $pass = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
 
   if($_GET[act]=='delete' || $_GET[act]=='undelete') {
     $act=$_GET[act];

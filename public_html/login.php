@@ -18,9 +18,9 @@
 ".         " </form>
 ";
   }elseif($act=='Login'){
-    if($userid=checkuser($_POST[name],md5($_POST[pass].$pwdsalt))){
+    if($userid=checkuser($_POST[name],md5($pwdsalt2.$_POST[pass].$pwdsalt))){
       setcookie('user',$userid,2147483647);
-      setcookie('pass',packlcookie(md5($_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
+      setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
       $print="  You are now logged in.<br>
 ".           "  ".redirect('./','main');
     }else{

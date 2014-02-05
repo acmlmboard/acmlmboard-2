@@ -14,14 +14,14 @@
 	{
 		$userid = $loguser['id'];
 		$user = $loguser;
-		if ($_POST['passenc'] !== md5($loguser['pass'].$pwdsalt))
+		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
 			$err = 'Invalid token.';
 			
 		$pass = $_POST['passenc'];
 	}
 	else
 	{
-      $pass=md5($_POST[pass].$pwdsalt);
+      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
 
     if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
@@ -29,7 +29,7 @@
       $err="    Invalid username or password!<br>
 ".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
 
-		$pass = md5($pass.$pwdsalt);
+		$pass = md5($pwdsalt2.$pass.$pwdsalt);
 	}
   }
   else
@@ -188,7 +188,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ";
     else
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
+".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>

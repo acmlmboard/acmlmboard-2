@@ -405,7 +405,7 @@
   }
   else $oldpmsgbox ='';
       
-    if (!$config['disablenewpms'] && has_perm('view-own-pms'))
+    if (!$config['disablemodernpms'] && has_perm('view-own-pms'))
      {
      if ($unreadpms)
       {

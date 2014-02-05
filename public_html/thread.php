@@ -144,7 +144,32 @@ if($_COOKIE['pstbon']>=1){
       pageheader("Thread not found",0);
       thread_not_found();
     }
+    if($config['threadprevnext'])
+    {
+      //AB1 style next/prev thread. Based off of AB1's code (Needs to be made into a JOIN query if possible)
+      if($tnext=$sql->resultq("SELECT min(lastdate) FROM threads WHERE forum=$thread[fid] AND lastdate>$thread[lastdate]"))
+      {
+        $tnext=$sql->resultq("SELECT id FROM threads WHERE lastdate=$tnext");
+      }
 
+      if($tprev=$sql->resultq("SELECT max(lastdate) FROM threads WHERE forum=$thread[fid] AND lastdate<$thread[lastdate]"))
+      {
+        $tprev=$sql->resultq("SELECT id FROM threads WHERE lastdate=$tprev");
+      }
+      if($tnext) $nextnewer="<a href=thread.php?id=$tnext>Next newer thread</a>";
+      if($tprev) $nextolder="<a href=thread.php?id=$tprev>Next older thread</a>";
+      if($nextnewer and $nextolder) $nextnewer.=" | ";
+      $nextoldnew = "$nextnewer $nextolder";
+      $userbar .= "<div style='text-align: right;'>".$nextoldnew."</div>";
+    }
+      
+    else
+    {
+       $nextnewer="";
+       $nextolder="";
+    }
+      
+    
 
 	if($thread[ispoll])
     {
@@ -402,10 +427,11 @@ if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
           "$L[TBL] width=100%>$L[TR]>
 ".        "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread[title])." $thumbsUp</td>
 ".        "  $L[TDnr]>
-".        "    $newreply
+".        "  $newreply
 ".        "  </td>
 ".        "$L[TBLend]
 ";
+
   }elseif($viewmode=="user"){
     $topbot=
           "$L[TBL] width=100%>
@@ -563,7 +589,7 @@ elseif($viewmode=="time"){
 ";
   }
 
-  print   "$topbot";
+  print   "$topbot$userbar";
 
 
   if($timeval) {
@@ -680,8 +706,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ";
   }
 
-
-print        "$topbot";
+print        "$userbar$topbot";
 
   pagefooter();
 ?>

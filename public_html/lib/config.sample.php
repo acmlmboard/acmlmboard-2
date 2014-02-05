@@ -70,10 +70,14 @@
 
 //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 0; //(in seconds, 0 == off)
+  $config['threadprevnext'] = false; //Enables links to jump one thread newer/older
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
 //The following enables the optional badge system
   $config['badgesystem'] = false; //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
+  
   $config['extendedprofile'] = false; //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
+
+  $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
 
   $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
   $config['perusercolor'] = false; //Enable the use of per-user colors.

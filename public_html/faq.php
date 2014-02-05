@@ -145,7 +145,7 @@ print "$L[TBL1]>
 ".    "  $L[TRh]>$L[TDh]><a name='smile'>Are smilies and BBCode supported?
 ".    "  $L[TR]>$L[FAQTD]>There are some smilies here, a chart is below to show what smilies are supported.
 ".    "  <br>$smilietext 
-".    "  <br>Likewise, a selection of BBCode is supported. See the chart below.
+".    "  <br><a name='tags'></a>Likewise, a selection of BBCode is supported. See the chart below.
 ".    "  <table class=table cellspacing=0>
 	 <tr><td class='b h'>Tag</td><td class='b h'>Effect
 	 <tr><td class='b n1'>[b]<i>text</i>[/b]</td><td class='b n2'><b>Bold Text</b></td>

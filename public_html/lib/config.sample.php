@@ -39,8 +39,8 @@
   $minipicsize=16;// traditionally a square image. $minipicsize x $minipicsize. (AB1/2's Default was 11x11)
   $avatardimx=100;// Avatar X Scale
   $avatardimy=100;// Avatar Y Scale
-  $avatardimxs=60;// Avatar X Scale (Scaled Down)
-  $avatardimys=60;// Avatar Y Scale (Scaled Down)
+  $avatardimxs=60;// Avatar X Scale (Scaled Down) **CURRENTLY DISABLED**
+  $avatardimys=60;// Avatar Y Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatarsize=2*30720;// The Avatar size in bytes. The default is to 60kb.
 
   // The following settings allow you to enable minipics in various parts of the board. Currently they are specific but they may be simplifed in the future.

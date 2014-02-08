@@ -1,6 +1,6 @@
 <?php
 /* META
-Acmlmboard's Board Daily Cycle (Acmlm, Boom.dk, Mega-Mario, Emuz)
+Acmlm's Board Daily Cycle (Acmlm, Boom.dk, Mega-Mario, Emuz)
 
 */
 

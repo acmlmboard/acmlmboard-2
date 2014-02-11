@@ -314,11 +314,11 @@
 		   .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
   }
   
-  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
+  function moodlist($mid) { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
                         // it was owned by root.
 						// 2013-06 Mega-Mario: wish granted :)
     global $sql, $loguser;
-    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
+    //$mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
     $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
     $moodst="";
     while ($mood=$sql->fetch($moods))

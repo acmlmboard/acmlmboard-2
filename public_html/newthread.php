@@ -310,7 +310,7 @@ $pollprev.="$L[TBLend]";
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()."
+          "      $L[INPl]=mid>".moodlist($_POST[mid])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
 ".        " $L[TBLend]

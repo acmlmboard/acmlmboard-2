@@ -23,22 +23,8 @@ if ($regdis['intval'] == 1)
   die();
 }
 
-  	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
-  	$puzzleAnswer = 42;
-  	//$puzzleAnswer = 9001;
-  	$puzzleVariations = array(
-  		"What is twenty four times two minus 6?",
-  		"What is two times twenty four minus 6?",
-  		"What is eighty-four divided by two?",
-  		"What is twenty one plus twenty one?",
-  		"What is six times seven?",
-  		"What is seven times six?",
-  		"What is fourteen times three?",
-  		"What is three times fourteen?",
-  		"What is a hundred and twenty six divided by three?",
-  	);
-  	$puzzle = $puzzleVariations[array_rand($puzzleVariations)];
-
+  //[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
+  //Moved to config.php for easy edit. -Emuz
 
   function randstr($l)
   {

@@ -23,6 +23,23 @@
   $defaulttheme="dailycycle2";// Select the default theme to be used. This will also be showed to users who are not logged in.
   $defaultfontsize=70;// Overall font scale of the board. Default is 70%
   $homepageurl="http://something/"; // This defines the link for the header image.
+
+  /*Registeration Bot Protection *
+  Currently the default protection is a simple passphrase with question array used to pull random questions.
+  The way it is coded you could easily replace it with something stronger, or even simpler. 
+  The register.php take $puzzleAnswer and $puzzle. Feel free to write something around it. */
+  
+  $puzzleAnswer = 12;//This should be changed
+  //$puzzleAnswer = "Sekrit Key!";// This can also be a string
+  $puzzleVariations = array(
+    "What is six times two?",
+    "What is twenty four minus fourteen plus two?",
+    "What is the square of 4 minus four?",
+    "What is six plus six?",
+    "What is ten thousand twenty four divided by sixteen minus fifty two?",
+    "What is twelve times one?",
+  );//This also should be changed. It has to match $puzzleAnswer in this example.
+  $puzzle = $puzzleVariations[array_rand($puzzleVariations)]; 
   
   $config['log']    = 0;// Enables logging to the database of moderator actions. **NOT RECOMMENDED**
   $config['ckey']   = "configckey";

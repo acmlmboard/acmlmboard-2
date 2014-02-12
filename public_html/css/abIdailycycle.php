@@ -98,6 +98,9 @@ td.n1, tr.n1 td {
 td.n2, tr.n2 td {
 	background: #$tablebg2;
 }
+td.n3, tr.n3 td {
+	background: #$tablebg2;
+}
 td.h, tr.h td {
 	background: #$tableheadbg;
 	color: #FFFFFF;

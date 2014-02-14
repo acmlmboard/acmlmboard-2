@@ -324,16 +324,22 @@ print \"Sample code.\"; #oops you just missed him!
                    $L[TD1]><b>Homepage</b></td>
                    $L[TD2]>$homepage";
 
-if($config['extendedprofile']){
+if($config['extendedprofile'])
+{
 $fieldReq = $sql->query("SELECT * FROM `profileext`
                        RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
                        WHERE `user_profileext`.`user_id`='$uid'");
-while($pfield = $sql->fetch($fieldReq))
-{
+  while($pfield = $sql->fetch($fieldReq))
+  {
   print "                 $L[TR]>
-                   $L[TD1]><b>".$pfield['title']."</b></td>
-                   $L[TD2]>".preg_replace("/$pfield[validation]/", $pfield['fmt'], $pfield['data']);
-}}
+                   $L[TD1]><b>".$pfield['title']."</b></td>";
+
+  if($pfield['parser'] == "email") $fieldvalue = "Not Implemented";
+  else $fieldvalue = preg_replace("/$pfield[validation]/", $pfield['fmt'], $pfield['data']);
+
+  print "                 $L[TD2]>".$fieldvalue;
+  }
+}
    print "               $L[TBLend]
                    <br>";
 

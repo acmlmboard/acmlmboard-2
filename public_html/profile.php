@@ -93,9 +93,7 @@
 
    if($user['email'])
     {
-     $email = htmlval($email);
-     $email = str_replace("@", "<b>&#64;</b>", $user['email']);
-     $email = str_replace(".", "<b>&#46;</b>", $email);
+     $email = EmailObscurer($user['email']);
     }
    else
      $email = "";
@@ -334,7 +332,10 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
   print "                 $L[TR]>
                    $L[TD1]><b>".$pfield['title']."</b></td>";
 
-  if($pfield['parser'] == "email") $fieldvalue = "Not Implemented";
+  if($pfield['parser'] == "email") 
+  {
+      $fieldvalue = EmailObscurer($pfield['data']);
+  }
   else $fieldvalue = preg_replace("/$pfield[validation]/", $pfield['fmt'], $pfield['data']);
 
   print "                 $L[TD2]>".$fieldvalue;

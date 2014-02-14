@@ -37,7 +37,7 @@ while ($ncr = $sql->fetch($ncx)) {
 	for ($sex = 0; $sex < 3; $sex++) {
 		$nc = $ncr["nc$sex"];
 		$nctable .=
-		"<td width='200'><b><font color='#$nc'>".$ncr['title'].", ".$sexname[$sex]."</td>";
+		"<td width='200'><b><font color='#$nc'>".$ncr['title'].", ".$sexname[$sex]."</font></b></td>";
 	}
 
 	$nctable .= "</tr>";
@@ -79,9 +79,9 @@ print "$L[TBL1]>
 ".    "    <a href=\"#rpg\">RPG Stats</a><br>
 ".    "    <a href=\"#itemshop\">Items and the Item Shop</a><br>";
 if($syndromenable == 1) print "    <a href=\"#syndrome\">Acmlmboard Syndromes</a><br>";
-print     "    <a href=\"#amps\">&Tags& (Amp tags)</a><br>
-"/*.    "    <a href=\"#dispname\">Display Name System</a><br>
-"*/.    "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
+print     "    <a href=\"#amps\">&Tags& (Amp tags)</a><br>";
+if($config['displayname'] == true) print "    <a href=\"#dispname\">Display Name System</a><br>";
+print     "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
 ".    "    <a href=\"#private\">Are private messages supported?</a><br>
 ".    "    <a href=\"#search\">Search Feature</a><br>
 ".    "    <a href=\"#calendar\">What is the calendar for?</a><br>
@@ -247,12 +247,11 @@ print "  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
 	  <tr><td class='b n1'>&rank&		</td><td class='b n2'>Current rank, according to your amount of posts
 	  <tr><td class='b n1'>&rankname&		</td><td class='b n2'>Text only current rank, according to your amount of posts 
 	  <tr><td class='b n1'>&postrank&		</td><td class='b n2'>Shows your rank by number of posts 
-	 </table>
+	 </table>";
+if($config['displayname'] == true) print    "  $L[TRh]>$L[TDh]><a name='dispname'>Display Name System
+".    "  $L[TR]>$L[FAQTD]>The display name system allows you to have your name displayed as something other than your account's name. For example \"Acmlm\" might decided he would like to have his name display as \"Milly\" for a while. With this system he would be allowed to do so without changing his actual login account name. It is forbidden to use this to flame or impersonate other members. Your real login name will be visible on your profile. Misuse of this feature will result in blocking of your ability to use it, and possibly further action if warranted. ";
 
-"./*    "  $L[TRh]>$L[TDh]><a name='dispname'>Display Name System
-".    "  $L[TR]>$L[FAQTD]>The display name system allows you to have your name displayed as something other than your account's name. For example \"Acmlm\" might decided he would like to have his name display as \"Milly\" for a while. With this system he would be allowed to do so without changing his actual login account name. It is forbidden to use this to flame or impersonate other members. Your real login name will be visible on your profile. Misuse of this feature will result in blocking of your ability to use it, and possibly further action if warranted. **Feature not tested. Currently not public**
-
-".*/    "  $L[TRh]>$L[TDh]><a name='avatar'>What are avatars & mood avatars?
+print    "  $L[TRh]>$L[TDh]><a name='avatar'>What are avatars & mood avatars?
 ".    "  $L[TR]>$L[FAQTD]>Avatars are a form of display picture which appears beside your posts and in your profile. Likewise, a mood avatar allows you to display a different picture as opposed to the one specified in your profile.
 
 ".    "  $L[TRh]>$L[TDh]><a name='private'>Are private messages supported?

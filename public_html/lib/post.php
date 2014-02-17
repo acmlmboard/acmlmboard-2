@@ -42,6 +42,7 @@
     $msg=str_ireplace("expression","ex<z>pression",$msg);
     $msg=preg_replace("'filter:'si",'filter&#58;>',$msg);
     $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
+    $msg=preg_replace("'transform:'si",'transform&#58;>',$msg);
 	
 	return $msg;
   }

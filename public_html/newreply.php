@@ -133,12 +133,6 @@
   $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".htmlval($post[text])."[/quote]";
   }
 
-  //spambot logging [blackhole89]
-  if($act=='Submit' && $_SERVER['HTTP_USER_AGENT'] == "Opera/9.0 (Windows NT 5.1; U; en)") {
-    $sql->query("INSERT INTO ipbans (ipmask,expire) VALUES ('$userip',0)");
-    $sql->query("INSERT INTO spambotlog VALUES ('$userip','$name','$_POST[pass]','$title','$message')");
-  }
-
   if($err){
     if($loguser[redirtype]==1) pageheader('New reply',$thread[forum]);
     //print "$top - Error

@@ -120,7 +120,7 @@
 //The following are optional values you can change to personalize your board
   $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 
-//The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable *Currently doesn't work*
+//The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
   $config['classictags'] = false;
   
   //These two settings allow you to choose how user will be notfied about PMs. The "classic" Index table method, the "modern" Icon style, or Both

@@ -81,12 +81,12 @@ if($_COOKIE['pstbon']>=1){
       $announcefid = $pinf['fid'];
       $atid = $pinf['tid'];
 
-      $page=floor($sql->resultq("SELECT COUNT(*) FROM threads WHERE announce=1 AND forum=$announcefid AND id>$atid")/$loguser[ppp])+1;
+      $page=floor($sql->resultq("SELECT COUNT(*) FROM threads WHERE announce=1 AND forum=$announcefid AND id>$atid")/$ppp)+1;
       $viewmode = "announce";      
     }
     else {
       $tid =$sql->resultq("SELECT thread FROM posts WHERE id=$pid");
-      $page=floor($sql->resultq("SELECT COUNT(*) FROM posts WHERE thread=$tid AND id<$pid")/$loguser[ppp])+1;
+      $page=floor($sql->resultq("SELECT COUNT(*) FROM posts WHERE thread=$tid AND id<$pid")/$ppp)+1;
       $viewmode = "thread";      
     }
   }
@@ -96,6 +96,11 @@ if($_COOKIE['pstbon']>=1){
 	thread_not_found();
   }
   
+  if ($ppp=$_REQUEST['ppp']) {
+    checknumeric($ppp);
+  }
+  else $ppp = $loguser['ppp'];
+
   if ($viewmode == "thread") 
     $threadcreator=$sql->resultq("SELECT user FROM threads WHERE id=$tid");
   else $threadcreator=0;
@@ -239,7 +244,7 @@ if($_COOKIE['pstbon']>=1){
                       ."WHERE p.thread=$tid AND ISNULL(pt2.id) "
 		      ."GROUP BY p.id "
                       ."ORDER BY p.id "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
     //load tags
     $tags=array();
@@ -267,7 +272,7 @@ if($_COOKIE['pstbon']>=1){
 //                      .  "AND f.minpower<=$loguser[power] "
 //                      .  "AND c.minpower<=$loguser[power] "
                       ."ORDER BY p.id "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
     $thread[replies]=$sql->resultq("SELECT count(*) "
                                   ."FROM posts p "
@@ -297,7 +302,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE t.forum=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
                       ."ORDER BY p.id DESC "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
 
 
@@ -326,7 +331,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE p.date>$mintime AND ISNULL(pt2.id) "
                       ."ORDER BY p.date DESC "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
     $thread[replies]=$sql->resultq("SELECT count(*) "
                                   ."FROM posts p "
@@ -344,11 +349,11 @@ if($_COOKIE['pstbon']>=1){
   else
     pageheader();
 
-  if($thread[replies]<$loguser[ppp]){
+  if($thread[replies]<$ppp){
     $pagelist=''; $pagebr='';
   }else{
     $pagelist='<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">Pages:';
-    for($p=1;$p<=1+floor($thread[replies]/$loguser[ppp]);$p++)
+    for($p=1;$p<=1+floor($thread[replies]/$ppp);$p++)
       if($p==$page)
         $pagelist.=" $p";
       elseif($viewmode == "thread")

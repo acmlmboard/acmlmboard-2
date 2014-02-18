@@ -60,7 +60,16 @@
             }
         }
     }
-    
+ 
+     //Fetch events - yet again, uses the same crude but effective method as the old one
+    $eventtext = array();
+    $eventres = $sql->query("SELECT * FROM events e LEFT JOIN users u ON u.id=e.user WHERE year = '$year' AND month = $month");
+
+    while ($eventarr = $sql->fetch($eventres)) {
+        $text = $eventarr['event_title']." - ".userlink($eventarr);
+        $eventtext[$eventarr['day']] = $text;
+    }
+
     pageheader('Calendar');
     print "$L[TBL1] width=\"100%\">
 ".        "    $L[TR]>
@@ -90,6 +99,9 @@
         $dnum=str_pad($mday,2,"0",STR_PAD_LEFT);
         if (isset($bdaytext[$dnum])) {
             print "<br/>$bdaytext[$dnum]";
+        }
+        if (isset($eventtext[$dnum])) {
+            print "<br/>$eventtext[$dnum]";
         }
         print "</td>\n";
         

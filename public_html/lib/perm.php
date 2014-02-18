@@ -508,6 +508,15 @@ function has_perm_with_bindvalue($permid,$bindvalue) {
 	return false;	
 }
 
+function has_special_perm($permid) {
+	global $logpermset;
+	//This function does the same as has_perm, but does not check for no-retrictions.
+	foreach ($logpermset as $k => $v) {
+		if ($permid == $v['id'] && !$v['revoke']) return true;
+	}
+	return false;
+}
+
 function parent_group_for_group($groupid) {
 	global $usergroups;
 

@@ -81,8 +81,7 @@
     if($p<0 or $d<0) return 0;
     return floor(pow($p,1.3) * pow($d,0.4) + $p*10);
   }
-  function rpgnum2img($num)
-{
+  function rpgnum2img($num){
   global $rpgimageset;
   $value = (string)$num;
   $imgstrings = '';

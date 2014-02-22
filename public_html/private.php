@@ -116,7 +116,7 @@
   for($i=1;$pmsg=$sql->fetch($pmsgs);$i++){
     $status='&nbsp;';
     if($pmsg[unread])
-      $status='<img src=img/status/new.png>';
+      $status=rendernewstatus("n");
     if(!$pmsg[title])
       $pmsg[title]='(untitled)';
 

@@ -113,7 +113,8 @@ while ($mod = $sql->fetch($r))
 	." AND ((r.time < t.lastdate OR isnull(r.time)) AND (f.time < t.lastdate OR isnull(f.time)))"
 	." AND (r.uid=$loguser[id] OR isnull(r.uid))");
 
-      $status="<img src=\"gfx/new.php?type=n&num=$thucount\" alt=\"NEW\r\n$thucount\">";
+      //$status="<img src=\"gfx/new.php?type=n&num=$thucount\" alt=\"NEW\r\n$thucount\">";
+      $status=rendernewstatus("n", $thucount);
     }
     else
       $status='&nbsp;';

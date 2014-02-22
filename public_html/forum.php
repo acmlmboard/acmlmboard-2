@@ -297,7 +297,8 @@ echo announcement_row($fid,3,4);
       if($thread[lastdate]>(ctime()-3600)){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
 
     if($status)
-      $status="<img src=\"gfx/new.php?type=$status\" alt=\"$statalt\">";
+      //$status="<img src=\"gfx/new.php?type=$status\" alt=\"$statalt\">";
+      $status=rendernewstatus($status);
     else
       $status='&nbsp;';
 

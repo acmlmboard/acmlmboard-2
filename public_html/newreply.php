@@ -85,10 +85,10 @@
 
        $err="    You have no permissions to create posts in this forum!<br>$forumlink";
     }
-  elseif($thread[closed]){
+  elseif($thread[closed] && !has_perm('create-closed-forum-post')){
       $err="    You can't post in closed threads!<br>
 ".         "    $threadlink";
-  }
+  }//needs function to test for perm based on $faccess
 
   if($act=='Submit'){
     $message = $_POST[message];
@@ -131,12 +131,6 @@
   if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
   $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".htmlval($post[text])."[/quote]";
-  }
-
-  //spambot logging [blackhole89]
-  if($act=='Submit' && $_SERVER['HTTP_USER_AGENT'] == "Opera/9.0 (Windows NT 5.1; U; en)") {
-    $sql->query("INSERT INTO ipbans (ipmask,expire) VALUES ('$userip',0)");
-    $sql->query("INSERT INTO spambotlog VALUES ('$userip','$name','$_POST[pass]','$title','$message')");
   }
 
   if($err){

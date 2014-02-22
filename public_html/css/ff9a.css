@@ -13,7 +13,7 @@ a:link, a:visited, a:active, a:hover {
 }
 body {
 	background-color: #000000;
-	background-image: url(../theme/ff9a/numff9/FF9b.gif);
+	background-image: url(../theme/ff9a/FF9b.gif);
 	font-family: arial;
 }
 body, table {
@@ -28,10 +28,10 @@ td.b {
 	border: 1px solid #FFFFFF;
 }
 td.n1, tr.n1 td {
-	background: #111111 url(../theme/ff9a/numff9/FF9d.gif);
+	background: #111111 url(../theme/ff9a/FF9d.gif);
 }
 td.n2, tr.n2 td {
-	background: #222222 url(../theme/ff9a/numff9/FF9a.gif);
+	background: #222222 url(../theme/ff9a/FF9a.gif);
 }
 td.h, tr.h td {
 	background: #101859;
@@ -59,8 +59,8 @@ a[class~="newreply"] {
   color: rgba(255,255,255,0);
   width: 84px;
   height: 31px;
-  background: url('../theme/ff9a/numff9/ff9arep.gif');
-  content: url('../theme/ff9a/numff9/ff9arep.gif');
+  background: url('../theme/ff9a/ff9arep.gif');
+  content: url('../theme/ff9a/ff9arep.gif');
 }
 
 a[class~="newthread"] {
@@ -72,8 +72,8 @@ a[class~="newthread"] {
   color: rgba(255,255,255,0);
   width: 84px;
   height: 31px;
-  background: url('../theme/ff9a/numff9/ff9anew.gif');
-  content: url('../theme/ff9a/numff9/ff9anew.gif');
+  background: url('../theme/ff9a/ff9anew.gif');
+  content: url('../theme/ff9a/ff9anew.gif');
 }
 .nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
 .nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}

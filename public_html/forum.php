@@ -298,7 +298,7 @@ echo announcement_row($fid,3,4);
 
     if($status)
       //$status="<img src=\"gfx/new.php?type=$status\" alt=\"$statalt\">";
-      $status=rendernewstatus($status, $statalt);
+      $status=rendernewstatus($status);
     else
       $status='&nbsp;';
 

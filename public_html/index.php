@@ -114,7 +114,7 @@ while ($mod = $sql->fetch($r))
 	." AND (r.uid=$loguser[id] OR isnull(r.uid))");
 
       //$status="<img src=\"gfx/new.php?type=n&num=$thucount\" alt=\"NEW\r\n$thucount\">";
-      $status=rendernewstatus("n", "NEW\r\n$thucount\"", $thucount);
+      $status=rendernewstatus("n", $thucount);
     }
     else
       $status='&nbsp;';

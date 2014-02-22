@@ -88,104 +88,95 @@ function EmailObscurer($emailin){
     return $email;
 }
 
-function rendernewstatus($type,$alt='',$newcount='0'){
-  global $rpgimageset;
+function rendernewstatus($type,$newcount='0'){
+  global $statusimageset;
+
+  if($statusimageset !='') $imagepath = $statusimageset;
+  else $imagepath = "../img/status/";
 
   switch ($type) {
   case "n": 
-    $fcol="Y";
     $text="NEW";
-    $statusimg="../img/status/new.png";
+    $statusimg="new.png";
     break;
 
   case "N":
   case "hn":
   case "!n":
-    $fcol="O";
     $text="NEW";
-    $statusimg="../img/status/hotnew.png";
+    $statusimg="hotnew.png";
     break;
 
   case "h": 
-    $fcol="R";
     $text="HOT";
     break;
 
   case "!": 
-    $fcol="R";
     $text=" ! ";
-    $statusimg="../img/status/hot.png";
+    $statusimg="hot.png";
     break;
 
   case "e": 
-    $fcol="G";
     $text="EDT";
     break;
 
   case "E":
   case "!e": 
-    $fcol="R";
     $text="EDT";
     break;
 
   case "x": 
-    $fcol="W";
     $text="OFF";
-    $statusimg="../img/status/off.png";
+    $statusimg="off.png";
     break;
 
   case "X":
   case "xh":
   case "x!":
-    $fcol="R";
     $text="OFF";
-    $statusimg="../img/status/offhot.png";
+    $statusimg="offhot.png";
     break;
 
   case "xh": 
-    $fcol="Y";
     $text="OFF";
-    $statusimg="../img/status/offnew.png";
+    $statusimg="offnew.png";
     break;
 
   case "xhn": 
-    $fcol="R";
     $text="OFF";
-    $statusimg="../img/status/offhot.png";
+    $statusimg="offhot.png";
     break;
 
   case "o":
-    $statusimg="../img/status/off.png";
+    $statusimg="off.png";
     break;
 
   case "O":
   case "ho":  
   case "o!": 
-    $statusimg="../img/status/offhot.png";
+    $statusimg="offhot.png";
     break;
 
   case "on": 
-    $statusimg="../img/status/offnew.png";
+    $statusimg="offnew.png";
     break;
 
   case "On":
   case "ohn":
   case "o!n":
-    $statusimg="../img/status/offhotnew.png";
+    $statusimg="offhotnew.png";
     break;
   }
-  $status="<span style='line-height:20%'><img src=\"$statusimg\" alt=\"$alt\">";
+
+  $status="<div style='line-height:75%;padding: 0;'><img src=\"$imagepath$statusimg\" alt=\"$text\"><br/>";
   if($newcount > '0')
   {
       for ($i = 0, $j = strlen($newcount); $i < $j; $i++) {
         $image = $newcount[$i];
-        if($image == "/") $image = "slash";
-        $imgstrings.="<img src='$rpgimageset".$image.".png' />";
+        $imgstrings.="<img src='$imagepath".$image.".png' alt='".$newcount[$i]."'/>";
       }
   }
-  //$status.=/*"<br />".*/rpgnum2img($newcount);
-  $status.=$imgstrings;
-  //return $type;
+  $status.=$imgstrings."</div>";
 
   return $status;
 

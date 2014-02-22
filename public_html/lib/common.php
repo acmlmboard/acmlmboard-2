@@ -201,17 +201,20 @@
   $rpgimageset = '';
 
   if($config['userpgnumdefault']) $rpgimageset = "gfx/rpg/";
-  
-  /*if($config['ab1rpgnum'] == 'enabled' || $config['ab1rpgnum'] = 'theme' )
-  {
-    if(is_file("theme/".$theme."/rpg/0.png")) $rpgimageset="theme/".$theme."/rpg/";
-    else if($config['ab1rpgnum'] == 'enabled') $rpgimageset = "gfx/rpg/";
-  }*/
+
+  $statusimageset = '';
 
   if($config['userpgnum'] || $config['alwaysshowlvlbar'])
   {
     if(is_file("theme/".$theme."/rpg/0.png")) $rpgimageset="theme/".$theme."/rpg/";
   }
+
+ $statusimageset = '';
+
+  /*if($config['userpgnum'] || $config['alwaysshowlvlbar'])
+  {*/
+    if(is_file("theme/".$theme."/status/new.png")) $statusimageset="theme/".$theme."/status/";
+  //}
 
   $feedicons="";
 
@@ -374,7 +377,7 @@
  
   if($unreadpms)
      {
-      $status    = "<img src=\"img/status/new.png\">";
+      $status    = rendernewstatus("n");
       $unreadpms = " ($unreadpms new)";
      }
     else

@@ -85,10 +85,10 @@
 
        $err="    You have no permissions to create posts in this forum!<br>$forumlink";
     }
-  elseif($thread[closed] && !has_perm('create-closed-forum-post')){
+  elseif($thread[closed] && !can_create_locked_posts($thread['forum'], $thread['id'])){
       $err="    You can't post in closed threads!<br>
 ".         "    $threadlink";
-  }//needs function to test for perm based on $faccess
+  }//needs function to test for perm based on $faccess /*!has_perm('create-closed-forum-post')*/
 
   if($act=='Submit'){
     $message = $_POST[message];

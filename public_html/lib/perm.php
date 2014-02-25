@@ -438,6 +438,19 @@ function can_create_forum_announcements($forumid) {
 	return true;
 }
 
+function can_create_locked_posts($forumid, $threadid) {
+	//print "monkey $forumid $threadid";
+	/*if (!has_perm('override-closed-all') && 
+		!has_perm_with_bindvalue('override-closed-forum',$forumid) && 
+		!has_perm_with_bindvalue('override-closed-thread',$threadid)) return false;*/
+		if (has_perm('override-closed-all')) return true; 
+
+		if (has_perm_with_bindvalue('override-closed-forum',$forumid)) return true; 
+		if (has_perm_with_bindvalue('override-closed-thread',$threadid)) return true;
+	
+	return false;
+}
+
 function can_edit_forum_posts($forumid) {
 	if (!has_perm('update-post') && 
 		!has_perm_with_bindvalue('edit-forum-post',$forumid)) return false;

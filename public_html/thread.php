@@ -54,6 +54,10 @@ if($_COOKIE['pstbon']>=1){
 
 //  [DJ Bouche] What the fuck?
 //  if($tid=($_POST[id]?$_POST[id]:$_GET[id])) {
+  if ($ppp=$_REQUEST['ppp']) {
+  checknumeric($ppp);
+  }
+  else $ppp = $loguser['ppp'];
 
   if ($tid=$_REQUEST['id']) {
     checknumeric($tid);
@@ -95,11 +99,6 @@ if($_COOKIE['pstbon']>=1){
 	pageheader('Thread not found',0);
 	thread_not_found();
   }
-  
-  if ($ppp=$_REQUEST['ppp']) {
-    checknumeric($ppp);
-  }
-  else $ppp = $loguser['ppp'];
 
   if ($viewmode == "thread") 
     $threadcreator=$sql->resultq("SELECT user FROM threads WHERE id=$tid");

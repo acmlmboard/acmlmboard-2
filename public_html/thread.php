@@ -121,7 +121,7 @@ if($_COOKIE['pstbon']>=1){
     if($act=='tag'    )
       $action=',tags=tags^'.(1<<$_POST[arg]);
 
-    $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'$REMOTE_ADDR','$loguser[id]','ACTION: ".addslashes($act." ".$tid." ".$_POST[arg])."')");
+    if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes($act." ".$tid." ".$_POST[arg])."')");
   }
 
   checknumeric($_GET[pin]);

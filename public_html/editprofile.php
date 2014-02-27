@@ -288,6 +288,8 @@
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]
 ";
+    if($config['log'] >= '1') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("user edit ".$targetuserid)."')");
+
 		die(pagefooter());
 	}
 	else

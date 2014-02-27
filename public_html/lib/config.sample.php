@@ -41,7 +41,7 @@
   );//This also should be changed. It has to match $puzzleAnswer in this example.
   $puzzle = $puzzleVariations[array_rand($puzzleVariations)]; 
   
-  $config['log']    = 0;// Enables logging to the database of moderator actions. **NOT RECOMMENDED**
+  $config['log']    = 0; // Enables logging to the database of moderator & administrative actions. 0=off; 1=profile; 2=thread & post; 5=access
   $config['ckey']   = "configckey";
   $config['address']   = "url";  // Hostname or IP address of your server (this will be public)
   $config['base']   = "http://".$config['address']; // Replace if you need fine control of the address

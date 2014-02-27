@@ -102,7 +102,7 @@
     }
     
     //[blackhole89]
-   if($config['log'])
+   if($config['log'] >= '5')
     {
     $postvars="";
     foreach($_POST as $k=>$v)

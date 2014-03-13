@@ -74,6 +74,8 @@
 
   $syndromenable=1; //This variable controls the use of "Syndromes".  0 is off; 1 is on
   $inactivedays=30; //The number of days before a user is counted as "inactive"
+
+  //The following sectionis related to guests (mostly reflected on online.php) 
   $config['oldguest']=300; //Number of seconds before a guest is deleted due to being "old"
 
   //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 

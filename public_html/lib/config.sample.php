@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*** Acmlmboard 2 - Configuration ***
   Please look through the file and will in the apropriate information.
@@ -74,6 +74,8 @@
 
   $syndromenable=1; //This variable controls the use of "Syndromes".  0 is off; 1 is on
   $inactivedays=30; //The number of days before a user is counted as "inactive"
+  $config['oldguest']=300; //Number of seconds before a guest is deleted due to being "old"
+
   //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 5; //(in seconds, 0 == off)
   $config['threadprevnext'] = false; //Enables links to jump one thread newer/older

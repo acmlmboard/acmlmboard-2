@@ -85,7 +85,7 @@
    }
   if(substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php")
    {
-    $sql->query("DELETE FROM `guests` WHERE `ip`='$userip' OR `date`<".(ctime()-300));
+    $sql->query("DELETE FROM `guests` WHERE `ip`='$userip' OR `date`<".(ctime()-$config['oldguest']));
    if($log)
     {
     //AB-SPECIFIC

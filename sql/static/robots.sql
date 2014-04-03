@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 22, 2012 at 12:27 PM
--- Server version: 5.5.19
--- PHP Version: 5.3.8
+-- Generation Time: Apr 03, 2014 at 12:29 PM
+-- Server version: 5.5.29
+-- PHP Version: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -313,7 +313,10 @@ INSERT INTO `robots` (`bot_name`, `bot_agent`) VALUES
 ('Baidu Spider', 'Baiduspider'),
 ('Generic BOT (any with bot in the agent name)', 'bot'),
 ('Generic SPIDER (any with spider in the agent name)', 'spider'),
-('InfoPath', 'InfoPath');
+('InfoPath', 'InfoPath'),
+('Ezooms', 'Ezooms/1.0'),
+('WebIndex', 'WebIndex'),
+('Yahoo! Slurp', 'Yahoo! Slurp');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

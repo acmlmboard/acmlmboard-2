@@ -58,6 +58,7 @@
    }
 
   require "lib/timezone.php";
+  dobirthdays(); //Called here to account for timezone bugs.
 
   if($loguser['ppp'] < 1)
    $loguser['ppp'] = 20;

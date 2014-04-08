@@ -1,14 +1,17 @@
 <?php
 
 	$rankcache = array();
-	
+
+	$userbirthdays = array();
+function dobirthdays(){ //Function for calling after we get the timezone for the user set [Gywall]
+    global $sql, $userbirthdays;
 	// [Mega-Mario] Check for birthdays globally.
 	// Makes stuff like checking for rainbow usernames a lot easier.
 	$rbirthdays = $sql->query("SELECT `id` FROM `users` WHERE `birth` LIKE '".date('m-d')."%'");
-	$userbirthdays = array();
 	while ($bd = $sql->fetch($rbirthdays))
 		$userbirthdays[$bd['id']] = true;
-  
+	return;
+}
 
   function checkuser($name,$pass){
     global $sql;
@@ -233,7 +236,6 @@ function userfields($tbl='', $pf='')
     global $sql, $config, $usergroups, $userbirthdays, $usercnc;
 
     if($usemini) $user['showminipic'] = true;
-
 	if (isset($userbirthdays[$user[$u.'id']]))
 		$nc = randnickcolor();
 	else

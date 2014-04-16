@@ -626,7 +626,7 @@ print "$modlinks
     } else {
       $post[maxrevision]=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
     }
-    if(can_edit_forum_posts($pthread[forum]) && $post[id]==$_GET[pin]) $post[deleted]=false;
+    if(can_edit_forum_posts($post[fid]) && $post[id]==$_GET[pin]) $post[deleted]=false;
 if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 
     print "<br>

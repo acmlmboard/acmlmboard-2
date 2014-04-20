@@ -439,7 +439,6 @@ function can_create_forum_announcements($forumid) {
 }
 
 function can_create_locked_posts($forumid, $threadid) {
-	//print "monkey $forumid $threadid";
 	/*if (!has_perm('override-closed-all') && 
 		!has_perm_with_bindvalue('override-closed-forum',$forumid) && 
 		!has_perm_with_bindvalue('override-closed-thread',$threadid)) return false;*/

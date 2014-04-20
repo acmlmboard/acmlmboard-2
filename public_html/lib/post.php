@@ -122,7 +122,6 @@
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
-	$msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
 	// security filtering needs to be done before [svg] is parsed because [svg]
 	// uses tags that are otherwise blacklisted
@@ -139,6 +138,9 @@
       for($i=0;$i<$smilies[num];$i++)
         $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
+
+    //Relocated here due to conflicts with specific smilies.
+    $msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
     //$msg=preg_replace("'lemonparty'si",'ffff',$msg); Lemonparty Filter
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
@@ -169,7 +171,7 @@
     $msg=str_replace('[/black]','</span>',$msg);
     $msg=preg_replace("'\[color=([a-f0-9]{6})\](.*?)\[/color\]'si",'<span style="color: #\\1">\\2</span>',$msg);
 
-    $msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg);
+    $msg=preg_replace_callback('\'@\"(("([^"]+)")|([A-Za-z0-9_\-%]+))\"\'si',"get_username_link",$msg);
 //    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
 
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);

@@ -108,16 +108,17 @@ function drawrpglevelbar($totallvlexp, $altsize=0)
   if($altsize != 0) $totalwidth = $altsize;
   else $totalwidth=$config['rpglvlbarwidth'];
   
-  if($rpgimageset == '') $rpgimageset = "gfx/rpg/";
+  if($rpgimageset == '') $rpgimagesetlvlbar = "gfx/rpg/";
+  else $rpgimagesetlvlbar = $rpgimageset;
 
   $expleft = calcexpleft($totallvlexp);
 
   $barwidth = $totalwidth-round(@($expleft/$totallvlexp)*$totalwidth);
 
   if($barwidth<1) $barwidth = 0;
-  if($barwidth>0) $baron = "<img src='".$rpgimageset."bar-on.png' width='$barwidth' height='8' />";
-  if($barwidth<$totalwidth) $baroff="<img src='".$rpgimageset."bar-off.png' width='".($totalwidth-$barwidth)."' height='8' />";
-  $bar="<img src='".$rpgimageset."barleft.png' width='2' height='8' />$baron$baroff<img src='".$rpgimageset."barright.png' width='2' height='8' />";
+  if($barwidth>0) $baron = "<img src='".$rpgimagesetlvlbar."bar-on.png' width='$barwidth' height='8' />";
+  if($barwidth<$totalwidth) $baroff="<img src='".$rpgimagesetlvlbar."bar-off.png' width='".($totalwidth-$barwidth)."' height='8' />";
+  $bar="<img src='".$rpgimagesetlvlbar."barleft.png' width='2' height='8' />$baron$baroff<img src='".$rpgimagesetlvlbar."barright.png' width='2' height='8' />";
 
   return $bar;
 }

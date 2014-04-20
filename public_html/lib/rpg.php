@@ -112,8 +112,9 @@ function drawrpglevelbar($totallvlexp, $altsize=0)
   else $rpgimagesetlvlbar = $rpgimageset;
 
   $expleft = calcexpleft($totallvlexp);
+  $expdone=lvlexp(calclvl($totallvlexp));
 
-  $barwidth = $totalwidth-round(@($expleft/$totallvlexp)*$totalwidth);
+  $barwidth = $totalwidth-round(($expleft/$expdone)*$totalwidth);
 
   if($barwidth<1) $barwidth = 0;
   if($barwidth>0) $baron = "<img src='".$rpgimagesetlvlbar."bar-on.png' width='$barwidth' height='8' />";

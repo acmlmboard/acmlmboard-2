@@ -46,12 +46,7 @@
 
 
   if($act!='Submit'){
-    $fieldlist='';
-    $ufields=array('id','name','displayname','posts','sex','group_id');
-    foreach($ufields as $field)
-      $fieldlist.="u.$field u$field,";
-
-    $posts=$sql->query("SELECT $fieldlist p.*, pt1.text, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
                       .'FROM posts p '
 					  .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN poststext pt1 ON p.id=pt1.id '

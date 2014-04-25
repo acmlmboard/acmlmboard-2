@@ -74,3 +74,29 @@ input.radio {
 	color: #E9E9E9;
 	font: 10pt arial;
 }
+
+a[class~="newreply"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 77px;
+	height: 24px;
+	background: url('../theme/kirby/newreply.png');
+	content: url('../theme/kirby/newreply.png'); 
+}
+
+a[class~="newthread"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 77px;
+	height: 24px;
+	background: url('../theme/kirby/newthread.png');
+	content: url('../theme/kirby/newthread.png'); 
+}

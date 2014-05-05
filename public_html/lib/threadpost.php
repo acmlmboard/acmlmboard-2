@@ -158,7 +158,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
         $location=($post[ulocation]?'<br>From: '.postfilter($post[ulocation]):'');
         $lastpost=($post[ulastpost]?timeunits(ctime()-$post[ulastpost]):'none');
 
-        $picture=($post[uusepic]?"<img src=\"gfx/userpic.php?id=$post[uid]\">":'');
+        $picture=($post[uusepic]?"<img src=\"gfx/userpic.php?id=".$post[uid]."&r=".$post[uusepic]."\">":'');
 
         if($post[mood] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
           $mood = $sql->fetchq("select `url`, `local`, 1 `existing` from `mood` where `user`=$post[uid] and `id`=$post[mood] union select '' `url`, 0 `local`, 0 `existing`");

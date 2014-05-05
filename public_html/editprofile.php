@@ -108,7 +108,7 @@
     if($fname['size']>0){
       $ava_out=img_upload($fname,"userpic/$user[id]",$avatardimx,$avatardimy,$avatarsize);
       if($ava_out!="OK!"){ $error.=$ava_out; }
-	  else $usepic = 1;
+	  else $usepic = "usepic+1";
     }
     if($_POST['picturedel']) $usepic=0;
 

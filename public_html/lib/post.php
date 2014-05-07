@@ -325,7 +325,7 @@
     $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
     $moodst="";
     while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
+      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">".stripslashes($mood[label])."</option>";
     $moodst.= "</select>";
     return $moodst;
   }

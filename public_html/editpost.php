@@ -126,7 +126,7 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "      $L[INPh]=pid value=$pid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
-".        "      $L[INPl]=mid>".moodlist($post[mood], $euser[id])."
+".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
 ".        " </form>
@@ -171,7 +171,7 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "      $L[INPh]=pid value=$pid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
-".        "      $L[INPl]=mid>".moodlist($post[mood], $euser[id])."
+".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
 ".        " </form>

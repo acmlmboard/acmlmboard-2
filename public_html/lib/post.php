@@ -325,7 +325,6 @@
     is_numeric($userid);
     if($userid > 0) $moodset = $userid;
     else $moodset = $loguser['id'];
-    //print $userid." ".$moodset; //Debug
 
     //$mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
     $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$moodset");

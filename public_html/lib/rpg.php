@@ -105,6 +105,7 @@ function drawrpglevelbar($totallvlexp, $altsize=0)
   //Based off the AB 1.x code.
   global $config, $rpgimageset;
   
+  if($totallvlexp <= 0) return "&nbsp;";
   if($altsize != 0) $totalwidth = $altsize;
   else $totalwidth=$config['rpglvlbarwidth'];
   

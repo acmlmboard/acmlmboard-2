@@ -177,6 +177,8 @@
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
     $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);
     $msg=preg_replace_callback("'\[thread=([0-9]+)\]'si","get_threadlink",$msg);
+    $msg=preg_replace_callback("'\[username=([[A-Za-z0-9 _\-%]+)\]'si","get_username_link",$msg);
+
 
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);
 
@@ -225,6 +227,7 @@
     $s=str_replace("&rank&",$post['ranktext'],$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",$post['ranktext']),$s);
     $s=str_replace("&lvlbar&",drawrpglevelbar($exp, '166'),$s);
+    $s=str_replace("&mood&",$post['mood'],$s);
     $s=str_replace("&postrank&",$sql->result($sql->query("SELECT count(*) FROM users WHERE posts>".$post['uposts']),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
     $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post['num'].', 0)', $s);

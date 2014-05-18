@@ -2,9 +2,9 @@
 
 
   function userlink_by_name($name) {
-    global $sql;
+    global $sql, $config;
     $u = $sql->fetchp("SELECT ".userfields().",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
-    if ($u) return userlink($u);
+    if ($u) return userlink($u,null,$config[userlinkminipic]);
     else return 0;
   }
 

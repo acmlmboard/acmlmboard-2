@@ -308,7 +308,7 @@ print \"Sample code.\"; #oops you just missed him!
                    $L[TD1]><b>Total threads</b></td>
                    $L[TD2]>$user[threads] ($tfound found, $tavg per day)
                  $L[TR]>
-                   $L[TD1]><b>EXP</b></td>
+                   $L[TD1]><b>EXP status</b></td>
                    $L[TD2]>$pexp
                  $L[TR]>
                    $L[TD1]><b>Registered on</b></td>

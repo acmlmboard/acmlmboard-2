@@ -31,7 +31,18 @@
     $pavg   = sprintf("%1.02f", $user['posts'] / $days);
     $tfound = $sql->resultq("SELECT count(*) FROM `threads` WHERE `user`='$uid'");
     $tavg   = sprintf('%1.02f',$user['threads'] / $days);
-  
+
+    if($user[posts])
+      {
+        $exp       = calcexp($user['posts'],(ctime()-$user['regdate'])/86400);
+        $lvl       = calclvl($exp);
+        $expleft   = calcexpleft($exp);
+        $expstatus = "Level: $lvl<br>EXP: $exp (for next level: $expleft)";
+
+        $pexp      = "$expstatus<br>Gain: ".calcexpgainpost($user['posts'],(ctime()-$user['regdate'])/86400)." EXP per post, ".calcexpgaintime($user['posts'],(ctime()-$user['regdate'])/86400)." seconds to gain 1 EXP when idle";
+      }
+      else $pexp = "None";
+
     $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`minpower`
                             FROM `forums` `f`
                             LEFT JOIN `threads` `t` ON `t`.`forum`=`f`.`id`
@@ -296,6 +307,9 @@ print \"Sample code.\"; #oops you just missed him!
                  $L[TR]>
                    $L[TD1]><b>Total threads</b></td>
                    $L[TD2]>$user[threads] ($tfound found, $tavg per day)
+                 $L[TR]>
+                   $L[TD1]><b>EXP</b></td>
+                   $L[TD2]>$pexp
                  $L[TR]>
                    $L[TD1]><b>Registered on</b></td>
                    $L[TD2]>".cdate($dateformat, $user['regdate'])." (".timeunits($days * 86400)." ago)

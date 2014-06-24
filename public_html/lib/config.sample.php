@@ -80,6 +80,10 @@
 
   //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 5; //(in seconds, 0 == off)
+  //This will allow you to set the goal limits for 'Projected date' in profile.php
+  $config['topposts'] = '5000'; //Number of posts to set the goal to.
+  $config['topthreads'] = '200'; //Number of threads created to set the goal to.
+
   $config['threadprevnext'] = false; //Enables links to jump one thread newer/older
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
   //The following enables the optional badge system

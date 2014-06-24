@@ -43,11 +43,26 @@
       }
       else $pexp = "None";
 
+
     $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`minpower`
                             FROM `forums` `f`
                             LEFT JOIN `threads` `t` ON `t`.`forum`=`f`.`id`
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
                             WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `f`.`id` IN ".forums_with_view_perm());
+
+  if(!$config[topposts]) $topposts=5000;
+  else $topposts = $config[topposts];
+  if(!$config[topthreads]) $topthreads=200;
+  else $topthreads = $config[topthreads];
+
+  if($user['posts']) $pprojdate=ctime()+(ctime()-$user['regdate'])*($topposts-$user['posts'])/($user['posts']);
+  if(!$user['posts'] or $user['posts']>=$topposts or $pprojdate>2000000000 or $pprojdate<ctime()) $pprojdate="";
+  else $pprojdate=" -- Projected date for $topposts posts: ".date("m-d-y h:i A",$pprojdate);
+
+  
+  if($user['threads']) $tprojdate=ctime()+(ctime()-$user['regdate'])*($topthreads-$user['threads'])/($user['threads']);
+  if(!$user['threads'] or $user['threads']>=$topthreads or $tprojdate>2000000000 or $tprojdate<ctime()) $tprojdate="";
+  else $tprojdate=" -- Projected date for $topthreads threads: ".date("m-d-y h:i A",$tprojdate);
 
    if($pfound && $thread)
     {
@@ -303,10 +318,10 @@ print \"Sample code.\"; #oops you just missed him!
                    $L[TD2]>$group[title]
                  $L[TR]>
                    $L[TD1] width=\"110\"><b>Total posts</b></td>
-                   $L[TD2]>$user[posts] ($pfound found, $pavg per day)
+                   $L[TD2]>$user[posts] ($pfound found, $pavg per day)$pprojdate
                  $L[TR]>
                    $L[TD1]><b>Total threads</b></td>
-                   $L[TD2]>$user[threads] ($tfound found, $tavg per day)
+                   $L[TD2]>$user[threads] ($tfound found, $tavg per day)$tprojdate
                  $L[TR]>
                    $L[TD1]><b>EXP status</b></td>
                    $L[TD2]>$pexp

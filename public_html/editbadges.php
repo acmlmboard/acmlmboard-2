@@ -252,7 +252,7 @@ $form = array(
     'actions' => array(
       'fields' => array(
         'act' => array(
-          'title' => ($id>0)?'Update metadata':'Create sprite',
+          'title' => ($id>0)?'Update metadata':'Create badge',
           'type' => 'submit',
         ),
       ),

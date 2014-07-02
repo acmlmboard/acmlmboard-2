@@ -148,7 +148,7 @@ How about some code:
 [code]<?php
 if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Scrydan was here.... 
 {
-print \"Sample code.\"; #oops you just missed him!
+   print \"Sample code.\"; #oops you just missed him!
 }
 ?>[/code]
 [i]Sample[/i] message.";

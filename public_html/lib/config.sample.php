@@ -125,6 +125,9 @@
   $irccolor['male'] = "lt_blue"; //Male Nick Color
   $irccolor['female'] = "pink"; //Female Nick Color
 
+//IRC Message Definitions
+  $config['ircshopnotice'] = false; //enables the option to print on your main irc channel anytime someone equips an item
+
 //The following are optional values you can change to personalize your board
   $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 

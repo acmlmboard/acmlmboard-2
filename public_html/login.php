@@ -1,8 +1,5 @@
 <?php
-  require 'lib/common.php';
-
-  $postuser = addslashes($_POST[name]);
-  $postpassword = addslashes($_POST[pass]);
+  require 'lib/common.php'; 
 
   $act=$_POST[action];
   if(!$act){
@@ -21,9 +18,9 @@
 ".         " </form>
 ";
   }elseif($act=='Login'){
-    if($userid=checkuser($postuser,md5($pwdsalt2.$postpassword.$pwdsalt))){
+    if($userid=checkuser($_POST[name],md5($pwdsalt2.$_POST[pass].$pwdsalt))){
       setcookie('user',$userid,2147483647);
-      setcookie('pass',packlcookie(md5($pwdsalt2.$postpassword.$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
+      setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
       $print="  You are now logged in.<br>
 ".           "  ".redirect('./','main');
     }else{

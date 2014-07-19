@@ -236,13 +236,17 @@ function userfields($tbl='', $pf='')
     global $sql, $config, $usergroups, $userbirthdays, $usercnc;
 
     if($usemini) $user['showminipic'] = true;
-	if (isset($userbirthdays[$user[$u.'id']]))
-		$nc = randnickcolor();
+//Over-ride for custom colours [Gywall]
+  if($user[$u.'nick_color'] && $config[perusercolor]) 
+    $nc = $user[$u.'nick_color'];
 	else
 	{
 		$group = $usergroups[$user[$u.'group_id']];
 		$nc = $group['nc'.$user[$u.'sex']];
 	}
+  //Random Nick Color on Birthday
+  if (isset($userbirthdays[$user[$u.'id']]))
+    $nc = randnickcolor();
 
 	$unclass ='';
   $unspanend ='';
@@ -261,8 +265,6 @@ function userfields($tbl='', $pf='')
 	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
 	else $minipic="";
    
-//Over-ride for custom colours [Gywall]
-	if($user[$u.'nick_color'] && $config[perusercolor]) $nc = $user[$u.'nick_color'];
 	return "$minipic$unclass<span $nccss style='color:#$nc;'>"
 		.str_replace(" ","&nbsp;",htmlval($n))
 		.'</span>'.$unspanend;

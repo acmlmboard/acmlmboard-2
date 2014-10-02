@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "09/08/2014";
+  $abdate    = "10/01/2014";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -576,7 +576,10 @@
      while($user = $sql->fetch($rbirthdays))
       {
        $b = explode('-',$user['birth']);
-       $y = date("Y") - $b[2];
+       //Patch to fix 2 digit birthdays. Needs retooled to a modern datetime system. -Emuz
+       if($b['2'] <= 99 && $b['2'] > 15) $y = date("Y") - ($b['2'] + 1900);
+       else if($b['2'] <= 14) $y = date("Y") - ($b['2'] + 2000);
+       else $y = date("Y") - $b[2];
        $birthdays[] = userlink($user)." (".$y.")";
       }
       

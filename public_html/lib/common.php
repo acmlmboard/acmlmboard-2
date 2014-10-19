@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "10/01/2014";
+  $abdate    = "10/18/2014";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -341,7 +341,7 @@
       </head>
       <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs
       $L[TBL1]>
-        $L[TR2c]>
+        $L[TRT2c]>
         $L[TD1c] colspan=\"3\">$boardlogo</td>
         </tr>
         $L[TR2c]>

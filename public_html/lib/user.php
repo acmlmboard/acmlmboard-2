@@ -264,10 +264,31 @@ function userfields($tbl='', $pf='')
 		
 	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
 	else $minipic="";
-   
-	return "$minipic$unclass<span $nccss style='color:#$nc;'>"
-		.str_replace(" ","&nbsp;",htmlval($n))
-		.'</span>'.$unspanend;
+
+  //Badge username manipulation
+  if($config['badgesystem'] && $config['usernamebadgeeffects'])
+      {
+        $cssstyle = "color:#$nc;";
+
+        $result = has_badge_perm("change_username_style", $user[$u.'id']);
+        if($result)
+         {
+            $cssstyle .=has_badge_perm("change_username_style", $user[$u.'id']);
+         }
+
+        $userdisname = "$minipic$unclass<span $nccss style='$cssstyle'>"
+        .str_replace(" ","&nbsp;",htmlval($n))
+        .'</span>'.$unspanend;
+
+      }
+
+   else 
+    {
+      $userdisname = "$minipic$unclass<span $nccss style='color:#$nc;'>"
+        .str_replace(" ","&nbsp;",htmlval($n))
+        .'</span>'.$unspanend;
+    }
+	return $userdisname;
 }
 
 

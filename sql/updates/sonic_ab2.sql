@@ -1,4 +1,4 @@
-INSERT INTO `bananafan`.`ranksets` (
+INSERT INTO `ranksets` (
 `id` ,
 `name`
 )

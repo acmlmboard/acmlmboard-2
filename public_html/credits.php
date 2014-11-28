@@ -88,6 +88,13 @@
            </tr>
            $gitcontributorlist -->
            </table><br>
+           </table> <!-- End the table here so you don't have to deal with colspan. -->
+           $L[TBL1]>
+           $L[TRg]> <!-- TRg is a secondary heading. -->
+           $L[TD]>Programmer</td>$L[TD]>Core Contributors</td>
+           </tr>
+           $programmerlist
+           </table><br>
            $L[TBL1]>
            $L[TRh]>$L[TDh]>Additional Thanks</td></tr>
            $L[TR]>$L[TD1]>Thanks to everyone who's supported us during our revival of AB2. <br>
@@ -95,6 +102,10 @@
            Finally, thanks goes to Acmlm for allowing us to continue working on AB2, as well as Scrydan and DJ Bouche who spent
            more single focus time than anyone else for 2.5, and 2.6.
            <hr>3rd Party tools: <a href=\"http://code.google.com/p/google-code-prettify/\">Prettify</a></td></tr>
+           </table><br />
+           $L[TBL1]>
+           $L[TRh]>$L[TDh]>Dedications</td></tr>
+           $L[TR]>$L[TD1]><center><h3 style=\"display:inline;\">Taryn Burke: 1987-2014</h3><br/>The continued work on Acmlmboard 2 is dedicated to Taryn Burke. Long time member of almost every version of Acmlm's Board there was. May you be remembered as long as there are Acmlmboards.</center></td></tr>
            </table>";
   
     pagefooter();

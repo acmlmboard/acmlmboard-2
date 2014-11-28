@@ -78,6 +78,49 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     
     return false;
   } 
+//This block was borrowed from Blargboard. It is a proxy and stop forum spam detection routine and it's required defined function for url pulling.
+function queryURL($url)
+{
+  if (function_exists('curl_init'))
+  {
+    $page = curl_init($url);
+    if ($page === FALSE)
+    return FALSE;
+
+    curl_setopt($page, CURLOPT_TIMEOUT, 10);
+    curl_setopt($page, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($page, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($page, CURLOPT_USERAGENT, 'Blargboard/'.BLARG_VERSION);
+
+   $result = curl_exec($page);
+    curl_close($page);
+    return $result;
+  }
+
+  else if (ini_get('allow_url_fopen'))
+  {
+  return file_get_contents($url);
+  }
+
+    else
+      return FALSE;
+}
+
+function isProxy()
+{
+  if ($_SERVER['HTTP_X_FORWARDED_FOR'] && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR'])
+    return true;
+
+  $result = queryURL('http://www.stopforumspam.com/api?ip='.urlencode($_SERVER['REMOTE_ADDR']));
+  
+  if (!$result)
+    return false;
+  if (stripos($result, '<appears>yes</appears>') !== FALSE)
+    return true;
+
+  return false;
+}
+//BLARG!
 
 function renderdotrank($posts=0){
       //This function takes the number of posts a user has ($posts), and returns the html to be printed out. 

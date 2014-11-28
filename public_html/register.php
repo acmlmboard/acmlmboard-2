@@ -23,6 +23,23 @@ if ($regdis['intval'] == 1)
   die();
 }
 
+
+if (isProxy())
+{
+  pageheader('Register');
+  if($regdis['txtval'] != "") $reason = $regdis['txtval'];
+  else $reason = "Security Check Failure";
+  print "$L[TBL1]>$L[TD1c]>
+".         "  $L[TRh]>
+".         "    $L[TDh] colspan=2>Registration is denied</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins.</a></td></td>
+".      "$L[TBLend]
+";
+  pagefooter();
+  die();
+}
+
   //[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
   //Moved to config.php for easy edit. -Emuz
 

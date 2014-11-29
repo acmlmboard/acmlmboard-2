@@ -88,13 +88,6 @@
            </tr>
            $gitcontributorlist -->
            </table><br>
-           </table> <!-- End the table here so you don't have to deal with colspan. -->
-           $L[TBL1]>
-           $L[TRg]> <!-- TRg is a secondary heading. -->
-           $L[TD]>Programmer</td>$L[TD]>Core Contributors</td>
-           </tr>
-           $programmerlist
-           </table><br>
            $L[TBL1]>
            $L[TRh]>$L[TDh]>Additional Thanks</td></tr>
            $L[TR]>$L[TD1]>Thanks to everyone who's supported us during our revival of AB2. <br>

@@ -21,7 +21,7 @@
       "<span $unclass style=\"color: #AFFABE; font-weight:bold;\">Kawa</span>"        => "Implemented Display Name, the inital root power level, and the current theme management system",
       "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">DJ Bouche</span>"   => "Created the permissions and group system, warp whistle reply, and many other things",
       "<span $unclass style=\"color: #C762F2; font-weight:bold;\">knuck</span>"       => "Implemented implemented post radar, many small fixes",
-      "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
+      "<span $unclass style=\"color: #C53A9E; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">StapleButter</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here). Most of his work was on the now defunct 2.6 branch.",
      );

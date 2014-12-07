@@ -16,7 +16,7 @@ if (has_perm("edit-sprites"))
 if (has_perm("edit-badges")) 
   $mlinks[] = array('url' => "editbadges.php", 'title' => 'Manage badges');
 if (has_perm("edit-groups")) 
-  $mlinks[] = array('url' => "editgroups.php", 'title' => 'Edit groups');
+  $mlinks[] = array('url' => "editgroups.php", 'title' => 'Manage groups');
   
 $mlinkstext = '';
 foreach ($mlinks as $l)

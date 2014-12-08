@@ -163,7 +163,7 @@
    $themelist = unserialize(file_get_contents("themes_serial.txt"));
 
    //Config definable theme override
-   if($config[override_theme]) 
+   if($config[override_theme] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
     {
       $theme = $config[override_theme];
     }

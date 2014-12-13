@@ -1,7 +1,7 @@
 <?php
   require 'lib/common.php';
   $action=$_GET[action];
-  if ($_POST[action]=="save"&&isadmin()) {
+  if ($_POST[action]=="save"&&has_perm('manage-shop-items')) {
     checknumeric($_GET[id]);
     $set="";
     $id = $_GET[id];
@@ -45,17 +45,17 @@ fclose($f);
 ".        "    <a href=./>Back to main</a> or <a href=login.php>login</a>
 ".        "$L[TBLend]
 ";
-  }elseif($loguser[power]==-1){
+  }elseif(!has_perm('use-item-shop')){
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
-".        "    Banned users may not use the Item Shop!<br>
-".        "    <a href=./>Back to main</a> or <a href=login.php>login</a>
+".        "    You have no permissions to do this!<br>
+".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
-  }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!isadmin()) { //Added (Sukasa)
+  }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!has_perm('manage-shop-items')) { //Added (Sukasa)
     print "$L[TBL1]>
 ".        "  $L[TD1c]>
-".        "    Your powerlevel is not high enough to manage items<br>
+".        "    You have no permissions to do this!<br>
 ".        "    <a href=./>Back to main</a>
 ".        "$L[TBLend]
 ";
@@ -188,7 +188,7 @@ fclose($f);
           $itst=$item["s$stat[$i]"];
           $eqst=$eqitem["s$stat[$i]"];
           $edit="";
-          if (isadmin()) //Added (Sukasa)
+          if (has_perm('manage-shop-items')) //Added (Sukasa)
             $edit=" [<a href='shop.php?action=edit&id=$item[id]'>Edit</a>] [<a href='shop.php?action=delete&id=$item[id]'>Delete</a>]";
           if(!$color){
                 if($itst> 0) $cl='higher';
@@ -226,7 +226,7 @@ fclose($f);
         $eqitem=$sql->fetchq("SELECT * FROM items WHERE id=$eq[e]");
 
         $edit="";
-        if (isadmin())
+        if (has_perm('manage-shop-items'))
           $edit=" | <a href='shop.php?action=edit&id=-1&cat=$cat'>Add new item</a>";
 
         print "<script>
@@ -264,7 +264,7 @@ fclose($f);
 ";
 
         $seehidden = 0;
-        if (isadmin())
+        if (has_perm('manage-shop-items'))
           $seehidden = 1;
 
         $items=$sql->query('SELECT * FROM items '

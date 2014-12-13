@@ -270,6 +270,7 @@
                . setfield('theme')   .','
                . setfield('blocklayouts')   .','
                . setfield('blocksprites')   .','
+               . setfield('emailhide') .','
                . setfield('hidden') .','
                . setfield('redirtype') .','
                . setfield('timezone') .','
@@ -438,6 +439,7 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
 ".           fieldrow('Post layouts', fieldoption('blocklayouts',$user['blocklayouts'],array('Show everything in general', 'Block everything')))."
 ".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
+".           fieldrow('Hide Email', fieldoption('emailhide',$user['emailhide'],array('Show my email', 'Hide my email')))."
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
 ".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Display redirect page', 'Instant redirect')))."
 ".

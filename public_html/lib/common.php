@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "<span style=\"color: #00FF00;\" title=\"11/28/2014\">7/19/1987</span>";
+  $abdate    = "<span style=\"color: #00FF00;\" title=\"12/13/2014\">7/19/1987</span>";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -192,7 +192,7 @@
     $themefile = $theme.".css";
    }
    
-  if($config[override_logo]) //Config override for the logo file
+  if($config[override_logo]] && !has_special_perm("bypass-logo-override") //Config override for the logo file
     $logofile = $config[override_logo];
   elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";
@@ -525,9 +525,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog   = ($user['lastpost'] <= $user['lastview']);
-       $«           = ($onuserlog ? "":"(");
-       $»           = ($onuserlog ? "":")");
-       $onuserlist .= ($onusercount ? ", ":"").$«.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$»;
+       $ï¿½           = ($onuserlog ? "":"(");
+       $ï¿½           = ($onuserlog ? "":")");
+       $onuserlist .= ($onusercount ? ", ":"").$ï¿½.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$ï¿½;
        $onusercount++;
       }
       
@@ -610,9 +610,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog = ($user['lastpost'] <= $user['lastview']);
-       $«=($onuserlog ? "" : "(");
-       $»=($onuserlog ? "" : ")");
-       $onuserlist.=($onusercount? ", ": "").$«.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$»;
+       $ï¿½=($onuserlog ? "" : "(");
+       $ï¿½=($onuserlog ? "" : ")");
+       $onuserlist.=($onusercount? ", ": "").$ï¿½.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$ï¿½;
        $onusercount++;
       }
 

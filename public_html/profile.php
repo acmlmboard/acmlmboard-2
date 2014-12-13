@@ -116,13 +116,16 @@
      $birthday = "";
      $age      = "";
     }
-
-   if($user['email'])
+    
+   //This code was done by Gywall 
+   if($user['email'] && !$user['emailhide'])
     {
-     $email = EmailObscurer($user['email']);
-    }
+     $email=EmailObscurer($user['email']);
+    } 
    else
-     $email = "";
+    {
+     $email=""; 
+    }
 
    if($user['homeurl'] && $user['homename'])
      $homepage = "<a href=\"".htmlval($user['homeurl'])."\">".htmlval($user['homename'])."</a> - ".htmlval($user['homeurl']);

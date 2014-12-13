@@ -62,13 +62,13 @@ print "$L[TBL1]>
 ".    "    $L[TDh]>FAQ</td>
 ".    "  $L[TR]>
 ".    "    $L[FAQTD]>
-".    "    <a href=\"#gpg\">General Posting Guidelines</a><br><br>
+".    "    <a href=\"#gpg\">General Posting Guidelines</a><br><br>";
 
-".    "    <a href=\"#sprite\">What are these little character doodads appearing on the board?</a><br>
-".    "    <a href=\"#move\">I just made a thread, where did it go?</a><br>
+if($config['spritesystem'] == true) print "    <a href=\"#sprite\">What are these little character doodads appearing on the board?</a><br>";
+print    "    <a href=\"#move\">I just made a thread, where did it go?</a><br>
 ".    "    <a href=\"#rude\">I feel that a user is being rude to me. What do I do?</a><br>
 ".    "    <a href=\"#badge\">What are badges?</a><br>
-".    "    <a href=\"#kcs\">What is \"KCS\"?</a><br>
+".    "    <a href=\"#acs\">What is \"ACS\"?</a><br>
 ".    "    <a href=\"#smile\">Are smilies and BBCode supported?</a><br>
 ".    "    <a href=\"#tags\">Board Specific tags (non-BBcode [tags] and other substitutions)</a><br>
 ".    "    <a href=\"#irc\">What's this IRC thing I keep hearing about?</a><br>
@@ -102,7 +102,7 @@ print "$L[TBL1]>
 ".    "  <li>Suggestive Material.  Remember that there are others here who enjoy the board experience. Their standards are not necessarily going to be like yours all the time, so please, do not post anything pornographic or otherwise potentially disturbing to other members.
 ".    "  </ul>
 ".    "  <br><b><u>Procedural</u></b>:
-".    "  <br>Kafuka follows the \"Three Strike Rule\". This means if you have been warned twice by staff for whatever reason, your third notice will be a ban and a reason, coupled with a ban length.  Each time you are given a \"strike\", you will receive a PM from a staff member stating so.  This PM will also include a link to the post in question and a reason for the warning.  Your third strike will come with a ban.   Ban lengths are as follows:
+".    "  <br>Acmlmboard follows the \"Three Strike Rule\". This means if you have been warned twice by staff for whatever reason, your third notice will be a ban and a reason, coupled with a ban length.  Each time you are given a \"strike\", you will receive a PM from a staff member stating so.  This PM will also include a link to the post in question and a reason for the warning.  Your third strike will come with a ban.   Ban lengths are as follows:
 ".    "  <br>
 ".    "  <table cellpadding=0>
 ".    "  <tr><td>Offence</td><td>Duration</td></tr>
@@ -125,12 +125,12 @@ print "$L[TBL1]>
 ".    "  <br>The use of CSS usage to change your username colour, impersonate being staff, or similar is forbidden. Any alteration to one's username (font, icon etc) fake custom titles, and other additional text in a non-post field are under discretion of the the staff. Likewise, use of CSS that changes the board layout, others' posts or anything outside of your own post is forbidden. Failure to do so can result in deletion of your post layout, or even disabling the feature on your account altogether.
 ".    "  <br>
 ".    "  <br><b><u>Disclaimer</u></b>:
-".    "  <br>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.
+".    "  <br>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.";
 
-".    "  $L[TRh]>$L[TDh]><a name='sprite'>What are these little character doodads appearing on the board?
-".    "  $L[TR]>$L[FAQTD]>Those are called Sprites. If you click on them, you will have \"found\" them and will be logged <a href=\"sprites.php\">here</a>. Collect them all!
+if($config['spritesystem'] == true) print    "  $L[TRh]>$L[TDh]><a name='sprite'>What are these little character doodads appearing on the board?
+".    "  $L[TR]>$L[FAQTD]>Those are called Sprites. If you click on them, you will have \"found\" them and will be logged <a href=\"sprites.php\">here</a>. Collect them all!";
 
-".    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go?
+print    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go?
 ".    "  $L[TR]>$L[FAQTD]>It was probably moved or deleted by a staff member. If it was deleted, please make sure your thread meets the criteria we have established. If it was moved, look into the other forums and consider why it was moved there. If you have any questions, PM a staff member.
 
 ".    "  $L[TRh]>$L[TDh]><a name='rude'>I feel that a user is being rude to me. What do I do?
@@ -139,8 +139,8 @@ print "$L[TBL1]>
 ".    "  $L[TRh]>$L[TDh]><a name='badge'>What are badges?
 ".    "  $L[TR]>$L[FAQTD]>Badges are special trinkets that a user gathers through special means. You can acquire them from staff, meeting special requirements, or even find them somewhere. For example; sometimes special contests will be held, with a badge given for those who participate and/or win said competition.
 
-".    "  $L[TRh]>$L[TDh]><a name='kcs'>What is \"KCS\"?
-".    "  $L[TR]>$L[FAQTD]>KCS stands for Kafuka Champion Series. It is an ongoing posting contest which is found in General Chat. All general posting rules apply.
+".    "  $L[TRh]>$L[TDh]><a name='acs'>What is \"ACS\"?
+".    "  $L[TR]>$L[FAQTD]>ACS stands for Acmlm Champion Series. It is an ongoing posting contest which is found in General Chat. All general posting rules apply.
 
 ".    "  $L[TRh]>$L[TDh]><a name='smile'>Are smilies and BBCode supported?
 ".    "  $L[TR]>$L[FAQTD]>There are some smilies here, a chart is below to show what smilies are supported.
@@ -152,7 +152,7 @@ print "$L[TBL1]>
 	 <tr><td class='b n1'>[i]<i>text</i>[/i]</td><td class='b n2'><i>Italic Text</i></td>
 	 <tr><td class='b n1'>[u]<i>text</i>[/u]</td><td class='b n2'><u>Underlined Text</u></td>
 	 <tr><td class='b n1'>[s]<i>text</i>[/s]</td><td class='b n2'><s>Striked-out Text</s></td>
-	 <tr><td class='b n1'>[red]<i>text</i>[/red]</td><td class='b n2'><span style=\"color: #FFC0C0\">Black Text</span></td>
+	 <tr><td class='b n1'>[red]<i>text</i>[/red]</td><td class='b n2'><span style=\"color: #FFC0C0\">Red Text</span></td>
 	 <tr><td class='b n1'>[green]<i>text</i>[/green]</td><td class='b n2'><span style=\"color: #C0FFC0\">Green Text</span></td>
 	 <tr><td class='b n1'>[blue]<i>text</i>[/blue]</td><td class='b n2'><span style=\"color: #C0C0FF\">Blue Text</span></td>
 	 <tr><td class='b n1'>[orange]<i>text</i>[/orange]</td><td class='b n2'><span style=\"color: #FFC080\">Orange Text</span></td>
@@ -173,7 +173,7 @@ print "$L[TBL1]>
 	 </table>
 
 ".    "  $L[TRh]>$L[TDh]><a name='irc'>What's this IRC thing I keep hearing about?
-".    "  $L[TR]>$L[FAQTD]>If you have an IRC client like mIRC, you can join a chatroom hosted by the Kafuka community. All crazy kinds of things can happen there, but will you take the plunge? Connect to the server irc.nolimitzone.com and join the channel #kafuka. Mibbit is a great client to start with if you don't know what you're doing.
+".    "  $L[TR]>$L[FAQTD]>If you have an IRC client like mIRC, you can join a chatroom hosted by the Acmlmboard community. All crazy kinds of things can happen there, but will you take the plunge? Connect to the server irc.nolimitzone.com and join the channel. Mibbit is a great client to start with if you don't know what you're doing.
 
 ".    "  $L[TRh]>$L[TDh]><a name='reg'>Can I register more than one account?
 ".    "  $L[TR]>$L[FAQTD]>No, you may not. Most uses for a secondary account tend to be to bypass bans. The the most common non-malicious use is to have a different name, and we have another feature will allow this cleanly.

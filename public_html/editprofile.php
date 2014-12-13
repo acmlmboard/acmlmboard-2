@@ -426,6 +426,7 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
   }
 
 }
+ //Implemented the show-online perm. - SquidEmpress
  print"
 ".
            catheader('Options')."
@@ -440,7 +441,12 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
 ".           fieldrow('Post layouts', fieldoption('blocklayouts',$user['blocklayouts'],array('Show everything in general', 'Block everything')))."
 ".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
 ".           fieldrow('Hide Email', fieldoption('emailhide',$user['emailhide'],array('Show my email', 'Hide my email')))."
+";
+ if (has_perm("show-online"))
+ print"
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
+";
+ print"
 ".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Display redirect page', 'Instant redirect')))."
 ".
            catheader('&nbsp;')."

@@ -24,6 +24,7 @@ if ($regdis['intval'] == 1)
 }
 
 
+$boardemailaddress=$sql->resultq("SELECT `emailaddress` FROM `board_email` WHERE `field`='boardemail'");
 if (isProxy())
 {
   pageheader('Register');
@@ -33,7 +34,7 @@ if (isProxy())
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Registration is denied</td>
 ".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins.</a></td></td>
+".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins at ".($boardemailaddress).".</a></td></td>
 ".      "$L[TBLend]
 ";
   pagefooter();

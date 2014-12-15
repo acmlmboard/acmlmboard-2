@@ -344,7 +344,7 @@ CREATE TABLE `group` (
 
 LOCK TABLES `group` WRITE;
 /*!40000 ALTER TABLE `group` DISABLE KEYS */;
-INSERT INTO `group` VALUES (1,'Base User','','','',0,0,100,0,0,''),(2,'Normal User','97ACEF','F185C9','7C60B0',1,1,200,1,1,'Normal Registered User'),(3,'Global Moderator','AFFABE','C762F2','47B53C',8,0,600,1,1,''),(4,'Administrator','FFEA95','C53A9E','F0C413',3,0,700,1,1,''),(6,'Acmlmistrator','EE4444','E63282','AA3C3C',0,-1,800,1,1,''),(8,'Local Moderator','D8E8FE','FFB3F3','EEB9BA',10,0,400,1,1,''),(9,'Banned','888888','888888','888888',2,0,0,1,1,''),(10,'Staff','','','',2,0,300,0,0,''),(11,'Disable PM Activity','','','',0,0,1000,1,0,'Disallows all Private Message activity (viewing, creation, deletion)'),(13,'General Forum Moderation','','','',0,0,450,1,0,'Allows moderation of the General Forum'),(15,'Bot','','','',1,0,50,0,0,'');
+INSERT INTO `group` VALUES (1,'Base User','','','',0,0,100,0,0,''),(2,'Normal User','97ACEF','F185C9','7C60B0',1,1,200,1,1,'Normal Registered User'),(3,'Global Moderator','AFFABE','C762F2','47B53C',8,0,600,1,1,''),(4,'Administrator','FFEA95','C53A9E','F0C413',3,0,700,1,1,''),(6,'Root Administrator','EE4444','E63282','AA3C3C',0,-1,800,1,1,''),(8,'Local Moderator','D8E8FE','FFB3F3','EEB9BA',10,0,400,1,1,''),(9,'Banned','888888','888888','888888',2,0,0,1,1,''),(10,'Staff','','','',2,0,300,0,0,''),(11,'Disable PM Activity','','','',0,0,1000,1,0,'Disallows all Private Message activity (viewing, creation, deletion)'),(13,'General Forum Moderation','','','',0,0,450,1,0,'Allows moderation of the General Forum'),(15,'Bot','','','',1,0,50,0,0,'');
 /*!40000 ALTER TABLE `group` ENABLE KEYS */;
 UNLOCK TABLES;
 

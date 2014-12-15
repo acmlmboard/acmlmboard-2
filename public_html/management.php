@@ -17,6 +17,8 @@ if (has_perm("edit-badges"))
   $mlinks[] = array('url' => "editbadges.php", 'title' => 'Manage badges');
 if (has_perm("edit-groups")) 
   $mlinks[] = array('url' => "editgroups.php", 'title' => 'Manage groups');
+if (has_perm("no-restrictions")) 
+  $mlinks[] = array('url' => "acmlmistratortools.php", 'title' => 'Acmlmistrator Tools');
   
 $mlinkstext = '';
 foreach ($mlinks as $l)
@@ -36,7 +38,8 @@ print "$L[TBL1]>
 ".(has_perm("edit-ip-bans") ? " <a href=\"ipbans.php\"</a>$L[INPs]=action value='Manage IP Bans'></a>" : "")."
 ".(has_perm("edit-sprites") ? " <a href=\"editsprites.php\"</a>$L[INPs]=action value='Manage Sprites'></a>" : "")." 
 ".(has_perm("edit-badges") ? " <a href=\"editbadges.php\"</a>$L[INPs]=action value='Manage Badges'></a>" : "")." 
-".(has_perm("edit-groups") ? " <a href=\"editgroups.php\"</a>$L[INPs]=action value='Manage Groups'></a>" : "")." 
+".(has_perm("edit-groups") ? " <a href=\"editgroups.php\"</a>$L[INPs]=action value='Manage Groups'></a>" : "")."
+".(has_perm("no-restrictions") ? " <a href=\"acmlmistratortools.php\"</a>$L[INPs]=action value='Acmlmistrator Tools'></a>"  : "")."
 ".    "$L[TBLend]
 ";
 

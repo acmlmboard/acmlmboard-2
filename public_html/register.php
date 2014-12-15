@@ -24,7 +24,7 @@ if ($regdis['intval'] == 1)
 }
 
 
-$boardemailaddress=$sql->resultq("SELECT `emailaddress` FROM `board_email` WHERE `field`='boardemail'");
+$boardemailaddress=$sql->resultq("SELECT `emailaddress` FROM `misc` WHERE `field`='boardemail'");
 if (isProxy())
 {
   pageheader('Register');

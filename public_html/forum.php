@@ -224,6 +224,27 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
   $showforum=$uid||$time;
 
+  //Forum Jump - SquidEmpress
+  $r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
+		$forumjumplinks="<table><td>$fonttag Forum jump: </td>
+        <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
+		$c = -1;
+		while($d=$sql->fetch($r))
+		{
+			if (!can_view_forum($d)) continue;
+			
+			if ($d['cat'] != $c)
+			{
+				if ($c != -1) $forumjumplinks .= '</optgroup>';
+				$c = $d['cat'];
+                $forumjumplinks.= "<optgroup label=\"".$d['ctitle']."\">";
+			}
+            //Based off of the forum name code in 1.92.08. - SquidEmpress
+            $forumjumplinks.="<option value=forum.php?id=$d[id]".($forum[id]==$d[id]?' selected':'').">$d[title]";
+		}
+		$forumjumplinks.="</optgroup></select></table></form>";
+		$forumjumplinks=($forumjumplinks);
+
   if($forum[threads]<=$loguser[tpp]){
     $fpagelist='<br>';
     $fpagebr='';
@@ -302,7 +323,7 @@ echo announcement_row($fid,3,4);
       $status='&nbsp;';
 
     if(!$thread[title])
-      $thread[title]=' ';
+      $thread[title]='ï¿½';
 
     if($thread[icon])
       $icon="<img src='$thread[icon]' height=15>";
@@ -350,7 +371,7 @@ echo announcement_row($fid,3,4);
 ";
   }
   print "$L[TBLend]
-".      "$fpagelist$fpagebr
+".      "$forumjumplinks$fpagelist$fpagebr
 ".      "$topbot
 ";
   pagefooter();

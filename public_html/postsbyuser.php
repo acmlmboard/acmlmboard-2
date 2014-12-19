@@ -28,12 +28,12 @@
       $numposts=$numposts[c];
 
       $p=$sql->query("SELECT p.id,p.num,p.date,t.title,f.minpower FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
-                    ."LEFT JOIN forums f ON f.id=t.forum WHERE p.user=$id "
+                    ."LEFT JOIN forums f ON f.id=t.forum WHERE p.user=$id AND f.id IN ".forums_with_view_perm()
                     ."ORDER BY p.num DESC LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
       $i=0;
       while($post=$sql->fetch($p)) {
-        if($post[minpower]>$loguser[power]) $tlink="<i>(Restricted forum)</i>";
+        if(!forums_with_view_perm()) $tlink="<i>(Restricted forum)</i>";
         else $tlink="<a href=thread.php?pid=$post[id]#$post[id]>$post[title]</a>";
         $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
 ".              "  $L[TDc]>$post[id]

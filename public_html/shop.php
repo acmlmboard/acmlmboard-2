@@ -30,6 +30,8 @@
   }
 
 
+  needs_login(1);
+
   pageheader('Item shop');
 
   $cat=$_GET[cat];
@@ -38,27 +40,10 @@ $f=fopen("shop-ref.log","a");
 fwrite($f,"[".date("m-d-y H:i:s")."] ".$ref."\n");
 fclose($f);
 
-  if(!$log){
-    print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    You must be logged in to access the Item Shop!<br>
-".        "    <a href=./>Back to main</a> or <a href=login.php>login</a>
-".        "$L[TBLend]
-";
-  }elseif(!has_perm('use-item-shop')){
-    print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    You have no permissions to do this!<br>
-".        "    <a href=./>Back to main</a>
-".        "$L[TBLend]
-";
+  if(!has_perm('use-item-shop')){
+     no_perm();
   }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!has_perm('manage-shop-items')) { //Added (Sukasa)
-    print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    You have no permissions to do this!<br>
-".        "    <a href=./>Back to main</a>
-".        "$L[TBLend]
-";
+     no_perm();
   }else {
     $user=$sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
                       .'FROM users u '

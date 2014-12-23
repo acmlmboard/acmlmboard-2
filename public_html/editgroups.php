@@ -34,6 +34,7 @@
 		
 		if (!$errmsg)
 		{
+                        $sql->prepare("INSERT INTO `deletedgroups` SELECT * FROM `group` WHERE `id`=?", array($group['id']));
 			$sql->prepare("DELETE FROM `group` WHERE `id`=?", array($group['id']));
 			$sql->prepare("DELETE FROM `user_group` WHERE `group_id`=?", array($group['id']));
 			$sql->prepare("DELETE FROM `x_perm` WHERE `x_type`='group' AND `x_id`=?", array($group['id']));

@@ -136,7 +136,7 @@ print      "  $L[TR]>
 ".      "    $L[TD1]>Image:</td>
 ".      "    $L[TD2c]>
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0',$orderby,$customnc,$displayn)."Avatars</a> |
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby,$customnc,$displayn)."Minipics</a>;"
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby,$customnc,$displayn)."Minipics</a>";
 
 print      "  $L[TR]>
 ".      "    $L[TD1]>Group:</td>

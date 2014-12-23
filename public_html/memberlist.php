@@ -10,7 +10,7 @@
   $mini = $_REQUEST['mini'];
   $orderby = $_REQUEST['orderby'];
   $customnc = $_REQUEST['customnc'];
-
+  $displayn = $_REQUEST['displayn'];
 
 
   if($ppp<1) $ppp=50;
@@ -36,6 +36,9 @@
   if(!$config['perusercolor']) $customnc='0';
   if($customnc=='1') $where.=" AND `nick_color` !=''";
 
+  if(!$config['displayname']) $displayn='0';
+  if($displayn=='1') $where.=" AND `displayname` !=''";
+
   $users=$sql->query("SELECT *,".sqlexp()." FROM users "
                     ."WHERE $where "
                     ."ORDER BY $order "
@@ -51,7 +54,7 @@
       if($p==$page)
         $pagelist.=" $p";
       else
-        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini,$orderby,$customnc)."$p</a>";
+        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini,$orderby,$customnc,$displayn)."$p</a>";
   }
 
   $activegroups = $sql->query("SELECT * FROM `group` WHERE id IN (SELECT `group_id` FROM users GROUP BY `group_id`) ORDER BY `sortorder` ASC ");
@@ -69,7 +72,7 @@
       $grouptitle = "<span $unclass style='color:#".$sexcolor.";'>".$group['title']."</span>";
     }
     else $grouptitle = $group['title'];
-    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini,$orderby,$customnc).$grouptitle."</a>";
+    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini,$orderby,$customnc,$displayn).$grouptitle."</a>";
   }
 
 //If colornames are enabled.. 
@@ -94,38 +97,48 @@ else
 ".      "  $L[TR]>
 ".      "    $L[TD1] width=60>Sort by:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc)."Posts</a> |
-".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc)."EXP</a> |
-".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini,$orderby,$customnc)."Username</a> |
-".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc)."Registration date</a>
+".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Posts</a> |
+".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."EXP</a> |
+".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Username</a> |
+".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Registration date</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1] width=60>Order by:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'d',$customnc)."Descending</a> |
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'a',$customnc)."Ascending</a>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'d',$customnc,$displayn)."Descending</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'a',$customnc,$displayn)."Ascending</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Sex:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini,$orderby,$customnc).$malecolor."Male".$spancolor."</a> |
-".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini,$orderby,$customnc).$femalecolor."Female".$spancolor."</a> |
-".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini,$orderby,$customnc).$nacolor."N/A".$spancolor."</a> |
+".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$malecolor."Male".$spancolor."</a> |
+".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$femalecolor."Female".$spancolor."</a> |
+".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$nacolor."N/A".$spancolor."</a> |
 ";
 
 if($config['perusercolor'])
 {
-  if($customnc == '1') print   "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,'0')."Regular</a> |
+  if($customnc == '1') print   "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,'0',$displayn)."Regular</a> |
   ";
-  else  print   "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,'1')."Custom</a> |
+  else  print   "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,'1',$displayn)."Custom</a> |
   ";
 } 
 
-print   "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini,$orderby,$customnc)."All</a>
-".      "  $L[TR]>
+print   "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."All</a>";
+
+//Added the sort by displayname feature - SquidEmpress
+if($config['displayname'])
+print      "  $L[TR]>
+".      "    $L[TD1]>Displayname:</td>
+".      "    $L[TD2c]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,'0')."Regular</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,'1')."Displayname</a>";
+
+print      "  $L[TR]>
 ".      "    $L[TD1]>Image:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0',$orderby,$customnc)."Avatars</a> |
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby,$customnc)."Minipics</a>
-".      "  $L[TR]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0',$orderby,$customnc,$displayn)."Avatars</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby,$customnc,$displayn)."Minipics</a>;"
+
+print      "  $L[TR]>
 ".      "    $L[TD1]>Group:</td>
 ".      "    $L[TD2c]>";
 $c = 0;
@@ -135,8 +148,8 @@ foreach ($groups as $k => $v) {
   //if ($c < $gc) 
   echo " | ";
 }
-echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini,$orderby,$customnc)."All Staff</a>
-"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini,$orderby,$customnc)."All</a>
+echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini,$orderby,$customnc,$displayn)."All Staff</a>
+"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini,$orderby,$customnc,$displayn)."All</a>
 ".      "      
 ".      "$L[TBLend]
 ".      "<br>";
@@ -192,7 +205,7 @@ RenderTable($data, $headers);
 ";
   pagefooter();
 
-  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini,$orderby,$customnc){
+  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini,$orderby,$customnc,$displayn){
     return '<a href=memberlist.php?'
            .($sort   ?"sort=$sort":'')
            .($sex    ?"&sex=$sex":'')
@@ -202,6 +215,7 @@ RenderTable($data, $headers);
            .($mini!=0?"&mini=$mini":'')
            .($orderby!=''?"&orderby=$orderby":'')
            .($customnc!=''?"&customnc=$customnc":'')
+           .($displayn!=''?"&displayn=$displayn":'')
            .'>';
   }
 ?>

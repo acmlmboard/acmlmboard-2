@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "<span style=\"color: #00FF00;\" title=\"12/13/2014\">7/19/1987</span>";
+  $abdate    = "<span style=\"color: #00FF00;\" title=\"12/22/2014\">7/19/1987</span>";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];

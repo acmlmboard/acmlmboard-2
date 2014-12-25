@@ -1,6 +1,6 @@
 #Adds a table for storing “deleting” groups to prevent permanent deletion of groups through the board
 #Date: 12/22/2014
-CREATE TABLE `b6_15432751_squidempress`.`deletedgroups` (
+CREATE TABLE `deletedgroups` (
 `id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 `title` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
 `nc0` VARCHAR( 6 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,

@@ -34,6 +34,7 @@
       "<span $unclass style=\"color: #F185C9; font-weight:bold;\">Nina</span>"        => "Converted all the AB1 themes to AB2.",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Shroomy</span>"     => "Drafted an OOP DB class for AB2. This class not in use.",
       "<span $unclass style=\"color: #F185C9; font-weight:bold;\">Ijah</span>"     => "Created the default AB2 board logo.",
+      "<span $unclass style=\"color: #F185C9; font-weight:bold;\">SquidEmpress</span>"     => "Code contributions via GIT. Includes Administrator tools, Forum Jump. (See GIT Log for full contributions)",
      );
 
     $gitcontributors = array

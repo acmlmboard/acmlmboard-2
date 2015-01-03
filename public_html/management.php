@@ -17,7 +17,7 @@ if (has_perm("edit-badges"))
   $mlinks[] = array('url' => "editbadges.php", 'title' => 'Manage badges');
 if (has_perm("edit-groups")) 
   $mlinks[] = array('url' => "editgroups.php", 'title' => 'Manage groups');
-if (has_perm("no-restrictions")) 
+if (has_perm("admin-tools-access")) 
   $mlinks[] = array('url' => "administratortools.php", 'title' => 'Administrator Tools');
   
 $mlinkstext = '';
@@ -39,7 +39,7 @@ print "$L[TBL1]>
 ".(has_perm("edit-sprites") ? " <a href=\"editsprites.php\"</a>$L[INPs]=action value='Manage Sprites'></a>" : "")." 
 ".(has_perm("edit-badges") ? " <a href=\"editbadges.php\"</a>$L[INPs]=action value='Manage Badges'></a>" : "")." 
 ".(has_perm("edit-groups") ? " <a href=\"editgroups.php\"</a>$L[INPs]=action value='Manage Groups'></a>" : "")."
-".(has_perm("no-restrictions") ? " <a href=\"administratortools.php\"</a>$L[INPs]=action value='Administrator Tools'></a>"  : "")."
+".(has_perm("admin-tools-access") ? " <a href=\"administratortools.php\"</a>$L[INPs]=action value='Administrator Tools'></a>"  : "")."
 ".    "$L[TBLend]
 ";
 

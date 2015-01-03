@@ -192,7 +192,7 @@
     $themefile = $theme.".css";
    }
    
-  if($config[override_logo] && !has_special_perm("bypass-logo-override") //Config override for the logo file
+  if($config[override_logo] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
     $logofile = $config[override_logo];
   elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";

@@ -1,5 +1,5 @@
 /* META
-	ABXD (Nina)
+ABXD (Nina)
 */
 
 body {
@@ -84,7 +84,7 @@ table.c1, table.c2 {
 table.c2 { font-size: .9em; }
 
 .sfont {
-    font-size: 1em;
+    font-size: 0.85em;
 }
 
 font.sfont a[href*="page"] {

@@ -442,7 +442,7 @@ if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will ne
 ".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
 ".           fieldrow('Hide Email', fieldoption('emailhide',$user['emailhide'],array('Show my email', 'Hide my email')))."
 ";
- if (has_perm("show-online"))
+ if (has_perm("show-online") || has_perm("edit-user-show-online"))
  print"
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
 ";

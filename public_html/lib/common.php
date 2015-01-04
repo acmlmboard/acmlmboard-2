@@ -463,6 +463,8 @@
       $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite Threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
+    if (has_perm("deleted-posts-tracker"))
+      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted Posts Tracker');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 

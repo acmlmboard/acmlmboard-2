@@ -102,13 +102,101 @@
   pageheader('Edit groups');
 
 
-  if ($act == 'new' || $act == 'edit')
+    if (isset($_GET['deletedgroups']))
+  {
+ 
+ if ($act == 'undelete')
+  {
+	$id = unpacksafenumeric($_GET['id']);
+	$deletedgroup = $sql->fetchp("SELECT * FROM `deletedgroups` WHERE `id`=?", array($id));
+ 
+	if (!$deletedgroup)
+		$errmsg = 'Cannot undelete group: invalid group ID';
+	else
+	{
+		if (!$errmsg)
+		{
+                        $sql->prepare("INSERT INTO `group` SELECT * FROM `deletedgroups` WHERE `id`=?", array($deletedgroup['id']));
+			$sql->prepare("DELETE FROM `deletedgroups` WHERE `id`=?", array($deletedgroup['id']));
+                        $sql->prepare("UPDATE `deletedgroups` SET `inherit_group_id`=0 WHERE `inherit_group_id`=?", array($deletedgroup['id']));
+		}
+	}
+  }
+ 
+       $pagebar = array
+	(
+		'breadcrumb' => array(array('href'=>'/.', 'title'=>'Main'), array('href'=>'index.php', 'title'=>'Forums'), array('href'=>'management.php', 'title'=>'Management'), array('href'=>'editgroups.php', 'title'=>'Edit groups')),
+		'title' => '',
+		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group'), array('href'=>'editgroups.php?deletedgroups', 'title'=>'Deleted groups')),
+		'message' => $errmsg
+	);
+        if (isset($_GET['deletedgroups']))
+	{
+		$pagebar['title'] = 'Deleted groups';
+	}
+ 
+        RenderPageBar($pagebar);
+ 
+	$header = array
+	(
+		'sort' => array('caption'=>'Order', 'width'=>'32px', 'align'=>'center'),
+		'id' => array('caption'=>'#', 'width'=>'32px', 'align'=>'center'),
+		'name' => array('caption'=>'Name', 'align'=>'center'),
+		'descr' => array('caption'=>'Description', 'align'=>'left'),
+		'parent' => array('caption'=>'Parent group', 'align'=>'center'),
+		'ncolors' => array('caption'=>'Username colors', 'width'=>'175px', 'align'=>'center'),
+		'misc' => array('caption'=>'Default?', 'width'=>'120px', 'align'=>'center'),
+		'actions' => array('caption'=>'', 'align'=>'right'),
+	);
+ 
+       $deletedgroups = $sql->query("SELECT g.*, pg.title parenttitle FROM `deletedgroups` g LEFT JOIN `deletedgroups` pg ON pg.id=g.inherit_group_id ORDER BY sortorder");
+       $data = array();
+ 
+       while ($deletedgroup = $sql->fetch($deletedgroups))
+	{
+		$name = htmlspecialchars($deletedgroup['title']);
+		if ($deletedgroup['primary']) $name = "<strong>{$name}</strong>";
+		if (!$deletedgroup['visible']) $name = "<span style=\"opacity: 0.6;\">{$name}</span>";
+ 
+		if ($deletedgroup['nc0'] && $group['nc1'] && $deletedgroup['nc2'])
+			$ncolors = "<strong style=\"color: #{$group['nc0']};\">Male</strong> <strong style=\"color: #{$group['nc1']};\">Female</strong> <strong style=\"color: #{$group['nc2']};\">Unspec.</strong>";
+		else
+			$ncolors = '<small>(none set)</small>';
+ 
+		$misc = '-';
+		if ($deletedgroup['default'])
+			$misc = $deletedgroup['default'] == -1 ? 'For first user' : 'For all users';
+ 
+		$actions = array();
+		if ($caneditperms) $actions[] = array('href'=>'editgroups.php?deletedgroups&act=undelete&id='.urlencode(packsafenumeric($deletedgroup['id'])), 'title'=>'Undelete', 
+			'confirm'=>'Undelete this group?');
+ 
+		$data[] = array
+		(
+			'sort' => $deletedgroup['sortorder'],
+			'id' => $deletedgroup['id'],
+			'name' => $name,
+			'descr' => htmlspecialchars($deletedgroup['description']),
+			'parent' => $deletedgroup['parenttitle'] ? htmlspecialchars($deletedgroup['parenttitle']) : '<small>(none)</small>',
+			'ncolors' => $ncolors,
+			'misc' => $misc,
+			'actions' => RenderActions($actions,true),
+		);
+	}
+ 
+        RenderForm($form);
+        RenderTable($data, $header);
+	echo '<br>';
+	$pagebar['message'] = '';
+	RenderPageBar($pagebar);
+  }
+  elseif ($act == 'new' || $act == 'edit')
   {
 	$pagebar = array
 	(
-		'breadcrumb' => array(array('href'=>'./', 'title'=>'Main'), array('href'=>'editgroups.php', 'title'=>'Edit groups')),
+		'breadcrumb' => array(array('href'=>'./', 'title'=>'Main'), array('href'=>'management.php', 'title'=>'Management'), array('href'=>'editgroups.php', 'title'=>'Edit groups')),
 		'title' => '',
-		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group')),
+		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group'), array('href'=>'editgroups.php?deletedgroups', 'title'=>'Deleted groups')),
 		'message' => $errmsg
 	);
 	
@@ -178,9 +266,9 @@
   {
 	$pagebar = array
 	(
-		'breadcrumb' => array(array('href'=>'./', 'title'=>'Main')),
+		'breadcrumb' => array(array('href'=>'./', 'title'=>'Main'), array('href'=>'management.php', 'title'=>'Management')),
 		'title' => 'Edit groups',
-		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group')),
+		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group'), array('href'=>'editgroups.php?deletedgroups', 'title'=>'Deleted groups')),
 		'message' => $errmsg
 	);
 	

@@ -235,7 +235,8 @@ $data[] = array
 }
 $pagebar['title'] = 'Edit Sprites';
 $pagebar['actions'] = array(
-    array('title' => 'New Sprite','href' => 'editsprites.php?action=new'), array('title' => 'Sprite Categories','href' => 'editsprites.php?spritecategories'), 
+    array('title' => 'New Sprite','href' => 'editsprites.php?action=new'), array('title' => 'Sprite Categories','href' => 'editsprites.php?spritecategories'),
+);
 RenderPageBar($pagebar);
 RenderTable($data, $headers);
 

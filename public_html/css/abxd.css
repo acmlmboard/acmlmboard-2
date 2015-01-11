@@ -1,0 +1,138 @@
+/* META
+ABXD (Nina)
+*/
+
+body {
+	background: hsl(210, 20%, 15%) url(../theme/abxd/noise-texture.png);
+	color: white;
+	max-width: 1366px;
+	font-family: "Verdana", "Lucida Grande", sans-serif;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+a, a span {
+	     -o-transition: color .2s ease-in-out;
+		-ms-transition: color .2s ease-in-out;
+	        transition: color .2s ease-in-out;
+	   -moz-transition: color .2s ease-in-out;
+	-webkit-transition: color .2s ease-in-out;
+}
+
+a					{ text-decoration: none; font-weight: bold; }
+a:link, a:visited	{ color: hsl(210, 80%, 65%); }
+a:hover				{ color: hsl(210, 80%, 80%); }
+a:active			{ color: hsl(210, 80%, 75%); }
+
+table {
+	overflow: hidden;
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+
+h3 {
+	font-family: "Verdana", "Lucida Grande", sans-serif;
+	font-size: 1.2em; /* 12pt; */
+	font-weight: bold;
+	margin: 0;
+}
+
+h4 {
+	font-family: "Verdana", "Lucida Grande", sans-serif;
+	font-size: 1em; /* 10pt; */
+	margin: 0;
+}
+
+td {
+	padding: 2px 4px 2px 4px;
+}
+
+tr.c td, tr.h td {
+	background: linear-gradient(hsl(210, 50%, 15%) 0px, hsl(210, 50%, 50%) 2px, hsl(210, 50%, 35%) 4px, hsla(0, 0%, 0%, 0.3) 4px, hsla(0, 0%, 0%, 0));
+	padding-top: 4px;
+	color: #FFFFFF;
+	text-align: center;
+	font-weight: bold;
+	font-size: .85em;
+}
+
+tr.c:first-child td, tr.h:first-child td {
+	background: linear-gradient(hsl(210, 40%, 40%), hsl(210, 40%, 30%));
+	padding-bottom: 4px;
+	border-bottom: 1px solid hsl(210, 20%, 7.5%);
+}
+
+tr.c:first-child td:first-child, tr.h:first-child td:first-child {
+	border-top-left-radius: 8px;
+}
+
+tr.c:first-child td:last-child, tr.h:first-child td:last-child {
+	border-top-right-radius: 8px;
+}
+
+table.c1 {
+	background: linear-gradient(hsl(210, 20%, 15%), hsl(210, 20%, 10%) 120px);
+	box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.45);
+	border-radius: 8px;
+	border: 1px solid hsl(210, 20%, 7.5%);
+}
+
+table.c1, table.c2 {
+	width: 100%;
+}
+
+table.c2 { font-size: .9em; }
+
+.sfont {
+    font-size: 0.85em;
+}
+
+font.sfont a[href*="page"] {
+	display: inline-block;
+}
+
+button, input[type="submit"], select {
+	border: 0px none;
+	background: linear-gradient(hsl(210, 20%, 15%), hsl(210, 20%, 12.5%));
+	border-radius: 4px;
+	color: #FFF;
+	box-shadow: 0px 0px 3px hsla(210, 0%, 0%, 0.5);
+	border: 1px solid hsl(210, 20%, 10%);
+	transition: 0.1s linear;
+}
+
+button:hover, input[type="submit"]:hover, select:hover {
+	border-color: hsla(210, 50%, 60%, 0.5);
+}
+
+button:active, input[type="submit"]:active, select:active {
+	border-color: hsl(210, 50%, 25%);
+}
+
+button:focus, input[type="submit"]:focus, select:focus {
+	border-color: hsl(210, 50%, 25%);
+}
+
+input[type="text"], input[type="password"], input[type="file"], input[type="email"], textarea {
+	background: linear-gradient(hsl(210, 20%, 18%), hsl(210, 20%, 15%));
+	border-radius: 4px;
+	border: 1px solid hsl(210, 20%, 25%);
+	color: white;
+}
+
+input[type="checkbox"], input[type="radio"] {
+	background: hsl(210, 20%, 15%);
+	border: 0px none;
+	border-radius: 4px;
+	color: hsl(0, 0%, 15%);
+	transition: 0.2s linear;
+}
+
+input[type="radio"] {
+	border-radius: 8px;
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="file"]:focus, input[type="email"]:focus, textarea:focus {
+	background: linear-gradient(hsl(210, 20%, 19%), hsl(210, 20%, 16%));
+	border-color: hsl(210, 50%, 45%);
+}

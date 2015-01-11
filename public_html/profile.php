@@ -243,6 +243,17 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
       else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage Secondary Groups</a>";
     }
     
+    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+
+    $banuser ="";
+    if(has_perm('edit-permissions'))
+    {
+      if(!has_perm('ban-users')) $banuser ="";
+      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banhammer.php?id=".$user['id']."\">Ban User</a>";
+      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banhammer.php?unban&id=".$user['id']."\">Unban User</a>";
+    }
+    
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";
     $rblock    = $sql->query($qblock);
@@ -441,7 +452,7 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
-                       ". $editpermissions." ".$secondarygroups."
+                       ". $banuser." ". $editpermissions." ".$secondarygroups."
            $L[TBLend]";
            pagefooter();
            

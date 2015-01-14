@@ -60,6 +60,7 @@ global $user;
 
 if($_POST[banuser]=="Ban User") {
       $sql->query("UPDATE users SET group_id='$bannedgroup[id]' WHERE id='$user[id]'");
+      $sql->query("UPDATE users SET title='Banned permanently: ".$_POST[title]."' WHERE id='$user[id]'");
 
 print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "$L[TBL1]>
@@ -72,7 +73,7 @@ die(pagefooter());
     }
 
 elseif($_POST[unbanuser]=="Unban User") {
-if ($user['group_id'] != $bannedgroup['group_id'])
+if ($user['group_id'] != $bannedgroup['id'])
 {
 print
         "$L[TBL1]>
@@ -85,6 +86,7 @@ print
       die();
 }
       $sql->query("UPDATE users SET group_id='$defaultgroup[id]' WHERE id='$user[id]'");
+      $sql->query("UPDATE users SET title='' WHERE id='$user[id]'");
       
 print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "$L[TBL1]>
@@ -135,11 +137,14 @@ else
 {
 print "<form action='banhammer.php?id=$uid' method='post' enctype='multipart/form-data'> 
 ".    "$L[TBL1]>
-".    "  $L[TRh]>$L[TD]>Ban User
-".    "  $L[TR]>$L[TD1c]>
-".    "    <br>
+".
+        catheader('Ban User')."
+".        "  $L[TR]>
+".        "    $L[TD1c]>Reason:</td>
+".        "      $L[TD2]>$L[INPt]='title' class='right'></td>
 ".        "  $L[TR1]>
-".        "    $L[TD1c]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
 ".        "      $L[INPs]=\"banuser\" value=\"Ban User\">
 ".    "$L[TBLend]
 ";

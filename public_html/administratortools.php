@@ -13,6 +13,7 @@ if($_POST[action]=="Apply changes") {
 $sql->query("UPDATE misc SET intval='".$_POST[regdisable]."' WHERE field='regdisable'");
 $sql->query("UPDATE misc SET intval='".$_POST[lockdown]."' WHERE field='lockdown'");
 $sql->query("UPDATE misc SET txtval='".$_POST[txtval]."' WHERE field='lockdown'");
+$sql->query("UPDATE misc SET emailaddress='".$_POST[emailaddress]."' WHERE field='boardemail'");
  
 print "$L[TBL1]>
 ".        "  $L[TD1c]>
@@ -26,6 +27,7 @@ die(pagefooter());
 $rtool  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="regdisable"'); 
 $ltool  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="lockdown"');
 $lockdowntext = $sql->resultq("SELECT txtval FROM misc WHERE field='lockdown'");
+$boardemail = $sql->resultq("SELECT emailaddress FROM misc WHERE field='boardemail'");
 
 print "<form action='administratortools.php' method='post' enctype='multipart/form-data'>
 ".        " $L[TBL1]>
@@ -36,6 +38,9 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Lockdown Message (Leave blank for default):</td>
 ".        "      $L[TD2]>$L[TXTa]='txtval' rows=8 cols=120>".$lockdowntext."</textarea></td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>Board Email:</td>
+".        "      $L[TD2]>$L[INPt]='emailaddress' value='".$boardemail."' class='right'></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>$L[INPs]=action value='Apply changes'></td>

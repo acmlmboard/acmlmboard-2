@@ -58,9 +58,15 @@ global $user;
  
   $user = $sql->fetchq("SELECT * FROM users WHERE `id` = $uid");
 
+//Concatenation like in ABXD
 if($_POST[banuser]=="Ban User") {
+      $banreason="Banned permanently";
+      if ($_POST['title']) {
+      $banreason .= ': '.htmlspecialchars($_POST['title']);
+      }
+
       $sql->query("UPDATE users SET group_id='$bannedgroup[id]' WHERE id='$user[id]'");
-      $sql->query("UPDATE users SET title='Banned permanently: ".$_POST[title]."' WHERE id='$user[id]'");
+      $sql->query("UPDATE users SET title='$banreason' WHERE id='$user[id]'");
 
 print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "$L[TBL1]>

@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "<span style=\"color: #00FF00;\" title=\"1/03/2015\">7/19/1987</span>";
+  $abdate    = "<span style=\"color: #00FF00;\" title=\"1/18/2015\">7/19/1987</span>";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -67,6 +67,11 @@
 
   //2007-02-19 blackhole89 - needs to be here because it requires loguser data
   require "lib/ipbans.php";
+  
+  //Unban users whose tempbans have expired. - SquidEmpress
+  $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+  $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+  $sql->query('UPDATE users SET group_id='.$defaultgroup[id].', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
 
   $dateformat = "$loguser[dateformat] $loguser[timeformat]";
 

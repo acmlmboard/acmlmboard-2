@@ -1,7 +1,7 @@
 <?php
 require 'lib/common.php';
 
-//Alternative to editing users' profiles. Tempbanning is planned to be implemented - SquidEmpress
+//Alternative to editing users' profiles. - SquidEmpress
 //Based off of banhammer.php from Blargboard by StapleButter.
 
 $uid = $loguser['id'];
@@ -60,13 +60,24 @@ global $user;
 
 //Concatenation like in ABXD
 if($_POST[banuser]=="Ban User") {
+      $tempban=ctime()+($_POST[tempbanned]);
+      $tempban="Banned until ".date("m-d-y h:i A",$tempban);
+      if ($_POST['tempbanned']>0)
+      {
+      $banreason=$tempban;
+      if ($_POST['title']) {
+      $banreason .= ': '.htmlspecialchars($_POST['title']); }
+      }
+      else
+      {
       $banreason="Banned permanently";
       if ($_POST['title']) {
-      $banreason .= ': '.htmlspecialchars($_POST['title']);
+      $banreason .= ': '.htmlspecialchars($_POST['title']); }
       }
 
       $sql->query("UPDATE users SET group_id='$bannedgroup[id]' WHERE id='$user[id]'");
       $sql->query("UPDATE users SET title='$banreason' WHERE id='$user[id]'");
+      $sql->query("UPDATE users SET tempbanned='".($_POST[tempbanned]>0?($_POST[tempbanned]+time()):0)."' WHERE id='$user[id]'");
 
 print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "$L[TBL1]>
@@ -93,6 +104,8 @@ print
 }
       $sql->query("UPDATE users SET group_id='$defaultgroup[id]' WHERE id='$user[id]'");
       $sql->query("UPDATE users SET title='' WHERE id='$user[id]'");
+      $sql->query("UPDATE users SET tempbanned='0' WHERE id='$user[id]'");
+
       
 print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "$L[TBL1]>
@@ -148,6 +161,19 @@ print "<form action='banhammer.php?id=$uid' method='post' enctype='multipart/for
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Reason:</td>
 ".        "      $L[TD2]>$L[INPt]='title' class='right'></td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>Expires?</td>
+".        "      $L[TD2]>".fieldselect("tempbanned",0,array("600"=>"10 minutes",
+						      "3600"=>"1 hour",
+						      "10800"=>"3 hours",
+						      "86400"=>"1 day",
+						      "172800"=>"2 days",
+						      "259200"=>"3 days",
+						      "604800"=>"1 week",
+						      "1209600"=>"2 weeks",
+						      "2419200"=>"1 month",
+						      "4838400"=>"2 months",
+						      "0"=>"never"))."</td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>

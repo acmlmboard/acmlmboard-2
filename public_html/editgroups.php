@@ -73,6 +73,9 @@
 		$default = $_POST['default'];
 		if ($default < -1 || $default > 1) $default = 0;
 		
+		$banned = $_POST['banned']; 
+		if ($banned > 1) $banned = 0; 
+		
 		$sortorder = (int)$_POST['sortorder'];
 		
 		$visible = $_POST['visible'] ? 1:0;
@@ -82,15 +85,15 @@
 			$errmsg = 'You must enter a name for the group.';
 		else
 		{
-			$values = array($title, $_POST['nc0'], $_POST['nc1'], $_POST['nc2'], $parentid, $default, $sortorder, $visible, 
+			$values = array($title, $_POST['nc0'], $_POST['nc1'], $_POST['nc2'], $parentid, $default, $banned, $sortorder, $visible, 
 				$primary, $_POST['description']);
 				
 			if ($act == 'new')
-				$sql->prepare("INSERT INTO `group` VALUES (0,?,?,?,?,?,?,?,?,?,?)", $values);
+				$sql->prepare("INSERT INTO `group` VALUES (0,?,?,?,?,?,?,?,?,?,?,?)", $values);
 			else
 			{
 				$values[] = $_GET['id'];
-				$sql->prepare("UPDATE `group` SET `title`=?,`nc0`=?,`nc1`=?,`nc2`=?,`inherit_group_id`=?,`default`=?,
+				$sql->prepare("UPDATE `group` SET `title`=?,`nc0`=?,`nc1`=?,`nc2`=?,`inherit_group_id`=?,`default`=?,`banned`=?,
 					`sortorder`=?,`visible`=?,`primary`=?,`description`=? WHERE id=?", $values);
 			}
 				
@@ -146,6 +149,7 @@
 		'parent' => array('caption'=>'Parent group', 'align'=>'center'),
 		'ncolors' => array('caption'=>'Username colors', 'width'=>'175px', 'align'=>'center'),
 		'misc' => array('caption'=>'Default?', 'width'=>'120px', 'align'=>'center'),
+		'bmisc' => array('caption'=>'Banned?', 'width'=>'120px', 'align'=>'center'), 
 		'actions' => array('caption'=>'', 'align'=>'right'),
 	);
  
@@ -166,6 +170,10 @@
 		$misc = '-';
 		if ($deletedgroup['default'])
 			$misc = $deletedgroup['default'] == -1 ? 'For first user' : 'For all users';
+			
+        $bmisc = '-'; 
+		if ($deletedgroup['banned']) 
+		    $bmisc = $deletedgroup['banned'] == 1 ? 'For banned users' : '-'; 
  
 		$actions = array();
 		if ($caneditperms) $actions[] = array('href'=>'editgroups.php?deletedgroups&act=undelete&id='.urlencode(packsafenumeric($deletedgroup['id'])), 'title'=>'Undelete', 
@@ -180,6 +188,7 @@
 			'parent' => $deletedgroup['parenttitle'] ? htmlspecialchars($deletedgroup['parenttitle']) : '<small>(none)</small>',
 			'ncolors' => $ncolors,
 			'misc' => $misc,
+			'bmisc' => $bmisc, 
 			'actions' => RenderActions($actions,true),
 		);
 	}
@@ -202,7 +211,7 @@
 	
 	if ($act == 'new')
 	{
-		$group = array('id'=>0, 'title'=>'', 'nc0'=>'', 'nc1'=>'', 'nc2'=>'', 'inherit_group_id'=>0, 'default'=>0, 'sortorder'=>0, 'visible'=>0, 'primary'=>0, 'description'=>'');
+		$group = array('id'=>0, 'title'=>'', 'nc0'=>'', 'nc1'=>'', 'nc2'=>'', 'inherit_group_id'=>0, 'default'=>0, 'banned'=>0, 'sortorder'=>0, 'visible'=>0, 'primary'=>0, 'description'=>'');
 		$pagebar['title'] = 'New group';
 	}
 	else
@@ -219,6 +228,7 @@
 			$grouplist[$g['id']] = $g['title'];
 			
 		$defaultlist = array(0=>'-', -1=>'For first user', 1=>'For all users');
+		$bannedlist = array(0=>'-', 1=>'For banned users'); 
 		$visiblelist = array(1=>'Visible', 0=>'Invisible');
 		$primarylist = array(1=>'Primary', 0=>'Secondary');
 		
@@ -234,6 +244,7 @@
 						'description' => array('title'=>'Description', 'type'=>'text', 'length'=>255, 'size'=>100, 'value'=>$group['description']),
 						'inherit_group_id' => array('title'=>'Parent group', 'type'=>'dropdown', 'choices'=>$grouplist, 'value'=>$group['inherit_group_id']),
 						'default' => array('title'=>'Default', 'type'=>'dropdown', 'choices'=>$defaultlist, 'value'=>$group['default']),
+						'banned' => array('title'=>'Banned', 'type'=>'dropdown', 'choices'=>$bannedlist, 'value'=>$group['banned']), 
 						'sortorder' => array('title'=>'Sort order', 'type'=>'numeric', 'length'=>8, 'size'=>4, 'value'=>$group['sortorder']),
 						'visible' => array('title'=>'Visibility', 'type'=>'radio', 'choices'=>$visiblelist, 'value'=>$group['visible']),
 						'primary' => array('title'=>'Type', 'type'=>'radio', 'choices'=>$primarylist, 'value'=>$group['primary']),
@@ -283,6 +294,7 @@
 		'parent' => array('caption'=>'Parent group', 'align'=>'center'),
 		'ncolors' => array('caption'=>'Username colors', 'width'=>'175px', 'align'=>'center'),
 		'misc' => array('caption'=>'Default?', 'width'=>'120px', 'align'=>'center'),
+		'bmisc' => array('caption'=>'Banned?', 'width'=>'120px', 'align'=>'center'), 
 		'actions' => array('caption'=>'', 'align'=>'right'),
 	);
 	
@@ -303,6 +315,10 @@
 		$misc = '-';
 		if ($group['default'])
 			$misc = $group['default'] == -1 ? 'For first user' : 'For all users';
+			
+		$bmisc = '-'; 
+		if ($group['banned']) 
+			$bmisc = $group['banned'] == 1 ? 'For banned users' : '-'; 
 		
 		$actions = array();
 		if ($caneditperms) $actions[] = array('href'=>'editperms.php?gid='.$group['id'], 'title'=>'Edit permissions');
@@ -319,6 +335,7 @@
 			'parent' => $group['parenttitle'] ? htmlspecialchars($group['parenttitle']) : '<small>(none)</small>',
 			'ncolors' => $ncolors,
 			'misc' => $misc,
+			'bmisc' => $bmisc, 
 			'actions' => RenderActions($actions,true),
 		);
 	}

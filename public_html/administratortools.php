@@ -11,6 +11,7 @@ if (!has_perm('admin-tools-access')) no_perm();
 
 if($_POST[action]=="Apply changes") {
 $sql->query("UPDATE misc SET intval='".$_POST[regdisable]."' WHERE field='regdisable'");
+$sql->query("UPDATE misc SET txtval='".$_POST[regdisabletext]."' WHERE field='regdisable'");
 $sql->query("UPDATE misc SET intval='".$_POST[lockdown]."' WHERE field='lockdown'");
 $sql->query("UPDATE misc SET txtval='".$_POST[txtval]."' WHERE field='lockdown'");
 $sql->query("UPDATE misc SET emailaddress='".$_POST[emailaddress]."' WHERE field='boardemail'");
@@ -26,6 +27,7 @@ die(pagefooter());
 
 $rtool  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="regdisable"'); 
 $ltool  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="lockdown"');
+$regdisabletext = $sql->resultq("SELECT txtval FROM misc WHERE field='regdisable'");
 $lockdowntext = $sql->resultq("SELECT txtval FROM misc WHERE field='lockdown'");
 $boardemail = $sql->resultq("SELECT emailaddress FROM misc WHERE field='boardemail'");
 
@@ -34,6 +36,9 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".
            catheader('Administrator tools')."
 ".    fieldrow('Disable Registering', fieldoption('regdisable',$rtool['regdisable'],array('Enable', 'Disable')))."
+".        "  $L[TR]>
+".        "    $L[TD1c]>Disable Registering Message:</td>
+".        "      $L[TD2]>$L[TXTa]='regdisabletext' rows=8 cols=120>".$regdisabletext."</textarea></td>
 ".    fieldrow('Enable Lockdown', fieldoption('lockdown',$ltool['lockdown'],array('Do not set', 'Set')))."
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Lockdown Message (Leave blank for default):</td>

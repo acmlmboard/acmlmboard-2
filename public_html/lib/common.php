@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "<span style=\"color: #00FF00;\" title=\"1/18/2015\">7/19/1987</span>";
+  $abdate    = "<span style=\"color: #00FF00;\" title=\"1/29/2015\">7/19/1987</span>";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -46,8 +46,9 @@
      $loguser['theme'] = "minerslament";
     $loguser['blocksprites']=1;
    }
-   
-  if($loguser['power']==1)
+  
+  $flocalmod=$sql->fetchq("SELECT `uid` FROM `forummods`");
+  if($loguser['id'] = $flocalmod['uid'])
    {
     $loguser['modforums']=array();
     $modf=$sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");

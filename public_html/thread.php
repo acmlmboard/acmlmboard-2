@@ -97,6 +97,19 @@ if($_COOKIE['pstbon']>=1){
   // "link" support (i.e., thread.php?pid=999whatever)
   elseif($pid=$_GET[pid]){
     checknumeric($pid);
+        $numpid =$sql->fetchq("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
+        if (!$numpid) {
+        pageheader("Thread post not found",0);  
+	      print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
+".      "      Thread post does not exist. <br> <a href=./>Back to main</a> 
+".      "$L[TBLend]
+";
+      pagefooter();
+      die();
+    }
     $isannounce = $sql->resultq("SELECT announce FROM posts WHERE id=$pid");
     if ($isannounce) {
       $pinf =$sql->fetchq("SELECT t.forum fid, t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");

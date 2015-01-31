@@ -28,19 +28,20 @@ $uid = $loguser['id'];
 		no_perm();
 	} 
  
-   //From editprofile.php
-   if(!$user['id'])
-    {
-     //use error($message, 0) function later!
+   if($uid = $_GET['id']) {
+     checknumeric($uid);
+     $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
+     if(!$numid) {
      pageheader("Profile");
-     print "<a href=\"./\">Main</a> - Profile<br><br>
+     print "<a href=\"./\">Main</a> - Ban User<br><br>
             $L[TBL1]>
               $L[TD1c]>
-            This user does not exist!
+            Invalid user ID.
             $L[TBLend]";
      pagefooter();
      die();
     }
+   }
 
 $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
 $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");

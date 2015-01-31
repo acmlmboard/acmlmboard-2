@@ -9,14 +9,26 @@
       $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$uid'");
     }
 
-   if(!$user['id'])
-    {
-     //use error($message, 0) function later!
+   if($uid = $_GET['id']) {
+     checknumeric($uid);
+     $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
+     if(!$numid) {
      pageheader("Profile");
      print "<a href=\"./\">Main</a> - Profile<br><br>
             $L[TBL1]>
               $L[TD1c]>
             This user does not exist!
+            $L[TBLend]";
+     pagefooter();
+     die();
+    }
+   } else {
+     //use error($message, 0) function later!
+     pageheader("Profile");
+     print "<a href=\"./\">Main</a> - Profile<br><br>
+            $L[TBL1]>
+              $L[TD1c]>
+            You must specify a user ID!
             $L[TBLend]";
      pagefooter();
      die();

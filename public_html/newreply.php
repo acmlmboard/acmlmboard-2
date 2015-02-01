@@ -275,7 +275,7 @@ if($loguser[redirtype]==0){ //Classical Redirect
 
   }
 
-  if($act!='Submit' && !$err && $thread[minpower]<=$loguser[power]){
+  if($act!='Submit' && !$err && can_view_forum($thread)){
     print "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>

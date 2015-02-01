@@ -13,6 +13,9 @@
     if ($loguser) $sql -> query("UPDATE `users` SET `ipbanned` = '1' WHERE `id` = '$loguser[id]'");
     else $sql -> query("UPDATE  `guests` SET `ipbanned` = '1' WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'");
 
+    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+
     //a ban appears to be present. check for type
     //and restrict user's access if necessary
     $i=$sql->fetch($r);
@@ -35,7 +38,7 @@
       pagefooter();
       die();
 	  
-    } else if(!$i[hard] && (!$log || $loguser[power]<0)) {
+    } else if(!$i[hard] && (!$log || $loguser[group_id]==$bannedgroup[id])) {
       //"soft" IP ban allows non-banned users with existing accounts to log on
       if(!strstr($_SERVER['PHP_SELF'],"login.php"))
       {

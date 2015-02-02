@@ -200,7 +200,7 @@ if(usegfxnums()) $text.= "
 ";
 /*Normal Rendering */
 else $text.=      "      <br>Level: ".calclvl($exp)."
-".        "      ".($config['alwaysshowlvlbar'] ? "<br>".drawrpglevelbar($exp):"")."
+".        "      ".($config['alwaysshowlvlbar'] && $loguser['showlevelbar']!=1 ? "<br>".drawrpglevelbar($exp):"")."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]
 ".        "      <br>EXP: $exp

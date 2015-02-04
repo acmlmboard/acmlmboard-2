@@ -216,7 +216,12 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($forum) && !$announce)
+    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " $L[TBLend]
 ".        "</form>
 ";
@@ -230,6 +235,8 @@ if($act!="Submit" || $loguser[redirtype]==0){
     $post[text]=$_POST[message];
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     $post[nolayout]=$_POST[nolayout];
+    $post[close]=$_POST[close];
+    $post[stick]=$_POST[stick];
     foreach($user as $field => $val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
@@ -312,7 +319,12 @@ $pollprev.="$L[TBLend]";
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist($_POST[mid])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($forum) && !$announce)
+    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " $L[TBLend]
 ".        "</form>
 ";
@@ -321,6 +333,8 @@ $pollprev.="$L[TBLend]";
       $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
 
     checknumeric($nolayout);
+    checknumeric($_POST[close]);
+    checknumeric($_POST[stick]);
 
     $iconurl=addslashes($iconurl);
 
@@ -331,11 +345,17 @@ $pollprev.="$L[TBLend]";
     for($i=0;$i<32;++$i) if($_POST["tag$i"]) $tagsum|=(1<<$i);
     
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
+    if($announce) {
+    $modclose=$announce;
+    } else {
+    $modclose=$_POST[close];
+    }
+    $modstick=$_POST[stick];
 
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");
-    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed) "
-               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$announce)");
+    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky) "
+               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick)");
     $tid=$sql->insertid();
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");

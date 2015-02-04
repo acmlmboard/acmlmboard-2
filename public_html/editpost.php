@@ -128,7 +128,12 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
+    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " </form>
 ".        "$L[TBLend]
 ";
@@ -140,6 +145,8 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     $post[num]=++$euser[posts];
     $post[mood]=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
+    $post[close]=$_POST[close];
+    $post[stick]=$_POST[stick];
     $post[text]=$_POST[message];
     foreach($euser as $field => $val)
       $post[u.$field]=$val;
@@ -173,7 +180,12 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
+    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " </form>
 ".        "$L[TBLend]
 ";
@@ -186,9 +198,14 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     $mid=(isset($_POST[mid])?(int)$_POST[mid]:-1);
     checknumeric($mid);
     checknumeric($nolayout);
+    checknumeric($_POST[close]);
+    checknumeric($_POST[stick]);
+    $modclose=$_POST[close];
+    $modstick=$_POST[stick];
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
     $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
+    $sql->query("UPDATE threads SET closed='$modclose',sticky='$modstick' WHERE id='$thread[id]'");
     
     if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("post edit ".$pid." rev ".$rev)."')");
 

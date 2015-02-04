@@ -181,13 +181,13 @@ if($_COOKIE['pstbon']>=1){
     }
     if($config['threadprevnext'])
     {
-      //AB1 style next/prev thread. Based off of AB1's code (Needs to be made into a JOIN query if possible)
-      if($tnext=$sql->resultq("SELECT min(lastdate) FROM threads WHERE forum=$thread[fid] AND lastdate>$thread[lastdate]"))
+      //AB1 style next/prev thread. Based off of AB1's code
+      if($tnext=$sql->resultq("SELECT min(t.lastdate), t.forum fid FROM threads t LEFT JOIN forums f ON f.id=t.forum WHERE f.id=$thread[fid] AND t.lastdate>$thread[lastdate]"))
       {
         $tnext=$sql->resultq("SELECT id FROM threads WHERE lastdate=$tnext");
       }
 
-      if($tprev=$sql->resultq("SELECT max(lastdate) FROM threads WHERE forum=$thread[fid] AND lastdate<$thread[lastdate]"))
+      if($tprev=$sql->resultq("SELECT max(t.lastdate), t.forum fid FROM threads t LEFT JOIN forums f ON f.id=t.forum WHERE f.id=$thread[fid] AND t.lastdate<$thread[lastdate]"))
       {
         $tprev=$sql->resultq("SELECT id FROM threads WHERE lastdate=$tprev");
       }

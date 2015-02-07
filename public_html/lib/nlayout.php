@@ -409,7 +409,7 @@ function RenderPageBar($pagebar) {
 
     $viewhidden = 0;
 
-    if (has_perm('view-hidden-users'))
+    if (has_perm('manage-shop-items'))
       $viewhidden = 1;
 
     $items = $sql->query("SELECT * FROM items WHERE `cat` = 0 UNION SELECT * FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden");

@@ -105,17 +105,26 @@
    if($user['birth'] != -1)
     {
      //Crudely done code.
+     //You're Goddamn right. :P - SquidEmpress
+     $monthnames = array(1=>'January',  'February','March',   'April',
+                       'May',      'June',   'July',    'August',
+                       'September','October','November','December');
      $bdec     = explode("-", $user['birth']);
      $bstr     = $bdec[2]."-".$bdec[0]."-".$bdec[1];
-	 $birthday = date("l, F j, Y", strtotime($bstr));
+     $mo      = array(1=>'01','02','03','04','05','06','07','08','09','10','11','12');
+     $mn      =$bdec[0][$mo];
+         if ($bdec['2'] <= 0 && $bdec['2'] > -2) $birthday = $monthnames[$mn]." ".$bdec[1];
+	 else $birthday = date("l, F j, Y", strtotime($bstr));
 	 
 	 $age = '<!-- This feature requires PHP 5.3.0 or higher -->';
 	 if (class_exists('DateTime') && method_exists('DateTime', 'diff'))
 	 {
 		$bd1      = new DateTime($bstr);
 		$bd2      = new DateTime(date("Y-m-d"));
-		if ($bd2 < $bd1)
+		if ($bd2 < $bd1 && !$bdec['2'] <= 0))
 			$age = '(not born yet)';
+	       else if ($bdec['2'] <= 0 && $bdec['2'] > -2)
+		       $age = ''; 
 		else
 		{
 			$bd3      = $bd1->diff($bd2);

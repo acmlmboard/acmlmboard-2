@@ -46,8 +46,10 @@
         if ($bdaydecode[0] == $month) {
             $age = $year - $bdaydecode[2];
             $t = userlink($bdayarr);
-            if ($age > 0) {
+            if ($age > 0 && !$bdaydecode['2'] <= 0) {
                 $t .= " turns $age";
+            } else if ($bdaydecode['2'] <= 0) {
+                $t .= "'s birthday";
             } else if ($age < 0) {
                 $t .= " is born in ".(-$age)." year".(($age!=-1)?'s':'');
             } else {

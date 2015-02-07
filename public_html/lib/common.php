@@ -584,11 +584,14 @@
      while($user = $sql->fetch($rbirthdays))
       {
        $b = explode('-',$user['birth']);
+       if($b['2'] <= 0 && $b['2'] > -2) $p = "";
+       else $p = "(";
        //Patch to fix 2 digit birthdays. Needs retooled to a modern datetime system. -Emuz
-       if($b['2'] <= 99 && $b['2'] > 15) $y = date("Y") - ($b['2'] + 1900);
-       else if($b['2'] <= 14) $y = date("Y") - ($b['2'] + 2000);
-       else $y = date("Y") - $b[2];
-       $birthdays[] = userlink($user)." (".$y.")";
+       if($b['2'] <= 99 && $b['2'] > 15) $y = date("Y") - ($b['2'] + 1900).")";
+       else if($b['2'] <= 14 && $b['2'] > 0) $y = date("Y") - ($b['2'] + 2000).")";
+       else if($b['2'] <= 0 && $b['2'] > -2) $y = "";
+       else $y = date("Y") - $b[2].")";
+       $birthdays[] = userlink($user)." ".$p."".$y;
       }
       
      if(count($birthdays))

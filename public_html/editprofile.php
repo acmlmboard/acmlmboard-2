@@ -135,14 +135,16 @@
     if(!strlen($_POST[pass2])) $pass="";
     $tztotal=$_POST[tzoffH]*3600+$_POST[tzoffM]*60*($_POST[tzoffH]<0?-1:1);
     //Validate birthday values.
-    if(!$_POST[birthM] || !$_POST[birthD] || !$_POST[birthY]) //Reject if any are missing.
+    if(!$_POST[birthM] || !$_POST[birthD]) //Reject if any are missing.
       $birthday=-1;
     else {
-      if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD]) || !is_numeric($_POST[birthY])) //Reject if not numeric.
+      if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD])) //Reject if not numeric.
         $birthday=-1;
     }
-    if($birthday!=-1 && checkdate($_POST[birthM],$_POST[birthD],$_POST[birthY]))
-      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$_POST[birthY];
+    $year=$_POST[birthY];
+    if(!$_POST[birthY]) $year=-1;
+    if($birthday!=-1 && $_POST[birthM]!="" && $_POST[birthD]!="")
+      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$year;
     else
       $birthday=-1;
 

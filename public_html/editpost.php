@@ -256,6 +256,38 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ";
     }
   }
+  //Shamelessly taken from newreply.php - SquidEmpress
+  if($act!='Submit' && !$err && !$thread[announce] && can_view_forum($thread)){
+    $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
+                      .'FROM posts p '
+					  .'LEFT JOIN threads t ON t.id=p.thread '
+                      .'LEFT JOIN poststext pt1 ON p.id=pt1.id '
+                      .'LEFT JOIN poststext pt2 ON pt2.id=pt1.id AND pt2.revision=(pt1.revision+1) '
+                      .'LEFT JOIN users u ON p.user=u.id '
+                      ."WHERE p.thread=$thread[id] "
+                      ."  AND ISNULL(pt2.id) "
+                      .'ORDER BY p.id DESC '
+                      ."LIMIT $loguser[ppp]");
+    print "<br>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Thread preview
+".        "$L[TBLend]
+";
+    while($post=$sql->fetch($posts)){
+      $exp=calcexp($post[uposts],ctime()-$post[uregdate]);
+      print threadpost($post,1);
+    }
+
+    if($thread[replies]>=$loguser[ppp]){
+    print "<br>
+".        "$L[TBL1]>
+".        "  $L[TR]>
+".        "    $L[TD1]>The full thread can be viewed <a href=thread.php?id=$thread[id]>here</a>.
+".        "$L[TBLend]
+";
+    }
+}
 
 
   pagefooter();

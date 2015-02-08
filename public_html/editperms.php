@@ -100,9 +100,9 @@
 	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
     $sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
 		array($id, $type, $permid, $bindval, $revoke)); 
-    $msg="The $permid permission has been successfully assigned!"; 
+    $msg="The ".title_for_perm($permid)." permission has been successfully assigned!"; 
     } else { 
-    $msg="You do not have the permissions to assign the $permid permission!"; 
+    $msg="You do not have the permissions to assign the ".title_for_perm($permid)." permission!"; 
     } 
   }
   else if (isset($_POST['apply']))
@@ -117,9 +117,9 @@
 	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
     $sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
 		array($permid, $bindval, $revoke, $pid)); 
-    $msg="The $permid permission has been successfully edited!"; 
+    $msg="The ".title_for_perm($permid)." permission has been successfully edited!"; 
     } else { 
-    $msg="You do not have the permissions to edit the $permid permission!"; 
+    $msg="You do not have the permissions to edit the ".title_for_perm($permid)." permission!"; 
     }
   }
   else if (isset($_POST['del']))
@@ -128,9 +128,9 @@
 	$pid = $keys[0];
 	$permid = stripslashes($_POST['permid'][$pid]);
 	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
-    $sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid)); $msg="The $permid permission has been successfully deleted!"; 
+    $sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid)); $msg="The ".title_for_perm($permid)." permission has been successfully deleted!"; 
     } else { 
-    $msg="You do not have the permissions to delete the $permid permission!"; 
+    $msg="You do not have the permissions to delete the ".title_for_perm($permid)." permission!"; 
     } 
   }
   

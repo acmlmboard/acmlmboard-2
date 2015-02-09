@@ -130,7 +130,7 @@
 	(
 		'breadcrumb' => array(array('href'=>'/.', 'title'=>'Main'), array('href'=>'index.php', 'title'=>'Forums'), array('href'=>'management.php', 'title'=>'Management'), array('href'=>'editgroups.php', 'title'=>'Edit groups')),
 		'title' => '',
-		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group'), array('href'=>'editgroups.php?deletedgroups', 'title'=>'Deleted groups')),
+		'actions' => array(array('href'=>'editgroups.php?act=new', 'title'=>'New group'), array('href'=>'editgroups.php', 'title'=>'Groups')),
 		'message' => $errmsg
 	);
         if (isset($_GET['deletedgroups']))
@@ -177,7 +177,7 @@
  
 		$actions = array();
 		if ($caneditperms) $actions[] = array('href'=>'editgroups.php?deletedgroups&act=undelete&id='.urlencode(packsafenumeric($deletedgroup['id'])), 'title'=>'Undelete', 
-			'confirm'=>'Undelete this group?');
+			'confirm'=>'Are you sure you want to undelete the group "'.htmlspecialchars($deletedgroup['title']).'"?');
  
 		$data[] = array
 		(
@@ -324,7 +324,7 @@
 		if ($caneditperms) $actions[] = array('href'=>'editperms.php?gid='.$group['id'], 'title'=>'Edit permissions');
 		$actions[] = array('href'=>'editgroups.php?act=edit&id='.$group['id'], 'title'=>'Edit');
 		if ($caneditperms) $actions[] = array('href'=>'editgroups.php?act=delete&id='.urlencode(packsafenumeric($group['id'])), 'title'=>'Delete', 
-			'confirm'=>'Delete this group? It will be permanently lost as well as all permissions attached to it.');
+			'confirm'=>'Are you sure you want to delete the group "'.htmlspecialchars($group['title']).'"? It will be permanently lost as well as all permissions attached to it.');
 		
 		$data[] = array
 		(

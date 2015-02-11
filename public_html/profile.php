@@ -121,7 +121,7 @@
 	 {
 		$bd1      = new DateTime($bstr);
 		$bd2      = new DateTime(date("Y-m-d"));
-		if ($bd2 < $bd1 && !$bdec['2'] <= 0))
+		if ($bd2 < $bd1 && !$bdec['2'] <= 0)
 			$age = '(not born yet)';
 	       else if ($bdec['2'] <= 0 && $bdec['2'] > -2)
 		       $age = ''; 

@@ -19,8 +19,8 @@
 	{
 		$userid = $loguser['id'];
 		$user = $loguser;
-		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
-			$err = 'Invalid token.';
+		//if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
+			//$err = 'Invalid token.';
 			
 		$pass = $_POST['passenc'];
 	}
@@ -138,51 +138,8 @@
 ".        "$err
 ".        "$L[TBLend]
 ";
-  }elseif(!$act){
-    print "$top
-".        "<br><br>
-".        "$L[TBL1]>
-".        " <form action=newreply.php method=post>
-".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Reply</td>
-";
-    if(!$log)
-    print "  $L[TR]>
-".        "    $L[TD1c]>Username:</td>
-".        "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Password:</td>
-".        "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-";
-    else
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
-";
-    print "  $L[TR]>
-".        "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
-".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
-".        "      $L[INPh]=tid value=$tid>
-".        "      $L[INPs]=action value=Submit>
-".        "      $L[INPs]=action value=Preview>
-".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()." 
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-";
-    if(can_edit_forum_threads($thread[forum]))
-    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
-";
-    print "    </td>
-".        " </form>
-".        "$L[TBLend]
-";
-  }elseif($act=='Preview'){
+  }elseif($act=='Preview' || !$act){
+    if($act=='Preview'){
     $_POST[message]=stripslashes($_POST[message]);
 
     $postfix=""; $prefix=""; $valid="";
@@ -194,13 +151,17 @@
       for($i=0;$i<$a;++$i) $prefix.="<table>";
       $valid="$L[TR]> $L[TD1c] width=120>Table depth: $L[TD2]><font color=red><b>-x</b></font> (You are opening fewer table tags than you are closing.)";
     }
+      }
 
 
     $post[date]=ctime();
     $post[ip]=$userip;
     $post[num]=++$user[posts];
-    $post[text]=$prefix.$_POST[message].$postfix;
+    if($act=='Preview') $post[text]=$prefix.$_POST[message].$postfix;
+    else $post[text]=$quotetext;
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
+    if($act=='Preview') $post[moodlist]=moodlist($_POST[mid]);
+    else $post[moodlist]=moodlist()
     $post[nolayout]=$_POST[nolayout];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
@@ -208,6 +169,7 @@
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 
+ if($act=='Preview')
     print "$top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -216,7 +178,13 @@
 ".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
-".        "$L[TBL1]>
+"; 
+else 
+print "$top 
+".    "<br><br> 
+"; 
+print 
+        "$L[TBL1]> 
 ".        " <form action=newreply.php method=post>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Reply</td>
@@ -226,7 +194,7 @@
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ".        "  $L[TR]>
 ".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($post[text])."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -236,7 +204,7 @@
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist($_POST[mid])." 
+          "      $L[INPl]=mid>".$post[moodlist]." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($thread[forum]))

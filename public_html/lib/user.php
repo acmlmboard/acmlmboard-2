@@ -34,47 +34,67 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     return $user;
   }
 
-  function checkctitle(){
-    global $loguser;
+  function checkctitle($uid){
+    global $sql,$loguser;
+    
+    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+    
     if(!$loguser[id]) return false;
     if (has_perm_revoked('edit-title')) return false;
-    if (has_perm('edit-title')) return true;
-    if($loguser[posts]>=100) return true; //1200
-    if($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true; //800, 200
+    if ($uid == $loguser['id'] && has_perm('edit-title')) { 
+       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+       if ($loguser[posts]>=100) return true;
+       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       return false;
+    }
+
+    if (has_perm('edit-titles')) return true;
+    if (has_perm_with_bindvalue('edit-user-title',$uid)) return true;
     
     return false;
   }
 
-  function checkcusercolor(){
+  function checkcusercolor($uid){
     global $loguser,$config;
     
     if (!$config["perusercolor"]) return false;
 
     if(!$loguser[id]) return false;
     if (has_perm_revoked('has-customusercolor')) return false;
-    if (has_perm('has-customusercolor')) return true;
+    if ($uid == $loguser['id'] && has_perm('has-customusercolor')) return true;
     
     /* Allow a custom user color after a specific postcount/time. *DISABLED*
     if($loguser[posts]>=4000) return true;
     if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
     */
     
+    if (has_perm('edit-customusercolors')) return true;
+    if (has_perm_with_bindvalue('edit-user-customnickcolor',$uid)) return true;
+
     return false;
   }
 
-  function checkcdisplayname(){
-    global $loguser,$config;
+  function checkcdisplayname($uid){
+    global $sql,$loguser,$config;
+    
+    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
     
     if (!$config["displayname"]) return false;
 
     if(!$loguser[id]) return false;
     if (has_perm_revoked('has-displayname')) return false;
-    if (has_perm('has-displayname')) return true;
-    
-    /* Allow a custom displayname after a specific postcount/time. *DISABLED*
-    if($loguser[posts]>=4000) return true;
-    if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
-    */
+    if ($uid == $loguser['id'] && has_perm('has-displayname')) { 
+       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+      //Allow a custom displayname after a specific postcount/time.
+       if ($loguser[posts]>=100) return true;
+       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       return false;
+    }
+  
+    if (has_perm('edit-displaynames')) return true;
+    if (has_perm_with_bindvalue('edit-user-displayname',$uid)) return true;
     
     return false;
   } 

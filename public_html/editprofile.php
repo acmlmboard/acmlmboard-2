@@ -167,7 +167,7 @@
       //Checks Displayname to name and other displaynames
       $targetdname = $_POST['displayname'];
 
-      if (checkcdisplayname() && $targetdname != "")
+      if (checkcdisplayname($targetuserid) && $targetdname != "")
       {
         if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetdname' OR `displayname` = '$targetdname') AND `id` != $user[id]")) {
           $error.="- Displayname already in use.<br />";
@@ -251,15 +251,15 @@
 	{
 		$sql->query('UPDATE users SET '
                . ($pass?'pass="'.md5($pwdsalt2.$pass.$pwdsalt).'",':'')
-               . (checkcdisplayname()?(setfield('displayname')   .','):'')
-               . (checkcusercolor()?(setfield('nick_color')   .','):'')
+               . (checkcdisplayname($targetuserid)?(setfield('displayname')   .','):'')
+               . (checkcusercolor($targetuserid)?(setfield('nick_color')   .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
                . setfield('signsep').','
                . setfield('longpages').','
                . setfield('rankset') .','
-               . (checkctitle()?(setfield('title')   .','):'')
+               . (checkctitle($targetuserid)?(setfield('title')   .','):'')
                . setfield('realname').','
                . setfield('location').','
                . setfield('email')   .','
@@ -362,7 +362,7 @@
 ".
            catheader('Login information')."
 ".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
-".(checkcdisplayname() ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
+".(checkcdisplayname($targetuserid) ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
@@ -370,13 +370,13 @@ if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
-".(checkcusercolor() ? fieldrow('Custom username color',fieldinput(6,6,'nick_color')) : "" )."
+".(checkcusercolor($targetuserid) ? fieldrow('Custom username color',fieldinput(6,6,'nick_color')) : "" )."
 ";
 
   print
            catheader('Appearance')."
 ".           fieldrow('Rankset'   ,fieldselect('rankset', $user['rankset'], ranklist()))."
-".           ((checkctitle()) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
+".           ((checkctitle($targetuserid)) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 80KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
 ".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
 ";

@@ -11,6 +11,8 @@ if (has_perm("edit-forums"))
   $mlinks[] = array('url' => "manageforums.php", 'title' => 'Manage forums');
 if (has_perm("edit-ip-bans")) 
   $mlinks[] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
+if (has_perm("edit-calendar-events")) 
+  $mlinks[] = array('url' => "editevents.php", 'title' => 'Manage events');
 if (has_perm("edit-sprites")) 
   $mlinks[] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
 if (has_perm("edit-badges")) 

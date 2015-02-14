@@ -1,4 +1,5 @@
 <?php
+//Uses editsprites.php as template
 
 require("lib/common.php");
 

@@ -1,4 +1,4 @@
-#Adds perm for banning users.
+#Various own and everyone permissions.
 #2/13/2015
 
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-titles', 'Edit Titles', '', '3', '');

@@ -185,7 +185,7 @@
         }
       }
 
-      if($config['extendedprofile'] && has_perm('update-extended-profiles')) 
+      if(checkcextendedprofile($targetuserid)) 
       {
           $qallfields = $sql->query("SELECT * FROM `profileext`");
           $count = false;
@@ -223,7 +223,7 @@
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
-      if($config['extendedprofile'] && has_perm('update-extended-profiles')) 
+      if(checkcextendedprofile($targetuserid)) 
       {
           $qallfields = $sql->query("SELECT * FROM `profileext`");
           $count = false;
@@ -410,7 +410,7 @@ if (has_perm("edit-users"))
 ".           fieldrow('Email address'   ,fieldinput(40, 60,'email'     ))."
 ".           fieldrow('Homepage URL'    ,fieldinput(40,200,'homeurl'   ))."
 ".           fieldrow('Homepage name'   ,fieldinput(40, 60,'homename'  ));
-if($config['extendedprofile'] && has_perm('update-extended-profiles')) //Will need a function so it can also check for update-own-extended-profile
+if(checkcextendedprofile($targetuserid))
 {
   $fieldReq = $sql->query("SELECT * FROM `profileext`
                          RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`

@@ -20,7 +20,7 @@
   if ($targetuserid == 0) 
    {
      pageheader('No permission');
-     if(has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) {
+     if((has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) && $user['email']!="") {
      $email="<br>".userlink($user)."'s email: ".$user[email]."<br>";
      } else {
      $email="";

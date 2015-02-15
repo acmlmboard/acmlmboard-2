@@ -9,6 +9,7 @@
     $temp = $_GET['id'];
     if (checknumeric($temp))
       $targetuserid = $temp;
+    $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$targetuserid'");
   }
 
   if (!can_edit_user($targetuserid))
@@ -19,7 +20,20 @@
   if ($targetuserid == 0) 
    {
      pageheader('No permission');
-     no_perm();
+     if(has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) {
+     $email="<br>".userlink($user)."'s email: ".$user[email]."<br>";
+     } else {
+     $email="";
+     }
+       print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
+".      "      You have no permissions to do this!<br> $email<a href=./>Back to main</a> 
+".      "$L[TBLend]
+";
+      pagefooter();
+      die();
    }
 
        $blockroot = " AND `default` >= 0 ";

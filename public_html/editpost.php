@@ -37,7 +37,7 @@
 
   needs_login(1);
 
-  $thread=$sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.minpowerreply, f.minpower '
+  $thread=$sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '

@@ -468,6 +468,8 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                $L[TD2]><a href=\"forum.php?user=$user[id]\">View threads</a>
                        | <a href=\"thread.php?user=$user[id]\">Show posts</a>
                        | <a href=\"postsbyuser.php?id=$user[id]\">List posts</a>
+                       | <a href=\"postsbyuser.php?postsbyforum&id=$user[id]\">Posts by forum</a>
+                       | <a href=\"postsbyuser.php?postsbythread&id=$user[id]\">Posts by thread</a>
                        $blocklayoutlink
                        ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send Private Message</a>":"") ."
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."

@@ -189,10 +189,13 @@ print
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Reply</td>
 ".           $valid."
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Reply:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($post[text])."</textarea></td>
 ".        "  $L[TR1]>

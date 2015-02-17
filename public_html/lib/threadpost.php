@@ -187,7 +187,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".        "      ".((strlen($grouplink))?"<br>":"")."
 ".        "      ".postfilter($post[utitle]);
 /* This block is used when rendering AB1 style image RPG layouts */
-if(usegfxnums()) $text.= "
+if(usegfxnums() && $loguser['numbargfx']!=1) $text.= "
 ".        "      <br>".rpglabel2img("level", "Level:")." ".rpgnum2img(calclvl($exp))."
 ".        "      <br>".drawrpglevelbar($exp)."
 ".        "      <br>$picture

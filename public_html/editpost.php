@@ -114,10 +114,12 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
 ".        "  $L[INPh]=passenc value=\"$pass\">
 ";
+    if($loguser[posttoolbar]!=1)
     print "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
 ".        "  $L[TR1]>
@@ -164,10 +166,13 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        " <form action=editpost.php method=post>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Post</td>
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
 ".        "  $L[TR1]>

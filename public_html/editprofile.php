@@ -287,7 +287,9 @@
                . setfield('blocklayouts')   .','
                . setfield('blocksprites')   .','
                . setfield('emailhide') .','
+               . setfield('numbargfx')   .','
                . setfield('showlevelbar')   .','
+               . setfield('posttoolbar')   .','
                . setfield('hidden') .','
                . setfield('redirtype') .','
                . setfield('timezone') .','
@@ -467,12 +469,14 @@ if ($config['spritesystem'])
  if (has_perm("show-online") || has_perm("edit-user-show-online"))
  print"
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
+".           fieldrow('AB1.x Number and Bar Graphics', fieldoption('numbargfx',$user['numbargfx'],array('Show them in AB1.x themes', 'Never show them in AB1.x themes')))."
 ";
 if ($config['alwaysshowlvlbar'])
   print"
 ".           fieldrow('EXP level bars', fieldoption('showlevelbar',$user['showlevelbar'],array('Show EXP bars', 'Disable EXP bars')))."
 ";
  print"
+".           fieldrow('Posting Toolbar', fieldoption('posttoolbar',$user['posttoolbar'],array('Show Toolbar', 'Hide Toolbar')))."
 ".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Display redirect page', 'Instant redirect')))."
 ".
            catheader('&nbsp;')."

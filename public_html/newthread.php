@@ -200,10 +200,13 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        "    </td>
 ".$tagsin."
 ".$pollin."
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80></textarea></td>
 ".        "  $L[TR1]>
@@ -299,10 +302,13 @@ $pollprev.="$L[TBLend]";
 ".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
 ".$tagsin."
 ".$pollin."
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
 ".        "  $L[TR1]>

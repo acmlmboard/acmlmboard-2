@@ -450,6 +450,7 @@ if(checkcextendedprofile($targetuserid))
 ".
            catheader('Options')."
 ".           fieldrow('Theme'           ,fieldselect('theme', $user['theme'], themelist()))."
+".           fieldrow('Theme preview', "<a href=\"/?theme=".$user['theme']."\">Preview theme</a>")."
 ".           fieldrow('Timezone'      ,fieldselect('timezone',$user['timezone'],$listtimezones))."
 ".           fieldrow('Posts per page'  ,fieldinput( 3,  3,'ppp'       ))."
 ".           fieldrow('Threads per page',fieldinput( 3,  3,'tpp'       ))."

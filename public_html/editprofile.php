@@ -9,7 +9,7 @@
     $temp = $_GET['id'];
     if (checknumeric($temp))
       $targetuserid = $temp;
-    $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$targetuserid'");
+    if($config['rootuseremail']) $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$targetuserid'");
   }
 
   if (!can_edit_user($targetuserid))
@@ -20,6 +20,7 @@
   if ($targetuserid == 0) 
    {
      pageheader('No permission');
+     if($config['rootuseremail']) {
      if((has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) && $user['email']!="") {
      $email="<br>".userlink($user)."'s email: ".$user[email]."<br>";
      } else {
@@ -34,6 +35,10 @@
 ";
       pagefooter();
       die();
+
+     } else {
+     no_perm();
+     }
    }
 
        $blockroot = " AND `default` >= 0 ";

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*** Acmlmboard 2 - Configuration ***
   Please look through the file and will in the apropriate information.
@@ -87,6 +87,7 @@
 
   $config['threadprevnext'] = false; //Enables links to jump one thread newer/older
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
+  $config['registrationpuzzle'] = true;
   //The following enables the optional badge system
   $config['badgesystem'] = false; //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
   $config['spritesystem'] = true; //The sprite system allows users to catch graphic 'sprites' on the board. Collect them all!

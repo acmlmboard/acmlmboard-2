@@ -83,10 +83,15 @@ if (isProxy())
 ".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
 ".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
 ".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
-".         "  $L[TR]>
+";
+    if($config['registrationpuzzle'])
+    $print.=
+           "  $L[TR]>
 ".         "    $L[TD1c] width=120>$puzzle</td>
 ".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
-".         "  $L[TR1]>
+";
+    $print.=
+           "  $L[TR1]>
 ".         "    $L[TD]>&nbsp;</td>
 ".         "    $L[TD]>$L[INPs]=action value=Register></td>
 ".         " </form>
@@ -114,7 +119,7 @@ if (isProxy())
       $err='Your password must be at least 4 characters long.';
     elseif($_POST[pass]!=$_POST[pass2])
       $err="The two passwords you entered don't match.";
-    elseif($_POST[puzzle]!=$puzzleAnswer)
+    elseif($config['registrationpuzzle'] && $_POST[puzzle]!=$puzzleAnswer)
       $err="You are either a bot or very bad at simple mathematics.";
 
     if($err){

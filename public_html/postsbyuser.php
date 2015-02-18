@@ -155,6 +155,44 @@ if(!$time) $time=86400;
       $print.="$L[TBLend]";
             $fpagelist="";
   }
+  
+  if(isset($_GET[postsbytime])) {
+  $posttime=$_GET[time];
+  if(!$posttime) $posttime=86400;
+  $time=ctime()-$posttime;
+  if($id){
+    $user=$sql->fetchq("SELECT name FROM users WHERE id=$id");
+    $from=" from $user[name]";
+  }else $from=' on the board';
+  $posts=$sql->query("SELECT count(*) AS cnt, FROM_UNIXTIME(date,'%k') AS hour FROM posts WHERE ".($id?"user=$id AND ":'')."date>$time GROUP BY hour");
+  if($posttime<999999999) $during=' during the last '.timeunits2($posttime);
+  $link="<a href=postsbyuser.php?postsbytime&id=$id&time";
+  $print= "$link=3600>1 hour</a> |
+	$link=86400>1 day</a> |
+	$link=604800>7 days</a> |
+	$link=2592000>30 days</a> |
+	$link=999999999>Total</a><br>
+	Posts$from by time of day$during:
+".           "$L[TBL1]>
+".           "  $L[TRh]>
+".	"$L[TDh] width=40>Hour
+".	"$L[TDh] width=50>Posts
+".	"$L[TDh]>&nbsp<tr>";
+  for($i=0;$i<24;$i++) $postshour[$i]=0;
+  while($h=$sql->fetch($posts)) $postshour[$h[hour]]=$h[cnt];
+  for($i=0;$i<24;$i++) if($postshour[$i]>$max) $max=$postshour[$i];
+  for($i=0;$i<24;$i++){
+    if($i) $print.= '<tr>';
+    $bar="<img src=gfx/rpg/bar-on.png width=".(@floor($postshour[$i]/$max*10000)/100).'% height=8>';
+    $print.= "
+".	"$L[TD2]>$i</td>
+".	"$L[TD2]>$postshour[$i]</td>
+".	"$L[TD2] width=100%>$bar</td>
+    ";
+  }
+      $print.="$L[TBLend]";
+            $fpagelist="";
+    }
 
   if(isset($_GET[postsbyforum])) {
   if($id) pageheader("Posts in forums by user $user[name]");
@@ -162,6 +200,10 @@ if(!$time) $time=86400;
   }
   else if(isset($_GET[postsbythread])) {
   pageheader("Posts in threads by user $user[name]");
+  }
+  else if(isset($_GET[postsbytime])) {
+  if($id) pageheader("Posts by time of day from user $user[name]");
+  else pageheader("Posts by time of day on the board");
   }
   else {
   pageheader("Posts by user $user[name]");

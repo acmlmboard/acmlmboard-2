@@ -332,6 +332,17 @@
 	}
   }
 
+  if($act=='Preview theme')
+  {
+  print "$L[TBL1]>
+".        "  $L[TD1c]>
+".        "    The theme will be previewed<br>
+".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
+".        "$L[TBLend]
+";
+  die(pagefooter());
+  }
+
   if(!$act){
     
 
@@ -450,7 +461,6 @@ if(checkcextendedprofile($targetuserid))
 ".
            catheader('Options')."
 ".           fieldrow('Theme'           ,fieldselect('theme', $user['theme'], themelist()))."
-".           fieldrow('Theme preview', "<a href=\"/?theme=".$user['theme']."\">Preview theme</a>")."
 ".           fieldrow('Timezone'      ,fieldselect('timezone',$user['timezone'],$listtimezones))."
 ".           fieldrow('Posts per page'  ,fieldinput( 3,  3,'ppp'       ))."
 ".           fieldrow('Threads per page',fieldinput( 3,  3,'tpp'       ))."
@@ -483,7 +493,8 @@ if ($config['alwaysshowlvlbar'])
            catheader('&nbsp;')."
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>$L[INPs]=action value='Edit profile'></td>
+".        "    $L[TD]>$L[INPs]=action value='Edit profile'>
+".        "    $L[INPs]=action value='Preview theme'></td>
 ".        " $L[TBLend]
 ".        " $L[INPh]=token value='$token'>
 ".        "</form>

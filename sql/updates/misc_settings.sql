@@ -1,0 +1,6 @@
+#Adds settings to the misc table
+#Date: 2/20/15
+
+INSERT INTO `misc` (`field`, `intval`, `txtval`, `emailaddress`) VALUES ('trashid', '2', '', '0'), ('boardtitle', '0', 'Insert title here', '0'), ('defaulttheme', '0', 'dailycycle2', '0'), ('defaultfontsize', '70', '', '0'), ('avatardimx', '100', '', '0'), ('avatardimy', '100', '', '0'), ('topposts', '5000', '', '0'), ('topthreads', '200', '', '0'), ('threadprevnext', '0', '', '0'), ('memberlistcolorlinks', '0', '', '0'), ('badgesystem', '0', '', '0'), ('spritesystem', '1', '', '0'), ('extendedprofile', '0', '', '0'), ('displayname', '0', '', '0'), ('perusercolor', '0', '', '0'), ('usernamebadgeeffects', '0', '', '0'), ('useshadownccss', '0', '', '0'), ('nickcolorcss', '0', '', '0'), ('userpgnum', '0', '', '0'), ('userpgnumdefault', '0', '', '0');
+INSERT INTO `misc` (`field`, `intval`, `txtval`, `emailaddress`) VALUES ('alwaysshowlvlbar', '0', '', '0'), ('rpglvlbarwidth', '96', '', '0');
+INSERT INTO `misc` (`field`, `intval`, `txtval`, `emailaddress`) VALUES ('atnname', '0', 'News', '0');

@@ -36,7 +36,5 @@ print "$L[TBL1]>
 ".    "$L[TBLend]
 ";
 
-// TODO implement some global settings panel in this page so it doesn't feel empty
-
 pagefooter();
 ?>

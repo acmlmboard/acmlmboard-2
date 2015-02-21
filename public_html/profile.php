@@ -334,7 +334,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     $unclass ='';
     if($config['useshadownccss']) $unclass="class='needsshadow'";
     //If user has a a displayname, a custom username color, or both, we need to show the realname field.
-    if($config['perusercolor']) $usercnickcolor = $user['nick_color'];
+    if($config['perusercolor'] && $user['enablecolor']) $usercnickcolor = $user['nick_color'];
     if($config['displayname'] && $user['displayname']) $userdisplayname = true;
     if($userdisplayname || $usercnickcolor){
       $showrealnick = true;

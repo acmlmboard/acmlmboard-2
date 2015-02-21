@@ -272,6 +272,7 @@
                . ($pass?'pass="'.md5($pwdsalt2.$pass.$pwdsalt).'",':'')
                . (checkcdisplayname($targetuserid)?(setfield('displayname')   .','):'')
                . (checkcusercolor($targetuserid)?(setfield('nick_color')   .','):'')
+               . setfield('enablecolor')     .','
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
@@ -360,8 +361,6 @@
         $listtimezones[$tz['name']] = $tz['name'];
       }
 
-    $listpm=array('allow','disallow');
-    $listrename=array('disallow','allow');
 
     if($user[birth]!=-1){
       $birthday=explode('-',$user[birth]);
@@ -391,7 +390,7 @@
     //http://jscolor.com/try.php
     $colorinput="
 <script type=text/javascript src=jscolor/jscolor.js></script>
-".        "      $L[INPt]=nick_color class=color value=".$user['nick_color'].">
+".        "      $L[INPt]=nick_color class=color value=".$user['nick_color']."><input type=checkbox name=enablecolor value=1 id=enablecolor ".($user[enablecolor]?"checked":"")."><label for=enablecolor>Enable Color</label>
 ".        "    ";
 
     print "<form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>

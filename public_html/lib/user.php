@@ -279,7 +279,7 @@ function renderdotrank($posts=0){
   
 function userfields($tbl='', $pf='')
 {
-	$fields = array('id','name','displayname','sex','group_id','nick_color');
+	$fields = array('id','name','displayname','sex','group_id','nick_color','enablecolor');
 	
 	$ret = '';
 	foreach ($fields as $f)
@@ -326,7 +326,7 @@ function userfields($tbl='', $pf='')
 
   if($config['nickcolorcss']) $nccss="class='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
 //Over-ride for custom colours [Gywall]
-  if($user[$u.'nick_color'] && $config[perusercolor])
+  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config[perusercolor])
   { 
     $nc = $user[$u.'nick_color'];
     $nccss = "";

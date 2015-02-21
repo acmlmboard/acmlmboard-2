@@ -388,6 +388,11 @@
 ".        "      $L[INPt]=tzoffH size=3 maxlength=3 value=".(int)($user[tzoff]/3600)."> :
 ".        "      $L[INPt]=tzoffM size=2 maxlength=2 value=".floor(abs($user[tzoff]/60)%60).">
 ".        "    ";
+    //http://jscolor.com/try.php
+    $colorinput="
+<script type=text/javascript src=jscolor/jscolor.js></script>
+".        "      $L[INPt]=nick_color class=color value=".$user['nick_color'].">
+".        "    ";
 
     print "<form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
 ".        " $L[TBL1]>
@@ -402,7 +407,7 @@ if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
-".(checkcusercolor($targetuserid) ? fieldrow('Custom username color',fieldinput(6,6,'nick_color')) : "" )."
+".(checkcusercolor($targetuserid) ? fieldrow('Custom username color',$colorinput) : "" )."
 ";
 
   print

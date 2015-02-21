@@ -56,7 +56,7 @@
       else $pexp = "None";
 
 
-    $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`minpower`
+    $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`private`
                             FROM `forums` `f`
                             LEFT JOIN `threads` `t` ON `t`.`forum`=`f`.`id`
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`

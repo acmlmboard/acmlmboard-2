@@ -19,7 +19,7 @@
 ";
 
   $fieldlist='';
-  $ufields=array('id','name','sex','power');
+  $ufields=array('id','name','sex','group_id');
   foreach($ufields as $field)
     $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 

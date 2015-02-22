@@ -107,7 +107,6 @@ function usegfxnums()
       }
 
       // "Edit" link for admins or post owners, but not banned users
-/*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
 	  if (can_edit_post($post) && $post[id])
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
         

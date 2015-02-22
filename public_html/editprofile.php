@@ -177,7 +177,6 @@
       checknumeric($targetgroup);
       if (!isset($listgroup[$targetgroup])) $targetgroup = 0;
 
-//      $targetpower = min($targetpower, $loguser[power]);
       $targetname = $_POST['name'];
 
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {

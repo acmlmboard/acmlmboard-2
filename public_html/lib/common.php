@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "<span style=\"color: #00FF00;\" title=\"1/29/2015\">7/19/1987</span>";
+  $abdate    = "<span style=\"color: #00FF00;\" title=\"2/22/2015\">7/19/1987</span>";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -34,7 +34,7 @@
    {
     $loguser               = array();
     $loguser['id']         = 0;	
-    $loguser['power']      = 0;
+    $loguser['group_id']   = 1;
     $loguser['tzoff']      = 0;
     $loguser['timezone']   = "UTC";
     $loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else

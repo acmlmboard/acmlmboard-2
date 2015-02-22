@@ -94,16 +94,9 @@ if($act!="Submit" || $loguser[redirtype]==0){
     else if ($announce && !can_create_forum_announcements($fid))
     $err = "    You have no permissions to create announcements in this forum!<br>$forumLink";
 
-//  else if($forum[minpowerthread]>$user[power]){
      else if (!can_create_forum_thread($forum)){
 
   $err="    You have no permissions to create threads in this forum!<br>$forumlink";
-//    if(isbanned())
-/*      $err="    You can't post when you are banned!<br>
-".         "    $forumlink";
-    else
-      $err="    You can't post in this restricted forum!<br>
-".         "    $forumlink";*/
   }
 
   else if($user[lastpost]>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))

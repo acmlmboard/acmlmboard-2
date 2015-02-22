@@ -5,11 +5,11 @@ include('lib/diff/Diff/Renderer/inline.php');
 
 pageheader();
 
-if($loguser[power]<1) { pagefooter(); die(); }
-
 $pid=$_GET[id];
 $r1=$_GET[o];
 $r2=$_GET[n];
+
+if(!can_edit_forum_posts(getforumbythread($pid[thread]))) { pagefooter(); die(); }
 
 if(!$r1||!$r2) $r1=$r2=1;
 

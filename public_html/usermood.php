@@ -180,7 +180,7 @@
   
   function CanAlterAll() { //TODO replace with token support when that feature is complete
     global $loguser;
-    return ($loguser[power] >= 3);
+    return (has_perm('edit-moods'));
   }
 
   ?>

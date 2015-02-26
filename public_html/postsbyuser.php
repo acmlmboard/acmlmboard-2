@@ -12,7 +12,7 @@
   if($page<1) $page=1;
 
   else if($id) {
-    $user=$sql->fetchq("SELECT id,name,displayname FROM users WHERE id=$id");
+    $user=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
     if($user[id]) {
       
       $print="<a href=./>Main</a> - Posts by user ".($user[displayname]?$user[displayname]:$user[name])."<br><br>
@@ -75,8 +75,8 @@
   $time=$_GET[time];
 if(!$time) $time=86400;
   $posters=$sql->query("SELECT t.id,t.replies,t.title,t.forum,f.private,COUNT(p.id) cnt FROM threads t,posts p,forums f WHERE p.user=$id AND p.thread=t.id AND p.date>".(ctime()-$time).' AND t.forum=f.id GROUP BY t.id ORDER BY cnt DESC');
-  $u=$sql->fetchq("SELECT name FROM users WHERE id=$id");
-  $username=$u[name];
+  $u=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
+  $username=($u[displayname]?$u[displayname]:$u[name]);
   if($time<999999999) $during=' during the last '.timeunits2($time);
   $print= "Posts by $username in threads$during:
 ".      "<br>
@@ -115,8 +115,8 @@ if(!$time) $time=86400;
   if($id){
     $useridquery="posts.user=$id AND";
     $by='by ';
-    $u=$sql->fetchq("SELECT name FROM users WHERE id=$id");
-    $username=$u[name];
+    $u=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
+    $username=($u[displayname]?$u[displayname]:$u[name]);
   }
   $posters=$sql->query("SELECT forums.*,COUNT(posts.id) AS cnt FROM forums,threads,posts WHERE $useridquery posts.thread=threads.id AND threads.forum=forums.id AND posts.date>".(ctime()-$time).' AND threads.announce=0 GROUP BY forums.id ORDER BY cnt DESC');
   $userposts=$sql->query("SELECT id FROM posts WHERE $useridquery date>".(ctime()-$time).'');
@@ -153,8 +153,8 @@ if(!$time) $time=86400;
   if(!$posttime) $posttime=86400;
   $time=ctime()-$posttime;
   if($id){
-    $user=$sql->fetchq("SELECT name FROM users WHERE id=$id");
-    $from=" from $user[name]";
+    $user=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
+    $from=" from ".($user[displayname]?$user[displayname]:$user[name]);
   }else $from=' on the board';
   $posts=$sql->query("SELECT count(*) AS cnt, FROM_UNIXTIME(date,'%k') AS hour FROM posts WHERE ".($id?"user=$id AND ":'')."date>$time GROUP BY hour");
   if($posttime<999999999) $during=' during the last '.timeunits2($posttime);

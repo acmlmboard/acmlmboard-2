@@ -77,14 +77,10 @@ if(!$time) $time=86400;
   $posters=$sql->query("SELECT t.id,t.replies,t.title,t.forum,f.private,COUNT(p.id) cnt FROM threads t,posts p,forums f WHERE p.user=$id AND p.thread=t.id AND p.date>".(ctime()-$time).' AND t.forum=f.id GROUP BY t.id ORDER BY cnt DESC');
   $u=$sql->fetchq("SELECT name FROM users WHERE id=$id");
   $username=$u[name];
-  $lnk="<a href=postsbyuser.php?postsbythread&id=$id&time";
   if($time<999999999) $during=' during the last '.timeunits2($time);
-  $print= "$lnk=3600>1 hour</a> |
-	$lnk=86400>1 day</a> |
-	$lnk=604800>7 days</a> |
-	$lnk=2592000>30 days</a> | 
-	$lnk=999999999>Total</a><br>
-	Posts by $username in threads$during:
+  $print= "Posts by $username in threads$during:
+".      "<br>
+".       timelink1(3600).'|'.timelink1(86400).'|'.timelink1(604800).'|'.timelink1(2592000)."
 ".           "$L[TBL1]>
 ".           "  $L[TRh]>
 ".	"$L[TDh]>#
@@ -124,14 +120,10 @@ if(!$time) $time=86400;
   }
   $posters=$sql->query("SELECT forums.*,COUNT(posts.id) AS cnt FROM forums,threads,posts WHERE $useridquery posts.thread=threads.id AND threads.forum=forums.id AND posts.date>".(ctime()-$time).' AND threads.announce=0 GROUP BY forums.id ORDER BY cnt DESC');
   $userposts=$sql->query("SELECT id FROM posts WHERE $useridquery date>".(ctime()-$time).'');
-  $lnk="<a href=postsbyuser.php?postsbyforum&id=$id&time";
   if($time<999999999) $during=' during the last '.timeunits2($time);
-  $print= "$lnk=3600>1 hour</a> |
-	$lnk=86400>1 day</a> |
-	$lnk=604800>7 days</a> |
-	$lnk=2592000>30 days</a> | 
-	$lnk=999999999>Total</a><br>
-	Posts $by$username in forums$during:
+  $print= "Posts $by$username in forums$during:
+".      "<br>
+".       timelink2(3600).'|'.timelink2(86400).'|'.timelink2(604800).'|'.timelink2(2592000)."
 ".           "$L[TBL1]>
 ".           "  $L[TRh]>
 ".	"$L[TDh]>#
@@ -166,13 +158,9 @@ if(!$time) $time=86400;
   }else $from=' on the board';
   $posts=$sql->query("SELECT count(*) AS cnt, FROM_UNIXTIME(date,'%k') AS hour FROM posts WHERE ".($id?"user=$id AND ":'')."date>$time GROUP BY hour");
   if($posttime<999999999) $during=' during the last '.timeunits2($posttime);
-  $link="<a href=postsbyuser.php?postsbytime&id=$id&time";
-  $print= "$link=3600>1 hour</a> |
-	$link=86400>1 day</a> |
-	$link=604800>7 days</a> |
-	$link=2592000>30 days</a> |
-	$link=999999999>Total</a><br>
-	Posts$from by time of day$during:
+  $print= "Posts$from by time of day$during:
+".      "<br>
+".       timelink3(3600).'|'.timelink3(86400).'|'.timelink3(604800).'|'.timelink3(2592000)."
 ".           "$L[TBL1]>
 ".           "  $L[TRh]>
 ".	"$L[TDh] width=40>Hour
@@ -210,4 +198,17 @@ if(!$time) $time=86400;
   }
   echo $print.$fpagelist."<br>";
   pagefooter();
+  
+ function timelink1($timex){
+    global $time,$id;
+    return ($time==$timex ? " ".timeunits2($timex)." " : " <a href=postsbyuser.php?postsbythread&id=$id&time=$timex>".timeunits2($timex).'</a> ');
+  }
+  function timelink2($timex){
+    global $time,$id;
+    return ($time==$timex ? " ".timeunits2($timex)." " : " <a href=postsbyuser.php?postsbyforum&id=$id&time=$timex>".timeunits2($timex).'</a> ');
+  }
+  function timelink3($timex){
+    global $posttime,$id;
+    return ($posttime==$timex ? " ".timeunits2($timex)." " : " <a href=postsbyuser.php?postsbytime&id=$id&time=$timex>".timeunits2($timex).'</a> ');
+  }
 ?>

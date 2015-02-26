@@ -14,7 +14,6 @@
     else $sql -> query("UPDATE  `guests` SET `ipbanned` = '1' WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'");
 
     $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
-    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
 
     //a ban appears to be present. check for type
     //and restrict user's access if necessary

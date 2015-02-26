@@ -265,7 +265,6 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     }
     
     $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
-    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
 
     $banuser ="";
     if(has_perm('edit-permissions'))

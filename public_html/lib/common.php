@@ -70,7 +70,6 @@
   require "lib/ipbans.php";
   
   //Unban users whose tempbans have expired. - SquidEmpress
-  $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
   $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
   $sql->query('UPDATE users SET group_id='.$defaultgroup[id].', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
 

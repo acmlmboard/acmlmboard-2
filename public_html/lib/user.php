@@ -20,13 +20,6 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     return $id;
   }
 
-  function forumbanned($uid,$fid) { //2009/07 Sukasa: Forum Bans
-    global $sql;
-    checknumeric($uid);
-    checknumeric($fid);
-    return $sql->resultq("select count(`uid`) > 0 from `forumbans` where `forum`=$fid and `uid`=$uid");
-  }
-
   function checkuid($userid,$pass){
     global $sql;
     checknumeric($userid);
@@ -37,7 +30,6 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
   function checkctitle($uid){
     global $sql,$loguser;
     
-    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
     $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
     
     if(!$loguser[id]) return false;
@@ -78,7 +70,6 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
   function checkcdisplayname($uid){
     global $sql,$loguser,$config;
     
-    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
     $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
     
     if (!$config["displayname"]) return false;

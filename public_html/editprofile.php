@@ -65,8 +65,6 @@
 		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt)),2147483647);
   }
 
-  pageheader('Edit profile');
-
 
   global $user, $userrpg;
 
@@ -307,12 +305,17 @@
                . "WHERE `id`=$user[id]"
                );
   
+               if($loguser[redirtype]==0){ //Classical Redirect
+  pageheader('Edit profile');
 		print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    Profile changes saved!<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]
 ";
+                } else { //Modern redirect
+                  redir2("profile.php?id=$user[id]","Profile was edited successfully.");
+                }
     if($config['log'] >= '1') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("user edit ".$targetuserid)."')");
 
 		die(pagefooter());
@@ -339,14 +342,21 @@
 
   if($act=='Preview theme')
   {
+  if($loguser[redirtype]==0){ //Classical Redirect
+  pageheader('Edit profile');
   print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    The theme will be previewed<br>
 ".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
 ".        "$L[TBLend]
 ";
+   } else { //Modern redirect
+   redir2("/?theme=$_POST[theme]",0);
+   }
   die(pagefooter());
   }
+
+  pageheader('Edit profile');
 
   if(!$act){
     

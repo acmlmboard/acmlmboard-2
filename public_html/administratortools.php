@@ -1,7 +1,6 @@
 <?php
 require 'lib/common.php';
- 
-pageheader('Administrator Tools');
+
 //Controls board settings - SquidEmpress
 //Uses inspiration from Schezo's version in 1.92.08/Jul.
 
@@ -39,14 +38,10 @@ $sql->query("UPDATE misc SET intval='".$_POST[alwaysshowlvlbar]."' WHERE field='
 $sql->query("UPDATE misc SET intval='".$_POST[rpglvlbarwidth]."' WHERE field='rpglvlbarwidth'");
 $sql->query("UPDATE misc SET txtval='".$_POST[atnname]."' WHERE field='atnname'");
  
-print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    Changes saved!<br>
-".        "    ".redirect("administratortools.php",'the Administrator Tools page')."
-".        "$L[TBLend]
-";
-die(pagefooter());
+header('Location: administratortools.php');
 }
+
+pageheader('Administrator Tools');
 
 $rtool  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="regdisable"'); 
 $ltool  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="lockdown"');

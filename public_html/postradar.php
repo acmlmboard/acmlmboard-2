@@ -72,8 +72,8 @@ VALUES (
 			$sql->query($qr);
 		}
 	}
-	pageheader('Post Radar');
 	if (!$act || $act == 'Save and continue') {
+        pageheader('Post Radar');
 		print "$L[TBL1]><form action='postradar.php' method='post' enctype='multipart/form-data'>".catheader('Edit Post Radar');
 		$radar_users = list_post_radar(retrieve_post_radar($targetuserid, 'name'));
 		
@@ -97,6 +97,8 @@ VALUES (
 ".        "$L[TBLend]
 ";
 	} else if ($act == 'Save and finish') {
+        if($loguser[redirtype]==0){ //Classical Redirect
+	pageheader('Post Radar');
 		print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
@@ -104,6 +106,9 @@ VALUES (
 ".        "    ".redirect("index.php",'the forum Index')."
 ".        "$L[TBLend]
 ";
+         } else { //Modern redirect
+              redir2("index.php",-1);
+         }
 	}
 	pagefooter();
 ?>

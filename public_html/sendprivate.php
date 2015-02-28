@@ -6,8 +6,6 @@
 
   needs_login(1);
 
-  pageheader('Send private message');
-
   $top='<a href=./>Main</a> '
     .'- <a href=private.php>Private messages</a> '
     .'- Send';
@@ -43,6 +41,7 @@
     }elseif(!$userto)
       $userto=$_POST[userto];
 
+  pageheader('Send private message');
     print "$top
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -83,6 +82,7 @@
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 
+  pageheader('Send private message');
     print "$top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -136,9 +136,13 @@
         $pid=$sql->insertid();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
 
+             if($loguser[redirtype]==0){
         $msg="    Sent!<br>
 ".           "    ".redirect('private.php','private message box')."
 ";
+             } else { //Modern redirect
+                  redir2("private.php"-1);
+             }
       }
     }elseif(!$userto){
       $msg="    That user doesn't exist!<br>
@@ -154,6 +158,7 @@
 ";
   }
 
+  pageheader('Send private message');
   print   "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>

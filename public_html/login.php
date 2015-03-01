@@ -1,6 +1,22 @@
 <?php
   require 'lib/common.php'; 
 
+$rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+if($_COOKIE['pstbon']==-1){
+	$rdmsg.="You are now registered!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Please login.</td></tr></table></div>"; }
+}
+
   $act=$_POST[action];
   if(!$act){
     $print=" <form action=login.php method=post>
@@ -38,6 +54,7 @@
   }
 
   pageheader('Login');
+  if($_COOKIE['pstbon']){ print $rdmsg;}
   print "$L[TBL1]>
 ".      "$print
 ".      "$L[TBLend]

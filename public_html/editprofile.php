@@ -159,7 +159,7 @@
         $birthday=-1;
     }
     $year=$_POST[birthY];
-    if(!$_POST[birthY]) $year=-1;
+    if(!$_POST[birthY] || !is_numeric($_POST[birthY])) $year=-1;
     if($birthday!=-1 && $_POST[birthM]!="" && $_POST[birthD]!="")
       $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$year;
     else

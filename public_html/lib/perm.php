@@ -450,6 +450,14 @@ function can_create_locked_posts($forumid, $threadid) {
 	return false;
 }
 
+function can_post_consecutively($forumid) {
+                if (has_perm('consecutive-posts')) return true; 
+
+                if (has_perm_with_bindvalue('create-consecutive-forum-post',$forumid)) return true; 
+
+        return false;
+}
+
 function can_edit_forum_posts($forumid) {
 	if (!has_perm('update-post') && 
 		!has_perm_with_bindvalue('edit-forum-post',$forumid)) return false;

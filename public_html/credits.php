@@ -24,6 +24,7 @@
       "<span $unclass style=\"color: #C53A9E; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">StapleButter</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here). Most of his work was on the now defunct 2.6 branch.",
+      "<span $unclass style=\"color: #C53A9E; font-weight:bold;\">SquidEmpress</span>"     => "Code contributions via GIT. Includes Administrator tools, Forum Jump. (See GIT Log for full contributions)",
      );
 
 
@@ -34,7 +35,6 @@
       "<span $unclass style=\"color: #F185C9; font-weight:bold;\">Nina</span>"        => "Converted all the AB1 themes to AB2.",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Shroomy</span>"     => "Drafted an OOP DB class for AB2. This class not in use.",
       "<span $unclass style=\"color: #F185C9; font-weight:bold;\">Ijah</span>"     => "Created the default AB2 board logo.",
-      "<span $unclass style=\"color: #F185C9; font-weight:bold;\">SquidEmpress</span>"     => "Code contributions via GIT. Includes Administrator tools, Forum Jump. (See GIT Log for full contributions)",
      );
 
     $gitcontributors = array

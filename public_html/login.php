@@ -37,8 +37,7 @@ if($_COOKIE['pstbon']==-1){
     if($userid=checkuser($_POST[name],md5($pwdsalt2.$_POST[pass].$pwdsalt))){
       setcookie('user',$userid,2147483647);
       setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
-      $print="  You are now logged in.<br>
-".           "  ".redirect('./','main');
+      die(header("Location: ./"));
     }else{
       $print="  Invalid username or password, cannot log in.<br>
 ".           "  <a href=./>Back to main</a> or <a href=login.php>try again</a>";
@@ -47,10 +46,7 @@ if($_COOKIE['pstbon']==-1){
   }elseif($act=='logout'){
     setcookie('user',0);
     setcookie('pass','');
-    $print="  $L[TD1c]>
-".         "    You are now logged out.<br>
-".         "    ".redirect('./','main')
- .         "  </td>";
+    die(header("Location: ./"));
   }
 
   pageheader('Login');

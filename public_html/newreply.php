@@ -63,8 +63,7 @@
                       .'LEFT JOIN forums f ON f.id=t.forum '
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
-  if($act!="Submit" || $loguser[redirtype]==0){ //We don't render the header for a "Modern" redirect.
-    pageheader('New reply',$thread[forum]);
+  if($act!="Submit"){
     echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
@@ -130,7 +129,6 @@
 
   if($err){
     if($loguser[redirtype]==1) pageheader('New reply',$thread[forum]);
-    //print "$top - Error
     print "<a href=./>Main</a> - Error
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -169,7 +167,8 @@
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 
- if($act=='Preview')
+ if($act=='Preview') {
+    pageheader('New reply',$thread[forum]);
     print "$top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -179,10 +178,11 @@
 ".         threadpost($post,0)."
 ".        "<br>
 "; 
-else 
-print "$top 
-".    "<br><br> 
-"; 
+} else {
+    pageheader('New reply',$thread[forum]);
+    print "$top 
+".        "<br><br> 
+"; }
 print 
         "$L[TBL1]> 
 ".        " <form action=newreply.php method=post>
@@ -248,6 +248,8 @@ print     "  $L[TR]>
 sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
 if($loguser[redirtype]==0){ //Classical Redirect
+    $loguser['blocksprites']=1;
+    pageheader('New reply',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>

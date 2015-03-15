@@ -6,9 +6,15 @@
 
   needs_login(1);
 
+  if($act!="Submit"){
+    echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+  }
+
   $top='<a href=./>Main</a> '
     .'- <a href=private.php>Private messages</a> '
     .'- Send';
+
+  $toolbar= posttoolbar();
 
   if (!has_perm('create-pms')) no_perm();
 
@@ -54,7 +60,13 @@
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Title:</td>
 ".        "    $L[TD2]>$L[INPt]=title size=80 maxlength=255 value=\"".htmlval($title)."\"></td>
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)  
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c]>Message:</td>
 ".        "    $L[TD2]>$L[TXTa]=message rows=20 cols=80>".htmlval($quotetext)."</textarea></td>
 ".        "  $L[TR1]>
@@ -101,7 +113,13 @@
 ".        "  $L[TR]>
 ".        "    $L[TD1c] width=120>Title:</td>
 ".        "    $L[TD2]>$L[INPt]=title size=80 maxlength=255 value=\"".htmlval($_POST[title])."\"></td>
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)  
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Message:</td>
 ".        "    $L[TD2]>$L[TXTa]=message rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
 ".        "  $L[TR1]>
@@ -158,6 +176,7 @@
 ";
   }
 
+  $loguser['blocksprites']=1;
   pageheader('Send private message');
   print   "$top - Submit
 ".        "<br><br>

@@ -306,6 +306,7 @@
                );
   
                if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
   pageheader('Edit profile');
 		print "$L[TBL1]>
 ".        "  $L[TD1c]>
@@ -343,6 +344,7 @@
   if($act=='Preview theme')
   {
   if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
   pageheader('Edit profile');
   print "$L[TBL1]>
 ".        "  $L[TD1c]>

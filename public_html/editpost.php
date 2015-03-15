@@ -45,8 +45,7 @@
 
 
   if (!$thread) $pid = 0;
-if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
-  pageheader('Edit post',$thread[forum]);
+if($act!="Submit"){ //Classical Redirect
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
@@ -96,6 +95,7 @@ if($act=="Submit" && $post['text']==$_POST[message]){
 
   if($err){
 if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[forum]); }
+  pageheader('Edit post',$thread[forum]);
     print "$top - Error
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -104,6 +104,7 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "$L[TBLend]
 ";
   }elseif(!$act){
+  pageheader('Edit post',$thread[forum]);
     print "$top
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -154,6 +155,7 @@ print     "  $L[TR]>
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 
+  pageheader('Edit post',$thread[forum]);
     print "$top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -230,6 +232,8 @@ print     "  $L[TR]>
 
     }
 if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Edit post',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -243,6 +247,7 @@ if($loguser[redirtype]==0){ //Classical Redirect
 }
   }elseif($act=='delete' ||$act=='undelete'){
     if(!(can_delete_forum_posts($thread[forum]))) {
+  pageheader('Edit post',$thread[forum]);
       print "$top - Error
 ".          "<br><br>
 ".          "$L[TBL1]>
@@ -252,6 +257,8 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ";
     } else {
       $sql->query("UPDATE posts SET deleted=".($act=='delete'?1:0)." WHERE id='$pid'");
+  $loguser['blocksprites']=1;
+  pageheader('Edit post',$thread[forum]);
       print "$top - ".($act=='delete'?'Delete':'Undelete')." Post
 ".          "<br><br>
 ".          "$L[TBL1]>
@@ -263,7 +270,7 @@ if($loguser[redirtype]==0){ //Classical Redirect
     }
   }
   //Shamelessly taken from newreply.php - SquidEmpress
-  if($act!='Submit' && !$err && !$thread[announce] && can_view_forum($thread)){
+  if($act!='Submit' && $act!='delete' && $act!='undelete' && !$err && !$thread[announce] && can_view_forum($thread)){
     $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
                       .'FROM posts p '
 					  .'LEFT JOIN threads t ON t.id=p.thread '

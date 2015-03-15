@@ -62,8 +62,7 @@
   else
     $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
 	
-if($act!="Submit" || $loguser[redirtype]==0){
-  pageheader("New $type",$forum[id]);
+if($act!="Submit"){
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbar();
 	 
@@ -164,6 +163,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".             "  $L[TD2]>$L[INPc]=multivote value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable checked value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
     }
+ pageheader("New $type",$forum[id]);
     print "$top
 ".        "<br><br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
@@ -278,6 +278,7 @@ print     "  $L[TR]>
 $pollprev.="$L[TBLend]";
     }
 
+ pageheader("New $type",$forum[id]);
     print "$top - Preview
 ".        "$pollprev<br>
 ".        "$L[TBL1]>
@@ -411,6 +412,8 @@ else {
 
 
 if($loguser[redirtype]==0){ //Classic
+    $loguser['blocksprites']=1;
+    pageheader("New $type",$forum[id]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>

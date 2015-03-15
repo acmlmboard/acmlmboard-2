@@ -25,8 +25,7 @@
 
 
   if (!$thread) $pid = 0;
-if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
-  pageheader('Edit announcement title',$thread[forum]);
+if($act!="Submit"){
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
 else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['forum']))) {
@@ -35,7 +34,7 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
-".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#F185C9;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a> 
+".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a> 
 ".      "$L[TBLend]
 ";
       pagefooter();
@@ -47,7 +46,7 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
-".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#F185C9;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>
+".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>
 ".      "$L[TBLend]
 ";
       pagefooter();
@@ -73,7 +72,7 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
         "$L[TBL1]>
 ".      "  $L[TR2]>
 ".      "    $L[TD1c]>
-".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#F185C9;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>
+".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>
 ".      "$L[TBLend]
 ";
       pagefooter();
@@ -83,7 +82,7 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
 
   $post=$sql->fetch($res);
 if($err){
-//if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit announcement title',$thread[forum]); }
+  pageheader('Edit announcement title',$thread[forum]);
     print "$top - Error
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -92,6 +91,7 @@ if($err){
 ".        "$L[TBLend]
 ";
   }elseif(!$act){
+  pageheader('Edit announcement title',$thread[forum]);
     print "$top
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -114,6 +114,8 @@ if($err){
     $sql->query("UPDATE threads SET title='$_POST[title]' WHERE id='$thread[id]'");
 
 if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Edit announcement title',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>

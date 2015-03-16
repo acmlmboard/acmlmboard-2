@@ -247,7 +247,7 @@ print     "  $L[TR]>
 
 sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
-if($loguser[redirtype]==0){ //Classical Redirect
+/*if($loguser[redirtype]==0){ //Classical Redirect
     $loguser['blocksprites']=1;
     pageheader('New reply',$thread[forum]);
     print "$top - Submit
@@ -258,9 +258,9 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".        "$L[TBLend]
 ";
-} else { //Modern redirect
-  redir2("thread.php?pid=$pid#$pid",$c);
-}
+} else { //Modern redirect*/
+  redirect("thread.php?pid=$pid#$pid",$c);
+//}
 
   }
 

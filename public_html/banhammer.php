@@ -71,7 +71,7 @@ if($_POST[banuser]=="Ban User") {
       $sql->query("UPDATE users SET title='$banreason' WHERE id='$user[id]'");
       $sql->query("UPDATE users SET tempbanned='".($_POST[tempbanned]>0?($_POST[tempbanned]+time()):0)."' WHERE id='$user[id]'");
 
-               if($loguser[redirtype]==0){ //Classical Redirect
+               /*if($loguser[redirtype]==0){ //Classical Redirect
 $loguser['blocksprites']=1;
 pageheader('Ban User');
 print "<form action='banhammer.php?id=$uid' method='post'>
@@ -81,9 +81,9 @@ print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "    ".redirect("profile.php?id=$user[id]",'the user')."
 ".        "$L[TBLend]
 ";
-                } else { //Modern redirect
-                  redir2("profile.php?id=$user[id]",-1);
-                }
+                } else { //Modern redirect*/
+                  redirect("profile.php?id=$user[id]",-1);
+                //}
 die(pagefooter());
     }
 
@@ -104,7 +104,7 @@ print
       $sql->query("UPDATE users SET title='' WHERE id='$user[id]'");
       $sql->query("UPDATE users SET tempbanned='0' WHERE id='$user[id]'");
 
-              if($loguser[redirtype]==0){ //Classical Redirect
+              /*if($loguser[redirtype]==0){ //Classical Redirect
 $loguser['blocksprites']=1;
 pageheader('Unban User');
 print "<form action='banhammer.php?id=$uid' method='post'>
@@ -114,9 +114,9 @@ print "<form action='banhammer.php?id=$uid' method='post'>
 ".        "    ".redirect("profile.php?id=$user[id]",'the user')."
 ".        "$L[TBLend]
 ";
-             } else { //Modern redirect
-                  redir2("profile.php?id=$user[id]",-2);
-             }
+             } else { //Modern redirect*/
+                  redirect("profile.php?id=$user[id]",-2);
+             //}
 die(pagefooter());
     }
 

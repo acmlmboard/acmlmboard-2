@@ -411,7 +411,7 @@ else {
 }
 
 
-if($loguser[redirtype]==0){ //Classic
+/*if($loguser[redirtype]==0){ //Classic
     $loguser['blocksprites']=1;
     pageheader("New $type",$forum[id]);
     print "$top - Submit
@@ -422,9 +422,9 @@ if($loguser[redirtype]==0){ //Classic
 ".        "    ".redirect($viewlink,"the $type")."
 ".        "$L[TBLend]
 ";
-} else { //Modern
-  redir2($viewlink,$c);
-}
+} else { //Modern*/
+  redirect($viewlink,$c);
+//}
   }
 
   pagefooter();

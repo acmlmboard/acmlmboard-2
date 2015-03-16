@@ -154,13 +154,13 @@ print     "  $L[TR]>
         $pid=$sql->insertid();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
 
-             if($loguser[redirtype]==0){
+             /*if($loguser[redirtype]==0){
         $msg="    Sent!<br>
 ".           "    ".redirect('private.php','private message box')."
 ";
-             } else { //Modern redirect
-                  redir2("private.php"-1);
-             }
+             } else { //Modern redirect*/
+                  redirect("private.php"-1);
+             //}
       }
     }elseif(!$userto){
       $msg="    That user doesn't exist!<br>

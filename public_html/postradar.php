@@ -97,7 +97,7 @@ VALUES (
 ".        "$L[TBLend]
 ";
 	} else if ($act == 'Save and finish') {
-        if($loguser[redirtype]==0){ //Classical Redirect
+        /*if($loguser[redirtype]==0){ //Classical Redirect
        $loguser['blocksprites']=1;
 	pageheader('Post Radar');
 		print "$L[TBL1]>
@@ -107,9 +107,9 @@ VALUES (
 ".        "    ".redirect("index.php",'the forum Index')."
 ".        "$L[TBLend]
 ";
-         } else { //Modern redirect
-              redir2("index.php",-1);
-         }
+         } else { //Modern redirect*/
+              redirect("index.php",-1);
+         //}
 	}
 	pagefooter();
 ?>

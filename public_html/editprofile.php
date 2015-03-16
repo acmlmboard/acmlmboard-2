@@ -269,7 +269,7 @@
                . ($pass?'pass="'.md5($pwdsalt2.$pass.$pwdsalt).'",':'')
                . (checkcdisplayname($targetuserid)?(setfield('displayname')   .','):'')
                . (checkcusercolor($targetuserid)?(setfield('nick_color')   .','):'')
-               . setfield('enablecolor')     .','
+               . (checkcusercolor($targetuserid)?(setfield('enablecolor')     .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
@@ -294,7 +294,6 @@
                . setfield('showlevelbar')   .','
                . setfield('posttoolbar')   .','
                . setfield('hidden') .','
-               . setfield('redirtype') .','
                . setfield('timezone') .','
                . "tzoff=$tztotal,"
                . "birth='$birthday',"
@@ -305,7 +304,7 @@
                . "WHERE `id`=$user[id]"
                );
   
-               if($loguser[redirtype]==0){ //Classical Redirect
+               /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Edit profile');
 		print "$L[TBL1]>
@@ -314,9 +313,9 @@
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]
 ";
-                } else { //Modern redirect
-                  redir2("profile.php?id=$user[id]","Profile was edited successfully.");
-                }
+                } else { //Modern redirect*/
+                  redirect("profile.php?id=$user[id]","Profile was edited successfully.");
+                //}
     if($config['log'] >= '1') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("user edit ".$targetuserid)."')");
 
 		die(pagefooter());
@@ -343,7 +342,7 @@
 
   if($act=='Preview theme')
   {
-  if($loguser[redirtype]==0){ //Classical Redirect
+  /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Edit profile');
   print "$L[TBL1]>
@@ -352,9 +351,9 @@
 ".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
 ".        "$L[TBLend]
 ";
-   } else { //Modern redirect
-   redir2("/?theme=$_POST[theme]",0);
-   }
+   } else { //Modern redirect*/
+   redirect("/?theme=$_POST[theme]",0);
+   //}
   die(pagefooter());
   }
 
@@ -508,7 +507,6 @@ if ($config['alwaysshowlvlbar'])
 ";
  print"
 ".           fieldrow('Posting Toolbar', fieldoption('posttoolbar',$user['posttoolbar'],array('Show Toolbar', 'Hide Toolbar')))."
-".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Display redirect page', 'Instant redirect')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>

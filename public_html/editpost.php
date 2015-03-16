@@ -231,7 +231,7 @@ print     "  $L[TR]>
     sendirc("{irccolor-base}Post edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$thread[id]{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
     }
-if($loguser[redirtype]==0){ //Classical Redirect
+/*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Edit post',$thread[forum]);
     print "$top - Submit
@@ -242,9 +242,9 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".        "$L[TBLend]
 ";
-} else { //Modern redirect
-  redir2("thread.php?pid=$pid#edit","-1");
-}
+} else { //Modern redirect*/
+  redirect("thread.php?pid=$pid#edit","-1");
+//}
   }elseif($act=='delete' ||$act=='undelete'){
     if(!(can_delete_forum_posts($thread[forum]))) {
   pageheader('Edit post',$thread[forum]);
@@ -257,7 +257,7 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ";
     } else {
       $sql->query("UPDATE posts SET deleted=".($act=='delete'?1:0)." WHERE id='$pid'");
-  $loguser['blocksprites']=1;
+  /*$loguser['blocksprites']=1;
   pageheader('Edit post',$thread[forum]);
       print "$top - ".($act=='delete'?'Delete':'Undelete')." Post
 ".          "<br><br>
@@ -266,7 +266,8 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ".          "    Post ".$act."d!<br>
 ".          "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".          "$L[TBLend]
-";
+";*/
+  redirect("thread.php?pid=$pid#edit",-1);
     }
   }
   //Shamelessly taken from newreply.php - SquidEmpress

@@ -356,7 +356,7 @@ print       "<br>
                      ."WHERE id=$loguser[id]");
 
 	  if($config['ircshopnotice']) sendirc("{irccolor-name}".get_irc_displayname()." {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
-              if($loguser[redirtype]==0){ //Classical Redirect
+              /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Item shop');
           print
@@ -366,9 +366,9 @@ print       "<br>
 ".            "    ".redirect('shop.php','the shop')."
 ".            "$L[TBLend]
 ";
-             } else { //Modern redirect
-                  redir2("shop.php",-2);
-             }
+             } else { //Modern redirect*/
+                  redirect("shop.php",-2);
+             //}
         }
       break;
       case 'sell':
@@ -378,7 +378,7 @@ print       "<br>
                    ."SET eq$cat=0, spent=spent-$pitem[coins]*0.6 "
                    ."WHERE id=$loguser[id]");
 
-              if($loguser[redirtype]==0){ //Classical Redirect
+              /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Item shop');
         print "$L[TBL1]>
@@ -387,9 +387,9 @@ print       "<br>
 ".            "    ".redirect('shop.php','the shop')."
 ".            "$L[TBLend]
 ";
-             } else { //Modern redirect
-                  redir2("shop.php",-1);
-             }
+             } else { //Modern redirect*/
+                  redirect("shop.php",-1);
+             //}
       break;
       default:
     }

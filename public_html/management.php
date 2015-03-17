@@ -1,9 +1,9 @@
 <?php
 require 'lib/common.php';
 
-pageheader('Management');
+if (!has_perm('manage-board')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
-if (!has_perm('manage-board')) no_perm();
+pageheader('Management');
 
 $mlinks = array();
 $mlinks[] = array('url' => "updatethemes.php", 'title' => 'Update Themes');

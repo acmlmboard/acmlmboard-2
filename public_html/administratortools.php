@@ -6,7 +6,7 @@ require 'lib/common.php';
 
 //Renamed 'Administrator Tools' as non root admins could be given lockdown access per perm system 
 
-if (!has_perm('admin-tools-access')) no_perm();
+if (!has_perm('admin-tools-access')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
 if($_POST[action]=="Apply changes") {
 $sql->query("UPDATE misc SET intval='".$_POST[regdisable]."' WHERE field='regdisable'");

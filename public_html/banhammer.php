@@ -14,8 +14,7 @@ $uid = $loguser['id'];
 
  if (!has_perm('ban-users'))
    {
-     pageheader('No permission');
-     no_perm();
+     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
    }
    
    //From editperms.php
@@ -24,22 +23,14 @@ $uid = $loguser['id'];
     $tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
 	if (is_root_gid($tuser[$u.'group_id']) && !has_perm('no-restrictions')) 
 	{
-		pageheader('No permission');
-		no_perm();
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	} 
  
    if($uid = $_GET['id']) {
      checknumeric($uid);
      $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
      if(!$numid) {
-     pageheader("Profile");
-     print "<a href=\"./\">Main</a> - Ban User<br><br>
-            $L[TBL1]>
-              $L[TD1c]>
-            Invalid user ID.
-            $L[TBLend]";
-     pagefooter();
-     die();
+     error("Error", "Invalid user ID.");
     }
    }
 
@@ -90,15 +81,7 @@ die(pagefooter());
 elseif($_POST[unbanuser]=="Unban User") {
 if ($user['group_id'] != $bannedgroup['id'])
 {
-print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      This user is not a Banned User.<br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
+error("Error", "This user is not a Banned User.<br> <a href=./>Back to main</a> "); 
 }
       $sql->query("UPDATE users SET group_id='$defaultgroup[id]' WHERE id='$user[id]'");
       $sql->query("UPDATE users SET title='' WHERE id='$user[id]'");

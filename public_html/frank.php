@@ -2,8 +2,7 @@
     require 'lib/common.php';
     
     if (!has_perm('view-acs-calendar')) {
-        pageheader('Access Denied');
-        no_perm();
+        error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
     }
 //Various variables.
   $past=$_GET[past];

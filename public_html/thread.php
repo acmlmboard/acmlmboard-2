@@ -99,16 +99,7 @@ if($_COOKIE['pstbon']>=1){
     checknumeric($pid);
         $numpid =$sql->fetchq("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
         if (!$numpid) {
-        pageheader("Thread post not found",0);  
-	      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      Thread post does not exist. <br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
+      error("Error", "Thread post does not exist. <br> <a href=./>Back to main</a>");
     }
     $isannounce = $sql->resultq("SELECT announce FROM posts WHERE id=$pid");
     if ($isannounce) {
@@ -127,8 +118,7 @@ if($_COOKIE['pstbon']>=1){
   }
   else
   {
-	pageheader('Thread not found',0);
-	thread_not_found();
+	error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
   }
 
   if ($viewmode == "thread") 
@@ -176,8 +166,7 @@ if($_COOKIE['pstbon']>=1){
 
     if(!isset($thread[id]))
     {
-      pageheader("Thread not found",0);
-      thread_not_found();
+      error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
     if($config['threadprevnext'])
     {

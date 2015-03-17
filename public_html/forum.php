@@ -25,8 +25,7 @@
 
 
     if (!isset($forum['id'])) {
-      pageheader("Forum not found",0);
-      forum_not_found();      
+      error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");      
     }
 
     //load tags
@@ -218,8 +217,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 ";
   }else
   {
-    pageheader('Forum not found',0);
-	forum_not_found();
+    error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");
   }
 
   $showforum=$uid||$time;

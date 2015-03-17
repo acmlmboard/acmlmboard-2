@@ -11,8 +11,7 @@
   }
   $edid = (int)$edid;
   if(!can_edit_user_moods($edid)){
-    pageheader('No permission');
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
 //Editing functionality

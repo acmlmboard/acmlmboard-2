@@ -6,8 +6,7 @@
 	if (!can_edit_user($targetuserid)) $targetuserid = 0;
 
 	if ($targetuserid == 0 || $act && ($act != 'Save and continue' || $act != 'Save and finish')) {
-		pageheader('No permission');
-		no_perm();
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
 	
 	$act=$_POST[action];

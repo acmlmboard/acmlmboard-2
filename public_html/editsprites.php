@@ -6,9 +6,9 @@ require("lib/common.php");
   $pagebar = array();
   checknumeric($r['id']);
 
-  pageheader("Edit Sprites");
+  if(!has_perm('edit-sprites')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
-  if(!has_perm('edit-sprites')) no_perm();
+  pageheader("Edit Sprites");
   
   $spritecateg = array();
   $qspritecateg = $sql->query("SELECT `id`, `name` FROM `spritecateg`");

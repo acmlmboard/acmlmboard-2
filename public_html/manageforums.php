@@ -3,8 +3,7 @@ require('lib/common.php');
 
 if (!has_perm('edit-forums')) 
 {
-	pageheader('Forum management');
-	no_perm();
+	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 }
 
 

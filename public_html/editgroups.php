@@ -3,8 +3,7 @@
 
   if (!has_perm('edit-groups'))
   {
-	pageheader('Edit groups');
-	no_perm();
+	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
   $act = $_GET['act'];

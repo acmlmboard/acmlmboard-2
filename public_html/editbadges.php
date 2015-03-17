@@ -7,9 +7,9 @@ require("lib/common.php");
   $pagebar = array();
   checknumeric($r['id']);
 
-  pageheader("Edit Badges");
+  if(!has_perm('edit-badges')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
-  if(!has_perm('edit-badges')) no_perm();
+  pageheader("Edit Badges");
 
   $id = $r['id'];
 

@@ -19,13 +19,13 @@
 
   if ($targetuserid == 0) 
    {
-     pageheader('No permission');
      if($config['rootuseremail']) {
      if((has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) && $user['email']!="") {
      $email="<br>".userlink($user)."'s email: ".$user[email]."<br>";
      } else {
      $email="";
      }
+     pageheader('No permission');
        print
         "$L[TBL1]>
 ".      "  $L[TR2]>
@@ -37,7 +37,7 @@
       die();
 
      } else {
-     no_perm();
+     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
      }
    }
 

@@ -18,8 +18,7 @@
 
   if (!has_perm('edit-permissions'))
   {
-	pageheader('Edit permissions');
-	no_perm();
+	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
   if (isset($_GET['gid']))
@@ -27,13 +26,11 @@
 	$id = (int)$_GET['gid'];
 	if(is_root_gid($id) && !has_perm('no-restrictions'))
 	{
-		pageheader('Edit permissions');
-		no_perm();		
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");		
 	}
 	if(	$loguser['group_id'] == $id && !has_perm('edit-own-permissions'))
 	{
-		pageheader('Edit permissions');
-		no_perm();		
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");		
 	}
 	$permowner = $sql->fetchp("SELECT id,title,inherit_group_id FROM `group` WHERE id=?", array($id));
 	$type = 'group';
@@ -46,14 +43,12 @@
 	$tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
 	if (is_root_gid($tuser[$u.'group_id']) && !has_perm('no-restrictions')) 
 	{
-		pageheader('Edit permissions');
-		no_perm();
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	} 
 
 	if ($id == $loguser['id'] && !has_perm('edit-own-permissions'))
 	{
-		pageheader('Edit permissions');
-		no_perm();
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
 	$permowner = $sql->fetchp("SELECT u.id,u.name AS title,u.group_id,g.title AS group_title FROM users u LEFT JOIN `group` g ON g.id=u.group_id WHERE u.id=?", array($id));
 	$type = 'user';
@@ -76,17 +71,7 @@
   
   if (!$permowner)
   {
-	// TODO: functions for custom error messages (this is not nice at all)
-	pageheader('Edit permissions');
-    print
-		"$L[TBL1]>
-".  	"  $L[TR2]>
-".  	"    $L[TD1c]>
-".  	"      Invalid {$type} ID.
-".  	"$L[TBLend]
-";
-    pagefooter();
-    die();
+    error("Error", "Invalid {$type} ID.");
   }
   
   $errmsg = '';

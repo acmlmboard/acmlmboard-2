@@ -737,14 +737,25 @@
     print "<br>$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src=\"img/poweredbyacmlm.PNG\">$L[TBLend]";
    }
    
-  function error($message, $type=0)
+  function noticemsg($name, $msg)
    {
-    global $L, $abversion, $abdate, $boardprog;
-    //[Scrydan] Work on this! Type 0 will kill the script and 1 may possibly redirect and have the form saved still?
-    print "
-         $L[TBL1]>
-         $message
-         $L[TBLend]";
+  		print "<table cellspacing=\"0\" class=\"c1\">
+".        " <tr class=\"h\">
+".        "  <td class=\"b h\" align=\"center\">$name
+".        " <tr>
+".        "  <td class=\"b n1\" align=\"center\">
+".        "    $msg
+".        "</table>
+".        "<br>
+";
+   }
+
+  function error($name, $msg)
+   {
+    global $abversion, $abdate, $boardprog;
+    pageheader('Error');
+    print "<br>";
+    noticemsg($name,$msg);
     pagefooter();
     die();
    }

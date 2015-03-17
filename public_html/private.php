@@ -40,8 +40,7 @@ if($_COOKIE['pstbon']==-1){
   checknumeric($id);
 
   if(!has_perm('view-own-pms') && $id == 0) {
-    pageheader("Access Denied");
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
 
   $showdel=$_GET[showdel];

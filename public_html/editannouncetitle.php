@@ -29,28 +29,10 @@ if($act!="Submit"){
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
 else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['forum']))) {
-      $err=
-          print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
+      error("Error", "<a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>");
   }
   elseif($pid==-1){
-      $err=
-          print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
+      error("Error", "<a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>");
   }
 
   $top='<a href=./>Main</a> '
@@ -67,30 +49,12 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
                     ."WHERE p.id=$pid");
 
   if(@$sql->numrows($res)<1){
-    $err=
-          print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      <a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
+    error("Error", "<a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>");
     }
 
 
   $post=$sql->fetch($res);
-if($err){
-  pageheader('Edit announcement title',$thread[forum]);
-    print "$top - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
-  }elseif(!$act){
+if(!$act){
   pageheader('Edit announcement title',$thread[forum]);
     print "$top
 ".        "<br><br>

@@ -16,7 +16,7 @@
 
   $toolbar= posttoolbar();
 
-  if (!has_perm('create-pms')) no_perm();
+  if (!has_perm('create-pms')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
   if($err){
     print "$top - Error

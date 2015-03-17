@@ -36,25 +36,10 @@ if($_COOKIE['pstbon']==-1){
      checknumeric($uid);
      $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
      if(!$numid) {
-     pageheader("Profile");
-     print "<a href=\"./\">Main</a> - Profile<br><br>
-            $L[TBL1]>
-              $L[TD1c]>
-            This user does not exist!
-            $L[TBLend]";
-     pagefooter();
-     die();
+     error("Error", "This user does not exist!");
     }
    } else {
-     //use error($message, 0) function later!
-     pageheader("Profile");
-     print "<a href=\"./\">Main</a> - Profile<br><br>
-            $L[TBL1]>
-              $L[TD1c]>
-            You must specify a user ID!
-            $L[TBLend]";
-     pagefooter();
-     die();
+     error("Error", "You must specify a user ID!");
     }
 
     $group = $sql->fetchp("SELECT * FROM `group` WHERE id=?", array($user['group_id']));

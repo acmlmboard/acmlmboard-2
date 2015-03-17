@@ -131,7 +131,7 @@ $pagebar['breadcrumb'] = array(
     array('title' => 'Edit Sprites','href' => 'editsprites.php'), array('title' => 'Edit Sprite Categories','href' => 'editsprites.php?spritecategories'),
     );
 
-   if ($id > 0) { 
+   if ($id != 0) { 
    $tsc=$sql->fetchp('SELECT * FROM spritecateg WHERE id=?',array($id));
 $pagebar['title'] = $tsc['name'];
 $pagebar['actions'] = array(
@@ -146,7 +146,7 @@ true),
 else {
 $pagebar['title'] = 'New Sprite Category';
 $tsc = array(
-  'id' =>0,
+  'id' =>-2,
   'name' => '',
 );
 }

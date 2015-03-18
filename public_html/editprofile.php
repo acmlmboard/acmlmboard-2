@@ -407,7 +407,6 @@ if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
-".(checkcusercolor($targetuserid) ? fieldrow('Custom username color',$colorinput) : "" )."
 ";
 
   print
@@ -416,6 +415,7 @@ if (has_perm("edit-users"))
 ".           ((checkctitle($targetuserid)) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 80KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
 ".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
+".           (checkcusercolor($targetuserid) ? fieldrow('Custom username color',$colorinput) : "" )."
 ";
 
 if (has_perm("edit-users"))

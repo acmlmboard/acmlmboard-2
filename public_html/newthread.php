@@ -142,7 +142,7 @@ if($act!="Submit"){
   if($err){
     pageheader("New $type",$forum[id]);
     print "$top - Error";
-    noticemsg("Error", $msg);
+    noticemsg("Error", $err);
   }elseif(!$act){
     if($ispoll){
       $pollin=

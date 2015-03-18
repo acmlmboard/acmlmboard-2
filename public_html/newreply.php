@@ -19,8 +19,8 @@
 	{
 		$userid = $loguser['id'];
 		$user = $loguser;
-		//if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
-			//$err = 'Invalid token.';
+		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
+			$err = 'Invalid token.';
 			
 		$pass = $_POST['passenc'];
 	}
@@ -156,7 +156,9 @@
     else $post[text]=$quotetext;
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     if($act=='Preview') $post[moodlist]=moodlist($_POST[mid]);
-    else $post[moodlist]=moodlist()
+    else $post[moodlist]=moodlist();
+    if($act=='Preview') $pass=$_POST[passenc];
+    else $pass=md5($pwdsalt2.$loguser[pass].$pwdsalt);
     $post[nolayout]=$_POST[nolayout];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];

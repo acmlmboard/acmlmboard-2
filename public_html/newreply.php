@@ -71,7 +71,9 @@
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
   if(!$thread) {
-    thread_not_found();
+	noticemsg("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
+        pagefooter();
+        die();
     }
 
 
@@ -128,14 +130,9 @@
   }
 
   if($err){
-    if($loguser[redirtype]==1) pageheader('New reply',$thread[forum]);
-    print "<a href=./>Main</a> - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
+    pageheader('New reply',$thread[forum]);
+    print "$top - Error";
+    noticemsg("Error", $err);
   }elseif($act=='Preview' || !$act){
     if($act=='Preview'){
     $_POST[message]=stripslashes($_POST[message]);

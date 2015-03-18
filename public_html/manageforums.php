@@ -196,12 +196,7 @@ pageheader('Forum management');
 
 if ($error)
 {
-	print 	"$L[TBL1]>
-".			"	$L[TRh]>$L[TDh]>Error</td></tr>
-".			"	$L[TR]>$L[TD1c]><br>{$error}<br><br></td></tr>
-".			"$L[TBLend]
-".			"<br>
-";
+        noticemsg("Error", $error);
 }
 
 if ($cid = $_GET['cid'])

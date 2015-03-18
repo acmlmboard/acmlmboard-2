@@ -96,13 +96,8 @@ if($act=="Submit" && $post['text']==$_POST[message]){
   if($err){
 if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[forum]); }
   pageheader('Edit post',$thread[forum]);
-    print "$top - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
+    print "$top - Error";
+    noticemsg("Error", $err);
   }elseif(!$act){
   pageheader('Edit post',$thread[forum]);
     print "$top

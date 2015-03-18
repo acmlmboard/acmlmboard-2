@@ -6,15 +6,9 @@ require("lib/common.php");
 pageheader();
 if(!isset($_GET['uid']))
 {
-	print "
-	$L[TBL1]>
-		$L[TD1c]>
-			No User Requested.<br>
-			<a href=./>Back to main</a>
-	$L[TBLend]
-";
-	pagefooter();
-	die();
+    noticemsg("Error", "No User Requested.<br> <a href=./>Back to main</a>");
+    pagefooter();
+    die();
 }
 $userID = (int)$_GET['uid'];
 

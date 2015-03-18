@@ -176,15 +176,9 @@ print     "  $L[TR]>
 ";
   }
 
-  $loguser['blocksprites']=1;
   pageheader('Send private message');
-  print   "$top - Submit
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        $msg
-.         "$L[TBLend]
-";
+    print "$top - Error";
+    noticemsg("Error", $msg);
 
   }
 

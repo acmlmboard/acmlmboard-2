@@ -10,18 +10,12 @@ require("lib/common.php");
 
   pageheader("Assign Secondary Groups");
 
-  if(!has_perm('assign-secondary-groups')) no_perm();
+  if(!has_perm('assign-secondary-groups')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
   if($r['action'] == "edit") noperm(); // Poormans bypass - Needs to be properly retooled
 
   if(!isset($r['uid']) || $r['uid'] == 0)
   {
-    print "
-    $L[TBL1]>
-      $L[TD1c]>
-        No User Requested.<br>
-        <a href=./>Back to main</a>
-    $L[TBLend]
-  ";
+    noticemsg("Error", "No User Requested.<br> <a href=./>Back to main</a>");
     pagefooter();
     die();
   }
@@ -30,7 +24,9 @@ require("lib/common.php");
 
   /*if($loguser['id'] == $uid && !has_perm('edit-own-permissions'))
   {
-    no_perm();    
+    noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+    pagefooter();
+    die();    
   }*///Not really needed in normal context. I commented it out incase someone may want this -Emuz
 
   if ($r['action'] == "del") {

@@ -15,13 +15,7 @@ require("lib/common.php");
 
   if(!isset($r['uid']) || $r['uid'] == 0)
   {
-    print "
-    $L[TBL1]>
-      $L[TD1c]>
-        No User Requested.<br>
-        <a href=./>Back to main</a>
-    $L[TBLend]
-  ";
+    noticemsg("Error", "No User Requested.<br> <a href=./>Back to main</a>");
     pagefooter();
     die();
   }

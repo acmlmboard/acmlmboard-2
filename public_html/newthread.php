@@ -87,8 +87,11 @@ if($act!="Submit"){
 
   $forumlink="<a href=forum.php?id=$fid>Back to forum</a>";
 
-  if(!$forum)
-    forum_not_found();
+  if(!$forum) {
+	noticemsg("Error", "Forum does not exist. <br> <a href=./>Back to main</a>");
+        pagefooter();
+        die();
+  }
 
     else if ($announce && !can_create_forum_announcements($fid))
     $err = "    You have no permissions to create announcements in this forum!<br>$forumLink";
@@ -137,14 +140,9 @@ if($act!="Submit"){
 ";
 
   if($err){
-    if($loguser[redirtype]==1) pageheader("New $type",$forum[id]);
-    print "$top - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
+    pageheader("New $type",$forum[id]);
+    print "$top - Error";
+    noticemsg("Error", $msg);
   }elseif(!$act){
     if($ispoll){
       $pollin=

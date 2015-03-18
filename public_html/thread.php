@@ -466,13 +466,13 @@ if($_COOKIE['pstbon']>=1){
 //[KAWA] Thread +1
 if(isset($_GET['thumbsup']))
 {
-  if (!has_perm('rate-thread')) no_perm();
+  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("INSERT IGNORE INTO threadthumbs VALUES (".$loguser['id'].", ".$tid.")");
 	$isThumbed = true;
 }
 else if(isset($_GET['thumbsdown']))
 {
-  if (!has_perm('rate-thread')) no_perm();
+  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("DELETE FROM threadthumbs WHERE uid = ".$loguser['id']." AND tid = ".$tid);
 	$isThumbed = false;
 }
@@ -549,7 +549,9 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ";
   }else
   {
-	thread_not_found();
+	noticemsg("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
+        pagefooter();
+        die();
   }
   
   

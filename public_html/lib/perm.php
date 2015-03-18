@@ -326,7 +326,7 @@ function needs_login($head=0) {
 }
 
 
-function no_perm() {
+/*function no_perm() {
 	  global $L;
       print
         "$L[TBL1]>
@@ -337,7 +337,7 @@ function no_perm() {
 ";
       pagefooter();
       die();
-}
+}*/
 
 function grouplink($usex, $gid) {
 	global $sql, $usergroups;
@@ -348,7 +348,7 @@ function grouplink($usex, $gid) {
 	else return "";
 }
 
-function forum_not_found() {
+/*function forum_not_found() {
 	  global $L;
       print
         "$L[TBL1]>
@@ -359,9 +359,9 @@ function forum_not_found() {
 ";
       pagefooter();
       die();
-}
+}*/
 
-function pm_not_found() {
+/*function pm_not_found() {
 	  global $L;
       print
         "$L[TBL1]>
@@ -372,9 +372,9 @@ function pm_not_found() {
 ";
       pagefooter();
       die();
-}
+}*/
 
-function thread_not_found() {
+/*function thread_not_found() {
 	  global $L;
       print
         "$L[TBL1]>
@@ -385,7 +385,7 @@ function thread_not_found() {
 ";
       pagefooter();
       die();
-}
+}*/
 
 
 function can_create_forum_thread($forum) {

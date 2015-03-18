@@ -3,6 +3,7 @@
 
   if(!has_perm('edit-attentions-box')) {
     pageheader('Nothing here.');
+    noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   } else {
 
     if($_POST[action]=="Submit") {

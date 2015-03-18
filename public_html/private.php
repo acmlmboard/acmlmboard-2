@@ -51,15 +51,7 @@ if($_COOKIE['pstbon']==-1){
     if(has_perm('delete-user-pms') || ($owner==$loguser[id] && has_perm('delete-own-pms')) ) {
       $sql->query($q="UPDATE pmsgs SET del_$fieldn2=".((int)!$showdel)." WHERE id=$id");
     } else {
-      pageheader('Error');
-      print "$L[TBL1]>
-".          "  $L[TD1c]>
-".          "    You are not allowed to (un)delete that message.<br>
-".          "    <a href=login.php>Login</a>
-".          "$L[TBLend]
-";
-      pagefooter();
-      die();
+      error("Error", "You are not allowed to (un)delete that message.<br> <a href=./>Back to main</a>");
     }
     $id=0;
   }

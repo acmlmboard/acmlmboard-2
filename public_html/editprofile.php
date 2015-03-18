@@ -322,16 +322,7 @@
 	}
 	else
 	{
-		print "$L[TBL1]>
-".        " $L[TRh]>
-".        "  $L[TDhc]>Error
-".        " $L[TR]>
-".        "  $L[TD1c]>
-".        "    Couldn't save the profile changes. The following errors occured:<br><br>
-".        "    $error
-".        "$L[TBLend]
-".        "<br>
-";
+                noticemsg("Error", "Couldn't save the profile changes. The following errors occured:<br><br>".$error);
 
 		$act = '';
 		foreach ($_POST as $k=>$v)

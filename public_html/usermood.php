@@ -121,7 +121,7 @@
         //and give it focus
         $id = $avatarid;
       }else
-        print $error;
+        noticemsg("Error", $error);
     }
  }  
 

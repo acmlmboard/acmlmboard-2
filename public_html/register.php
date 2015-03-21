@@ -53,50 +53,7 @@ if (isProxy())
   }
 
   $act=$_POST[action];
-  if(!$act){
-
-      $listsex=array('Male','Female','N/A');
-      $alltz = $sql->query("SELECT name FROM `timezones`"); 
-
-      $listtimezones = array();
-      while ($tz = $sql->fetch($alltz)) {
-        $listtimezones[$tz['name']] = $tz['name'];
-      }
-
-
-
-    $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
-    $print=" <form action=register.php method=post>
-".         "  $L[TRh]>
-".         "    $L[TDh] colspan=2>Register</td>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>&nbsp;</td>
-".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Username:</td>
-".         "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password:</td>
-".         "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password (again):</td>
-".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
-".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
-".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
-";
-    if($config['registrationpuzzle'])
-    $print.=
-           "  $L[TR]>
-".         "    $L[TD1c] width=120>$puzzle</td>
-".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
-";
-    $print.=
-           "  $L[TR1]>
-".         "    $L[TD]>&nbsp;</td>
-".         "    $L[TD]>$L[INPs]=action value=Register></td>
-".         " </form>
-";
-  }elseif($act=='Register'){
+  if($act=='Register'){
     $name=trim(stripslashes($_POST[name]));
 
     $cname=str_replace(array(' ',"\xC2\xA0"),'',$name);
@@ -122,11 +79,7 @@ if (isProxy())
     elseif($config['registrationpuzzle'] && $_POST[puzzle]!=$puzzleAnswer)
       $err="You are either a bot or very bad at simple mathematics.";
 
-    if($err){
-      $print="  $err<br>
-".           "  <a href=./>Back to main</a> or <a href=register.php>try again</a>
-";
-    }else{
+    if(!$err){
 	  $name = $sql->escape($name);
 	  
       $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone,fontsize,theme) VALUES "
@@ -189,14 +142,51 @@ if (isProxy())
                   redirect('login.php',-1);
 	  }
 	  else
-		$print="Registration failed: ".$sql->error();
+		$err="Registration failed: ".$sql->error();
     }
-    $print="  $L[TD1c]>$print</td>";
   }
 
   pageheader('Register');
+     $listsex=array('Male','Female','N/A');
+      $alltz = $sql->query("SELECT name FROM `timezones`"); 
+
+      $listtimezones = array();
+      while ($tz = $sql->fetch($alltz)) {
+        $listtimezones[$tz['name']] = $tz['name'];
+      }
+
+    $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
+ if($err) noticemsg("Error", $err);
   print "$L[TBL1]>
-".      "$print
+".         " <form action=register.php method=post>
+".         "  $L[TRh]>
+".         "    $L[TDh] colspan=2>Register</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>&nbsp;</td>
+".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>Username:</td>
+".         "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
+".         "  $L[TR]>
+".         "    $L[TD1c]>Password:</td>
+".         "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
+".         "  $L[TR]>
+".         "    $L[TD1c]>Password (again):</td>
+".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
+".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
+".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
+";
+    if($config['registrationpuzzle'])
+    print     
+           "  $L[TR]>
+".         "    $L[TD1c] width=120>$puzzle</td>
+".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
+";
+    print
+           "  $L[TR1]>
+".         "    $L[TD]>&nbsp;</td>
+".         "    $L[TD]>$L[INPs]=action value=Register></td>
+".         " </form>
 ".      "$L[TBLend]
 ";
   pagefooter();

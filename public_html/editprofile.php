@@ -25,17 +25,7 @@
      } else {
      $email="";
      }
-     pageheader('No permission');
-       print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
-".      "      You have no permissions to do this!<br> $email<a href=./>Back to main</a> 
-".      "$L[TBLend]
-";
-      pagefooter();
-      die();
-
+     error("Error", "You have no permissions to do this!<br> ".$email."<a href=./>Back to main</a>");
      } else {
      error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
      }

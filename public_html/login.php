@@ -18,8 +18,26 @@ if($_COOKIE['pstbon']==-1){
 }
 
   $act=$_POST[action];
-  if(!$act){
-    $print=" <form action=login.php method=post>
+  if($act=='Login'){
+    if($userid=checkuser($_POST[name],md5($pwdsalt2.$_POST[pass].$pwdsalt))){
+      setcookie('user',$userid,2147483647);
+      setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
+      die(header("Location: ./"));
+    }else{
+       $err="Invalid username or password, cannot log in.";
+    }
+    $print="  $L[TD1c]>$print</td>";
+  }elseif($act=='logout'){
+    setcookie('user',0);
+    setcookie('pass','');
+    die(header("Location: ./"));
+  }
+
+  pageheader('Login');
+  if($_COOKIE['pstbon']){ print $rdmsg;}
+ if($err) noticemsg("Error", $err);
+  print "$L[TBL1]>
+<form action=login.php method=post>
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Login</td>
 ".         "  $L[TR]>
@@ -32,27 +50,6 @@ if($_COOKIE['pstbon']==-1){
 ".         "    $L[TD]>&nbsp;</td>
 ".         "    $L[TD]>$L[INPs]=action value=Login></td>
 ".         " </form>
-";
-  }elseif($act=='Login'){
-    if($userid=checkuser($_POST[name],md5($pwdsalt2.$_POST[pass].$pwdsalt))){
-      setcookie('user',$userid,2147483647);
-      setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
-      die(header("Location: ./"));
-    }else{
-      $print="  Invalid username or password, cannot log in.<br>
-".           "  <a href=./>Back to main</a> or <a href=login.php>try again</a>";
-    }
-    $print="  $L[TD1c]>$print</td>";
-  }elseif($act=='logout'){
-    setcookie('user',0);
-    setcookie('pass','');
-    die(header("Location: ./"));
-  }
-
-  pageheader('Login');
-  if($_COOKIE['pstbon']){ print $rdmsg;}
-  print "$L[TBL1]>
-".      "$print
 ".      "$L[TBLend]
 ";
   pagefooter();

@@ -134,9 +134,9 @@
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace($smilies[$i][text],'«'.$smilies[$i][text].'»',$msg);
+        $msg=str_replace($smilies[$i][text],'ï¿½'.$smilies[$i][text].'ï¿½',$msg);
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
+        $msg=str_replace('ï¿½'.$smilies[$i][text].'ï¿½','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 
     //Relocated here due to conflicts with specific smilies.
@@ -301,7 +301,7 @@
   function posttoolbutton($e,$name,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\">$name</a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" value='$name'></font></a></td>";
   }
   
   function posttoolbar()
@@ -312,10 +312,13 @@
            .posttoolbutton("message","U","[u]","[/u]")
            .posttoolbutton("message","S","[s]","[/s]")
            ."$L[TD2]>&nbsp;</td>"
+           .posttoolbutton("message","_","[irc]","[/irc]")
+           .posttoolbutton("message","/","[url]","[/url]")
            .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
            .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
            .posttoolbutton("message",";","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
+           .posttoolbutton("message","[]","[img]","[/img]")
            .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
 		   .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
   }

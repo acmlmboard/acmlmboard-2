@@ -24,7 +24,7 @@
   if (isset($_GET['gid']))
   {
 	$id = (int)$_GET['gid'];
-	if(is_root_gid($id) && !has_perm('no-restrictions'))
+	if((is_root_gid($id) || (!has_perm_with_bindvalue('can-edit-group', $id) && $id!=$loguser['group_id'])) && !has_perm('no-restrictions'))
 	{
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");		
 	}
@@ -41,7 +41,7 @@
 	$id = (int)$_GET['uid'];
 
 	$tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
-	if (is_root_gid($tuser[$u.'group_id']) && !has_perm('no-restrictions')) 
+	if ((is_root_gid($tuser[$u.'group_id']) || (!has_perm_with_bindvalue('can-edit-group', $tuser[$u.'group_id']) && $id!=$loguser['id'])) && !has_perm('no-restrictions')) 
 	{
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	} 

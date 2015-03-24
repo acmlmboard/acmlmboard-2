@@ -191,6 +191,7 @@ function can_edit_user($uid) {
 
   $gid = gid_for_user($uid);
   if (is_root_gid($gid) && !has_perm('no-restrictions')) return false;
+  if ((!has_perm_with_bindvalue('can-edit-group', $gid) && $uid!=$loguser['id']) && !has_perm('no-restrictions')) return false;
 
   if ($uid == $loguser['id'] && has_perm('update-own-profile')) return true;
   else if (has_perm('update-profiles')) return true;

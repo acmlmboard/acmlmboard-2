@@ -438,7 +438,7 @@ function RenderPageBar($pagebar) {
     $themelist = array();
     foreach($themes as $t) {
       $themeusers = isset($themeuser[$t[1]]) ? $themeuser[$t[1]] : 0;
-      $themelist[$t[1]] = $t[0] ." [".$t[1]."]". ($themeusers ? (" [$themeusers user".($themeusers == 1 ? "" : "s")."]") : "");
+      $themelist[$t[1]] = $t[0] . ($themeusers ? (" [$themeusers user".($themeusers == 1 ? "" : "s")."]") : "");
     }
 
     return $themelist;

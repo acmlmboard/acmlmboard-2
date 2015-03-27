@@ -81,28 +81,26 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".       "    $L[TDh] colspan=6>General settings</td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Board Title:</td>
-".        "      $L[TD2]>$L[INPt]='boardtitle' value='".$boardtitletext."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Board Theme:</td>
-".        "      $L[TD2]>$L[INPt]='defaulttheme' value='".$defaultthemetext."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='boardtitle' size='40' maxlength='255' value='".$boardtitletext."' class='right'></td>
+".           fieldrow('Board Theme'           ,fieldselect('defaulttheme', $defaultthemetext, themelist()))."
 ".         "  $L[TR]>
 ".        "    $L[TD1c]>Trash Forum ID:</td>
-".        "      $L[TD2]>$L[INPt]='trashid' value='".$trashidint."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='trashid' size='3' maxlength='3' value='".$trashidint."' class='right'></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Board Font Size:</td>
-".        "      $L[TD2]>$L[INPt]='defaultfontsize' value='".$defaultfontsizeint."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='defaultfontsize' size='3' maxlength='3' value='".$defaultfontsizeint."' class='right'></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Avatar X Dimension:</td>
-".        "      $L[TD2]>$L[INPt]='avatardimx' value='".$avatardimxint."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='avatardimx' size='3' maxlength='3' value='".$avatardimxint."' class='right'></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Avatar Y Dimension:</td>
-".        "      $L[TD2]>$L[INPt]='avatardimy' value='".$avatardimyint."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='avatardimy' size='3' maxlength='3' value='".$avatardimyint."' class='right'></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Projected Date Posts:</td>
-".        "      $L[TD2]>$L[INPt]='topposts' value='".$topposts."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='topposts' size='7' maxlength='7' value='".$topposts."' class='right'></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Projected Date Threads:</td>
-".        "      $L[TD2]>$L[INPt]='topthreads' value='".$topthreads."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='topthreads' size='7' maxlength='7' value='".$topthreads."' class='right'></td>
 ".    fieldrow('Memberlist Color Links', fieldoption('memberlistcolorlinks',$memberlistcolorlinks,array('Disable', 'Enable')))."
 ".    fieldrow('Badge System', fieldoption('badgesystem',$badgesystem,array('Disable', 'Enable')))."
 ".    fieldrow('Sprite System', fieldoption('spritesystem',$spritesystem,array('Disable', 'Enable')))."
@@ -118,10 +116,10 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".    fieldrow('EXP Level Bars', fieldoption('alwaysshowlvlbar',$alwaysshowlvlbar,array('Disable', 'Enable')))."
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>EXP Bar Size:</td>
-".        "      $L[TD2]>$L[INPt]='rpglvlbarwidth' value='".$rpglvlbarwidth."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='rpglvlbarwidth' size='3' maxlength='3' value='".$rpglvlbarwidth."' class='right'></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Attention Box Name:</td>
-".        "      $L[TD2]>$L[INPt]='atnname' value='".$atnname."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='atnname' size='40' maxlength='255' value='".$atnname."' class='right'></td>
 ".       "  $L[TRg]>
 ".       "    $L[TDh] colspan=6>Miscellaneous settings</td>
 ".    fieldrow('Disable Registering', fieldoption('regdisable',$rtool['regdisable'],array('Enable', 'Disable')))."
@@ -134,7 +132,7 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".        "      $L[TD2]>$L[TXTa]='txtval' rows=8 cols=120>".$lockdowntext."</textarea></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Board Email:</td>
-".        "      $L[TD2]>$L[INPt]='emailaddress' value='".$boardemail."' class='right'></td>
+".        "      $L[TD2]>$L[INPt]='emailaddress' size='40' maxlength='60' value='".$boardemail."' class='right'></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>$L[INPs]=action value='Apply changes'></td>

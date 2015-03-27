@@ -3,15 +3,7 @@
   include('lib/common.php');
 
   if(!$log){
-    pageheader('Error');
-    print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    You must be logged in to modify your login cookie.<br>
-".        "    <a href=login.php>Login</a>
-".        "$L[TBLend]
-";
-    pagefooter();
-    die();
+    needs_login(1);
   }
 
   if($_POST[action]=="update") {
@@ -21,13 +13,8 @@
 ".         "      <a href=''>Go back</a> or <a href='index.php'>give up</a>.";
 
     if($err){
-      print "<a href=./>Main</a> - Error
-".          "<br><br>
-".          "$L[TBL1]>
-".          "  $L[TD1c]>
-".          "$err
-".          "$L[TBLend]
-";
+      print "<a href=./>Main</a> - Error";
+      noticemsg("Error", $err);
       pagefooter();
       die();
     }else{

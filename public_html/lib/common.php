@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "<span style=\"color: #00FF00;\" title=\"1/03/2015\">7/19/1987</span>";
+  $abdate    = "<span style=\"color: #00FF00;\" title=\"3/21/2015\">7/19/1987</span>";
   $abversion = "2.5.2 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -34,7 +34,7 @@
    {
     $loguser               = array();
     $loguser['id']         = 0;	
-    $loguser['power']      = 0;
+    $loguser['group_id']   = 1;
     $loguser['tzoff']      = 0;
     $loguser['timezone']   = "UTC";
     $loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
@@ -46,8 +46,9 @@
      $loguser['theme'] = "minerslament";
     $loguser['blocksprites']=1;
    }
-   
-  if($loguser['power']==1)
+  
+  $flocalmod=$sql->fetchq("SELECT `uid` FROM `forummods`");
+  if($loguser['id'] = $flocalmod['uid'])
    {
     $loguser['modforums']=array();
     $modf=$sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");
@@ -67,6 +68,10 @@
 
   //2007-02-19 blackhole89 - needs to be here because it requires loguser data
   require "lib/ipbans.php";
+  
+  //Unban users whose tempbans have expired. - SquidEmpress
+  $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+  $sql->query('UPDATE users SET group_id='.$defaultgroup[id].', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
 
   $dateformat = "$loguser[dateformat] $loguser[timeformat]";
 
@@ -463,6 +468,8 @@
       $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite Threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
+    if (has_perm("deleted-posts-tracker"))
+      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted Posts Tracker');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 
@@ -576,11 +583,14 @@
      while($user = $sql->fetch($rbirthdays))
       {
        $b = explode('-',$user['birth']);
+       if($b['2'] <= 0 && $b['2'] > -2) $p = "";
+       else $p = "(";
        //Patch to fix 2 digit birthdays. Needs retooled to a modern datetime system. -Emuz
-       if($b['2'] <= 99 && $b['2'] > 15) $y = date("Y") - ($b['2'] + 1900);
-       else if($b['2'] <= 14) $y = date("Y") - ($b['2'] + 2000);
-       else $y = date("Y") - $b[2];
-       $birthdays[] = userlink($user)." (".$y.")";
+       if($b['2'] <= 99 && $b['2'] > 15) $y = date("Y") - ($b['2'] + 1900).")";
+       else if($b['2'] <= 14 && $b['2'] > 0) $y = date("Y") - ($b['2'] + 2000).")";
+       else if($b['2'] <= 0 && $b['2'] > -2) $y = "";
+       else $y = date("Y") - $b[2].")";
+       $birthdays[] = userlink($user)." ".$p."".$y;
       }
       
      if(count($birthdays))
@@ -727,14 +737,25 @@
     print "<br>$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src=\"img/poweredbyacmlm.PNG\">$L[TBLend]";
    }
    
-  function error($message, $type=0)
+  function noticemsg($name, $msg)
    {
-    global $L, $abversion, $abdate, $boardprog;
-    //[Scrydan] Work on this! Type 0 will kill the script and 1 may possibly redirect and have the form saved still?
-    print "
-         $L[TBL1]>
-         $message
-         $L[TBLend]";
+  		print "<table cellspacing=\"0\" class=\"c1\">
+".        " <tr class=\"h\">
+".        "  <td class=\"b h\" align=\"center\">$name
+".        " <tr>
+".        "  <td class=\"b n1\" align=\"center\">
+".        "    $msg
+".        "</table>
+".        "<br>
+";
+   }
+
+  function error($name, $msg)
+   {
+    global $abversion, $abdate, $boardprog;
+    pageheader('Error');
+    print "<br>";
+    noticemsg($name,$msg);
     pagefooter();
     die();
    }

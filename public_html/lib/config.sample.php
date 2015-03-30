@@ -1,7 +1,9 @@
-﻿<?php
+<?php
 
 /*** Acmlmboard 2 - Configuration ***
   Please look through the file and will in the apropriate information.
+  For the settings that call SQL resultp query functions, 
+  Please look into the Administrator Tools page on your board to configure them.
 */
 
   $sqlhost='localhost';
@@ -14,14 +16,16 @@
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';
 
-  $trashid=20; // Designates the id for your trash forum. 
+  require 'lib/database.php';
 
-  $boardtitle="Insert title here";// This is what will be displayed at the top of your browser window.
+  $trashid=$sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="trashid"'); // Designates the id for your trash forum. 
+
+  $boardtitle=$sql->resultp('SELECT `txtval` FROM `misc` WHERE `field`="boardtitle"');// This is what will be displayed at the top of your browser window.
   $defaultlogo="theme/abII.png";// Replace with the logo of your choice. Note: This is used if a theme doesn't have it's own logo. It is replaced per theme depending on the theme used.
   $boardlogo="<img style='border: 0px' src='$defaultlogo' title=\"$boardtitle\">"; // This defines the logo. Recommended you leave this the default.
   $favicon="theme/fav.png";// Replace with your favicon of choice
-  $defaulttheme="dailycycle2";// Select the default theme to be used. This will also be showed to users who are not logged in.
-  $defaultfontsize=70;// Overall font scale of the board. Default is 70%
+  $defaulttheme=$sql->resultp('SELECT `txtval` FROM `misc` WHERE `field`="defaulttheme"');// Select the default theme to be used. This will also be showed to users who are not logged in.
+  $defaultfontsize=$sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="defaultfontsize"');// Overall font scale of the board. Default is 70%
   $homepageurl="http://something/"; // This defines the link for the header image.
 
   /*Registeration Bot Protection *
@@ -55,8 +59,8 @@
 
  // User GFX limits
   $minipicsize=16;// traditionally a square image. $minipicsize x $minipicsize. (AB1/2's Default was 11x11)
-  $avatardimx=100;// Avatar X Scale
-  $avatardimy=100;// Avatar Y Scale
+  $avatardimx=$sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="avatardimx"');// Avatar X Scale
+  $avatardimy=$sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="avatardimy"');// Avatar Y Scale
   $avatardimxs=60;// Avatar X Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatardimys=60;// Avatar Y Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatarsize=2*30720;// The Avatar size in bytes. The default is to 60kb.
@@ -82,30 +86,32 @@
   //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 5; //(in seconds, 0 == off)
   //This will allow you to set the goal limits for 'Projected date' in profile.php
-  $config['topposts'] = '5000'; //Number of posts to set the goal to.
-  $config['topthreads'] = '200'; //Number of threads created to set the goal to.
+  $config['topposts'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="topposts"'); //Number of posts to set the goal to.
+  $config['topthreads'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="topthreads"'); //Number of threads created to set the goal to.
 
   $config['threadprevnext'] = false; //Enables links to jump one thread newer/older
-  $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
+  $config['memberlistcolorlinks'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="memberlistcolorlinks"'); //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
+  $config['registrationpuzzle'] = true;
   //The following enables the optional badge system
-  $config['badgesystem'] = false; //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
-  $config['spritesystem'] = true; //The sprite system allows users to catch graphic 'sprites' on the board. Collect them all!
+  $config['badgesystem'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="badgesystem"'); //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
+  $config['spritesystem'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="spritesystem"'); //The sprite system allows users to catch graphic 'sprites' on the board. Collect them all!
   
-  $config['extendedprofile'] = false; //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
+  $config['extendedprofile'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="extendedprofile"'); //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
 
-  $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
+  $config['threadprevnext'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="threadprevnext"'); //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
 
-  $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
-  $config['perusercolor'] = false; //Enable the use of per-user colors.
-  $config['usernamebadgeeffects'] = false; //Allows badges to change username colors Requires badge system.
-  $config['useshadownccss'] = false; //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
-  $config['nickcolorcss'] = false; //Enables use of CSS to define per theme colors via a span id. Note: You may need to customise CSS to fit your board groups. 
+  $config['rootuseremail'] = false; //Enable the Root Administrator's email to be shown in the No Permission page to a user who can edit other users but not Root Administrators.
+  $config['displayname'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="displayname"'); //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
+  $config['perusercolor'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="perusercolor"'); //Enable the use of per-user colors.
+  $config['usernamebadgeeffects'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="usernamebadgeeffects"'); //Allows badges to change username colors Requires badge system.
+  $config['useshadownccss'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="useshadownccss"'); //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
+  $config['nickcolorcss'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="nickcolorcss"'); //Enables use of CSS to define per theme colors via a span id. Note: You may need to customise CSS to fit your board groups. 
 
   //The following are related to how RPG elements are displayed. All these options allow for legacy AB1 RPG style and elements
-  $config['userpgnum'] = false; //Enables 'graphical' RPG stats in user's sidebars when themes have images incorporated in the themes/themename/rpg/ dir.
-  $config['userpgnumdefault'] = false; //Shows a default imageset on all themes. If $config['userpgnum'] is enabled the theme images will still show.
-  $config['alwaysshowlvlbar'] = false; //Enable this to always show the exp bar. This allows you to use it without having to have the rest of the system.
-  $config['rpglvlbarwidth'] = 96; // Set the size of the exp bar. Acmlmboard 1.x has a default of 56. 
+  $config['userpgnum'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="userpgnum"'); //Enables 'graphical' RPG stats in user's sidebars when themes have images incorporated in the themes/themename/rpg/ dir.
+  $config['userpgnumdefault'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="userpgnumdefault"'); //Shows a default imageset on all themes. If $config['userpgnum'] is enabled the theme images will still show.
+  $config['alwaysshowlvlbar'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="alwaysshowlvlbar"'); //Enable this to always show the exp bar. This allows you to use it without having to have the rest of the system.
+  $config['rpglvlbarwidth'] = $sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="rpglvlbarwidth"'); // Set the size of the exp bar. Acmlmboard 1.x has a default of 56. 
 
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
@@ -132,7 +138,7 @@
   $config['ircshopnotice'] = false; //enables the option to print on your main irc channel anytime someone equips an item
 
 //The following are optional values you can change to personalize your board
-  $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
+  $config['atnname']  = $sql->resultp('SELECT `txtval` FROM `misc` WHERE `field`="atnname"'); // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 
 //The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
   $config['classictags'] = false;

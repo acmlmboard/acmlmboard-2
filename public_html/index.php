@@ -18,6 +18,21 @@
   $showonusers=1;
   require 'lib/common.php';
 
+  $rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+	$rdmsg.="Post Radar saved!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Post Radar has been saved successfully.</td></tr></table></div>";
+}
+
   //mark forum read
   if($log && $_GET[action]=='markread'){
     $fid=$_GET[fid];
@@ -71,6 +86,7 @@
                      ." WHERE announce=0 "
                      ."ORDER BY c.ord,c.id,f.ord,f.id");
   $cat=-1;
+   if($_COOKIE['pstbon']){ print $rdmsg;}
 print "
 ".      "$L[TBL1]>";
 

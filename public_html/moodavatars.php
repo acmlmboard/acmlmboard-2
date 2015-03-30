@@ -1,8 +1,5 @@
 <?php
   require 'lib/common.php';
-//  if(!ismod()) {
-//    pageheader('Nothing here.');
-//  } else {
     pageheader('Mood avatars');
 
     $a=$sql->query("SELECT users.* FROM mood,users WHERE users.id=mood.user GROUP BY users.id ORDER BY users.id ASC");

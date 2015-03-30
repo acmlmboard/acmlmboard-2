@@ -1,6 +1,29 @@
 <?php
     require "lib/common.php";
     require "lib/threadpost.php";
+
+  $rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+if($_COOKIE['pstbon']==-1){
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>User has been banned.</td></tr></table></div>";
+} elseif($_COOKIE['pstbon']<-1){
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>User has been unbanned.</td></tr></table></div>";
+} else {
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Profile was edited successfully.</td></tr></table></div>"; }
+}
+
 	loadsmilies();
 
     $uid = $_GET['id'];
@@ -9,17 +32,14 @@
       $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$uid'");
     }
 
-   if(!$user['id'])
-    {
-     //use error($message, 0) function later!
-     pageheader("Profile");
-     print "<a href=\"./\">Main</a> - Profile<br><br>
-            $L[TBL1]>
-              $L[TD1c]>
-            This user does not exist!
-            $L[TBLend]";
-     pagefooter();
-     die();
+   if($uid = $_GET['id']) {
+     checknumeric($uid);
+     $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
+     if(!$numid) {
+     error("Error", "This user does not exist!");
+    }
+   } else {
+     error("Error", "You must specify a user ID!");
     }
 
     $group = $sql->fetchp("SELECT * FROM `group` WHERE id=?", array($user['group_id']));
@@ -44,7 +64,7 @@
       else $pexp = "None";
 
 
-    $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`minpower`
+    $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`private`
                             FROM `forums` `f`
                             LEFT JOIN `threads` `t` ON `t`.`forum`=`f`.`id`
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
@@ -93,17 +113,26 @@
    if($user['birth'] != -1)
     {
      //Crudely done code.
+     //You're Goddamn right. :P - SquidEmpress
+     $monthnames = array(1=>'January',  'February','March',   'April',
+                       'May',      'June',   'July',    'August',
+                       'September','October','November','December');
      $bdec     = explode("-", $user['birth']);
      $bstr     = $bdec[2]."-".$bdec[0]."-".$bdec[1];
-	 $birthday = date("l, F j, Y", strtotime($bstr));
+     $mo      = array(1=>'01','02','03','04','05','06','07','08','09','10','11','12');
+     $mn      =$bdec[0][$mo];
+         if ($bdec['2'] <= 0 && $bdec['2'] > -2) $birthday = $monthnames[$mn]." ".$bdec[1];
+	 else $birthday = date("l, F j, Y", strtotime($bstr));
 	 
 	 $age = '<!-- This feature requires PHP 5.3.0 or higher -->';
 	 if (class_exists('DateTime') && method_exists('DateTime', 'diff'))
 	 {
 		$bd1      = new DateTime($bstr);
 		$bd2      = new DateTime(date("Y-m-d"));
-		if ($bd2 < $bd1)
+		if ($bd2 < $bd1 && !$bdec['2'] <= 0)
 			$age = '(not born yet)';
+	       else if ($bdec['2'] <= 0 && $bdec['2'] > -2)
+		       $age = ''; 
 		else
 		{
 			$bd3      = $bd1->diff($bd2);
@@ -243,6 +272,16 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
       else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage Secondary Groups</a>";
     }
     
+    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+
+    $banuser ="";
+    if(has_perm('edit-permissions'))
+    {
+      if(!has_perm('ban-users')) $banuser ="";
+      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banhammer.php?id=".$user['id']."\">Ban User</a>";
+      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banhammer.php?unban&id=".$user['id']."\">Unban User</a>";
+    }
+    
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";
     $rblock    = $sql->query($qblock);
@@ -302,7 +341,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     $unclass ='';
     if($config['useshadownccss']) $unclass="class='needsshadow'";
     //If user has a a displayname, a custom username color, or both, we need to show the realname field.
-    if($config['perusercolor']) $usercnickcolor = $user['nick_color'];
+    if($config['perusercolor'] && $user['enablecolor']) $usercnickcolor = $user['nick_color'];
     if($config['displayname'] && $user['displayname']) $userdisplayname = true;
     if($userdisplayname || $usercnickcolor){
       $showrealnick = true;
@@ -310,7 +349,9 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     
     print "<a href=\"./\">Main</a> - Profile for ".userdisp($user)."
            <br><br>
-           $L[TBL] width=\"100%\">
+";
+    if($_COOKIE['pstbon']){ print $rdmsg;}
+print "    $L[TBL] width=\"100%\">
              $L[TDn] valign=\"top\">
                $L[TBL1]>
                  $L[TRh]>
@@ -436,12 +477,15 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                $L[TD2]><a href=\"forum.php?user=$user[id]\">View threads</a>
                        | <a href=\"thread.php?user=$user[id]\">Show posts</a>
                        | <a href=\"postsbyuser.php?id=$user[id]\">List posts</a>
+                       | <a href=\"postsbyuser.php?postsbytime&id=$user[id]\">Posts by time of day</a>
+                       | <a href=\"postsbyuser.php?postsbyforum&id=$user[id]\">Posts by forum</a>
+                       | <a href=\"postsbyuser.php?postsbythread&id=$user[id]\">Posts by thread</a>
                        $blocklayoutlink
                        ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send Private Message</a>":"") ."
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
-                       ". $editpermissions." ".$secondarygroups."
+                       ". $banuser." ". $editpermissions." ".$secondarygroups."
            $L[TBLend]";
            pagefooter();
            

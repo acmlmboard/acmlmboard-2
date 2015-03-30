@@ -3,8 +3,7 @@ require('lib/common.php');
 
 if (!has_perm('edit-forums')) 
 {
-	pageheader('Forum management');
-	no_perm();
+	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 }
 
 
@@ -197,12 +196,7 @@ pageheader('Forum management');
 
 if ($error)
 {
-	print 	"$L[TBL1]>
-".			"	$L[TRh]>$L[TDh]>Error</td></tr>
-".			"	$L[TR]>$L[TD1c]><br>{$error}<br><br></td></tr>
-".			"$L[TBLend]
-".			"<br>
-";
+        noticemsg("Error", $error);
 }
 
 if ($cid = $_GET['cid'])

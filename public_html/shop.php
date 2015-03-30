@@ -1,5 +1,25 @@
 <?php
   require 'lib/common.php';
+
+  $rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+if($_COOKIE['pstbon']==-1){
+	$rdmsg.="Item Sold<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>The $pitem[name] has been unequipped and sold.</td></tr></table></div>";
+} elseif($_COOKIE['pstbon']==-2){
+	$rdmsg.="Item Bought<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>The $item[name] has been bought and equipped!</td></tr></table></div>"; }
+}
+
   $action=$_GET[action];
   if ($_POST[action]=="save"&&has_perm('manage-shop-items')) {
     checknumeric($_GET[id]);
@@ -32,8 +52,6 @@
 
   needs_login(1);
 
-  pageheader('Item shop');
-
   $cat=$_GET[cat];
   checknumeric($cat);
 $f=fopen("shop-ref.log","a");
@@ -41,9 +59,11 @@ fwrite($f,"[".date("m-d-y H:i:s")."] ".$ref."\n");
 fclose($f);
 
   if(!has_perm('use-item-shop')){
-     no_perm();
+  pageheader('Item shop');
+     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!has_perm('manage-shop-items')) { //Added (Sukasa)
-     no_perm();
+  pageheader('Item shop');
+     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }else {
     $user=$sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
                       .'FROM users u '
@@ -79,8 +99,11 @@ fclose($f);
 ".            "    </td>
 ".            "    $L[TD1c]><a href=shop.php?action=desc&id=".$eq["eq$shop[id]"].">".$items[$eq["eq$shop[id]"]][name]."</a></td>
 ";
+  pageheader('Item shop');
         print "<img src=gfx/status.php?u=$loguser[id]>
-".            "<br>
+";
+    if($_COOKIE['pstbon']){ print $rdmsg;}
+print       "<br>
 ".            "$L[TBL1]>
 ".            "  $L[TRh]>
 ".            "    $L[TDh]>Shop</td>
@@ -92,6 +115,7 @@ fclose($f);
       case 'edit': //Added (Sukasa)
         checknumeric($_GET[id]);
         $item=$sql->fetchq("SELECT * FROM items WHERE id='$_GET[id]' union select * from items where id='-1'");
+  pageheader('Item shop');
         print "<style>
 ".            "   .disabled {color:#888888}
 ".            "   .higher   {color:#abaffe}
@@ -153,6 +177,7 @@ fclose($f);
       case 'desc':
         checknumeric($_GET[id]);
         $item=$sql->fetchq("SELECT * FROM items WHERE id='$_GET[id]'");
+  pageheader('Item shop');
         print "<style>
 ".            "   .disabled {color:#888888}
 ".            "   .higher   {color:#abaffe}
@@ -214,6 +239,7 @@ fclose($f);
         if (has_perm('manage-shop-items'))
           $edit=" | <a href='shop.php?action=edit&id=-1&cat=$cat'>Add new item</a>";
 
+  pageheader('Item shop');
         print "<script>
 ".            "  function preview(user,item,cat,name){
 ".            "    document.getElementById('prev').src='gfx/status.php?u='+user+'&it='+item+'&ct='+cat+'&'+Math.random();
@@ -330,6 +356,9 @@ fclose($f);
                      ."WHERE id=$loguser[id]");
 
 	  if($config['ircshopnotice']) sendirc("{irccolor-name}".get_irc_displayname()." {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
+              /*if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Item shop');
           print
               "$L[TBL1]>
 ".            "  $L[TD1c]>
@@ -337,6 +366,9 @@ fclose($f);
 ".            "    ".redirect('shop.php','the shop')."
 ".            "$L[TBLend]
 ";
+             } else { //Modern redirect*/
+                  redirect("shop.php",-2);
+             //}
         }
       break;
       case 'sell':
@@ -346,12 +378,18 @@ fclose($f);
                    ."SET eq$cat=0, spent=spent-$pitem[coins]*0.6 "
                    ."WHERE id=$loguser[id]");
 
+              /*if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Item shop');
         print "$L[TBL1]>
 ".            "  $L[TD1c]>
 ".            "    The $pitem[name] has been unequipped and sold.<br>
 ".            "    ".redirect('shop.php','the shop')."
 ".            "$L[TBLend]
 ";
+             } else { //Modern redirect*/
+                  redirect("shop.php",-1);
+             //}
       break;
       default:
     }

@@ -22,7 +22,6 @@ function field(show) {
 
 $categs=$sql->query("SELECT * "
                    ."FROM categories "
-//                   ."WHERE minpower <= ". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
                    ."WHERE id IN ".cats_with_view_perm()." "
                    ."ORDER BY ord");
 while($c=$sql->fetch($categs))
@@ -30,8 +29,6 @@ while($c=$sql->fetch($categs))
 $forums=$sql->query("SELECT f.* "
                    ."FROM forums f "
                    ."LEFT JOIN categories c ON c.id=f.cat "
-//                   ."WHERE f.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
-//                   .  "AND c.minpower<=". ($loguser['power'] < 0 ? 0 : $loguser['power']) ." "
                    ."WHERE f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
                    ."ORDER BY c.ord,ord");
 
@@ -157,8 +154,6 @@ if($_GET[w] == 1) {
                     ."WHERE $dastring AND ISNULL(pt2.id) "
                    ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
 
-//                    .  "AND f.minpower<=$loguser[power] "
-//                    .  "AND c.minpower<=$loguser[power] "
                     ."ORDER BY p.id");
 
 
@@ -210,7 +205,7 @@ else {
   $dastring = trim(substr($dastring, strlen($defbool)));
   
   $fieldlist='';
-  $ufields=array('id','name','sex','power');
+  $ufields=array('id','name','sex','group_id');
   foreach($ufields as $field)
     $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 
@@ -228,8 +223,6 @@ else {
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON f.cat=c.id "
                       ."WHERE $dastring "
-//                      .  "AND f.minpower<=$loguser[power] "
-//                      .  "AND c.minpower<=$loguser[power] "
                    ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
                       ."ORDER BY t.sticky DESC, t.lastdate DESC "
                       ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
@@ -242,8 +235,6 @@ else {
                                ."LEFT JOIN categories c ON f.cat=c.id "
                                ."WHERE $dastring "
                    ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
-//                               .  "AND f.minpower<=$loguser[power] "
-//                               .  "AND c.minpower<=$loguser[power]"
 );
   print "<br>
 ".      "$L[TBL1]>

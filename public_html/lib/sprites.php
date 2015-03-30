@@ -35,7 +35,8 @@ $chance = 5 + (rand(0, 6464) % 5);
 //$roll = 300;
 
 //Always fail to roll if disabled, effectively never appearing at all.
-if($loguser['blocksprites'] || !$config['spritesystem']) //Sprites will not display at all if the sprite system has been shut off. - SquidEmpress
+//Sprites will not show up on the login page. Code by Gywall.
+if(strstr($_SERVER['PHP_SELF'],"login.php") || $loguser['blocksprites'] || !$config['spritesystem']) //Sprites will not display at all if the sprite system has been shut off. - SquidEmpress
 	$chance = 0;
 
 /*Version 2 method

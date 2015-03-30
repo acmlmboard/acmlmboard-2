@@ -43,10 +43,10 @@ function isssl(){
     return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
 }
 
-function redirect($url,$msg,$delay=2){
+/*function redirect($url,$msg,$delay=2){
   return "You will now be redirected to <a href=$url>$msg</a> ...<META HTTP-EQUIV=REFRESH CONTENT=$delay;URL=$url>";
-}
-function redir2($url,$msg){
+}*/
+function redirect($url,$msg){
   header("Set-Cookie: pstbon=".$msg."; Max-Age=60; Version=1");
   header("Location: ".$url);
   die();

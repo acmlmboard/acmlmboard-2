@@ -11,8 +11,7 @@
   }
   $edid = (int)$edid;
   if(!can_edit_user_moods($edid)){
-    pageheader('No permission');
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
 //Editing functionality
@@ -62,12 +61,7 @@
   pageheader('Mood Avatar Editor 0.a');
 //Various magic
   if(isset($err)){
-    print "$L[TBL1]>
-  $L[TRh]>
-    $L[TDh]>Notice</td>
-  $L[TR]>
-    $L[TD1]>$err
-  </tr></table>";
+    noticemsg("Notice", $err);
   }
   print "<script language=\"javascript\">
 	function edit(av_id, av_lab, av_url)

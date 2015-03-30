@@ -9,7 +9,7 @@
     if ($getrankset < 1 || $getrankset > $totalranks) $getrankset = 1; //Should be made dynamic based on rank sets.
 
     $linkuser = array();
-    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic`, `lastview` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
+    $allusers = $sql->query("SELECT ".userfields().", `posts`, `minipic`, `lastview` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
    //$linkuser = $sql->fetchq($allusers);
     /*while ($user2 = $sql->fetchq($allusers))
      {;

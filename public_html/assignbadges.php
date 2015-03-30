@@ -8,19 +8,14 @@ require("lib/common.php");
   checknumeric($r['id']);
   checknumeric($r['uid']);
 
-  pageheader("Assign User Badges");
 
-  if(!has_perm('edit-user-badges')) no_perm();
+  if(!has_perm('edit-user-badges')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+
+  pageheader("Assign User Badges");
 
   if(!isset($r['uid']) || $r['uid'] == 0)
   {
-    print "
-    $L[TBL1]>
-      $L[TD1c]>
-        No User Requested.<br>
-        <a href=./>Back to main</a>
-    $L[TBLend]
-  ";
+    noticemsg("Error", "No User Requested.<br> <a href=./>Back to main</a>");
     pagefooter();
     die();
   }

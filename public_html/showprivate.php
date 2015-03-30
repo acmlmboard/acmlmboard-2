@@ -5,8 +5,7 @@
   needs_login(1);
 
   if (!has_perm('view-own-pms')) {
-    pageheader('Access Denied');
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
 
   loadsmilies();
@@ -21,8 +20,7 @@
 //  if ($pid) 
 
     if (!$pid) {
-      pageheader('Error');
-      pm_not_found();
+      error("Error", "Private message does not exist. <br> <a href=./>Back to main</a>");
     }
 
     $pmsgs=$sql->fetchq("SELECT ".userfields('u','u').",$fieldlist p.*, pt.* "
@@ -33,8 +31,7 @@
     $tologuser=($pmsgs[userto]==$loguser[id]);
 
     if(((!$tologuser && $pmsgs[userfrom]!=$loguser[id]) && !has_perm('view-user-pms'))) {
-      pageheader('Error');
-      pm_not_found();
+      error("Error", "Private message does not exist. <br> <a href=./>Back to main</a>");
     }elseif($tologuser && $pmsgs[unread])
       $sql->query("UPDATE pmsgs SET unread=0 WHERE id=$pid");
 

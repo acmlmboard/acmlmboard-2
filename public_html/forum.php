@@ -25,8 +25,7 @@
 
 
     if (!isset($forum['id'])) {
-      pageheader("Forum not found",0);
-      forum_not_found();      
+      error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");      
     }
 
     //load tags
@@ -218,13 +217,13 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 ";
   }else
   {
-    pageheader('Forum not found',0);
-	forum_not_found();
+    error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");
   }
 
   $showforum=$uid||$time;
 
   //Forum Jump - SquidEmpress
+  if(!$uid && !$time && !(isset($_GET[fav]))) {
   $r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
 		$forumjumplinks="<table><td>$fonttag Forum jump: </td>
         <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
@@ -244,6 +243,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 		}
 		$forumjumplinks.="</optgroup></select></table></form>";
 		$forumjumplinks=($forumjumplinks);
+  }
 
   if($forum[threads]<=$loguser[tpp]){
     $fpagelist='<br>';

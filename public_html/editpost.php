@@ -37,7 +37,7 @@
 
   needs_login(1);
 
-  $thread=$sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.minpowerreply, f.minpower '
+  $thread=$sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '
@@ -45,8 +45,7 @@
 
 
   if (!$thread) $pid = 0;
-if($loguser[redirtype]==0 || $act!="Submit"){ //Classical Redirect
-  pageheader('Edit post',$thread[forum]);
+if($act!="Submit"){ //Classical Redirect
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
@@ -96,14 +95,11 @@ if($act=="Submit" && $post['text']==$_POST[message]){
 
   if($err){
 if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[forum]); }
-    print "$top - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
+  pageheader('Edit post',$thread[forum]);
+    print "$top - Error";
+    noticemsg("Error", $err);
   }elseif(!$act){
+  pageheader('Edit post',$thread[forum]);
     print "$top
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -114,10 +110,12 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
 ".        "  $L[INPh]=passenc value=\"$pass\">
 ";
+    if($loguser[posttoolbar]!=1)
     print "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
 ".        "  $L[TR1]>
@@ -128,7 +126,12 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
+    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " </form>
 ".        "$L[TBLend]
 ";
@@ -140,11 +143,14 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     $post[num]=++$euser[posts];
     $post[mood]=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
+    $post[close]=$_POST[close];
+    $post[stick]=$_POST[stick];
     $post[text]=$_POST[message];
     foreach($euser as $field => $val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 
+  pageheader('Edit post',$thread[forum]);
     print "$top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -157,10 +163,13 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        " <form action=editpost.php method=post>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Post</td>
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
 ".        "  $L[TR1]>
@@ -173,7 +182,12 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
+    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " </form>
 ".        "$L[TBLend]
 ";
@@ -186,9 +200,15 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     $mid=(isset($_POST[mid])?(int)$_POST[mid]:-1);
     checknumeric($mid);
     checknumeric($nolayout);
+    checknumeric($_POST[close]);
+    checknumeric($_POST[stick]);
+    $modclose=$_POST[close];
+    $modstick=$_POST[stick];
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
     $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
+    $sql->query("UPDATE threads SET closed='$modclose',sticky='$modstick',lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id='$thread[id]'");
+    $sql->query("UPDATE forums SET lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
     
     if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("post edit ".$pid." rev ".$rev)."')");
 
@@ -206,7 +226,9 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
     sendirc("{irccolor-base}Post edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$thread[id]{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
     }
-if($loguser[redirtype]==0){ //Classical Redirect
+/*if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Edit post',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -215,11 +237,12 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".        "$L[TBLend]
 ";
-} else { //Modern redirect
-  redir2("thread.php?pid=$pid#edit","-1");
-}
+} else { //Modern redirect*/
+  redirect("thread.php?pid=$pid#edit","-1");
+//}
   }elseif($act=='delete' ||$act=='undelete'){
     if(!(can_delete_forum_posts($thread[forum]))) {
+  pageheader('Edit post',$thread[forum]);
       print "$top - Error
 ".          "<br><br>
 ".          "$L[TBL1]>
@@ -229,6 +252,8 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ";
     } else {
       $sql->query("UPDATE posts SET deleted=".($act=='delete'?1:0)." WHERE id='$pid'");
+  /*$loguser['blocksprites']=1;
+  pageheader('Edit post',$thread[forum]);
       print "$top - ".($act=='delete'?'Delete':'Undelete')." Post
 ".          "<br><br>
 ".          "$L[TBL1]>
@@ -236,9 +261,42 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ".          "    Post ".$act."d!<br>
 ".          "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".          "$L[TBLend]
-";
+";*/
+  redirect("thread.php?pid=$pid#edit",-1);
     }
   }
+  //Shamelessly taken from newreply.php - SquidEmpress
+  if($act!='Submit' && $act!='delete' && $act!='undelete' && !$err && !$thread[announce] && can_view_forum($thread)){
+    $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
+                      .'FROM posts p '
+					  .'LEFT JOIN threads t ON t.id=p.thread '
+                      .'LEFT JOIN poststext pt1 ON p.id=pt1.id '
+                      .'LEFT JOIN poststext pt2 ON pt2.id=pt1.id AND pt2.revision=(pt1.revision+1) '
+                      .'LEFT JOIN users u ON p.user=u.id '
+                      ."WHERE p.thread=$thread[id] "
+                      ."  AND ISNULL(pt2.id) "
+                      .'ORDER BY p.id DESC '
+                      ."LIMIT $loguser[ppp]");
+    print "<br>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Thread preview
+".        "$L[TBLend]
+";
+    while($post=$sql->fetch($posts)){
+      $exp=calcexp($post[uposts],ctime()-$post[uregdate]);
+      print threadpost($post,1);
+    }
+
+    if($thread[replies]>=$loguser[ppp]){
+    print "<br>
+".        "$L[TBL1]>
+".        "  $L[TR]>
+".        "    $L[TD1]>The full thread can be viewed <a href=thread.php?id=$thread[id]>here</a>.
+".        "$L[TBLend]
+";
+    }
+}
 
 
   pagefooter();

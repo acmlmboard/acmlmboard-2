@@ -107,9 +107,11 @@ function usegfxnums()
       }
 
       // "Edit" link for admins or post owners, but not banned users
-/*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
 	  if (can_edit_post($post) && $post[id])
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
+        
+      if (can_edit_post($post) && $post[id] && $post[isannounce])
+        $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid=$post[id]\">Edit Title</a>";
 
       if($post[id] && can_delete_forum_posts(getforumbythread($post[thread])))
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&amp;act=delete\">Delete</a>";
@@ -184,7 +186,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".        "      ".((strlen($grouplink))?"<br>":"")."
 ".        "      ".postfilter($post[utitle]);
 /* This block is used when rendering AB1 style image RPG layouts */
-if(usegfxnums()) $text.= "
+if(usegfxnums() && $loguser['numbargfx']!=1) $text.= "
 ".        "      <br>".rpglabel2img("level", "Level:")." ".rpgnum2img(calclvl($exp))."
 ".        "      <br>".drawrpglevelbar($exp)."
 ".        "      <br>$picture
@@ -200,7 +202,7 @@ if(usegfxnums()) $text.= "
 ";
 /*Normal Rendering */
 else $text.=      "      <br>Level: ".calclvl($exp)."
-".        "      ".($config['alwaysshowlvlbar'] ? "<br>".drawrpglevelbar($exp):"")."
+".        "      ".($config['alwaysshowlvlbar'] && $loguser['showlevelbar']!=1 ? "<br>".drawrpglevelbar($exp):"")."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]
 ".        "      <br>EXP: $exp

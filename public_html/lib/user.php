@@ -20,13 +20,6 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     return $id;
   }
 
-  function forumbanned($uid,$fid) { //2009/07 Sukasa: Forum Bans
-    global $sql;
-    checknumeric($uid);
-    checknumeric($fid);
-    return $sql->resultq("select count(`uid`) > 0 from `forumbans` where `forum`=$fid and `uid`=$uid");
-  }
-
   function checkuid($userid,$pass){
     global $sql;
     checknumeric($userid);
@@ -34,48 +27,81 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     return $user;
   }
 
-  function checkctitle(){
-    global $loguser;
+  function checkctitle($uid){
+    global $sql,$loguser;
+    
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+    
     if(!$loguser[id]) return false;
     if (has_perm_revoked('edit-title')) return false;
-    if (has_perm('edit-title')) return true;
-    if($loguser[posts]>=100) return true; //1200
-    if($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true; //800, 200
+    if ($uid == $loguser['id'] && has_perm('edit-title')) { 
+       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+       if ($loguser[posts]>=100) return true;
+       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       return false;
+    }
+
+    if (has_perm('edit-titles')) return true;
+    if (has_perm_with_bindvalue('edit-user-title',$uid)) return true;
     
     return false;
   }
 
-  function checkcusercolor(){
+  function checkcusercolor($uid){
     global $loguser,$config;
     
     if (!$config["perusercolor"]) return false;
 
     if(!$loguser[id]) return false;
     if (has_perm_revoked('has-customusercolor')) return false;
-    if (has_perm('has-customusercolor')) return true;
+    if ($uid == $loguser['id'] && has_perm('has-customusercolor')) return true;
     
     /* Allow a custom user color after a specific postcount/time. *DISABLED*
     if($loguser[posts]>=4000) return true;
     if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
     */
     
+    if (has_perm('edit-customusercolors')) return true;
+    if (has_perm_with_bindvalue('edit-user-customnickcolor',$uid)) return true;
+
     return false;
   }
 
-  function checkcdisplayname(){
-    global $loguser,$config;
+  function checkcdisplayname($uid){
+    global $sql,$loguser,$config;
+    
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
     
     if (!$config["displayname"]) return false;
 
     if(!$loguser[id]) return false;
     if (has_perm_revoked('has-displayname')) return false;
-    if (has_perm('has-displayname')) return true;
+    if ($uid == $loguser['id'] && has_perm('has-displayname')) { 
+       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+      //Allow a custom displayname after a specific postcount/time.
+       if ($loguser[posts]>=100) return true;
+       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       return false;
+    }
+  
+    if (has_perm('edit-displaynames')) return true;
+    if (has_perm_with_bindvalue('edit-user-displayname',$uid)) return true;
     
-    /* Allow a custom displayname after a specific postcount/time. *DISABLED*
-    if($loguser[posts]>=4000) return true;
-    if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
-    */
+    return false;
+  }
+  
+  function checkcextendedprofile($uid){
+    global $loguser,$config;
     
+    if (!$config["extendedprofile"]) return false;
+
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('update-own-extended-profile')) return false;
+    if ($uid == $loguser['id'] && has_perm('update-own-extended-profile')) return true;
+    
+    if (has_perm('update-extended-profiles')) return true;
+    if (has_perm_with_bindvalue('update-user-extended-profile',$uid)) return true;
+
     return false;
   } 
 //This block was borrowed from Blargboard. It is a proxy and stop forum spam detection routine and it's required defined function for url pulling.
@@ -244,7 +270,7 @@ function renderdotrank($posts=0){
   
 function userfields($tbl='', $pf='')
 {
-	$fields = array('id','name','displayname','sex','group_id','nick_color');
+	$fields = array('id','name','displayname','sex','group_id','nick_color','enablecolor');
 	
 	$ret = '';
 	foreach ($fields as $f)
@@ -291,7 +317,7 @@ function userfields($tbl='', $pf='')
 
   if($config['nickcolorcss']) $nccss="class='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
 //Over-ride for custom colours [Gywall]
-  if($user[$u.'nick_color'] && $config[perusercolor])
+  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config[perusercolor])
   { 
     $nc = $user[$u.'nick_color'];
     $nccss = "";

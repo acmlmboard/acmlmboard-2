@@ -2,8 +2,7 @@
 require 'lib/common.php';
 
 if (!has_perm('use-test-bed')) {
-	pageheader("Nope");
-	no_perm();
+	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 }
 
 pageheader("Sandbox");

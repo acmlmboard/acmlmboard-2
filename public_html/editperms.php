@@ -18,22 +18,19 @@
 
   if (!has_perm('edit-permissions'))
   {
-	pageheader('Edit permissions');
-	no_perm();
+	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
   if (isset($_GET['gid']))
   {
 	$id = (int)$_GET['gid'];
-	if(is_root_gid($id) && !has_perm('no-restrictions'))
+	if((is_root_gid($id) || (!has_perm_with_bindvalue('can-edit-group', $id) && $id!=$loguser['group_id'])) && !has_perm('no-restrictions'))
 	{
-		pageheader('Edit permissions');
-		no_perm();		
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");		
 	}
 	if(	$loguser['group_id'] == $id && !has_perm('edit-own-permissions'))
 	{
-		pageheader('Edit permissions');
-		no_perm();		
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");		
 	}
 	$permowner = $sql->fetchp("SELECT id,title,inherit_group_id FROM `group` WHERE id=?", array($id));
 	$type = 'group';
@@ -44,16 +41,14 @@
 	$id = (int)$_GET['uid'];
 
 	$tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
-	if (is_root_gid($tuser[$u.'group_id']) && !has_perm('no-restrictions')) 
+	if ((is_root_gid($tuser[$u.'group_id']) || (!has_perm_with_bindvalue('can-edit-group', $tuser[$u.'group_id']) && $id!=$loguser['id'])) && !has_perm('no-restrictions')) 
 	{
-		pageheader('Edit permissions');
-		no_perm();
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	} 
 
 	if ($id == $loguser['id'] && !has_perm('edit-own-permissions'))
 	{
-		pageheader('Edit permissions');
-		no_perm();
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
 	$permowner = $sql->fetchp("SELECT u.id,u.name AS title,u.group_id,g.title AS group_title FROM users u LEFT JOIN `group` g ON g.id=u.group_id WHERE u.id=?", array($id));
 	$type = 'user';
@@ -76,17 +71,7 @@
   
   if (!$permowner)
   {
-	// TODO: functions for custom error messages (this is not nice at all)
-	pageheader('Edit permissions');
-    print
-		"$L[TBL1]>
-".  	"  $L[TR2]>
-".  	"    $L[TD1c]>
-".  	"      Invalid {$type} ID.
-".  	"$L[TBLend]
-";
-    pagefooter();
-    die();
+    error("Error", "Invalid {$type} ID.");
   }
   
   $errmsg = '';
@@ -97,8 +82,13 @@
 	$permid = stripslashes($_POST['permid_new']);
 	$bindval = (int)$_POST['bindval_new'];
 	
-	if(has_perm('no-restrictions') || $permid != 'no-restrictions') $sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
-		array($id, $type, $permid, $bindval, $revoke));
+	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
+    $sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
+		array($id, $type, $permid, $bindval, $revoke)); 
+    $msg="The ".title_for_perm($permid)." permission has been successfully assigned!"; 
+    } else { 
+    $msg="You do not have the permissions to assign the ".title_for_perm($permid)." permission!"; 
+    } 
   }
   else if (isset($_POST['apply']))
   {
@@ -109,15 +99,24 @@
 	$permid = stripslashes($_POST['permid'][$pid]);
 	$bindval = (int)$_POST['bindval'][$pid];
 	
-	if(has_perm('no-restrictions') || $permid != 'no-restrictions') $sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
-		array($permid, $bindval, $revoke, $pid));
+	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
+    $sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
+		array($permid, $bindval, $revoke, $pid)); 
+    $msg="The ".title_for_perm($permid)." permission has been successfully edited!"; 
+    } else { 
+    $msg="You do not have the permissions to edit the ".title_for_perm($permid)." permission!"; 
+    }
   }
   else if (isset($_POST['del']))
   {
 	$keys = array_keys($_POST['del']);
 	$pid = $keys[0];
 	$permid = stripslashes($_POST['permid'][$pid]);
-	if(has_perm('no-restrictions') || $permid != 'no-restrictions') $sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid));
+	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
+    $sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid)); $msg="The ".title_for_perm($permid)." permission has been successfully deleted!"; 
+    } else { 
+    $msg="You do not have the permissions to delete the ".title_for_perm($permid)." permission!"; 
+    } 
   }
   
   pageheader('Edit permissions');
@@ -127,7 +126,7 @@
 	  'breadcrumb' => array(array('href'=>'./', 'title'=>'Main')),
 	  'title' => 'Edit permissions',
 	  'actions' => array(),
-  	  'message' => $errmsg
+  	  'message' => $msg
   );
 	
   RenderPageBar($pagebar);

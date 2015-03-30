@@ -22,10 +22,10 @@ imagefilledrectangle($im,0,0,280,340,$cblank);
 /* background */
 imagealphablending($im,TRUE);
 
-$count=$sql->resultq("SELECT COUNT(*) FROM forums WHERE id>0 AND minpower=-1");
+$count=$sql->resultq("SELECT COUNT(*) FROM forums WHERE id>0 AND private=0");
 
 $y=1; $max=0;
-$f=$sql->query("SELECT id,title FROM forums WHERE id>0 AND minpower=-1");
+$f=$sql->query("SELECT id,title FROM forums WHERE id>0 AND private=0");
 while($d=$sql->fetch($f)) {
 	$a=$sql->resultq("SELECT COUNT(*) FROM posts p, threads t WHERE t.id=p.thread AND t.forum=$d[id] AND p.date>".(ctime()-86400));
 	imagettftext($im,7,0,1,($y++)*(340/$count)-5,$cwhite, "/var/sites/acmlmboard/board/gfx/verdana.ttf",$d[title]);
@@ -38,7 +38,7 @@ for($i=0;$i<$max;$i+=20) {
 }
 
 $y=0;
-$f=$sql->query("SELECT id,title FROM forums WHERE id>0 AND minpower=-1");
+$f=$sql->query("SELECT id,title FROM forums WHERE id>0 AND private=0");
 while($d=$sql->fetch($f)) {
 	$a=$sql->resultq("SELECT COUNT(*) FROM posts p, threads t WHERE t.id=p.thread AND t.forum=$d[id] AND p.date>".(ctime()-86400));
 	imagefilledrectangle($im,280-($a*280/$max),($y++)*(340/$count),280,$y*(340/$count) -2,$ch2);

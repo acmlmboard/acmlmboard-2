@@ -79,8 +79,9 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     if ($uid == $loguser['id'] && has_perm('has-displayname')) { 
        if ($loguser['group_id']!=$defaultgroup['id']) return true;
       //Allow a custom displayname after a specific postcount/time.
-       if ($loguser[posts]>=100) return true;
-       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       /*DISABLED*/
+       /*if ($loguser[posts]>=100) return true;
+       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;*/
        return false;
     }
   

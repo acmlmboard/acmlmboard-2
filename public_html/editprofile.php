@@ -167,7 +167,7 @@
 
       if (!has_perm_with_bindvalue('can-edit-group', $targetgroup) && $targetgroup!=$loguser['group_id']) {
         $error.="- You do not have the permissions to assign this group.<br />";
-
+      }
       $targetname = $_POST['name'];
 
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {

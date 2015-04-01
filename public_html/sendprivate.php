@@ -68,7 +68,7 @@ print     "  $L[TR]>
 ";
 print     "  $L[TR]>
 ".        "    $L[TD1c]>Message:</td>
-".        "    $L[TD2]>$L[TXTa]=message rows=20 cols=80>".htmlval($quotetext)."</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>".htmlval($quotetext)."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -121,7 +121,7 @@ print     "  $L[TR]>
 ";
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Message:</td>
-".        "    $L[TD2]>$L[TXTa]=message rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -159,7 +159,7 @@ print     "  $L[TR]>
 ".           "    ".redirect('private.php','private message box')."
 ";
              } else { //Modern redirect*/
-                  redirect("private.php"-1);
+                  redirect("private.php", -1);
              //}
       }
     }elseif(!$userto){

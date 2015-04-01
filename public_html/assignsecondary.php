@@ -31,7 +31,7 @@ require("lib/common.php");
 
   if ($r['action'] == "del") {
     unset($r['action']);
-    if((is_root_gid($id) || (!has_perm_with_bindvalue('can-edit-group', $id) && $id!=$loguser['group_id'])) && !has_perm('no-restrictions')) $pagebar['message'] = "You do not have the permissions to revoke group.";
+    if((is_root_gid($id) || (!has_perm_with_bindvalue('can-edit-group', $id) && $id!=$loguser['group_id'])) && !has_perm('no-restrictions')) $pagebar['message'] = "You do not have the permissions to revoke this group.";
     else if ($id > 0) {
       if ($sql->prepare('DELETE FROM user_group WHERE user_id=? AND group_id=? LIMIT 1',array($uid, $id))) {
       $pagebar['message'] = "User successfully removed from group.";
@@ -117,7 +117,7 @@ else {
 }
 
 elseif ($r['action']=="new"){
-if((is_root_gid($s['badge_id']) || (!has_perm_with_bindvalue('can-edit-group', $s['badge_id']) && $s['badge_id']!=$loguser['group_id'])) $pagebar['message'] = "You do not have the permissions to assign group.";
+if((is_root_gid($s['badge_id']) || (!has_perm_with_bindvalue('can-edit-group', $s['badge_id']) && $s['badge_id']!=$loguser['group_id'])) && !has_perm('no-restrictions')) $pagebar['message'] = "You do not have the permissions to assign this group.";
 else if (      $sql->prepare('INSERT INTO user_group SET
 user_id=?,group_id=?,sortorder=? ;', array(
 $uid,

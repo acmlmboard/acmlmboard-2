@@ -88,9 +88,7 @@ if($act!="Submit"){
   $forumlink="<a href=forum.php?id=$fid>Back to forum</a>";
 
   if(!$forum) {
-	noticemsg("Error", "Forum does not exist. <br> <a href=./>Back to main</a>");
-        pagefooter();
-        die();
+	error("Error", "Forum does not exist. <br> <a href=./>Back to main</a>");
   }
 
     else if ($announce && !can_create_forum_announcements($fid))

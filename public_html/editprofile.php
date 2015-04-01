@@ -281,12 +281,12 @@
                . setfield('fontsize').','
                . setfield('theme')   .','
                . setfield('blocklayouts')   .','
-               . setfield('blocksprites')   .','
+               . ($config['spritesystem']?(setfield('blocksprites')  .','):'')
                . setfield('emailhide') .','
                . setfield('numbargfx')   .','
-               . setfield('showlevelbar')   .','
+               . ($config['alwaysshowlvlbar']?(setfield('showlevelbar')  .','):'')
                . setfield('posttoolbar')   .','
-               . setfield('hidden') .','
+               . (has_perm("show-online") || has_perm("edit-user-show-online")?(setfield('hidden')  .','):'')
                . setfield('timezone') .','
                . "tzoff=$tztotal,"
                . "birth='$birthday',"
@@ -483,6 +483,8 @@ if ($config['spritesystem'])
  if (has_perm("show-online") || has_perm("edit-user-show-online"))
  print"
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
+";
+ print"
 ".           fieldrow('AB1.x Number and Bar Graphics', fieldoption('numbargfx',$user['numbargfx'],array('Show them in AB1.x themes', 'Never show them in AB1.x themes')))."
 ";
 if ($config['alwaysshowlvlbar'])

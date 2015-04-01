@@ -71,9 +71,7 @@
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
   if(!$thread) {
-	noticemsg("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
-        pagefooter();
-        die();
+	error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
 
 

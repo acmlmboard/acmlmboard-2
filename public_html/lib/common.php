@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "3/31/2015";
+  $abdate    = "4/02/2015";
   $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -465,11 +465,11 @@
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
     if (has_perm("view-favorites")) 
-      $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite Threads');
+      $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
     if (has_perm("deleted-posts-tracker"))
-      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted Posts Tracker');
+      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted posts tracker');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 

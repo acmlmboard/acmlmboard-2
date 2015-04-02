@@ -173,6 +173,7 @@
 
     $msg=preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si',"get_username_link",$msg);
 //    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
+    //$msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg); //For Reference. Original no quote @username
 
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
     $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);

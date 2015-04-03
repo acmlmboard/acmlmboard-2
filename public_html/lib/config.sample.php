@@ -16,7 +16,12 @@
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';
 
-  require 'lib/database.php';
+  /* Note: As of v2.5.3 some of the config options are available in the database. This file contains a 'temporary' method to access them.  *
+   * In the future these will be managed outside of config.php in an optimum way. In the mean time if you feel safer editing them directly *
+   * in this file, you can do so. Just replace the SQL calls with the values you wish. The big downside is you can't change them with      *
+   * in admintools. (Emuz's Note: Wait until the next version if you already have a board established.)                                    */
+
+  require 'lib/database.php';// This can be disabled if you wish to do without the SQL settings.
 
   $trashid=$sql->resultp('SELECT `intval` FROM `misc` WHERE `field`="trashid"'); // Designates the id for your trash forum. 
 

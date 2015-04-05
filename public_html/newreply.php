@@ -217,19 +217,23 @@ print     "  $L[TR]>
 ";
   }elseif($act=='Submit'){
     checknumeric($_POST[nolayout]);
-    checknumeric($_POST[close]);
-    checknumeric($_POST[stick]);
+//Make sure these controls are only usable by those with moderation rights!
+    if(can_edit_forum_threads($thread[forum])){
+    	checknumeric($_POST[close]);
+    	checknumeric($_POST[stick]);
+    	if($_POST[close]) $modext=",closed=".$_POST[close];
+	if($_POST[stick]) $modext.=",sticky=".$_POST[stick];
+    }
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
-    $modclose=$_POST[close];
-    $modstick=$_POST[stick];
+
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
     $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
-    $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid,closed=$modclose,sticky=$modstick WHERE id=$tid");
+    $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id=$tid");
     $sql->query("UPDATE forums SET posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
 
     //2007-02-21 //blackhole89 - nuke entries of this thread in the "threadsread" table

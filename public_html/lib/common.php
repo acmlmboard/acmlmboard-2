@@ -168,7 +168,7 @@
    $themelist = unserialize(file_get_contents("themes_serial.txt"));
 
    //Config definable theme override
-   if($config[override_theme] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
+   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
     {
       $theme = $config[override_theme];
     }
@@ -197,7 +197,7 @@
     $themefile = $theme.".css";
    }
    
-  if($config[override_logo] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
+  if($config['override_logo'] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
     $logofile = $config[override_logo];
   elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";
@@ -664,11 +664,11 @@
        }
       }
       
-     if ($numguests)
+     if (isset($numguests))
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if ($numbots)
+     if (isset($numbots))
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }

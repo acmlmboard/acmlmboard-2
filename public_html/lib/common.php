@@ -1,4 +1,4 @@
-<?php
+﻿<?php
   require "lib/function.php";
 
   header("Content-type: text/html; charset=utf-8");
@@ -71,7 +71,7 @@
   
   //Unban users whose tempbans have expired. - SquidEmpress
   $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
-  $sql->query('UPDATE users SET group_id='.$defaultgroup[id].', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
+  $sql->query('UPDATE users SET group_id='.$defaultgroup.', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
 
   $dateformat = "$loguser[dateformat] $loguser[timeformat]";
 

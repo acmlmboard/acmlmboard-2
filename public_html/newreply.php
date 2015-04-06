@@ -218,11 +218,11 @@ print     "  $L[TR]>
   }elseif($act=='Submit'){
     checknumeric($_POST[nolayout]);
 //Make sure these controls are only usable by those with moderation rights!
-    if(can_edit_forum_threads($thread[forum])){
-    	checknumeric($_POST[close]);
-    	checknumeric($_POST[stick]);
-    	if($_POST[close]) $modext=",closed=".$_POST[close];
-	if($_POST[stick]) $modext.=",sticky=".$_POST[stick];
+    if(can_edit_forum_threads($thread['forum'])){
+    	checknumeric($_POST['close']);
+    	checknumeric($_POST['stick']);
+    	if($_POST['close']) $modext=",closed=".$_POST['close'];
+	if($_POST['stick']) $modext.=",sticky=".$_POST['stick'];
     }
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;

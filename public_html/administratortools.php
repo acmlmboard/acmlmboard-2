@@ -122,7 +122,7 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".        "      $L[TD2]>$L[INPt]='atnname' size='40' maxlength='255' value='".$atnname."' class='right'></td>
 ".       "  $L[TRg]>
 ".       "    $L[TDh] colspan=6>Miscellaneous settings</td>
-".    fieldrow('Disable Registering', fieldoption('regdisable',$rtool['regdisable'],array('Enable', 'Disable')))."
+".    fieldrow('Enable Registration', fieldoption('regdisable',$rtool['regdisable'],array('Enable', 'Disable')))."
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Disable Registering Message:</td>
 ".        "      $L[TD2]>$L[TXTa]='regdisabletext' rows=8 cols=120>".$regdisabletext."</textarea></td>

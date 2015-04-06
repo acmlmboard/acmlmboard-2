@@ -8,9 +8,9 @@
   ****************************************************/
 
 
-  if($p=$_GET[p]) return header("Location:thread.php?pid=$p#$p");
-  if($t=$_GET[t]) return header("Location:thread.php?id=$t");
-  if($u=$_GET[u]) return header("Location:profile.php?id=$u");
+  if(isset($_GET['p'])){ $p=$_GET['p']; return header("Location:thread.php?pid=$p#$p"); }
+  if(isset($_GET['t'])){ $t=$_GET['t']; return header("Location:thread.php?id=$t"); }
+  if(isset($_GET['u'])){ $u=$_GET['u']; return header("Location:profile.php?id=$u"); }
   if(isset($_GET['a'])) {
     $a=$_GET['a'];
     return header("Location:thread.php?announce=$a");

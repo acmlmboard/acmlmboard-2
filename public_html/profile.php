@@ -119,8 +119,7 @@ if($_COOKIE['pstbon']==-1){
                        'September','October','November','December');
      $bdec     = explode("-", $user['birth']);
      $bstr     = $bdec[2]."-".$bdec[0]."-".$bdec[1];
-     $mo      = array(1=>'01','02','03','04','05','06','07','08','09','10','11','12');
-     $mn      =$bdec[0][$mo];
+     $mn=intval($bdec[0]);
          if ($bdec['2'] <= 0 && $bdec['2'] > -2) $birthday = $monthnames[$mn]." ".$bdec[1];
 	 else $birthday = date("l, F j, Y", strtotime($bstr));
 	 

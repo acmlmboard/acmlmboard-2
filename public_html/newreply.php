@@ -124,7 +124,7 @@
   //does the user have reading access to the quoted post?
   if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
-  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".htmlval($post[text])."[/quote]";
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".str_replace("&","&amp",$post[text])."[/quote]";
   }
 
   if($err){

@@ -329,8 +329,12 @@ print     "  $L[TR]>
       $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
 
     checknumeric($nolayout);
-    checknumeric($_POST[close]);
-    checknumeric($_POST[stick]);
+    if(can_edit_forum_threads($fid)){
+    	checknumeric($_POST['close']);
+    	checknumeric($_POST['stick']);
+    	$modclose=$_POST['close'];
+	$modstick=$_POST['stick'];
+    }
 
     $iconurl=addslashes($iconurl);
 
@@ -343,10 +347,7 @@ print     "  $L[TR]>
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     if($announce) {
     $modclose=$announce;
-    } else {
-    $modclose=$_POST[close];
     }
-    $modstick=$_POST[stick];
 
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");

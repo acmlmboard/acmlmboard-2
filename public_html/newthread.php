@@ -209,7 +209,7 @@ print     "  $L[TR]>
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
-    if(can_edit_forum_threads($forum) && !$announce)
+    if(can_edit_forum_threads($fid) && !$announce)
     print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
 ".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
 ";
@@ -316,7 +316,7 @@ print     "  $L[TR]>
           "      $L[INPl]=mid>".moodlist($_POST[mid])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
-    if(can_edit_forum_threads($forum) && !$announce)
+    if(can_edit_forum_threads($fid) && !$announce)
     print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
 ".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
 ";
@@ -332,9 +332,12 @@ print     "  $L[TR]>
     if(can_edit_forum_threads($fid)){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
-    	$modclose=$_POST['close'];
-	$modstick=$_POST['stick'];
+        if($_POST['close']) $modclose="1";
+        if($_POST['stick']) $modstick="1";
     }
+
+    if(!$_POST['close']) $modclose="0";
+    if(!$_POST['stick']) $modstick="0";
 
     $iconurl=addslashes($iconurl);
 

@@ -27,13 +27,13 @@
       $numposts=$sql->fetchq("SELECT COUNT(*) c FROM posts WHERE user=$id");
       $numposts=$numposts[c];
 
-      $p=$sql->query("SELECT p.id,p.num,p.date,t.title,f.private FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
+      $p=$sql->query("SELECT p.id,p.num,p.date,t.title,t.forum,f.private FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
                     ."LEFT JOIN forums f ON f.id=t.forum WHERE p.user=$id "
                     ."ORDER BY p.num DESC LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
       $i=0;
       while($post=$sql->fetch($p)) {
-        if(!(can_view_forum($post))) $tlink="<i>(Restricted forum)</i>";
+        if(!(can_view_forum($post[forum]))) $tlink="<i>(Restricted forum)</i>";
         else $tlink="<a href=thread.php?pid=$post[id]#$post[id]>$post[title]</a>";
         $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
 ".              "  $L[TDc]>$post[id]
@@ -95,7 +95,7 @@ if(!$time) $time=86400;
 ".	"$L[TDc]>$i</td>
 ".	"$L[TD] align=left>
     ";
-    if(!(can_view_forum($t)))
+    if(!(can_view_forum($t[forum])))
 	$print.= "<i>(Restricted forum)</i>";
     else $print.= "<a href=thread.php?id=$t[id]>$t[title]</a>";
     $print.= "

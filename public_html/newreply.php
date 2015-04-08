@@ -160,6 +160,8 @@
     $post[nolayout]=$_POST[nolayout];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
+    $post[open]=$_POST[open];
+    $post[unstick]=$_POST[unstick];
     foreach($user as $field => $val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
@@ -208,8 +210,10 @@ print     "  $L[TR]>
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
-    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
@@ -220,9 +224,13 @@ print     "  $L[TR]>
 //Make sure these controls are only usable by those with moderation rights!
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
-    	checknumeric($_POST['stick']);
-    	if($_POST['close']) $modext=",closed=".$_POST['close'];
-	if($_POST['stick']) $modext.=",sticky=".$_POST['stick'];
+	checknumeric($_POST['stick']);
+     	checknumeric($_POST['open']);
+     	checknumeric($_POST['unstick']);
+     	if($_POST['close']) $modext=",closed=1";
+ 	if($_POST['stick']) $modext.=",sticky=1";
+     	if($_POST['open']) $modext=",closed=0";
+ 	if($_POST['unstick']) $modext.=",sticky=0";
     }
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;

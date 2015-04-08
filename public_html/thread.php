@@ -359,7 +359,7 @@ if($_COOKIE['pstbon']>=1){
   elseif(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log){
  
     pageheader("Deleted Posts Tracker");
-    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
@@ -381,7 +381,7 @@ if($_COOKIE['pstbon']>=1){
   elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log){
  
     pageheader("Deleted Posts Tracker");
-    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
@@ -680,7 +680,14 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
   }
 
   print   "$topbot$userbar";
-
+         if(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log && $thread['replies']==0) {
+         print "<br><br><br>"; 
+         noticemsg("Notice", "You have no deleted posts.");
+         }
+         if(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log && $thread['replies']==0) {
+         print "<br><br><br>";  
+         noticemsg("Notice", "There are no deleted posts on the board.");
+         }
 
   if($timeval) {
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">

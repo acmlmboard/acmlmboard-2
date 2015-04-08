@@ -128,8 +128,10 @@ print     "  $L[TR]>
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
-    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($_POST[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($_POST[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
@@ -145,6 +147,8 @@ print     "  $L[TR]>
     $post[nolayout]=$_POST[nolayout];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
+    $post[open]=$_POST[open];
+    $post[unstick]=$_POST[unstick];
     $post[text]=$_POST[message];
     foreach($euser as $field => $val)
       $post[u.$field]=$val;
@@ -184,8 +188,10 @@ print     "  $L[TR]>
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
-    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
@@ -203,8 +209,12 @@ print     "  $L[TR]>
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
-    	if($_POST['close']) $modext=",closed=".$_POST['close'];
-	if($_POST['stick']) $modext.=",sticky=".$_POST['stick'];
+        checknumeric($_POST['open']);
+        checknumeric($_POST['unstick']);
+   	if($_POST['close']) $modext=",closed=1";
+	if($_POST['stick']) $modext.=",sticky=1";
+  	if($_POST['open']) $modext=",closed=0";
+	if($_POST['unstick']) $modext.=",sticky=0";
     }
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
@@ -218,7 +228,7 @@ print     "  $L[TR]>
 
     if ($thread[announce]) {
       if ($thread[forum] == 0) {
-    sendirc("{irccolor-base}Announcement edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[title]{irccolor-url}){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
+    sendirc("{irccolor-base}Announcement edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[title]{irccolor-url}){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$config['pubchan']);
       }
       else {
     sendirc("{irccolor-base}Announcement edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url}){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);

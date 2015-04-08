@@ -33,7 +33,7 @@
 
       $i=0;
       while($post=$sql->fetch($p)) {
-        if(!(can_view_forum($post[forum]))) $tlink="<i>(Restricted forum)</i>";
+        if(!(can_view_forum($post))) $tlink="<i>(Restricted forum)</i>";
         else $tlink="<a href=thread.php?pid=$post[id]#$post[id]>$post[title]</a>";
         $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
 ".              "  $L[TDc]>$post[id]
@@ -95,7 +95,7 @@ if(!$time) $time=86400;
 ".	"$L[TDc]>$i</td>
 ".	"$L[TD] align=left>
     ";
-    if(!(can_view_forum($t[forum])))
+    if(!(can_view_forum($t)))
 	$print.= "<i>(Restricted forum)</i>";
     else $print.= "<a href=thread.php?id=$t[id]>$t[title]</a>";
     $print.= "

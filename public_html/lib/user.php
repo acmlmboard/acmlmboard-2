@@ -116,7 +116,7 @@ function queryURL($url)
     curl_setopt($page, CURLOPT_TIMEOUT, 10);
     curl_setopt($page, CURLOPT_CONNECTTIMEOUT, 10);
     curl_setopt($page, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($page, CURLOPT_USERAGENT, 'Blargboard/'.BLARG_VERSION);
+    curl_setopt($page, CURLOPT_USERAGENT, 'Acmlmboard/'.BLARG_VERSION); //Changed to say Acmlmboard/ but keeping the BLARG_VERSION for 'reasons' -Emuz
 
    $result = curl_exec($page);
     curl_close($page);

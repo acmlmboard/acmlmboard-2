@@ -1,11 +1,11 @@
-<?php
+﻿<?php
   require "lib/function.php";
 
   header("Content-type: text/html; charset=utf-8");
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "3/30/2015";
+  $abdate    = "4/02/2015";
   $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
@@ -71,7 +71,7 @@
   
   //Unban users whose tempbans have expired. - SquidEmpress
   $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
-  $sql->query('UPDATE users SET group_id='.$defaultgroup[id].', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
+  $sql->query('UPDATE users SET group_id='.$defaultgroup.', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
 
   $dateformat = "$loguser[dateformat] $loguser[timeformat]";
 
@@ -168,7 +168,7 @@
    $themelist = unserialize(file_get_contents("themes_serial.txt"));
 
    //Config definable theme override
-   if($config[override_theme] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
+   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
     {
       $theme = $config[override_theme];
     }
@@ -197,7 +197,7 @@
     $themefile = $theme.".css";
    }
    
-  if($config[override_logo] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
+  if($config['override_logo'] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
     $logofile = $config[override_logo];
   elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";
@@ -465,11 +465,11 @@
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
     if (has_perm("view-favorites")) 
-      $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite Threads');
+      $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
     if (has_perm("deleted-posts-tracker"))
-      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted Posts Tracker');
+      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted posts tracker');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 
@@ -664,11 +664,11 @@
        }
       }
       
-     if ($numguests)
+     if (isset($numguests))
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if ($numbots)
+     if (isset($numbots))
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }

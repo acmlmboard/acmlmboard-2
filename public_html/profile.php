@@ -119,8 +119,7 @@ if($_COOKIE['pstbon']==-1){
                        'September','October','November','December');
      $bdec     = explode("-", $user['birth']);
      $bstr     = $bdec[2]."-".$bdec[0]."-".$bdec[1];
-     $mo      = array(1=>'01','02','03','04','05','06','07','08','09','10','11','12');
-     $mn      =$bdec[0][$mo];
+     $mn=intval($bdec[0]);
          if ($bdec['2'] <= 0 && $bdec['2'] > -2) $birthday = $monthnames[$mn]." ".$bdec[1];
 	 else $birthday = date("l, F j, Y", strtotime($bstr));
 	 
@@ -262,14 +261,14 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     if(has_perm('edit-permissions'))
     {
       if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $editpermissions ="";
-      else $editpermissions="| <a href=\"editperms.php?uid=".$user['id']."\">Edit User Permissions</a>";
+      else $editpermissions="| <a href=\"editperms.php?uid=".$user['id']."\">Edit user permissions</a>";
     }
 
     $secondarygroups ="";
     if(has_perm('assign-secondary-groups'))
     {
       /*if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $secondarygroups =""; //Not really needed in normal context. I commented it out in case someone may want this -Emuz
-      else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage Secondary Groups</a>";
+      else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage secondary groups</a>";
     }
     
     $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
@@ -278,8 +277,8 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     if(has_perm('edit-permissions'))
     {
       if(!has_perm('ban-users')) $banuser ="";
-      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banhammer.php?id=".$user['id']."\">Ban User</a>";
-      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banhammer.php?unban&id=".$user['id']."\">Unban User</a>";
+      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?id=".$user['id']."\">Ban user</a>";
+      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?unban&id=".$user['id']."\">Unban user</a>";
     }
     
     //[KAWA] Blocklayout ported from ABXD
@@ -481,10 +480,10 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        | <a href=\"postsbyuser.php?postsbyforum&id=$user[id]\">Posts by forum</a>
                        | <a href=\"postsbyuser.php?postsbythread&id=$user[id]\">Posts by thread</a>
                        $blocklayoutlink
-                       ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send Private Message</a>":"") ."
-                       ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
-                       ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
-                       ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
+                       ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send private message</a>":"") ."
+                       ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View private messages</a>":"") ."
+                       ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit mood avatars</a>":"") ."
+                       ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit user</a>":"") ."
                        ". $banuser." ". $editpermissions." ".$secondarygroups."
            $L[TBLend]";
            pagefooter();

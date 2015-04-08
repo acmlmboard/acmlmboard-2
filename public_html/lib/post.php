@@ -173,6 +173,7 @@
 
     $msg=preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si',"get_username_link",$msg);
 //    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
+    //$msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg); //For Reference. Original no quote @username
 
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
     $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);
@@ -301,7 +302,7 @@
   function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name'></font></a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name' tabindex=\"-1\"></font></a></td>";
   }
   
   function posttoolbar()

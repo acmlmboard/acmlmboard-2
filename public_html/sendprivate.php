@@ -88,7 +88,7 @@ print     "  $L[TR]>
     $post[ip]=$userip;
     $post[num]=0;
     $post[text]=$_POST[message];
-    $post[mid] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1);
+    $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
     foreach($loguser as $field=>$val)
       $post[u.$field]=$val;
@@ -127,7 +127,7 @@ print     "  $L[TR]>
 ".        "    $L[TD]>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
-".        "      $L[INPl]=mid>".moodlist($post[mid])." 
+".        "      $L[INPl]=mid>".moodlist($post[mood])." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
 ".        " </form>
@@ -148,7 +148,8 @@ print     "  $L[TR]>
         $msg="You can't send more than one PM within $config[secafterpost] seconds!<br>
 ".           "Go back or <a href=sendprivate.php>try again</a>";
       } else {
-          checknumeric($_POST[nolayout]);     
+          checknumeric($_POST[nolayout]);
+          checknumeric($_POST[mid]);   
         $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout) "
                    ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout])");
         $pid=$sql->insertid();

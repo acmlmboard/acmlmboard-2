@@ -1,8 +1,8 @@
 <?php
   $log=false;
       $logpermset = array();
-  if($_COOKIE[user]>0){
-    if($user=checkuid($_COOKIE[user],unpacklcookie($_COOKIE[pass]))){
+  if($_COOKIE['user']>0){
+    if($user=checkuid($_COOKIE['user'],unpacklcookie($_COOKIE['pass']))){
       $log=true;
       $loguser=$user;
       load_user_permset();

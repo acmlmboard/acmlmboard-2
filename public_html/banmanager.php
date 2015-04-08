@@ -65,7 +65,7 @@ if($_POST[banuser]=="Ban User") {
                /*if($loguser[redirtype]==0){ //Classical Redirect
 $loguser['blocksprites']=1;
 pageheader('Ban User');
-print "<form action='banhammer.php?id=$uid' method='post'>
+print "<form action='banmanager.php?id=$uid' method='post'>
 ".        "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    User has been banned.<br>
@@ -90,7 +90,7 @@ error("Error", "This user is not a Banned User.<br> <a href=./>Back to main</a> 
               /*if($loguser[redirtype]==0){ //Classical Redirect
 $loguser['blocksprites']=1;
 pageheader('Unban User');
-print "<form action='banhammer.php?id=$uid' method='post'>
+print "<form action='banmanager.php?id=$uid' method='post'>
 ".        "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    User has been unbanned.<br>
@@ -136,7 +136,7 @@ RenderPageBar($pagebar);
   
 if (isset($_GET['unban']))
 {
-print "<form action='banhammer.php?id=$uid' method='post' enctype='multipart/form-data'> 
+print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
 ".    "$L[TBL1]>
 ".    "  $L[TRh]>$L[TD]>Unban User
 ".    "  $L[TR]>$L[TD1c]>
@@ -149,7 +149,7 @@ print "<form action='banhammer.php?id=$uid' method='post' enctype='multipart/for
 }
 else
 {
-print "<form action='banhammer.php?id=$uid' method='post' enctype='multipart/form-data'> 
+print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
 ".    "$L[TBL1]>
 ".
         catheader('Ban User')."

@@ -332,9 +332,12 @@ print     "  $L[TR]>
     if(can_edit_forum_threads($fid)){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
-    	$modclose=$_POST['close'];
-	$modstick=$_POST['stick'];
+        if($_POST['close']) $modclose="1";
+        if($_POST['stick']) $modstick="1";
     }
+
+    if(!$_POST['close']) $modclose="0";
+    if(!$_POST['stick']) $modstick="0";
 
     $iconurl=addslashes($iconurl);
 

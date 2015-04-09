@@ -255,13 +255,8 @@ print     "  $L[TR]>
   }elseif($act=='delete' ||$act=='undelete'){
     if(!(can_delete_forum_posts($thread[forum]))) {
   pageheader('Edit post',$thread[forum]);
-      print "$top - Error
-".          "<br><br>
-".          "$L[TBL1]>
-".          "  $L[TD1c]>
-".          "    You do not have the permission to do this.
-".          "$L[TBLend]
-";
+      print "$top - Error";
+      noticemsg("Error", "You do not have the permission to do this.");
     } else {
       $sql->query("UPDATE posts SET deleted=".($act=='delete'?1:0)." WHERE id='$pid'");
   /*$loguser['blocksprites']=1;

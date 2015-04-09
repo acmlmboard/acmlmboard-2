@@ -27,7 +27,7 @@
       $numposts=$sql->fetchq("SELECT COUNT(*) c FROM posts WHERE user=$id");
       $numposts=$numposts[c];
 
-      $p=$sql->query("SELECT p.id,p.num,p.date,t.title,t.forum,f.private FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
+      $p=$sql->query("SELECT p.id,p.num,p.date,t.title,t.forum,t.announce,f.id,f.private FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
                     ."LEFT JOIN forums f ON f.id=t.forum WHERE p.user=$id "
                     ."ORDER BY p.num DESC LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
@@ -74,7 +74,7 @@
   if(isset($_GET[postsbythread])) {
   $time=$_GET[time];
 if(!$time) $time=86400;
-  $posters=$sql->query("SELECT t.id,t.replies,t.title,t.forum,f.private,COUNT(p.id) cnt FROM threads t,posts p,forums f WHERE p.user=$id AND p.thread=t.id AND p.date>".(ctime()-$time).' AND t.forum=f.id GROUP BY t.id ORDER BY cnt DESC');
+  $posters=$sql->query("SELECT t.id,t.replies,t.title,t.forum,f.id,f.private,COUNT(p.id) cnt FROM threads t,posts p,forums f WHERE p.user=$id AND p.thread=t.id AND p.date>".(ctime()-$time).' AND t.forum=f.id GROUP BY t.id ORDER BY cnt DESC');
   $u=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
   $username=($u[displayname]?$u[displayname]:$u[name]);
   if($time<999999999) $during=' during the last '.timeunits2($time);

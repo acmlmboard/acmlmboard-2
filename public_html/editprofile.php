@@ -168,12 +168,14 @@
       if (!has_perm_with_bindvalue('can-edit-group', $targetgroup) && $targetgroup!=$loguser['group_id']) {
         $error.="- You do not have the permissions to assign this group.<br />";
       }
-    }
       $targetname = $_POST['name'];
 
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
         $error.="- Name already in use.<br />";
       }
+    }
+     if(checkcdisplayname($targetuserid)) 
+      {
       //Checks Displayname to name and other displaynames
       $targetdname = $_POST['displayname'];
 
@@ -183,7 +185,10 @@
           $error.="- Displayname already in use.<br />";
         }
       }
+     }
 
+     if(checkcusercolor($targetuserid)) 
+      {
       //Validate Custom username color is a 6 digit hex RGB color
       $custom_usercolor = $_POST['nick_color'];
 
@@ -194,6 +199,7 @@
           $error.="- Custom usercolor is not a valid RGB hex color.<br />";
         }
       }
+     }
 
       if(checkcextendedprofile($targetuserid)) 
       {
@@ -215,6 +221,7 @@
 
 	  if (!$error)
 	  {
+          if (has_perm("edit-users")) {
 		  $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
 		  $sql->query("UPDATE usersrpg SET "
 				   . setfield('eq1').","
@@ -233,6 +240,7 @@
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
+          }
       if(checkcextendedprofile($targetuserid)) 
       {
           $qallfields = $sql->query("SELECT * FROM `profileext`");

@@ -800,7 +800,8 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ";
     if(can_edit_forum_threads($thread[forum]))
     print "     $L[INPc]=close id=close value=1 ><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ><label for=stick>Stick thread</label>
+                ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1><label for=stick>Stick thread</label>" : "")."
+                ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>

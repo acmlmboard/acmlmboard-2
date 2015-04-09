@@ -3,13 +3,16 @@ include('lib/common.php');
 include('lib/diff/Diff.php');
 include('lib/diff/Diff/Renderer/inline.php');
 
-pageheader();
+$pid=(int)$_GET['id'];
+$r1=(int)$_GET['o'];
+$r2=(int)$_GET['n'];
 
-$pid=$_GET[id];
-$r1=$_GET[o];
-$r2=$_GET[n];
+$t = $sql->resultq("SELECT thread FROM posts WHERE id=$pid");
+if(!$t) { error("Error", "This post does not exist.<br> <a href=./>Back to main</a>"); }
+$f = $sql->resultq("SELECT forum FROM threads WHERE id=$t");
+if(!can_view_forum_post_history($f) || !can_view_forum($f)) { error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
 
-if(!can_view_forum_post_history(getforumbythread($pid[thread]))) { pagefooter(); die(); }
+pageheader("Post revision differences");
 
 if(!$r1||!$r2) $r1=$r2=1;
 
@@ -41,14 +44,15 @@ ins {
 	padding-right:1px;
 }
 </style>
-<?
+<?php
 
 $renderer = &new Text_Diff_Renderer_inline();
-if($act=="hs") {
+//What is this? I don't even…
+/*if($act=="hs") {
 	$ip=$sql->fetchq("SELECT ip FROM users WHERE id=$pid");
 	$ip=$ip[0];
 	echo $ip." = ".gethostbyaddr($ip);
-} else echo str_replace("\n","<br>",$renderer->render($diff));
+} else*/ echo str_replace("\n","<br>",$renderer->render($diff));
 
 //echo diff(str_replace("\n","<br>\n",$d1[text])."\n",str_replace("\n","<br>\n",$d2[text])."\n");
 echo "$L[TBLend]";

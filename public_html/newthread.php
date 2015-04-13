@@ -6,7 +6,6 @@
     $announce=$_REQUEST[announce];
     checknumeric($announce);
 
-	// [Mega-Mario] This is currently useless. TODO: fix or nuke.
   if($act=$_POST[action])
   {
     $fid=$_POST[fid];
@@ -21,15 +20,20 @@
 	}
 	else
 	{
-      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
+      if($_POST['passenc'])
+         $pass=$_POST['passenc'];
+      else
+         $pass=md5($pwdsalt2.$_POST['pass'].$pwdsalt);
 
-    if($userid=checkuser($_POST[name],$pass))
+    if($userid=checkuser($_POST['name'],$pass) && $_POST['name']!='') {
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
+      $loguser=$user;
+       load_user_permset();
+    }
     else
       $err="    Invalid username or password!<br>
 ".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
 
-		$pass = md5($pwdsalt2.$pass.$pwdsalt);
 	}
   }
   else
@@ -38,8 +42,6 @@
     $fid=$_GET[id];
   }
   checknumeric($fid);
-
-  needs_login(1);
 
   if ($announce) {
     $type = "announcement";
@@ -101,6 +103,10 @@ if($act!="Submit"){
 
   else if($user[lastpost]>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))
       $err="    Don't post threads so fast, wait a little longer.<br>
+".         "    $forumlink";
+
+  else if($user[lastpost]>ctime()-$config[secafterpost] && $act=='Submit' && has_perm('ignore-thread-time-limit'))
+      $err="    You must wait $config[secafterpost] seconds before posting a thread.<br>
 ".         "    $forumlink";
 
   //2007-02-19 //blackhole89 - table breach protection
@@ -205,9 +211,12 @@ print     "  $L[TR]>
 ".        "      $L[INPh]=announce value=$announce>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
-".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
+";
+     if($log)
+print   // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()."
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+";
+print   "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
     print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
@@ -287,6 +296,8 @@ $pollprev.="$L[TBLend]";
 ".        " $L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>$typecap</td>
+".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
+".        "      $L[INPh]=passenc value=\"$pass\">
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
 ".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
@@ -304,8 +315,6 @@ print     "  $L[TR]>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
-".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=\"$pass\">
 ".        "      $L[INPh]=fid value=$fid>
 ".        "      $L[INPh]=iconid value=$_POST[iconid]>
 ".        "      $L[INPh]=iconurl value=$_POST[iconurl]>
@@ -313,7 +322,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist($_POST[mid])."
+          "      $L[INPl]=mid>".moodlist($_POST[mid], $userid)."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
@@ -330,10 +339,10 @@ print     "  $L[TR]>
 
     checknumeric($nolayout);
     if(can_edit_forum_threads($fid)){
-    	checknumeric($_POST['close']);
-    	checknumeric($_POST['stick']);
-        if($_POST['close']) $modclose="1";
-        if($_POST['stick']) $modstick="1";
+        checknumeric($_POST['close']);
+        checknumeric($_POST['stick']);
+   	if($_POST['close']) $modclose="1";
+   	if($_POST['stick']) $modstick="1";
     }
 
     if(!$_POST['close']) $modclose="0";

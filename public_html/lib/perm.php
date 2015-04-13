@@ -391,6 +391,7 @@ function grouplink($usex, $gid) {
 
 function can_create_forum_thread($forum) {
 
+       global $log; 
 	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
@@ -398,6 +399,7 @@ function can_create_forum_thread($forum) {
 	//can create public threads
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
 	if (!has_perm('create-public-thread')) return false;
+       if (!has_perm('post-offline') && !$log) return false;
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';
@@ -412,6 +414,7 @@ function can_create_forum_thread($forum) {
 
 function can_create_forum_post($forum) {
 
+       global $log; 
 	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
@@ -419,6 +422,7 @@ function can_create_forum_post($forum) {
 	//can create public threads
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
 	if (!has_perm('create-public-post')) return false;
+       if (!has_perm('post-offline') && !$log) return false;
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';

@@ -165,7 +165,7 @@
       checknumeric($targetgroup);
       if (!isset($listgroup[$targetgroup])) $targetgroup = 0;
 
-      if (!has_perm_with_bindvalue('can-edit-group', $targetgroup) && $targetgroup!=$loguser['group_id']) {
+      if (!can_edit_group_assets($targetgroup) && $targetgroup!=$loguser['group_id']) {
         $error.="- You do not have the permissions to assign this group.<br />";
       }
       $targetname = $_POST['name'];

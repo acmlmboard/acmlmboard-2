@@ -1,12 +1,47 @@
-﻿<?php
+<?php
   require "lib/function.php";
 
   header("Content-type: text/html; charset=utf-8");
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "4/08/2015";
+  $abdate    = "4/12/2015";
   $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
+
+  if($config['sqlconfig']) {
+  $things = $sql->query("SELECT * from `misc`");
+  while($stuff=$sql->fetch($things)) $yay[$stuff['field']]=$stuff;
+
+  $trashid=$yay['trashid']['intval'];
+  $boardtitle=$yay['boardtitle']['txtval'];
+  $defaulttheme=$yay['defaulttheme']['txtval'];
+  $defaultfontsize=$yay['defaultfontsize']['intval'];
+
+  $avatardimx=$yay['avatardimx']['intval'];
+  $avatardimy=$yay['avatardimy']['intval'];
+
+  $config['topposts']=$yay['topposts']['intval'];
+  $config['topthreads']=$yay['topthreads']['intval'];
+
+  $config['memberlistcolorlinks']=$yay['memberlistcololinks']['intval'];
+  $config['badgesystem']=$yay['badgesystem']['intval'];
+  $config['spritesystem']=$yay['spritesystem']['intval'];
+
+  $config['extendedprofile']=$yay['extendedprofile']['intval'];
+  $config['threadprevnext']=$yay['threadprevnext']['intval'];
+
+  $config['displayname']=$yay['displayname']['intval'];
+  $config['perusercolor']=$yay['perusercolor']['intval'];
+  $config['usernamebadgeeffects']=$yay['usernamebadgeeffects']['intval'];
+  $config['useshadownccss']=$yay['useshadownccss']['intval'];
+  $config['nickcolorcss']=$yay['nickcolorcss']['intval'];
+
+  $config['userpgnum']=$yay['userpgnum']['intval'];
+  $config['userpgnumdefault']=$yay['userpgnumdefault']['intval'];
+  $config['alwaysshowlvlbar']=$yay['alwaysshowlvlbar']['intval'];
+  $config['rpglvlbarwidth']=$yay['rpglvlbarwidth']['intval'];
+  $config['atnname']=$yay['atnname']['txtval'];
+  }
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -264,7 +299,7 @@
    if($pagetitle)
      $pagetitle .= " - ";
 
-   if(has_perm("edit-attentions-box"))
+   if(has_perm("edit-attentions-box") && $log)
      $ae = "(<a href=\"editattn.php\">edit</a>)";
    else
      $ae = "";
@@ -460,6 +495,8 @@
 		if (has_perm("logout")) 
 		  $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
 	}
+    if ($log)
+    {
     if (has_perm("update-own-profile")) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
     if (has_perm("post-radar")) 
@@ -480,6 +517,7 @@
 	  $userlinks[$ul++] = array('url' => 'management.php', 'title' => 'Management');
     if (has_perm("mark-read")) 
       $userlinks[$ul++] = $markread;
+    }
 
     $c = 0;
 
@@ -532,9 +570,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog   = ($user['lastpost'] <= $user['lastview']);
-       $�           = ($onuserlog ? "":"(");
-       $�           = ($onuserlog ? "":")");
-       $onuserlist .= ($onusercount ? ", ":"").$�.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$�;
+       $offline1           = ($onuserlog ? "":"[");
+       $offline2           = ($onuserlog ? "":"]");
+       $onuserlist .= ($onusercount ? ", ":"").$offline1.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$offline2;
        $onusercount++;
       }
       
@@ -620,9 +658,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog = ($user['lastpost'] <= $user['lastview']);
-       $�=($onuserlog ? "" : "(");
-       $�=($onuserlog ? "" : ")");
-       $onuserlist.=($onusercount? ", ": "").$�.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$�;
+       $offline1=($onuserlog ? "" : "[");
+       $offline2=($onuserlog ? "" : "]");
+       $onuserlist.=($onusercount? ", ": "").$offline1.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$offline2;
        $onusercount++;
       }
 

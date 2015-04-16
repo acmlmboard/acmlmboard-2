@@ -5,42 +5,42 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "4/12/2015";
+  $abdate    = "4/16/2015";
   $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   if($config['sqlconfig']) {
-  $things = $sql->query("SELECT * from `misc`");
-  while($stuff=$sql->fetch($things)) $yay[$stuff['field']]=$stuff;
+    $things = $sql->query("SELECT * from `misc`");
+    while($stuff=$sql->fetch($things)) $configsql[$stuff['field']]=$stuff;
 
-  $trashid=$yay['trashid']['intval'];
-  $boardtitle=$yay['boardtitle']['txtval'];
-  $defaulttheme=$yay['defaulttheme']['txtval'];
-  $defaultfontsize=$yay['defaultfontsize']['intval'];
+    $trashid=$configsql['trashid']['intval'];
+    $boardtitle=$configsql['boardtitle']['txtval'];
+    $defaulttheme=$configsql['defaulttheme']['txtval'];
+    $defaultfontsize=$configsql['defaultfontsize']['intval'];
 
-  $avatardimx=$yay['avatardimx']['intval'];
-  $avatardimy=$yay['avatardimy']['intval'];
+    $avatardimx=$configsql['avatardimx']['intval'];
+    $avatardimy=$configsql['avatardimy']['intval'];
 
-  $config['topposts']=$yay['topposts']['intval'];
-  $config['topthreads']=$yay['topthreads']['intval'];
+    $config['topposts']=$configsql['topposts']['intval'];
+    $config['topthreads']=$configsql['topthreads']['intval'];
 
-  $config['memberlistcolorlinks']=$yay['memberlistcololinks']['intval'];
-  $config['badgesystem']=$yay['badgesystem']['intval'];
-  $config['spritesystem']=$yay['spritesystem']['intval'];
+    $config['memberlistcolorlinks']=$configsql['memberlistcololinks']['intval'];
+    $config['badgesystem']=$configsql['badgesystem']['intval'];
+    $config['spritesystem']=$configsql['spritesystem']['intval'];
 
-  $config['extendedprofile']=$yay['extendedprofile']['intval'];
-  $config['threadprevnext']=$yay['threadprevnext']['intval'];
+    $config['extendedprofile']=$configsql['extendedprofile']['intval'];
+    $config['threadprevnext']=$configsql['threadprevnext']['intval'];
 
-  $config['displayname']=$yay['displayname']['intval'];
-  $config['perusercolor']=$yay['perusercolor']['intval'];
-  $config['usernamebadgeeffects']=$yay['usernamebadgeeffects']['intval'];
-  $config['useshadownccss']=$yay['useshadownccss']['intval'];
-  $config['nickcolorcss']=$yay['nickcolorcss']['intval'];
+    $config['displayname']=$configsql['displayname']['intval'];
+    $config['perusercolor']=$configsql['perusercolor']['intval'];
+    $config['usernamebadgeeffects']=$configsql['usernamebadgeeffects']['intval'];
+    $config['useshadownccss']=$configsql['useshadownccss']['intval'];
+    $config['nickcolorcss']=$configsql['nickcolorcss']['intval'];
 
-  $config['userpgnum']=$yay['userpgnum']['intval'];
-  $config['userpgnumdefault']=$yay['userpgnumdefault']['intval'];
-  $config['alwaysshowlvlbar']=$yay['alwaysshowlvlbar']['intval'];
-  $config['rpglvlbarwidth']=$yay['rpglvlbarwidth']['intval'];
-  $config['atnname']=$yay['atnname']['txtval'];
+    $config['userpgnum']=$configsql['userpgnum']['intval'];
+    $config['userpgnumdefault']=$configsql['userpgnumdefault']['intval'];
+    $config['alwaysshowlvlbar']=$configsql['alwaysshowlvlbar']['intval'];
+    $config['rpglvlbarwidth']=$configsql['rpglvlbarwidth']['intval'];
+    $config['atnname']=$configsql['atnname']['txtval'];
   }
 
   $userip  = $_SERVER['REMOTE_ADDR'];

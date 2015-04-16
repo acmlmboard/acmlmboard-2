@@ -186,12 +186,26 @@ function can_edit_post($post) {
   return false;
 }
 
+function can_edit_group_assets($gid) {
+  global $sql,$loguser;
+  if (has_perm('edit-all-group')) return true;
+  else if (has_perm_with_bindvalue('can-edit-group', $gid)) return true;
+  return false;
+}
+
+function can_edit_user_assets($gid) {
+  global $sql,$loguser;
+  if (has_perm('edit-all-group-member')) return true;
+  else if (has_perm_with_bindvalue('can-edit-group-member', $gid)) return true;
+  return false;
+}
+
 function can_edit_user($uid) {
   global $sql,$loguser;
 
   $gid = gid_for_user($uid);
   if (is_root_gid($gid) && !has_perm('no-restrictions')) return false;
-  if ((!has_perm_with_bindvalue('can-edit-group', $gid) && $uid!=$loguser['id']) && !has_perm('no-restrictions')) return false;
+  if ((!can_edit_user_assets($gid) && $uid!=$loguser['id']) && !has_perm('no-restrictions')) return false;
 
   if ($uid == $loguser['id'] && has_perm('update-own-profile')) return true;
   else if (has_perm('update-profiles')) return true;
@@ -391,6 +405,7 @@ function grouplink($usex, $gid) {
 
 function can_create_forum_thread($forum) {
 
+       global $log; 
 	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
@@ -398,6 +413,7 @@ function can_create_forum_thread($forum) {
 	//can create public threads
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
 	if (!has_perm('create-public-thread')) return false;
+       if (!has_perm('post-offline') && !$log) return false;
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';
@@ -412,6 +428,7 @@ function can_create_forum_thread($forum) {
 
 function can_create_forum_post($forum) {
 
+       global $log; 
 	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
@@ -419,6 +436,7 @@ function can_create_forum_post($forum) {
 	//can create public threads
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
 	if (!has_perm('create-public-post')) return false;
+       if (!has_perm('post-offline') && !$log) return false;
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';

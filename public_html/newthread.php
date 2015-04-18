@@ -25,7 +25,8 @@
       else
          $pass=md5($pwdsalt2.$_POST['pass'].$pwdsalt);
 
-    if($userid=checkuser($_POST['name'],$pass) && $_POST['name']!='') {
+    $userid=checkuser($_POST['name'],$pass);
+    if($userid) {
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
       $loguser=$user;
        load_user_permset();

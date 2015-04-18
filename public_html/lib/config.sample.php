@@ -16,21 +16,17 @@
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';
 
-  /* Note: As of v2.5.3 some of the config options are available in the database. This file contains a 'temporary' method to access them.  *
-   * In the future these will be managed outside of config.php in an optimum way. In the mean time if you feel safer editing them directly *
-   * in this file, you can do so. Just replace the SQL calls with the values you wish. The big downside is you can't change them with      *
-   * in admintools. (Emuz's Note: Wait until the next version if you already have a board established.)                                    */
 
   $config['sqlconfig'] = true; //Configure settings through Administrator Tools and the misc table.
 
-  if(!$config['sqlconfig']) $trashid=2; // Designates the id for your trash forum. 
+  $trashid=2; // Designates the id for your trash forum. 
 
-  if(!$config['sqlconfig']) $boardtitle="Insert title here";// This is what will be displayed at the top of your browser window.
+  $boardtitle="Insert title here";// This is what will be displayed at the top of your browser window.
   $defaultlogo="theme/abII.png";// Replace with the logo of your choice. Note: This is used if a theme doesn't have it's own logo. It is replaced per theme depending on the theme used.
   $boardlogo="<img style='border: 0px' src='$defaultlogo' title=\"$boardtitle\">"; // This defines the logo. Recommended you leave this the default.
   $favicon="theme/fav.png";// Replace with your favicon of choice
-  if(!$config['sqlconfig']) $defaulttheme="dailycycle2";// Select the default theme to be used. This will also be showed to users who are not logged in.
-  if(!$config['sqlconfig']) $defaultfontsize=70;// Overall font scale of the board. Default is 70%
+  $defaulttheme="dailycycle2";// Select the default theme to be used. This will also be showed to users who are not logged in.
+  $defaultfontsize=70;// Overall font scale of the board. Default is 70%
   $homepageurl="http://something/"; // This defines the link for the header image.
 
   /*Registeration Bot Protection *
@@ -64,8 +60,8 @@
 
  // User GFX limits
   $minipicsize=16;// traditionally a square image. $minipicsize x $minipicsize. (AB1/2's Default was 11x11)
-  if(!$config['sqlconfig']) $avatardimx=180;// Avatar X Scale
-  if(!$config['sqlconfig']) $avatardimy=180;// Avatar Y Scale
+  $avatardimx=180;// Avatar X Scale
+  $avatardimy=180;// Avatar Y Scale
   $avatardimxs=60;// Avatar X Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatardimys=60;// Avatar Y Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatarsize=2*30720;// The Avatar size in bytes. The default is to 60kb.
@@ -91,32 +87,32 @@
   //This will create a delay between consecutive posts if you have the override perm. This is used exclusively to stop mobile double posting. 
   $config['secafterpost'] = 5; //(in seconds, 0 == off)
   //This will allow you to set the goal limits for 'Projected date' in profile.php
-  if(!$config['sqlconfig']) $config['topposts'] = '5000'; //Number of posts to set the goal to.
-  if(!$config['sqlconfig']) $config['topthreads'] = '200'; //Number of threads created to set the goal to.
+  $config['topposts'] = '5000'; //Number of posts to set the goal to.
+  $config['topthreads'] = '200'; //Number of threads created to set the goal to.
 
   $config['threadprevnext'] = false; //Enables links to jump one thread newer/older
-  if(!$config['sqlconfig']) $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
+  $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
   $config['registrationpuzzle'] = true;
   //The following enables the optional badge system
-  if(!$config['sqlconfig']) $config['badgesystem'] = false; //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
-  if(!$config['sqlconfig']) $config['spritesystem'] = true; //The sprite system allows users to catch graphic 'sprites' on the board. Collect them all!
+  $config['badgesystem'] = false; //The badge system allows you to assign graphic 'badges' to users. They can be set to trigger board effects!
+  $config['spritesystem'] = true; //The sprite system allows users to catch graphic 'sprites' on the board. Collect them all!
   
-  if(!$config['sqlconfig']) $config['extendedprofile'] = false; //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
+  $config['extendedprofile'] = false; //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
 
-  if(!$config['sqlconfig']) $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
+  $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
 
   $config['rootuseremail'] = false; //Enable the Root Administrator's email to be shown in the No Permission page to a user who can edit other users but not Root Administrators.
-  if(!$config['sqlconfig']) $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
-  if(!$config['sqlconfig']) $config['perusercolor'] = false; //Enable the use of per-user colors.
-  if(!$config['sqlconfig']) $config['usernamebadgeeffects'] = false; //Allows badges to change username colors Requires badge system.
-  if(!$config['sqlconfig']) $config['useshadownccss'] = false; //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
-  if(!$config['sqlconfig']) $config['nickcolorcss'] = false; //Enables use of CSS to define per theme colors via a span id. Note: You may need to customise CSS to fit your board groups. 
+  $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)
+  $config['perusercolor'] = false; //Enable the use of per-user colors.
+  $config['usernamebadgeeffects'] = false; //Allows badges to change username colors Requires badge system.
+  $config['useshadownccss'] = false; //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
+  $config['nickcolorcss'] = false; //Enables use of CSS to define per theme colors via a span id. Note: You may need to customise CSS to fit your board groups. 
 
   //The following are related to how RPG elements are displayed. All these options allow for legacy AB1 RPG style and elements
-  if(!$config['sqlconfig']) $config['userpgnum'] = false; //Enables 'graphical' RPG stats in user's sidebars when themes have images incorporated in the themes/themename/rpg/ dir.
-  if(!$config['sqlconfig']) $config['userpgnumdefault'] = false; //Shows a default imageset on all themes. If $config['userpgnum'] is enabled the theme images will still show.
-  if(!$config['sqlconfig']) $config['alwaysshowlvlbar'] = false; //Enable this to always show the exp bar. This allows you to use it without having to have the rest of the system.
-  if(!$config['sqlconfig']) $config['rpglvlbarwidth'] = 96; // Set the size of the exp bar. Acmlmboard 1.x has a default of 56. 
+  $config['userpgnum'] = false; //Enables 'graphical' RPG stats in user's sidebars when themes have images incorporated in the themes/themename/rpg/ dir.
+  $config['userpgnumdefault'] = false; //Shows a default imageset on all themes. If $config['userpgnum'] is enabled the theme images will still show.
+  $config['alwaysshowlvlbar'] = false; //Enable this to always show the exp bar. This allows you to use it without having to have the rest of the system.
+  $config['rpglvlbarwidth'] = 96; // Set the size of the exp bar. Acmlmboard 1.x has a default of 56. 
 
   //This section configures the board's interaction with an IRC bot.
   //You will need to build an interface to your board (see send_to_ircbot() below)
@@ -143,7 +139,7 @@
   $config['ircshopnotice'] = false; //enables the option to print on your main irc channel anytime someone equips an item
 
 //The following are optional values you can change to personalize your board
-  if(!$config['sqlconfig']) $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
+  $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
 
 //The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
   $config['classictags'] = false;

@@ -13,6 +13,8 @@ if (has_perm("edit-ip-bans"))
   $mlinks[] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
 if (has_perm("edit-calendar-events")) 
   $mlinks[] = array('url' => "editevents.php", 'title' => 'Manage events');
+if (has_perm("edit-post-icons")) 
+  $mlinks[] = array('url' => "editposticons.php", 'title' => 'Manage post icons');
 if (has_perm("edit-sprites")) 
   $mlinks[] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
 if (has_perm("edit-sprites")) 

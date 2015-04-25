@@ -5,7 +5,7 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "4/16/2015";
+  $abdate    = "4/25/2015";
   $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   if($config['sqlconfig']) {

@@ -291,6 +291,7 @@
                . setfield('blocklayouts')   .','
                . ($config['spritesystem']?(setfield('blocksprites')  .','):'')
                . setfield('emailhide') .','
+               . setfield('hidesmilies') .','
                . setfield('numbargfx')   .','
                . ($config['alwaysshowlvlbar']?(setfield('showlevelbar')  .','):'')
                . setfield('posttoolbar')   .','
@@ -486,6 +487,7 @@ if ($config['spritesystem'])
 ".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
 ";
   print"
+".           fieldrow('Smilies', fieldoption('hidesmilies',$user['hidesmilies'],array('Show smilies', 'Do not show smilies')))."
 ".           fieldrow('Hide Email', fieldoption('emailhide',$user['emailhide'],array('Show my email', 'Hide my email')))."
 ";
  if (has_perm("show-online") || has_perm("edit-user-show-online"))

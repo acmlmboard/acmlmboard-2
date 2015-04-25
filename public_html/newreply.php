@@ -160,6 +160,7 @@
     else $post[moodlist]=moodlist();
     if($log && !$act) $pass=md5($pwdsalt2.$loguser[pass].$pwdsalt);
     $post[nolayout]=$_POST[nolayout];
+    $post[nosmilies]=$_POST[nosmilies];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     $post[open]=$_POST[open];
@@ -224,6 +225,7 @@ print   // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in
           "      $L[INPl]=mid>".$post[moodlist]." 
 ";
 print   "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".      "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
     print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
@@ -237,6 +239,7 @@ print   "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked
 ";
   }elseif($act=='Submit'){
     checknumeric($_POST[nolayout]);
+    checknumeric($_POST[nosmilies]);
 //Make sure these controls are only usable by those with moderation rights!
     if(can_edit_forum_threads($thread['forum'])){
      	checknumeric($_POST['close']);
@@ -253,8 +256,8 @@ print   "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
 
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
-    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
+    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmilies) "
+               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout],$_POST[nosmilies])");
     $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
     $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id=$tid");

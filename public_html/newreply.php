@@ -88,11 +88,12 @@
   }//needs function to test for perm based on $faccess /*!has_perm('create-closed-forum-post')*/
 
   if($act=='Submit'){
+    $lastpost=$sql->fetchq("SELECT `id`,`user`,`date` FROM `posts` WHERE `thread`=$thread[id] ORDER BY `id` DESC LIMIT 1");
     $message = $_POST[message];
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
+    if($lastpost[user]==$userid && $lastpost[date]>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-$config[secafterpost]) && can_post_consecutively($thread['forum']))  // Protection against double-submit
+    if($lastpost[user]==$userid && $lastpost[date]>=(ctime()-$config[secafterpost]) && can_post_consecutively($thread['forum']))  // Protection against double-submit
       $err="    You must wait $config[secafterpost] seconds before posting consecutively.<br>
 ".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection

@@ -16,7 +16,9 @@ require("lib/common.php");
   if ($r['action'] == "del") {
     unset($r['action']);
     if ($id > 0) {
-      if ($sql->prepare('DELETE FROM posticons WHERE id=?',array($id))) {
+        $posticon=$sql->fetchp('SELECT * FROM posticons WHERE id=?',array($id));
+        if (!$posticon) $pagebar['message'] = "Unable to delete post icon: invalid post icon ID.";
+     else if ($sql->prepare('DELETE FROM posticons WHERE id=?',array($id))) {
       $pagebar['message'] = "Post icon successfully deleted.";
  }
 else {
@@ -118,6 +120,8 @@ $pagebar['breadcrumb'] = array(
 
 if ($id > 0) {
     $t=$sql->fetchp('SELECT * FROM posticons WHERE id=?',array($id));
+  if (!$t) { noticemsg("Error", "Invalid post icon ID"); pagefooter(); die();
+  } else {
 $pagebar['title'] = 'Post Icon ID '.$t['id'];
 $pagebar['actions'] = array(
     array('title' => 'Delete Post Icon','href' => 
@@ -126,6 +130,7 @@ $pagebar['actions'] = array(
 => 
 true),
 );
+  }
 
 }
 else {

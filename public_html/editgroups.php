@@ -216,6 +216,9 @@
 	else
 	{
 		$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?",array($_GET['id']));
+              if (!$group) {
+              noticemsg("Error", "Invalid group ID."); pagefooter(); die();
+        }
 		$pagebar['title'] = 'Edit group';
 	}
 		

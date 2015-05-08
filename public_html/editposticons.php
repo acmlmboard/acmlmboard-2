@@ -41,7 +41,7 @@ $headers = array
 	),
 	"image" => array("caption"=>"Image", "width"=>"24px", "align"=>"center", "color"=>2),
 	"url" => array("caption"=>"URL", "align"=>"center", "color"=>1),
-  "edit" => array("caption"=>"Actions", "width"=>"100px", "color"=>1),
+  "edit" => array("caption"=>"Actions", "width"=>"100px", "color"=>2),
 );
 
 $data = array();

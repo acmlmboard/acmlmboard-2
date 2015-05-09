@@ -9,8 +9,11 @@ INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindval
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-profileext', 'Edit Extended Profile Fields', '', '3', '');
 INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (LAST_INSERT_ID(), 4, 'group', 'edit-profileext', '', 0, 0);
 
-#Adds a perm for editing spiders.
+#Adds a perm for editing spiders and fixes some permission issues.
 #Date: 5/9/2015
 
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-spiders', 'Edit Spiders', '', '3', '');
 INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (LAST_INSERT_ID(), 4, 'group', 'edit-spiders', '', 0, 0);
+
+INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (LAST_INSERT_ID(), 9, 'group', 'use-item-shop', '', 0, 1);
+UPDATE  `squidempress_yay`.`x_perm` SET  `perm_id` =  'edit-own-title' WHERE  `x_perm`.`perm_id` ='edit-title';

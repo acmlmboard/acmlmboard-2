@@ -16,4 +16,4 @@ INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) V
 INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (LAST_INSERT_ID(), 4, 'group', 'edit-spiders', '', 0, 0);
 
 INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (LAST_INSERT_ID(), 9, 'group', 'use-item-shop', '', 0, 1);
-UPDATE  `squidempress_yay`.`x_perm` SET  `perm_id` =  'edit-own-title' WHERE  `x_perm`.`perm_id` ='edit-title';
+UPDATE  `x_perm` SET  `perm_id` =  'edit-own-title' WHERE  `x_perm`.`perm_id` ='edit-title';

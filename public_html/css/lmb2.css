@@ -1,0 +1,175 @@
+/* META
+LMB 2.0 (Liliana, SquidEmpress)
+ 
+*/
+
+A:link		{color:#00B700}
+A:visited	{color:#8ACC99}
+A:active	{color:#00C500}
+A:hover		{color:#00FF00}
+
+A:link,A:visited,A:active,A:hover{
+  text-decoration:none;
+  font-weight:bold;
+}
+
+body{
+  background: url(../theme/lmb/lmbgreen1.jpg) #031007;
+  color: #f6f6f6;
+  font-family: eurostile, helvetica, sans-serif;
+}
+
+table{
+  color: white;
+  font-size: 9pt;
+}
+
+table.c1{
+  width: 100%;
+  background: url(../theme/lmb/lmbgreen4.jpg) #003010;
+  border: #1C7300 outset 1px;
+}
+
+table.c2{
+  width: 100%;
+  background: black;
+  border: #1C7300F outset 1px;
+  font-size: 9pt;
+}
+
+tr.h{
+  background: url(../theme/lmb/lmbgreen2.jpg) #559955;
+  text-align: center;
+  font-size: 9pt;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+tr.c{
+  background: url(../theme/lmb/lmbgreen3.jpg) #99DD99;
+  text-align: center;
+  font-size: 9pt;
+  color: #EEEEEE;
+}
+
+td.b{
+  border-left: #000000 1px solid;
+  border-top:  #000000 1px solid;
+  padding: 1px;
+}
+
+td.nb{
+  border: 0px none;
+  padding: 1px;
+}
+
+td.h{
+  border-left: 0;
+  border-right: 0;
+  padding: 1px;
+}
+
+td.n3{ 
+  background: black; color: white; 
+}
+
+tr.n1,td.n1{
+  background: url(../theme/lmb/lmbgreen4.jpg) #003010;
+  background-attachment:fixed;
+}
+
+tr.n2,td.n2{
+  background: url(../theme/lmb/lmbgreen4.jpg) #003010;
+  background-attachment:fixed;
+}
+
+tr.n3,td.n3{
+  background: url(../theme/lmb/lmbgreen4.jpg) #003010;
+  background-attachment:fixed;
+}
+.sfont{
+  font-size: 9pt;
+}
+
+textarea,input,select,button{
+  border:    2px solid #1C7300;
+  background:#000000;
+  color:     #FFFFFF;
+  font: 9pt tahoma;
+}
+
+input.radio{
+  border: none;
+  background: none;
+  color: #DDDDDD;
+  font: 9pt tahoma;
+}
+
+.submit{
+  border: #269942 outset 2px;
+  color: #04B804;
+}
+
+ins{
+  border: 1px #30a050 dashed;
+  text-decoration: none;
+  color: #40FF30;
+}
+
+del{
+  border: 1px #003010 dashed;
+  text-decoration: none;
+  color: #FF4000;
+}
+img { border: 0; }
+
+a[class~="newreply"] { 
+  border: #269942 outset 2px;
+  background: black;
+  color: #04B804;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+a[class~="editforum"] { 
+  border: #269942 outset 2px;
+  background: black;
+  color: #04B804;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+a[class~="newthread"] { 
+  border: #269942 outset 2px;
+  background: black;
+  color: #04B804;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+a[class~="newpoll"] { 
+  border: #269942 outset 2px;
+  background: black;
+  color: #04B804;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+a[class~="ignoreforum"] { 
+  border: #269942 outset 2px;
+  background: black;
+  color: #04B804;
+  padding: 3px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}

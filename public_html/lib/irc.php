@@ -213,7 +213,7 @@ function set_irc_style($fcolor,$bcolor,$style){
 }
 function get_irc_displayname(){
 	global $loguser, $config, $sql, $irccolor;
-	$q = $sql->fetch($sql->query("SELECT `char`,`color` FROM `group` WHERE id=$loguser[group_id]"));
+	$q = $sql->fetch($sql->query("SELECT `char`,`irc_color` FROM `group` WHERE id=$loguser[group_id]"));
     $group_prefix = $q[char];
     $group_color = $q[color];
 
@@ -250,7 +250,7 @@ function get_irc_displayname(){
 function get_irc_usercolor(){
 	//Note: This should/will be used to return more than just the logged in user. 
 	global $loguser, $config, $sql;
-	$q = $sql->fetch($sql->query("SELECT `color` FROM `group` WHERE id=$loguser[group_id]"));
+	$q = $sql->fetch($sql->query("SELECT `irc_color` FROM `group` WHERE id=$loguser[group_id]"));
     $group_color = $q[color];
     
     if ($group_color){

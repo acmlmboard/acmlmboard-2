@@ -76,6 +76,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmilies id=nosmilies value=1 ".($_POST[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ".        "    </td>
 ".        " </form>
 ".        "$L[TBLend]
@@ -90,6 +91,7 @@ print     "  $L[TR]>
     $post[text]=$_POST[message];
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
+    $post[nosmilies]=$_POST[nosmilies];
     foreach($loguser as $field=>$val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
@@ -129,6 +131,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood])." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ".        "    </td>
 ".        " </form>
 ".        "$L[TBLend]
@@ -149,9 +152,10 @@ print     "  $L[TR]>
 ".           "Go back or <a href=sendprivate.php>try again</a>";
       } else {
           checknumeric($_POST[nolayout]);
+          checknumeric($_POST[nosmilies]);
           checknumeric($_POST[mid]);   
-        $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout) "
-                   ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout])");
+        $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout,nosmilies) "
+                   ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout],$_POST[nosmilies])");
         $pid=$sql->insertid();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
 

@@ -10,7 +10,7 @@ $r2=(int)$_GET['n'];
 $t = $sql->resultq("SELECT thread FROM posts WHERE id=$pid");
 if(!$t) { error("Error", "This post does not exist.<br> <a href=./>Back to main</a>"); }
 $f = $sql->resultq("SELECT forum FROM threads WHERE id=$t");
-if(!can_view_forum_post_history($f) || !can_view_forum($f)) { error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
+if(!can_view_forum_post_history($f)) { error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
 
 pageheader("Post revision differences");
 

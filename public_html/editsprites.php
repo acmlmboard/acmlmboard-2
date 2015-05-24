@@ -23,7 +23,9 @@ require("lib/common.php");
   if ($r['action'] == "del") {
     unset($r['action']);
     if ($id > 0) {
-      if ($sql->prepare('DELETE FROM sprites WHERE id=?',array($id))) {
+        $sprite=$sql->fetchp('SELECT * FROM sprites WHERE id=?',array($id));
+        if (!$sprites) $pagebar['message'] = "Unable to delete sprite: invalid sprite ID.";
+     else if ($sql->prepare('DELETE FROM sprites WHERE id=?',array($id))) {
       $pagebar['message'] = "Sprite successfully deleted.";
  }
 else {
@@ -144,6 +146,8 @@ $pagebar['breadcrumb'] = array(
 
 if ($id > 0) {
     $t=$sql->fetchp('SELECT * FROM sprites WHERE id=?',array($id));
+  if (!$t) { noticemsg("Error", "Invalid sprite ID"); pagefooter(); die();
+  } else {
 $pagebar['title'] = $t['name'];
 $pagebar['actions'] = array(
     array('title' => 'Delete Sprite','href' => 
@@ -152,6 +156,7 @@ $pagebar['actions'] = array(
 => 
 true),
 );
+  }
 
 }
 else {

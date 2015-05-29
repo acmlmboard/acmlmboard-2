@@ -54,7 +54,12 @@ if($_COOKIE['pstbon']>=1){
      $deletedposts="";
      }
  
-  $page = $_REQUEST['page'];
+  if($page = $_REQUEST['page']) {
+  checknumeric($page);
+  }
+  else $page = 1;
+
+  if($page < 0 || $page > 1000000000000000) error("Error","Invalid page number");
 
   if(!$page)
     $page=1;
@@ -70,6 +75,11 @@ if($_COOKIE['pstbon']>=1){
   checknumeric($ppp);
   }
   else $ppp = $loguser['ppp'];
+
+  if($ppp < 0 || $ppp > 1000000000000000) error("Error","Invalid posts per page number");
+
+  if(!$ppp)
+    $ppp=$loguser['ppp'];
 
   if ($tid=$_REQUEST['id']) {
     checknumeric($tid);

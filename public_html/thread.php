@@ -146,6 +146,7 @@ if($_COOKIE['pstbon']>=1){
     if($act=='trash'  )
       editthread($tid,'',$trashid,'',1);
     if($act=='rename' )
+      //$action=",title='".$sql->escape($_POST[title])."'";
       editthread($tid,$_POST[arg],0,'');
     if($act=='move'   )
       editthread($tid,'',$_POST[arg],'');
@@ -571,27 +572,36 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       ($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')))) {
     $link="<a href=javascript:submitmod";
     if (can_edit_forum_threads($thread[forum])) {
-      if($thread[sticky])
+      if($thread[sticky]) {
         $stick="$link('unstick')>Unstick</a>";
-      else
+        $stick2="$link(\'unstick\')>Unstick</a>";
+      } else {
         $stick="$link('stick')>Stick</a>";
+        $stick2="$link(\'stick\')>Stick</a>";
+      }
 
-      if($thread[closed])
+      if($thread[closed]) {
         $close="| $link('open')>Open</a>";
-      else
+        $close2="| $link(\'open\')>Open</a>";
+      } else {
         $close="| $link('close')>Close</a>";
+        $close2="| $link(\'close\')>Close</a>";
+      }
 
-      if($thread[forum]!=$trashid)
-        $trash="| $link('trash')>Trash</a> |";
-      else
+      if($thread[forum]!=$trashid) {
+        $trash="| <a href=javascript:submitmod('trash') onclick=\"trashConfirm(event)\">Trash</a> |";
+        $trash2="| <a href=javascript:submitmod(\'trash\') onclick=\"trashConfirm(event)\">Trash</a> |";
+      } else {
         $trash='| ';
+        $trash2='| ';
+      }
 
       $retag=sizeof($tags)?"<a href=javascript:showtbox()>Tag</a> | ":"";
       $edit="<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
     
 		//KAWA: Made it a dropdown list. The change isn't alone in this file, but it's clear where it starts and ends if you want to put this on 2.1+delta.
 		$r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
-		$fmovelinks="<select onchange=\"submitmove(this.options[this.selectedIndex].value);\">";
+		$fmovelinks="<select id=\"forumselect\">";
 		$c = -1;
 		while($d=$sql->fetch($r))
 		{
@@ -607,6 +617,8 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 		}
 		$fmovelinks.="</optgroup></select>";
 		$fmovelinks=addslashes($fmovelinks);
+		$fmovelinks.="<input type=\"submit\" class=\"submit\" id=\"move\" value=\"Submit\" name=\"movethread\" onclick=\"submitmove(movetid());\">";
+		$fmovelinks.="<input type=\"button\" class=\"submit\" value=\"Cancel\" onclick=\"hidethreadedit(); return false;\">";
 
       $opt="Moderating";
     } else {
@@ -627,6 +639,23 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       if($thread[tags] & (1<<$t[bit])) $taglinks.="<a href=javascript:submittag('$t[bit]')>$t[tag]</a> ";
     }
     $taglinks=addslashes($taglinks);
+    $taglinks.="<input type=\"button\" class=\"submit\" value=\"Cancel\" onclick=\"hidethreadedit(); return false;\">";
+
+	//$renamefield= "<input type=\"text\" name=\"title\" id=\"title\" size=60 maxlength=255 value=\"".htmlspecialchars($thread['title'])."\">";
+	//$renamefield= $sql->escape($renamefield);
+	//$renamefield.= "<input type=\"submit\" class=\"submit\" name=\"renamethread\" id=\"rename\" value=\"Submit\" onclick=\"submitrename(renametitle());\">";
+	//$renamefield.= "<input type=\"submit\" class=\"submit\" name=\"action\" value=\"Rename\" onclick=\"submitmod(\'rename\');\">";
+	$renamefield.= "<input type=\"button\" class=\"submit\" value=\"Cancel\" onclick=\"hidethreadedit(); return false;\">";
+
+print "<script language=\"javascript\">
+function trashConfirm(e) {
+    if(confirm(\"Are you sure you want to trash this thread?\"));
+    else {
+  e.preventDefault();
+ }
+}
+</script>";
+
 
     $modlinks=
           "$L[TBL2]>$L[TR2]>
@@ -640,12 +669,17 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "    $edit
 ".        "    </span>
 ".        "    <span id=mappend>
-".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread[title],ENT_COMPAT | ENT_HTML401,'UTF-8')."\" maxlength=100>
+".        "    </span>
+".        "    <span id=canceledit>
 ".        "    </span>
 ".        "    <script type=text/javascript>
 ".        "      function submitmod(act){
 ".        "        document.mod.action.value=act;
 ".        "        document.mod.submit();
+".        "      }
+".        "      function submitrename(name){
+".        "        document.mod.arg.value=name;
+".        "        submitmod('rename')
 ".        "      }
 ".        "      function submitmove(fid){
 ".        "        document.mod.arg.value=fid;
@@ -657,20 +691,18 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "      }
 ".        "      function showrbox(){
 ".        "        document.getElementById('moptions').innerHTML='Rename thread:';
-".(strstr($_SERVER['HTTP_USER_AGENT'],"MSIE")?
-/* IE: scripts can add/remove form elements, type of existing element can't be changed
- * Firefox, Opera: addition/removal of form elements = they vanish, type can be changed
- * Konqueror: both work */
-          "        document.getElementById('mappend').innerHTML='<input type=text name=tmp style=\'width:80%!important;border-width:0px!important;padding:0px!important\' onkeypress=\"submit_on_return(event,\'rename\')\" value=\"".addslashes(htmlentities($thread[title]))."\">';":
-          "        document.mod.tmp.type='text';")."        
+".        "        document.getElementById('mappend').innerHTML='$renamefield';
+".	  "        document.getElementById('mappend').style.display = '';
 ".        "      }
 ".        "      function showtbox(){
 ".        "        document.getElementById('moptions').innerHTML='Add:';
 ".        "        document.getElementById('mappend').innerHTML='$taglinks';
+".	  "        document.getElementById('mappend').style.display = '';
 ".        "      }
 ".        "      function showmove(){
 ".        "        document.getElementById('moptions').innerHTML='Move to: ';
 ".        "        document.getElementById('mappend').innerHTML='$fmovelinks';
+".	  "        document.getElementById('mappend').style.display = '';
 ".        "      }
 ".        "      function submit_on_return(event,act){
 ".        "        a=event.keyCode?event.keyCode:event.which?event.which:event.charCode;
@@ -678,6 +710,21 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "        document.mod.arg.value=document.mod.tmp.value;
 ".        "        if(a==13) document.mod.submit();
 ".        "      }
+".        "      function hidethreadedit() {
+".	  "        document.getElementById('moptions').innerHTML = '$opt options: $stick2 $close2 $trash2 $edit';
+".	  "        document.getElementById('mappend').innerHTML = '<input type=hidden name=tmp style=\'width:80%!important;border-width:0px!important;padding:0px!important\' onkeypress=\"submit_on_return(event,\'rename\')\" value=\"".htmlentities($thread[title],ENT_COMPAT | ENT_HTML401,'UTF-8')."\" maxlength=100>';
+".	  "        document.getElementById('canceledit').style.display = 'none';
+".        "     }
+".        "     function movetid() {
+".        "        var x = document.getElementById('forumselect').selectedIndex;
+".        "        document.getElementById('move').innerHTML = document.getElementsByTagName('option')[x].value;
+".        "        return document.getElementsByTagName('option')[x].value;
+".        "     }
+".        "     function renametitle() {
+".        "        var x = document.getElementById('title').value;
+".        "        document.getElementById('rename').innerHTML = document.getElementsByTagName('input')[x].value;
+".        "        return document.getElementsByTagName('input')[x].value;
+".        "     }
 ".        "    </script>
 ".        "    <input type=hidden name=arg value=''>
 ".        "    <input type=hidden name=id value=$tid>
@@ -810,6 +857,7 @@ print     "  $L[TR] $quickreplydisplay >
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
     print "     $L[INPc]=close id=close value=1 ><label for=close>Close thread</label>
@@ -826,4 +874,3 @@ print        "$userbar$topbot";
 
   pagefooter();
 ?>
-                                                                                                   

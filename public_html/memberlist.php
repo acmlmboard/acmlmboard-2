@@ -34,7 +34,7 @@
     else $where.=" AND group_id=$pow";
   }
   if(!$config['perusercolor']) $customnc='0';
-  if($customnc=='1') $where.=" AND `nick_color` !=''";
+  if($customnc=='1') $where.=" AND `nick_color` !='' AND `enablecolor` > 0";
 
   if(!$config['displayname']) $displayn='0';
   if($displayn=='1') $where.=" AND `displayname` !=''";

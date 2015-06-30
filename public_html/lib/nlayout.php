@@ -391,18 +391,15 @@ function RenderPageBar($pagebar) {
 ".         "    ";
   }
 
-// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
-  function fieldselect($field,$checked,$choices){
-    global $L;
-    $text="
-".        "$L[SEL]=$field>";
-    $sel[$checked]=' selected';
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
-    return "$text
-".         "</select>";
-  }
+	// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
+	function fieldselect($field,$checked,$choices){
+		global $L;
+		$text="$L[SEL]=$field>\n";
+		foreach($choices as $key=>$val) {
+			$text .= "\t$L[OPT]=\"$key\"". ($key==$checked?' selected': '') .">$val</option>\n";
+		}
+		return "$text\n</select>\n";
+	}
 
   function itemselect($field,$current,$cat) {
     global $sql, $L;

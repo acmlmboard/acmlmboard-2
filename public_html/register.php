@@ -156,7 +156,7 @@ if (isProxy())
       }
 
     $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
- if($err) noticemsg("Error", $err);
+ if(!empty($err)) noticemsg("Error", $err);
   print "$L[TBL1]>
 ".         " <form action=register.php method=post>
 ".         "  $L[TRh]>

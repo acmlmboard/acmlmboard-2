@@ -18,11 +18,16 @@
     {
       $data=explode(",",decryptpwd($what));
       $sql->query("DELETE FROM ipbans WHERE ipmask='$data[0]' AND expires='$data[1]'");
-    } else if($action=="add" && $_POST[ipmask] ) {
+    } else if($action=="add") {
+      if($_POST[ipmask]) {
       $sql->query("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES "
                  ."('$_POST[ipmask]','$_POST[hard]','".($_POST[expires]>0?($_POST[expires]+time()):0)."','".addslashes($loguser[name])."','$_POST[reason]')");
+      } else {
+      $err="You must enter an IP mask";
+      }
     }
     $ipbans=$sql->query("SELECT * FROM ipbans");
+    if($err) noticemsg("Error", $err);
     echo "<form action=ipbans.php?action=add method=post>
 ".       "$L[TBL1]>
 ".       "  $L[TRh]>

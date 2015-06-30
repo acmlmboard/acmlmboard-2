@@ -717,7 +717,7 @@ print "$modlinks
     } else {
       $post[maxrevision]=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
     }
-    if(can_edit_forum_posts($post[fid]) && $post[id]==$_GET[pin]) $post[deleted]=false;
+    if(can_edit_forum_posts($thread[forum]) && $post[id]==$_GET[pin]) $post[deleted]=false;
 if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 
     print "<br>
@@ -783,9 +783,12 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR] $quickreplydisplay >
-".        "    $L[TD1c] width=120>Format:</td>
+";
+    if($loguser[posttoolbar]!=1)
+print     "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]
-".        "  $L[TR] $quickreplydisplay >
+";
+print     "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Reply:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>$quotetext</textarea></td>
 ".        "  $L[TR1] $quickreplydisplay >

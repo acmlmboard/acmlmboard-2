@@ -154,8 +154,8 @@
 ".        "        $L[TDc] colspan=2>KCS Report for $monthnames[$month] $year</td>
 ".        "    </tr>
 ".        "    $L[TR]>
-$L[TD2l]>".strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
-$report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
+$L[TD2l]>".strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\" class=\"acsrankings".$loguser['id']."\">Total amount of posts: $pqry<br><br><table cellspacing=0 class=\"acsrankings".$loguser['id']."\">";
+$report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\" class=\"acsrankings".$loguser['id']."\">Total amount of posts: $pqry<br><br><table cellspacing=0 class=\"acsrankings".$loguser['id']."\">";
 //Results for posts
  $q=1; $p=-1;
   for($i=1;$user=$sql->fetch($users);$i++){
@@ -168,8 +168,8 @@ $report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-l
     $p=$user[num];
   }
 }
-$report.="</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
-print "</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
+$report.="</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\" class=\"acsrankings".$loguser['id']."\"><table cellspacing=0 class=\"acsrankings".$loguser['id']."\">";
+print "</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\" class=\"acsrankings".$loguser['id']."\"><table cellspacing=0 class=\"acsrankings".$loguser['id']."\">";
 //Daily Points
 if($dpur){
 arsort($dpur);
@@ -183,8 +183,8 @@ foreach($dpur as $usr => $pnts){
 }
 }
 //Monthly Points
-$report.="</table><br><br>Monthly Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
-print "</table><br><br>Monthly Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
+$report.="</table><br><br>Monthly Points<hr style=\"width: 100px; margin-left: 0px;\" class=\"acsrankings".$loguser['id']."\"><table cellspacing=0 class=\"acsrankings".$loguser['id']."\">";
+print "</table><br><br>Monthly Points<hr style=\"width: 100px; margin-left: 0px;\" class=\"acsrankings".$loguser['id']."\"><table cellspacing=0 class=\"acsrankings".$loguser['id']."\">";
 if($points){
 arsort($points);
 $r=0; $q=1; $t=9999;

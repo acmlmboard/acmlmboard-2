@@ -11,8 +11,16 @@ if (has_perm("edit-forums"))
   $mlinks[] = array('url' => "manageforums.php", 'title' => 'Manage forums');
 if (has_perm("edit-ip-bans")) 
   $mlinks[] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
+if (has_perm("edit-spiders")) 
+  $mlinks[] = array('url' => "editspiders.php", 'title' => 'Manage spiders');
 if (has_perm("edit-calendar-events")) 
   $mlinks[] = array('url' => "editevents.php", 'title' => 'Manage events');
+if (has_perm('edit-smilies'))
+  $mlinks[] = array('url' => "editsmilies.php", 'title' => 'Manage smilies');
+if (has_perm("edit-post-icons")) 
+  $mlinks[] = array('url' => "editposticons.php", 'title' => 'Manage post icons');
+if (has_perm('edit-profileext'))
+  $mlinks[] = array('url' => "editprofileext.php", 'title' => 'Manage extended profile fields');
 if (has_perm("edit-sprites")) 
   $mlinks[] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
 if (has_perm("edit-sprites")) 

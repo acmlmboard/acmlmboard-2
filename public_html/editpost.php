@@ -126,6 +126,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
     print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
@@ -145,6 +146,7 @@ print     "  $L[TR]>
     $post[num]=++$euser[posts];
     $post[mood]=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
+    $post[nosmilies]=$_POST[nosmilies];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     $post[open]=$_POST[open];
@@ -186,6 +188,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
     print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
@@ -205,7 +208,8 @@ print     "  $L[TR]>
     $rev=$rev[m];
     $mid=(isset($_POST[mid])?(int)$_POST[mid]:-1);
     checknumeric($mid);
-    checknumeric($nolayout);
+    checknumeric($_POST[nolayout]);
+    checknumeric($_POST[nosmilies]);
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
@@ -218,7 +222,7 @@ print     "  $L[TR]>
     }
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
-    $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
+    $sql->query("UPDATE posts SET mood='$mid',nolayout='$_POST[nolayout]',nosmilies='$_POST[nosmilies]' WHERE id='$pid'");
     $sql->query("UPDATE threads SET lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id='$thread[id]'");
     $sql->query("UPDATE forums SET lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
     

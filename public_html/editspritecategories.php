@@ -67,7 +67,9 @@ RenderTable($data, $headers);
 
   if ($r['action'] == "del") {
     unset($r['action']);
-      if ($sql->prepare('DELETE FROM spritecateg WHERE id=?',array($id))) {
+        $spritecategory=$sql->fetchp('SELECT * FROM spritecateg WHERE id=?',array($id));
+        if (!$spritecategory) noticemsg("Error","Unable to delete sprite category: invalid sprite category ID.");
+     else if ($sql->prepare('DELETE FROM spritecateg WHERE id=?',array($id))) {
       $pagebar['message'] = "Sprite category successfully deleted.";
  }
 else {
@@ -119,6 +121,8 @@ $pagebar['breadcrumb'] = array(
 
    if ($id != 0) { 
    $tsc=$sql->fetchp('SELECT * FROM spritecateg WHERE id=?',array($id));
+  if (!$tsc) { noticemsg("Error", "Invalid sprite category ID"); pagefooter(); die();
+  } else {
 $pagebar['title'] = $tsc['name'];
 $pagebar['actions'] = array(
     array('title' => 'Delete Sprite Category','href' => 
@@ -127,6 +131,7 @@ $pagebar['actions'] = array(
 => 
 true),
 );
+  }
 
 }
 else {

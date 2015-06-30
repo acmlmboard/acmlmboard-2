@@ -59,10 +59,8 @@ fwrite($f,"[".date("m-d-y H:i:s")."] ".$ref."\n");
 fclose($f);
 
   if(!has_perm('use-item-shop')){
-  pageheader('Item shop');
      error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!has_perm('manage-shop-items')) { //Added (Sukasa)
-  pageheader('Item shop');
      error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }else {
     $user=$sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '

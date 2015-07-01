@@ -1,10 +1,12 @@
 <?php
 class mysql {
-	var $queries = 0;
-	var $rowsf = 0;
-	var $rowst = 0;
-	var $time = 0;
-	var $db = null;
+	// public for now since this replicates the behavior of PHP4 class variables.
+	public $queries = 0;
+	public $rowsf = 0;
+	public $rowst = 0;
+	public $time = 0;
+	public $db = null;
+	public $debug_mode = false; // change this to enable SQL query dumps
 
 	function connect($host, $user, $pass) {
 		$this->db = new mysqli($host, $user, $pass);
@@ -21,7 +23,7 @@ class mysql {
 	}
 
 	function query($query) {
-		if (0 && $_GET['sqldebug'])
+		if ($this->debug_mode && $_GET['sqldebug'])
 			print "{$this->queries} $query<br>";
 
 		$start = usectime();
@@ -87,14 +89,17 @@ class mysql {
 	function fetch($result) {
 		$start = usectime();
 
-		if($result && $res = $result->fetch_assoc())
+		if(!isset($result) || $result === false)
+			return null;
+
+		if($res = $result->fetch_assoc())
 			$this->rowsf++;
 
 		$this->time+=usectime()-$start;
 		return $res;
 	}
 
-	function result($result, $row = 0, $col = 0){
+	function result($result, $row = 0, $col = 0) {
 		$start=usectime();
 
 		$res = null;

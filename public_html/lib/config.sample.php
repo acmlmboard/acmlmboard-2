@@ -149,6 +149,16 @@
   $config['classicpms'] = false; //Enables the classic table style PM notification
   $config['disablemodernpms'] = false;//**DISABLES** the modern style system. The modern style is the supported method for PM notification.
 
+  // these are fallback settings
+  $config['trashid'] = $trashid;
+  $config['boardtitle'] = $boardtitle;
+  $config['defaulttheme'] = $defaulttheme;
+  $config['defaultfontsize'] = $defaultfontsize;
+  $config['avatardimx'] = $avatardimx;
+  $config['avatardimy'] = $avatardimy;
+  $config['avatardimy'] = $avatardimy;
+
+
    // xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula
   $spatulas = array(
   "Value1",

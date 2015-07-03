@@ -70,6 +70,11 @@ if($_COOKIE['pstbon']==-1){
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
                             WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `f`.`id` IN ".forums_with_view_perm());
 
+    $threadhack = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `t`.`forum`, `t`.`announce`
+                            FROM `threads` `t`
+                            LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
+                            WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `t`.`forum`='0'");
+
   if(!$config[topposts]) $topposts=5000;
   else $topposts = $config[topposts];
   if(!$config[topthreads]) $topthreads=200;
@@ -88,6 +93,11 @@ if($_COOKIE['pstbon']==-1){
     {
      $lastpostlink = "<br>in <a href=\"thread.php?pid=$thread[id]#$thread[id]\">".forcewrap(htmlval($thread['ttitle']))."</a> 
                      (<a href=\"forum.php?id=$thread[forum]\">".htmlval($thread['ftitle'])."</a>)";
+    }
+   else if($pfound && $threadhack['announce'] && $threadhack['forum']==0) 
+    { 
+     $lastpostlink = "<br>in <a href=\"thread.php?pid=$threadhack[id]#$threadhack[id]\">".forcewrap(htmlval($threadhack['ttitle']))."</a>  
+                     (<a href=\"thread.php?announce=0\">Announcements</a>)"; 
     }
    else if($user['posts'] == 0)
     {

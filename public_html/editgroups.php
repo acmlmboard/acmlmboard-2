@@ -88,7 +88,7 @@
 				$primary, $_POST['description']);
 				
 			if ($act == 'new')
-				$sql->prepare("INSERT INTO `group` VALUES (0,?,?,?,?,?,?,?,?,?,?,?)", $values);
+				$sql->prepare("INSERT INTO `group` VALUES (0,?,'',NULL,?,?,?,?,?,?,?,?,?,?)", $values);
 			else
 			{
 				$values[] = $_GET['id'];

@@ -48,112 +48,110 @@ $monData = $monData[array_rand($monData)]; */
 
 // Redone the roll [Gywall]
 // If I broke anything, blame the rabbits. :)
+$monData    = array();
 $monRarity  = rand(0, 6464646) % 100;
-$monRequest = @$sql->result($sql->query("SELECT count(*) FROM `sprites` WHERE `rarity` <= ".$monRarity),0,0);
+$monRequest = $sql->result($sql->query("SELECT count(*) FROM `sprites` WHERE `rarity` <= ".$monRarity),0,0);
+$dongs = ""; // WHY? Just Why?!
 
-  if ($monRequest) //[Scrydan] Added this loop to prevent divide by zero errors should no sprites exist, no chance also if it fails.
-   {
-    $monNumpty  = rand(0, 6464646) % $monRequest;
-    $monData    = array();
-    $monData    = $sql->fetch($sql->query("SELECT * FROM `sprites` WHERE `rarity` <= ".$monRarity." LIMIT ".$monNumpty.",1"));
-   }
-  else
-   {
-    $chance = 0;
-   }
+//[Scrydan] Added this loop to prevent divide by zero errors should no sprites exist, no chance also if it fails.
+if ($monRequest) {
+	$monNumpty  = rand(0, 6464646) % $monRequest;
+	if($res = $sql->query("SELECT * FROM `sprites` WHERE `rarity` <= ".$monRarity." LIMIT ".$monNumpty.",1")) {
+		if($monData = $sql->fetch($res)) {
+			/*
+			//Old way to pick pics: randomly between two fields.
+			$pic = rand(0, 1) ? $monData['alt']: $monData['pic'];
+			*/
+			//New way to pick pics: always pick the main field, but split it up.
+			$pics = explode("|", $monData['pic']);
+			$pic = $pics[array_rand($pics)];
 
-/*
-//Old way to pick pics: randomly between two fields.
-$pic = rand(0, 1) ? $monData['alt']: $monData['pic'];
-*/
-//New way to pick pics: always pick the main field, but split it up.
-$pics = explode("|", $monData['pic']);
-$pic = $pics[array_rand($pics)];
-
-/*
-//Naive dodongo way
-$x = "top: ".rand(0, 900)."px";
-$y = "left: ".rand(0, 600)."px";
-*/
-//Relative adjusting way
-$x = rand(0, 100);
-$y = rand(0, 100);
-$x = ($x < 50) ? "top: ".$x."%" : "bottom: ".(100-$x)."%";
-$y = ($y < 50) ? "left: ".$y."%" : "right: ".(100-$y)."%";
+			/*
+			//Naive dodongo way
+			$x = "top: ".rand(0, 900)."px";
+			$y = "left: ".rand(0, 600)."px";
+			*/
+			//Relative adjusting way
+			$x = rand(0, 100);
+			$y = rand(0, 100);
+			$x = ($x < 50) ? "top: ".$x."%" : "bottom: ".(100-$x)."%";
+			$y = ($y < 50) ? "left: ".$y."%" : "right: ".(100-$y)."%";
 
 
-switch($monData['anchor'])
-{
-	case "left":
-		$y = "left: 0px";
-		break;
-	case "right":
-		$y = "right: 0px";
-		break;
-	case "sides":
-		$y = (rand(0, 1) ? "left" : "right").": 0px";
-		break;
-	case "sidepic":
-		$s = rand(0, 1);
-		$y = ($s ? "left" : "right").": 0px";
-		$pic = $s ? $monData['alt']: $monData['pic'];
-		break;
-	case "top":
-		$x = "top: 0px";
-		break;
-	case "bottom":
-		$x = "bottom: 0px";
-		break;
-}
-
-$monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999\" src=\"img/sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
-
-$spritehash = generate_sprite_hash($loguser['id'], $monData['id']);
-
-$monScript = "<script language=\"javascript\">
-	function capture()
-	{
-		document.getElementById(\"sprite\").style['display'] = \"none\";
-		
-		x = new XMLHttpRequest();
-		x.onreadystatechange = function()
-		{
-			if(x.readyState == 4)
+			switch($monData['anchor'])
 			{
-				if(x.responseText != \"OK\")
-					alert(x.responseText);
+				case "left":
+					$y = "left: 0px";
+					break;
+				case "right":
+					$y = "right: 0px";
+					break;
+				case "sides":
+					$y = (rand(0, 1) ? "left" : "right").": 0px";
+					break;
+				case "sidepic":
+					$s = rand(0, 1);
+					$y = ($s ? "left" : "right").": 0px";
+					$pic = $s ? $monData['alt']: $monData['pic'];
+					break;
+				case "top":
+					$x = "top: 0px";
+					break;
+				case "bottom":
+					$x = "bottom: 0px";
+					break;
 			}
-		};
-		x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."', 
-true);
-		x.send(null);
+
+			$monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999\" src=\"img/sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
+
+			$spritehash = generate_sprite_hash($loguser['id'], $monData['id']);
+
+			$monScript = "<script language=\"javascript\">
+				function capture()
+				{
+					document.getElementById(\"sprite\").style['display'] = \"none\";
+					
+					x = new XMLHttpRequest();
+					x.onreadystatechange = function()
+					{
+						if(x.readyState == 4)
+						{
+							if(x.responseText != \"OK\")
+								alert(x.responseText);
+						}
+					};
+					x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."', true);
+					x.send(null);
+				}
+			</script>";
+
+			if(rand(0, 100) < $chance)
+			{
+				$dongs = $monMarkup;
+				$dongs .= $monScript;
+				//$junk .= $monScript; //Hack or not? Makes it work again.. -Emuz
+			}
+
+			/** ORIGINAL DODONGO CODE FOLLOWS **/
+			/* DELETEME */
+			/*
+			$dongs="<script language='javascript'>function bomb(l,x,y) {  var k=document.getElementById(l); var d=document.getElementById(l+'d'); k.src='img/dongbomb.png'; d.style.top-=120; d.style.left-=40; setTimeout(function() { remv(l); },1000); d.innerHTML=d.innerHTML+\"<embed id='bombsnd' src='etc/LTTP_Bomb_Blow.wav' loop='false' autostart='true' type='audio/wav' hidden='true'>\"; dongsc-=1; } function remv(l) { document.getElementById(l+'d').style.top=-300; if(dongsc==0) { document.getElementById(l+'d').innerHTML=\"<embed id='bombsnd' src='etc/LTTP_ItemFanfare.wav' loop='false' type='audio/wav' autostart='true' hidden='true'>\"; dongsc-=1; } }</script>";
+
+			$did=0;
+			while(rand(0,1)==0) {
+			  $x=rand(0,900);
+			  $y=rand(0,600);
+			  $k="";
+			  if(rand(0,1)) $k="2";
+			  ++$did;
+			  $dongs.="<div id='dongs{$did}d' style='filter:Alpha(opacity=75,finishopacity=75,style=1);opacity:0.75;-moz-opacity:0.75;position:fixed;top:{$x}px;left:{$y}px;z-index:999'><img src='img/dodongo$k.gif' title=\"BOMB?\" id=\"dongs$did\" onclick=\"bomb('dongs$did',$x,$y)\"></div>";
+			}
+			$dongs.="<script language='javascript'>var dongsc=$did;</script>";
+			if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false) $dongs="";
+			if(rand(0,100)) $dongs=""; */
+		}
 	}
-</script>";
-
-$dongs = "";
-if(rand(0, 100) < $chance)
-{
-	$dongs = $monMarkup;
-	$dongs .= $monScript;
-	//$junk .= $monScript; //Hack or not? Makes it work again.. -Emuz
+} else {
+	$chance = 0;
 }
-
-/** ORIGINAL DODONGO CODE FOLLOWS **/
-/* DELETEME */
-/*
-$dongs="<script language='javascript'>function bomb(l,x,y) {  var k=document.getElementById(l); var d=document.getElementById(l+'d'); k.src='img/dongbomb.png'; d.style.top-=120; d.style.left-=40; setTimeout(function() { remv(l); },1000); d.innerHTML=d.innerHTML+\"<embed id='bombsnd' src='etc/LTTP_Bomb_Blow.wav' loop='false' autostart='true' type='audio/wav' hidden='true'>\"; dongsc-=1; } function remv(l) { document.getElementById(l+'d').style.top=-300; if(dongsc==0) { document.getElementById(l+'d').innerHTML=\"<embed id='bombsnd' src='etc/LTTP_ItemFanfare.wav' loop='false' type='audio/wav' autostart='true' hidden='true'>\"; dongsc-=1; } }</script>";
-
-$did=0;
-while(rand(0,1)==0) {
-  $x=rand(0,900);
-  $y=rand(0,600);
-  $k="";
-  if(rand(0,1)) $k="2";
-  ++$did;
-  $dongs.="<div id='dongs{$did}d' style='filter:Alpha(opacity=75,finishopacity=75,style=1);opacity:0.75;-moz-opacity:0.75;position:fixed;top:{$x}px;left:{$y}px;z-index:999'><img src='img/dodongo$k.gif' title=\"BOMB?\" id=\"dongs$did\" onclick=\"bomb('dongs$did',$x,$y)\"></div>";
-}
-$dongs.="<script language='javascript'>var dongsc=$did;</script>";
-if(strpos($_SERVER['HTTP_USER_AGENT'],"MSIE 6.0") !== false) $dongs="";
-if(rand(0,100)) $dongs=""; */
-
 ?>

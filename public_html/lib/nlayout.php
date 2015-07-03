@@ -373,36 +373,30 @@ function RenderPageBar($pagebar) {
 //  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
-  function fieldtext($rows,$cols,$field){
-    global $L,$user;
-    return "$L[TXTa]=$field rows=$rows cols=$cols>".stripslashes(htmlval($user[$field])).'</textarea>';
-//  return "$L[TXTa]=$field rows=$rows cols=$cols>".htmlval($loguser[$field]).'</textarea>';
-  }
+	function fieldtext($rows,$cols,$field){
+		global $L, $user;
+		return "$L[TXTa]=$field rows=$rows cols=$cols>".stripslashes(htmlval($user[$field])).'</textarea>';
+	}
 
-  function fieldoption($field,$checked,$choices){
-    global $L;
-    $text='';
-    $sel[$checked]=' checked=1';
-    //[KAWA] Added <label> so the text is clickable.
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      <label>$L[INPr]=$field value=$key$sel[$key]>$val &nbsp;</label>";
-    return "$text
-".         "    ";
-  }
+	function fieldoption($field,$checked,$choices){
+		global $L;
+		$text='';
+		//[KAWA] Added <label> so the text is clickable.
+		foreach($choices as $key=>$val)
+			$text.="<label>$L[INPr]=$field value=$key". ($key==$checked?' checked=1': '') .">$val &nbsp;</label>\n";
+		return $text;
+	}
 
-// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
-  function fieldselect($field,$checked,$choices){
-    global $L;
-    $text="
-".        "$L[SEL]=$field>";
-    $sel[$checked]=' selected';
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
-    return "$text
-".         "</select>";
-  }
+	// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
+	function fieldselect($field,$checked,$choices){
+		global $L;
+		$text="$L[SEL]=$field>\n";
+		foreach($choices as $key=>$val) {
+			$text .= "\t$L[OPT]=\"$key\"". ($key==$checked?' selected': '') .">$val</option>\n";
+		}
+		$text .= "</select>\n";
+		return $text;
+	}
 
   function itemselect($field,$current,$cat) {
     global $sql, $L;

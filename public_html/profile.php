@@ -12,16 +12,16 @@
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+".      "<table cellspacing=\"0\" class=\"c1\" width=\"100%\" id=\"edit\"><tr class=\"h\"><td class=\"b h\">";
 if($_COOKIE['pstbon']==-1){
 	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>User has been banned.</td></tr></table></div>";
+".	"<tr><td class=\"b n1\" align=\"left\">User has been banned.</td></tr></table></div>";
 } elseif($_COOKIE['pstbon']<-1){
 	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>User has been unbanned.</td></tr></table></div>";
+".	"<tr><td class=\"b n1\" align=\"left\">User has been unbanned.</td></tr></table></div>";
 } else {
 	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Profile was edited successfully.</td></tr></table></div>"; }
+".	"<tr><td class=\"b n1\" align=\"left\">Profile was edited successfully.</td></tr></table></div>"; }
 }
 
 	loadsmilies();
@@ -206,9 +206,9 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     }
 
     $shoplist = "
-         $L[TBL1] width=\"100%\">
-           $L[TRh]>
-             $L[TDh] colspan=\"2\">Equipped Items</td></tr>";
+         <table cellspacing=\"0\" class=\"c1\" width=\"100%\">
+           <tr class=\"h\">
+             <td class=\"b h\" colspan=\"2\">Equipped Items</td></tr>";
 
     $shops   = $sql -> query('SELECT * FROM itemcateg ORDER BY corder');
     $eq      = $sql -> fetchq("SELECT * FROM usersrpg WHERE id='$uid'");
@@ -222,9 +222,9 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
    while($shop = $sql -> fetch($shops))
     {
      $shoplist.="
-         $L[TR] class=\"sfont\">
-           $L[TD1] width=\"70\">$shop[name]</td>
-           $L[TD2]><a href=\"shop.php?action=desc&id=".$eq['eq'.$shop['id']]."\">".$items[$eq['eq'.$shop['id']]]['name']."</a></td>
+         <tr class=\"sfont\">
+           <td class=\"b n1\" width=\"70\">$shop[name]</td>
+           <td class=\"b n2\"><a href=\"shop.php?action=desc&id=".$eq['eq'.$shop['id']]."\">".$items[$eq['eq'.$shop['id']]]['name']."</a></td>
          </tr>";
     }
     $shoplist.="
@@ -241,27 +241,27 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
     if(!$sql->numrows($q) == 0)
      {
       $badgelist = "
-           $L[TBL1] width=\"100%\">
-             $L[TRh]>
-               $L[TDh] colspan=\"3\">Badges</td></tr>";
+           <table cellspacing=\"0\" class=\"c1\" width=\"100%\">
+             <tr class=\"h\">
+               <td class=\"b h\" colspan=\"3\">Badges</td></tr>";
       $numbadges = 0;
-      $badgelist.="$L[TR]>";
+      $badgelist.="<tr>";
      while($badge = $sql -> fetch($q))
       {
-       $badgelist.= "$L[TD2c]><img src=\"".htmlval($badge['image'])."\" alt=\"\" title=\"".htmlval(str_replace("%%%VAL%%%", $badge['badge_var'], $badge['name']))."\" /></td>";
+       $badgelist.= "<td class=\"b n2\" align=\"center\"><img src=\"".htmlval($badge['image'])."\" alt=\"\" title=\"".htmlval(str_replace("%%%VAL%%%", $badge['badge_var'], $badge['name']))."\" /></td>";
        $numbadges++;
        if ($numbadges % 3 == 0)
-         $badgelist .= "</tr>$L[TR]>";
+         $badgelist .= "</tr><tr>";
       }
      while($numbadges < 9)
       {
-       $badgelist.= "$L[TD1c]><img src=\"img/_.png\" width=\"25\" height=\"25\" /></td>";
+       $badgelist.= "<td class=\"b n1\" align=\"center\"><img src=\"img/_.png\" width=\"25\" height=\"25\" /></td>";
        $numbadges++;
       if ($numbadges % 3 == 0)
-        $badgelist .= "</tr>$L[TR]>";
+        $badgelist .= "</tr><tr>";
       }
-       $badgelist.="            $L[TRh]>
-               $L[TD1c] colspan=\"3\"><a href=\"badges.php?uid=".$uid."\">(more)</a></td></tr>";
+       $badgelist.="            <tr class=\"h\">
+               <td class=\"b n1\" align=\"center\" colspan=\"3\"><a href=\"badges.php?uid=".$uid."\">(more)</a></td></tr>";
       $badgelist .= "</table>    <br>";
      }
     }
@@ -319,10 +319,10 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
      if($blockmessage)
       {
        print "
-       $L[TBL1]>
-         $L[TD1c]>
+       <table cellspacing=\"0\" class=\"c1\">
+         <td class=\"b n1\" align=\"center\">
            $blockmessage
-       $L[TBLend]";
+       </table>";
       }
      }
 	 if($isblocked)
@@ -360,49 +360,49 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
            <br><br>
 ";
     if($_COOKIE['pstbon']){ print $rdmsg;}
-print "    $L[TBL] width=\"100%\">
-             $L[TDn] valign=\"top\">
-               $L[TBL1]>
-                 $L[TRh]>
-                   $L[TDh] colspan=\"2\">General information</td>
-                   ".($showrealnick ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]><span $unclass style='color:#".$realnc.";'><b>".htmlval($user['name'])."</b></span>" : "")."
-                 $L[TR]>
-                   $L[TD1] width=\"110\"><b>Group</b></td>
-                   $L[TD2]>$group[title]
-                 $L[TR]>
-                   $L[TD1] width=\"110\"><b>Total posts</b></td>
-                   $L[TD2]>$user[posts] ($pfound found, $pavg per day)$pprojdate
-                 $L[TR]>
-                   $L[TD1]><b>Total threads</b></td>
-                   $L[TD2]>$user[threads] ($tfound found, $tavg per day)$tprojdate
-                 $L[TR]>
-                   $L[TD1]><b>EXP status</b></td>
-                   $L[TD2]>$pexp
-                 $L[TR]>
-                   $L[TD1]><b>Registered on</b></td>
-                   $L[TD2]>".cdate($dateformat, $user['regdate'])." (".timeunits($days * 86400)." ago)
-                 $L[TR]>
-                   $L[TD1]><b>Last post</b></td>
-                   $L[TD2]>
+print "    <table cellspacing=\"0\" width=\"100%\">
+             <td class=\"nb\" valign=\"top\">
+               <table cellspacing=\"0\" class=\"c1\">
+                 <tr class=\"h\">
+                   <td class=\"b h\" colspan=\"2\">General information</td>
+                   ".($showrealnick ? "<tr><td class=\"b n1\" width=\"110\"><b>Real handle</b></td><td class=\"b n2\"><span $unclass style='color:#".$realnc.";'><b>".htmlval($user['name'])."</b></span>" : "")."
+                 <tr>
+                   <td class=\"b n1\" width=\"110\"><b>Group</b></td>
+                   <td class=\"b n2\">$group[title]
+                 <tr>
+                   <td class=\"b n1\" width=\"110\"><b>Total posts</b></td>
+                   <td class=\"b n2\">$user[posts] ($pfound found, $pavg per day)$pprojdate
+                 <tr>
+                   <td class=\"b n1\"><b>Total threads</b></td>
+                   <td class=\"b n2\">$user[threads] ($tfound found, $tavg per day)$tprojdate
+                 <tr>
+                   <td class=\"b n1\"><b>EXP status</b></td>
+                   <td class=\"b n2\">$pexp
+                 <tr>
+                   <td class=\"b n1\"><b>Registered on</b></td>
+                   <td class=\"b n2\">".cdate($dateformat, $user['regdate'])." (".timeunits($days * 86400)." ago)
+                 <tr>
+                   <td class=\"b n1\"><b>Last post</b></td>
+                   <td class=\"b n2\">
                      ".($user['lastpost']? cdate($dateformat, $user['lastpost'])." (".timeunits(ctime() - $user['lastpost'])." ago)" : "None")."
                      $lastpostlink
-                 $L[TR]>
-                   $L[TD1]><b>Last view</b></td>
-                   $L[TD2]>
+                 <tr>
+                   <td class=\"b n1\"><b>Last view</b></td>
+                   <td class=\"b n2\">
                      ".cdate($dateformat, $user['lastview'])." (".timeunits(ctime()-$user['lastview'])." ago)
                      ".($user['url'] ? "<br>at <a href=\"".htmlval($user['url'])."\">".htmlval($user['url'])."</a>":'')."
                      ".($user['ip'] && has_perm("view-post-ips") ? "<br>from IP: $user[ip]":'')."
-               $L[TBLend]
+               </table>
                <br>
-               $L[TBL1]>
-                 $L[TRh]>
-                   $L[TDh] colspan=\"2\">Contact information</td>
-                 $L[TR]>
-                   $L[TD1] width=\"110\"><b>Email address</b></td>
-                   $L[TD2]>$email
-                 $L[TR]>
-                   $L[TD1]><b>Homepage</b></td>
-                   $L[TD2]>$homepage";
+               <table cellspacing=\"0\" class=\"c1\">
+                 <tr class=\"h\">
+                   <td class=\"b h\" colspan=\"2\">Contact information</td>
+                 <tr>
+                   <td class=\"b n1\" width=\"110\"><b>Email address</b></td>
+                   <td class=\"b n2\">$email
+                 <tr>
+                   <td class=\"b n1\"><b>Homepage</b></td>
+                   <td class=\"b n2\">$homepage";
 
 if($config['extendedprofile'])
 {
@@ -411,8 +411,8 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        WHERE `user_profileext`.`user_id`='$uid'");
   while($pfield = $sql->fetch($fieldReq))
   {
-  print "                 $L[TR]>
-                   $L[TD1]><b>".$pfield['title']."</b></td>";
+  print "                 <tr>
+                   <td class=\"b n1\"><b>".$pfield['title']."</b></td>";
 
   if($pfield['parser'] == "email") 
   {
@@ -420,70 +420,70 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
   }
   else $fieldvalue = preg_replace("/$pfield[validation]/", $pfield['fmt'], $pfield['data']);
 
-  print "                 $L[TD2]>".$fieldvalue;
+  print "                 <td class=\"b n2\">".$fieldvalue;
   }
 }
-   print "               $L[TBLend]
+   print "               </table>
                    <br>";
 
-               print "$L[TBL1]>
-                 $L[TRh]>
-                   $L[TDh] colspan=\"2\">User settings</td>
-                 $L[TR]>
-                   $L[TD1] width=\"110\"><b>Theme</b></td>
-                   $L[TD2]>
+               print "<table cellspacing=\"0\" class=\"c1\">
+                 <tr class=\"h\">
+                   <td class=\"b h\" colspan=\"2\">User settings</td>
+                 <tr>
+                   <td class=\"b n1\" width=\"110\"><b>Theme</b></td>
+                   <td class=\"b n2\">
                      ".htmlval($themename)."
-                 $L[TR]>
-                   $L[TD1] width=\"110\"><b>Time offset</b></td>
-                   $L[TD2]>
+                 <tr>
+                   <td class=\"b n1\" width=\"110\"><b>Time offset</b></td>
+                   <td class=\"b n2\">
                      ".sprintf("%d:%02d", ($usertzoff - $logtzoff) / 3600, abs(($usertzoff - $logtzoff) / 60) % 60)." from you
                      <br>(current time: ".$userct.")
-                 $L[TR]>
-                   $L[TD1]><b>Items per page</b></td>
-                   $L[TD2]>$user[ppp] posts, $user[tpp] threads
-               $L[TBLend]
+                 <tr>
+                   <td class=\"b n1\"><b>Items per page</b></td>
+                   <td class=\"b n2\">$user[ppp] posts, $user[tpp] threads
+               </table>
                <br>
-               $L[TBL1]>
-                 $L[TRh]>
-                   $L[TDh] colspan=\"2\">Personal information</td>
-                 $L[TR]>
-                   $L[TD1] width=\"110\"><b>Real name</b></td>
-                   $L[TD2]>".($user['realname'] ? htmlval($user['realname']) : "")."
-                 $L[TR]>
-                   $L[TD1]><b>Location</b></td>
-                   $L[TD2]>".($user['location'] ? htmlval($user['location']) : "")."
-                 $L[TR]>
-                   $L[TD1]><b>Birthday</b></td>
-                   $L[TD2]>$birthday $age
-                 $L[TR]>
-                   $L[TD1]><b>Bio</b></td>
-                   $L[TD2]>".($user['bio'] ? postfilter($user['bio']) : "")."
-               $L[TBLend]
+               <table cellspacing=\"0\" class=\"c1\">
+                 <tr class=\"h\">
+                   <td class=\"b h\" colspan=\"2\">Personal information</td>
+                 <tr>
+                   <td class=\"b n1\" width=\"110\"><b>Real name</b></td>
+                   <td class=\"b n2\">".($user['realname'] ? htmlval($user['realname']) : "")."
+                 <tr>
+                   <td class=\"b n1\"><b>Location</b></td>
+                   <td class=\"b n2\">".($user['location'] ? htmlval($user['location']) : "")."
+                 <tr>
+                   <td class=\"b n1\"><b>Birthday</b></td>
+                   <td class=\"b n2\">$birthday $age
+                 <tr>
+                   <td class=\"b n1\"><b>Bio</b></td>
+                   <td class=\"b n2\">".($user['bio'] ? postfilter($user['bio']) : "")."
+               </table>
              </td>
-             $L[TDn] width=\"15\"></td>
-             $L[TDn] width=\"256\" valign=\"top\">
-               $L[TBL1]>
-                 $L[TRh]>
-                   $L[TDh] colspan=\"2\">RPG status</td>
-                 $L[TR]>
-                   $L[TD1]><img src=\"gfx/status.php?u=$uid\">
-               $L[TBLend]
+             <td class=\"nb\" width=\"15\"></td>
+             <td class=\"nb\" width=\"256\" valign=\"top\">
+               <table cellspacing=\"0\" class=\"c1\">
+                 <tr class=\"h\">
+                   <td class=\"b h\" colspan=\"2\">RPG status</td>
+                 <tr>
+                   <td class=\"b n1\"><img src=\"gfx/status.php?u=$uid\">
+               </table>
                <br>
            $badgelist
            $shoplist
              </td>
-           $L[TBLend]
+           </table>
            <br>
-           $L[TBL1]>
-             $L[TRh]>
-               $L[TDh]>Sample post</td>
-             $L[TR]>
-           $L[TBLend]
+           <table cellspacing=\"0\" class=\"c1\">
+             <tr class=\"h\">
+               <td class=\"b h\">Sample post</td>
+             <tr>
+           </table>
            ".threadpost($post, 0)."
            <br>
-           $L[TBL1]>
-             $L[TRh]>
-               $L[TD2]><a href=\"forum.php?user=$user[id]\">View threads</a>
+           <table cellspacing=\"0\" class=\"c1\">
+             <tr class=\"h\">
+               <td class=\"b n2\"><a href=\"forum.php?user=$user[id]\">View threads</a>
                        | <a href=\"thread.php?user=$user[id]\">Show posts</a>
                        | <a href=\"postsbyuser.php?id=$user[id]\">List posts</a>
                        | <a href=\"postsbyuser.php?postsbytime&id=$user[id]\">Posts by time of day</a>
@@ -495,7 +495,7 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit mood avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit user</a>":"") ."
                        ". $banuser." ". $editpermissions." ".$secondarygroups."
-           $L[TBLend]";
+           </table>";
            pagefooter();
            
 ?>

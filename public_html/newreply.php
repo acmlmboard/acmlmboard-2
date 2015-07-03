@@ -142,11 +142,11 @@
     $postfix=""; $prefix=""; $valid="";
     if(($a=tvalidate($message))>0) {
       for($i=0;$i<$a;++$i) $postfix.="</table>";
-      $valid="$L[TR]> $L[TD1c] width=120>Table depth: $L[TD2]><font color=red><b>+$a</b></font> (You are opening more table tags than you are closing.)";
+      $valid="<tr> <td class=\"b n1\" align=\"center\" width=120>Table depth: <td class=\"b n2\"><font color=red><b>+$a</b></font> (You are opening more table tags than you are closing.)";
     }
     if(($a=tvalidate($message))<0) {
       for($i=0;$i<$a;++$i) $prefix.="<table>";
-      $valid="$L[TR]> $L[TD1c] width=120>Table depth: $L[TD2]><font color=red><b>-x</b></font> (You are opening fewer table tags than you are closing.)";
+      $valid="<tr> <td class=\"b n1\" align=\"center\" width=120>Table depth: <td class=\"b n2\"><font color=red><b>-x</b></font> (You are opening fewer table tags than you are closing.)";
     }
       }
 
@@ -174,10 +174,10 @@
     pageheader('New reply',$thread[forum]);
     print "$top - Preview
 ".        "<br>
-".        "$L[TBL1]>
-".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Post preview
-".        "$L[TBLend]
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"h\">
+".        "    <td class=\"b h\" colspan=2>Post preview
+".        "</table>
 ".         threadpost($post,0)."
 ".        "<br>
 "; 
@@ -187,56 +187,56 @@
 ".        "<br><br> 
 "; }
 print 
-        "$L[TBL1]> 
+        "<table cellspacing=\"0\" class=\"c1\"> 
 ".        " <form action=newreply.php method=post>
-".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Reply</td>
+".        "  <tr class=\"h\">
+".        "    <td class=\"b h\" colspan=2>Reply</td>
 ".           $valid."
 ";
  if(!$log && !$act)
-    print "  $L[TR]>
-".        "    $L[TD1c]>Username:</td>
-".        "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Password:</td>
-".        "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
+    print "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Username:</td>
+".        "    <td class=\"b n2\"><input type=\"text\" name=name size=25 maxlength=25></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Password:</td>
+".        "    <td class=\"b n2\"><input type=\"password\" name=pass size=13 maxlength=32></td>
 ";
      if($loguser[posttoolbar]!=1)
-print     "  $L[TR]>
-".        "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
+print     "  <tr>
+".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
+".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
 ";
-print     "  $L[TR]>
-".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($post[text])."</textarea></td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
+print     "  <tr>
+".        "    <td class=\"b n1\" align=\"center\" width=120>Reply:</td>
+".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=10 cols=80>".htmlval($post[text])."</textarea></td>
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\">
 ";
 if($log || (!$log && $act=='Preview'))
-    print  "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=\"$pass\">
+    print  "      <input type=\"hidden\" name=name value=\"".htmlval(stripslashes($_POST[name]))."\">
+".        "      <input type=\"hidden\" name=passenc value=\"$pass\">
 ";
-print   "      $L[INPh]=tid value=$tid>
-".        "      $L[INPs]=action value=Submit>
-".        "      $L[INPs]=action value=Preview>
+print   "      <input type=\"hidden\" name=tid value=$tid>
+".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
+".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
 ";
      if($log || (!$log && $act=='Preview'))
 print   // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".$post[moodlist]." 
+          "      <select name=mid>".$post[moodlist]." 
 ";
-print   "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".      "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+print   "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".      "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
-    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
-                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
-                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
-                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+    print "     ".(!$thread[closed] ? "<input type=\"checkbox\" name=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "<input type=\"checkbox\" name=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "<input type=\"checkbox\" name=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "<input type=\"checkbox\" name=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
-".        "$L[TBLend]
+".        "</table>
 ";
   }elseif($act=='Submit'){
     checknumeric($_POST[nolayout]);
@@ -281,11 +281,11 @@ sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{ir
     pageheader('New reply',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    Posted! (Gained $c bonus coins)<br>
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".        "$L[TBLend]
+".        "</table>
 ";
 } else { //Modern redirect*/
   redirect("thread.php?pid=$pid#$pid",$c);
@@ -295,10 +295,10 @@ sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{ir
 
   if($act!='Submit' && !$err && can_view_forum($thread)){
     print "<br>
-".        "$L[TBL1]>
-".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Thread preview
-".        "$L[TBLend]
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"h\">
+".        "    <td class=\"b h\" colspan=2>Thread preview
+".        "</table>
 ";
     while($post=$sql->fetch($posts)){
       $exp=calcexp($post[uposts],ctime()-$post[uregdate]);
@@ -307,10 +307,10 @@ sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{ir
 
     if($thread[replies]>=$loguser[ppp]){
     print "<br>
-".        "$L[TBL1]>
-".        "  $L[TR]>
-".        "    $L[TD1]>The full thread can be viewed <a href=thread.php?id=$tid>here</a>.
-".        "$L[TBLend]
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr>
+".        "    <td class=\"b n1\">The full thread can be viewed <a href=thread.php?id=$tid>here</a>.
+".        "</table>
 ";
     }
   }

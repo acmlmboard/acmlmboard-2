@@ -28,9 +28,9 @@
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+".      "<table cellspacing=\"0\" class=\"c1\" width=\"100%\" id=\"edit\"><tr class=\"h\"><td class=\"b h\">";
 	$rdmsg.="Post Radar saved!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Post Radar has been saved successfully.</td></tr></table></div>";
+".	"<tr><td class=\"b n1\" align=\"left\">Post Radar has been saved successfully.</td></tr></table></div>";
 }
 
   //mark forum read
@@ -88,17 +88,17 @@
   $cat=-1;
    if(isset($_COOKIE['pstbon'])){ print $rdmsg;}
 print "
-".      "$L[TBL1]>";
+".      "<table cellspacing=\"0\" class=\"c1\">";
 
 echo announcement_row(0,2,3);
 
 echo
-      "  $L[TRh]>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".      "    $L[TDh]>Forum</td>
-".      "    $L[TDh] width=50>Threads</td>
-".      "    $L[TDh] width=50>Posts</td>
-".      "    $L[TDh] width=150>Last post</td>
+      "  <tr class=\"h\">
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
+".      "    <td class=\"b h\">Forum</td>
+".      "    <td class=\"b h\" width=50>Threads</td>
+".      "    <td class=\"b h\" width=50>Posts</td>
+".      "    <td class=\"b h\" width=150>Last post</td>
 ";
 
 $lmods = array();
@@ -111,8 +111,8 @@ while ($mod = $sql->fetch($r))
 
     if($forum['cat']!=$cat){
       $cat=$forum['cat'];
-        print "  $L[TRg]>
-".            "    $L[TD] colspan=5>".($categ[$cat]['private']?('('.($categ[$cat]['title']).')'):($categ[$cat]['title']))."</td>
+        print "  <tr class=\"c\">
+".            "    <td class=\"b\" colspan=5>".($categ[$cat]['private']?('('.($categ[$cat]['title']).')'):($categ[$cat]['title']))."</td>
 ";
     }
 
@@ -149,18 +149,18 @@ while ($mod = $sql->fetch($r))
     if($modstring) $modstring="<br>(moderated by: ".substr($modstring,0,-2).")";
 //    else $modstring="<p>&nbsp;</p>";
     print
-        "  $L[TRc]>
-".      "    $L[TD1]>$status</td>
-".      "    $L[TD2l]>
+        "  <tr align=\"center\">
+".      "    <td class=\"b n1\">$status</td>
+".      "    <td class=\"b n2\" align=\"left\">
 ".      "      ".($forum['private']?'(':'')."<a href=\"forum.php?id=$forum[id]\" $ignoreFX>$forum[title]</a>".($forum['private']?')':'')."<br>
 ".      "      <span class=sfont $ignoreFX>". str_replace("%%%SPATULANDOM%%%", $spatulas[$spaturand], $forum['descr']) ."$modstring</span>
 ".      "    </td>
-".      "    $L[TD1]>$forum[threads]</td>
-".      "    $L[TD1]>$forum[posts]</td>
-".      "    $L[TD2]>$lastpost</td>
+".      "    <td class=\"b n1\">$forum[threads]</td>
+".      "    <td class=\"b n1\">$forum[posts]</td>
+".      "    <td class=\"b n2\">$lastpost</td>
 ";
   }
-  print "$L[TBLend]
+  print "</table>
 ";
   pagefooter();
 ?>

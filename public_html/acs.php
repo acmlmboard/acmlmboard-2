@@ -36,20 +36,20 @@
   $users = $sql->query($query);
 
   print "<form action=\"\" method=\"get\">
-        $L[TBL1]>
-          $L[TR]>
-             $L[TD2]><input type=\"submit\" value=\"Show\">: $L[INPt]=\"past\" size=\"3\" maxlength=\"4\" value=\"$past\"> days ago
-                    | $L[INPc]=\"easymode\" id=\"emode\" ".(isset($easymode)?"checked":"")."><label for=\"emode\" title=\"Without this, at most 5 posts per day in any single thread are counted.\">EASY MODE</label>
-        $L[TBLend]</form>";
+        <table cellspacing=\"0\" class=\"c1\">
+          <tr>
+             <td class=\"b n2\"><input type=\"submit\" value=\"Show\">: <input type=\"text\" name=\"past\" size=\"3\" maxlength=\"4\" value=\"$past\"> days ago
+                    | <input type=\"checkbox\" name=\"easymode\" id=\"emode\" ".(isset($easymode)?"checked":"")."><label for=\"emode\" title=\"Without this, at most 5 posts per day in any single thread are counted.\">EASY MODE</label>
+        </table></form>";
 
   print "Active users on ".cdate($loguser['dateformat'], ctime() - $past * 86400).":
-         $L[TBL1]>
-           $L[TRh]>
-             $L[TDh] width=\"30\">#</td>
-             $L[TDh]>Username</td>
-             $L[TDh] width=\"150\">Registered on</td>
-             $L[TDh] width=\"50\">Posts</td>
-             $L[TDh] width=\"50\">Total</td>
+         <table cellspacing=\"0\" class=\"c1\">
+           <tr class=\"h\">
+             <td class=\"b h\" width=\"30\">#</td>
+             <td class=\"b h\">Username</td>
+             <td class=\"b h\" width=\"150\">Registered on</td>
+             <td class=\"b h\" width=\"50\">Posts</td>
+             <td class=\"b h\" width=\"50\">Total</td>
 ";
   $q = 1;
   $p =- 1;
@@ -57,30 +57,29 @@
     if($p!=$user[num]) {
       if($q<=5 && $i>5) {
         print "
-               $L[TR1c]>
-                 $L[TD] colspan=\"5\" style=\"height:3px\"><div style=\"height:1px\"></div></td>
+               <tr class=\"n1\" align=\"center\">
+                 <td class=\"b\" colspan=\"5\" style=\"height:3px\"><div style=\"height:1px\"></div></td>
                </tr>";
       }
       $q = $i;
     }
-    $tr = ($i%2 ? "TR2" : "TR3")."c";
-    $tdtype = "TD";
-    if($q <= 5) {
-      $tr = ($i%2 ? "TR1": "TR2")."c";
-      $tdtype = "TD";
-    }
-    $tdtypel = $tdtype."l";
-    print "
-	          $L[$tr]>
-             $L[$tdtype]>$q.</td>
-             $L[$tdtypel]>".userlink($user)."</td>
-             $L[$tdtype]>".cdate($dateformat,$user['regdate'])."</td>
-             $L[$tdtype]><b>$user[num]</b></td>
-             $L[$tdtype]>$user[posts]</b></td>
+
+	if($q <= 5) {
+		$tr = ($i % 2 ? "n1" : "n2");
+	} else {
+		$tr = ($i % 2 ? 'n2' :'n3');
+	}
+	
+    print "<tr class=\"$tr\" align=\"center\">
+             <td class=\"b\">$q.</td>
+             <td class=\"b\" align=\"left\">".userlink($user)."</td>
+             <td class=\"b\">".cdate($dateformat,$user['regdate'])."</td>
+			 <td class=\"b\"><b>{$user['num']}</b></td>
+			 <td class=\"b\">{$user['posts']}</b></td>
 ";
     $p = $user['num'];
   }
-  print "$L[TBLend]";
+  print "</table>";
 
   pagefooter();
 

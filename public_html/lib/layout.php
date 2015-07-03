@@ -1,5 +1,5 @@
 <?php
-
+/*
 $L['TR'] = "<tr";
 $L['TRh'] = "<tr class=\"h\"";
 $L['TRg'] = "<tr class=\"c\"";
@@ -44,7 +44,7 @@ $L['TXTa'] = "<textarea wrap=\"virtual\" name";
 
 $L['SEL'] = "<select name";
 $L['OPT'] = "<option value";
-
+*/
 $signsep[0] = "<br><br>--------------------<br>";
 $signsep[1] = "<br><br>____________________<br>";
 $signsep[0] = "<hr>";

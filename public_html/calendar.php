@@ -74,31 +74,31 @@
     }
 
     pageheader('Calendar');
-    print "$L[TBL1] width=\"100%\">
-".        "    $L[TR]>
-".        "        $L[TD1c] colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
+    print "<table cellspacing=\"0\" class=\"c1\" width=\"100%\">
+".        "    <tr>
+".        "        <td class=\"b n1\" align=\"center\" colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
 ".        "    </tr>
-".        "    $L[TRh]>
+".        "    <tr class=\"h\">
 ";
 
     for ($w = 0; $w < 7; $w++) {//days of the week
-        print "        $L[TDh] width=\"14%\">$daynames[$w]</td>\n";
+        print "        <td class=\"b h\" width=\"14%\">$daynames[$w]</td>\n";
     }
     
     print "    </tr>
-".        "    $L[TR] style=\"height: 80px;\">\n";
+".        "    <tr style=\"height: 80px;\">\n";
 
     if ($wday > 0) {//unused cells in the first week
-        print "$L[TD2] colspan=\"".$wday."\"></td>";
+        print "<td class=\"b n2\" colspan=\"".$wday."\"></td>";
     }
 
     for ($mday = 1; $mday <= $mdays; $mday++, $wday++) {//main day cells
         if ($wday > 6) {  //week wrap around
             $wday = 0;
-            print "</tr>$L[TR] style=\"height: 80px\">\n";
+            print "</tr><tr style=\"height: 80px\">\n";
         }
-        $l = ($mday == $day) ? $L['TD3l'] : (($wday==0 || $wday==6) ? $L['TD2l'] : $L['TD1l']);
-        print "$l width=\"14%\" valign=\"top\">$mday";
+        $l = ($mday == $day) ? "b n3" : (($wday == 0 || $wday == 6) ? "b n2" : "b n1");
+        print "<td class=\"$l\" align=\"left\" width=\"14%\" valign=\"top\">$mday";
         $dnum=str_pad($mday,2,"0",STR_PAD_LEFT);
         if (isset($bdaytext[$dnum])) {
             print "<br/>$bdaytext[$dnum]";
@@ -111,12 +111,12 @@
     }
     
     if ($wday < 6) { //unused cells in the last week
-        print "$L[TD2] colspan=\"".(7-$wday)."\"></td>";
+        print "<td class=\"b n2\" colspan=\"".(7-$wday)."\"></td>";
     }
     
     print "    </tr>
-".        "    $L[TR]>
-".        "        $L[TD1c] colspan=7> Month:";
+".        "    <tr>
+".        "        <td class=\"b n1\" align=\"center\" colspan=7> Month:";
     
     for ($i = 1; $i <= 12; $i++) {//month links
         if ($i == $month) {
@@ -140,7 +140,7 @@
     
     print "        </td>
 ".        "    </tr>
-".         $L['TBLend'];
+".         "</table>";
     
         
 

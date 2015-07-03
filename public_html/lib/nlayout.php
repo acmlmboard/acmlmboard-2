@@ -343,63 +343,59 @@ function RenderPageBar($pagebar) {
   }
 
   function catheader($title){
-    global $L;
-    return "  $L[TRh]>
-".         "    $L[TDh] colspan=2>$title</td>";
+        return "  <tr class=\"h\">
+".         "    <td class=\"b h\" colspan=2>$title</td>";
   }
 
   function fieldrow($title,$input){
-    global $L;
-    return "  $L[TR]>
-".         "    $L[TD1c]>$title:</td>
-".         "    $L[TD2]>".stripslashes($input)."</td>";
+        return "  <tr>
+".         "    <td class=\"b n1\" align=\"center\">$title:</td>
+".         "    <td class=\"b n2\">".stripslashes($input)."</td>";
   }
 
   function fieldinput($avatarsize,$max,$field){
-    global $L,$user;
-    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
-//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+    global $user;
+    return "<input type=\"text\" name=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $user[$field])."\">";
+//  return "<input type=\"text\" name=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
   function fieldinputrpg($avatarsize,$max,$field){
-    global $L,$userrpg;
-    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
-//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+    global $userrpg;
+    return "<input type=\"text\" name=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userrpg[$field])."\">";
+//  return "<input type=\"text\" name=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
     function fieldinputprofile($avatarsize,$max,$field,$userprof){
-    global $L,$user;
-    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userprof[$field])."\">";
-//  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
+    global $user;
+    return "<input type=\"text\" name=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userprof[$field])."\">";
+//  return "<input type=\"text\" name=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
 	function fieldtext($rows,$cols,$field){
-		global $L, $user;
-		return "$L[TXTa]=$field rows=$rows cols=$cols>".stripslashes(htmlval($user[$field])).'</textarea>';
+		global  $user;
+		return "<textarea wrap=\"virtual\" name=$field rows=$rows cols=$cols>".stripslashes(htmlval($user[$field])).'</textarea>';
 	}
 
 	function fieldoption($field,$checked,$choices){
-		global $L;
-		$text='';
+				$text='';
 		//[KAWA] Added <label> so the text is clickable.
 		foreach($choices as $key=>$val)
-			$text.="<label>$L[INPr]=$field value=$key". ($key==$checked?' checked=1': '') .">$val &nbsp;</label>\n";
+			$text.="<label><input type=\"radio\" class=\"radio\" name=$field value=$key". ($key==$checked?' checked=1': '') .">$val &nbsp;</label>\n";
 		return $text;
 	}
 
 	// 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
 	function fieldselect($field,$checked,$choices){
-		global $L;
-		$text="$L[SEL]=$field>\n";
+				$text="<select name=$field>\n";
 		foreach($choices as $key=>$val) {
-			$text .= "\t$L[OPT]=\"$key\"". ($key==$checked?' selected': '') .">$val</option>\n";
+			$text .= "\t<option value=\"$key\"". ($key==$checked?' selected': '') .">$val</option>\n";
 		}
 		$text .= "</select>\n";
 		return $text;
 	}
 
   function itemselect($field,$current,$cat) {
-    global $sql, $L;
+    global $sql;
 
     $viewhidden = 0;
 
@@ -409,11 +405,11 @@ function RenderPageBar($pagebar) {
     $items = $sql->query("SELECT * FROM items WHERE `cat` = 0 UNION SELECT * FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden");
 
     $text="
-".        "$L[SEL]=$field>";
+".        "<select name=$field>";
 
     while ($item = $sql->fetch($items)) {
       $text.="
-".           "      $L[OPT]=\"$item[id]\"";
+".           "      <option value=\"$item[id]\"";
       if ($current == $item['id'])
         $text.=" selected";
 
@@ -448,7 +444,7 @@ function RenderPageBar($pagebar) {
 
 
   function announcement_row($announcefid,$aleftspan,$arightspan) {
-    global $L,$dateformat,$sql;
+    global $dateformat,$sql;
 
     $announcement = array();
 
@@ -471,14 +467,14 @@ function RenderPageBar($pagebar) {
     if ($announcefid) $a = "Forum ";
     else $a = "";
     echo "
-    ".        "  $L[TRh]>
-    ".        "    $L[TD] colspan=".($aleftspan+$arightspan).">".$a."Announcements
+    ".        "  <tr class=\"h\">
+    ".        "    <td class=\"b\" colspan=".($aleftspan+$arightspan).">".$a."Announcements
     ".        "    </td>
     ".        "  </tr>
-    ".        "  $L[TR1c]>
-    ".        "    $L[TD] colspan=".((can_create_forum_announcements($announcefid))?"$aleftspan":($aleftspan+$arightspan))." align=left>$anlink
+    ".        "  <tr class=\"n1\" align=\"center\">
+    ".        "    <td class=\"b\" colspan=".((can_create_forum_announcements($announcefid))?"$aleftspan":($aleftspan+$arightspan))." align=left>$anlink
     ".        "    </td>
-    ".        (can_create_forum_announcements($announcefid)?    "$L[TD] colspan=$arightspan align=right><a href=newthread.php?id=$announcefid&announce=1>New Announcement</a></td>":"")."
+    ".        (can_create_forum_announcements($announcefid)?    "<td class=\"b\" colspan=$arightspan align=right><a href=newthread.php?id=$announcefid&announce=1>New Announcement</a></td>":"")."
     ".        "  </tr>";
 
   }

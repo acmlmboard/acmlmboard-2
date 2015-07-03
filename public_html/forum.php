@@ -50,11 +50,11 @@ if(isset($_GET['ignore']))
     $sql->query("insert into ignoredforums values (".$loguser['id'].", ".$fid.")");
     $isIgnored = true;
         print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "      Forum ignored. You will no longer see any \"New\" markers for this forum.
-".      "$L[TBLend]
+".      "</table>
 ";
   }
 }
@@ -65,11 +65,11 @@ else if(isset($_GET['unignore']))
     $sql->query("delete from ignoredforums where uid=".$loguser['id']." and fid=".$fid);
     $isIgnored = false;
         print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "      Forum unignored.
-".      "$L[TBLend]
+".      "</table>
 ";
   }
 }
@@ -98,10 +98,10 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
                         ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
     $topbot=
-        "$L[TBL] width=100%>
-".      "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
-".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($forum)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>":"")."</td>
-".      "$L[TBLend]
+        "<table cellspacing=\"0\" width=100%>
+".      "  <td class=\"nb\"><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
+".      "  <td class=\"nb\" align=\"right\">".$editforumlink.$ignoreLink.(can_create_forum_thread($forum)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>":"")."</td>
+".      "</table>
 ";
   }elseif($uid=$_GET[user]){
     checknumeric($uid);
@@ -134,9 +134,9 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
                                  ."WHERE t.user=$uid "
                                  .  "AND f.id IN ".forums_with_view_perm()." ");
     $topbot=
-        "$L[TBL] width=100%>
-".      "  $L[TDn]><a href=./>Main</a> - Threads by ".($user[displayname] ? $user[displayname] : $user[name])."</td>
-".      "$L[TBLend]
+        "<table cellspacing=\"0\" width=100%>
+".      "  <td class=\"nb\"><a href=./>Main</a> - Threads by ".($user[displayname] ? $user[displayname] : $user[name])."</td>
+".      "</table>
 ";
   }elseif($time=$_GET[time]){
     checknumeric($time);
@@ -175,9 +175,9 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
     }
 
     $topbot=
-        "$L[TBL] width=100%>
-".      "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
-".      "$L[TBLend]
+        "<table cellspacing=\"0\" width=100%>
+".      "  <td class=\"nb\"><a href=./>Main</a> - Latest posts</td>
+".      "</table>
 ";
   }elseif(isset($_GET[fav]) && has_perm('view-favorites')){
 
@@ -211,9 +211,9 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
                                  ."WHERE th.uid=$loguser[id] "
                                  .  "AND f.id IN ".forums_with_view_perm()." ");
     $topbot=
-        "$L[TBL] width=100%>
-".      "  $L[TDn]><a href=./>Main</a> - Favorite Threads</td>
-".      "$L[TBLend]
+        "<table cellspacing=\"0\" width=100%>
+".      "  <td class=\"nb\"><a href=./>Main</a> - Favorite Threads</td>
+".      "</table>
 ";
   }else
   {
@@ -273,7 +273,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
  }
   print "<br>
-".      "$L[TBL1]>";
+".      "<table cellspacing=\"0\" class=\"c1\">";
 
 if ($fid) {
 
@@ -284,16 +284,16 @@ echo announcement_row($fid,3,4);
 }
 
   print "
-".      "  $L[TRh]>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".      "    $L[TDh] width=17>&nbsp;</td>
+".      "  <tr class=\"h\">
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
 ".($showforum?
-        "    $L[TDh]>Forum</td>":'')."
-".      "    $L[TDh]>Title</td>
-".      "    $L[TDh] width=130>Started by</td>
-".      "    $L[TDh] width=50>Replies</td>
-".      "    $L[TDh] width=50>Views</td>
-".      "    $L[TDh] width=130>Last post</td>
+        "    <td class=\"b h\">Forum</td>":'')."
+".      "    <td class=\"b h\">Title</td>
+".      "    <td class=\"b h\" width=130>Started by</td>
+".      "    <td class=\"b h\" width=50>Replies</td>
+".      "    <td class=\"b h\" width=50>Views</td>
+".      "    <td class=\"b h\" width=130>Last post</td>
 ";
 
   $lsticky=0;
@@ -331,14 +331,14 @@ echo announcement_row($fid,3,4);
       $icon='&nbsp;';
 
     if($thread[sticky])
-      $tr='TR1c';
+      $tr='n1';
     else
-      $tr=($i%2?'TR2':'TR3').'c';
+      $tr=($i%2?'n2':'n3');
 
     if(!$thread[sticky] && $lsticky)
       print
-          "  $L[TRg]>
-".        "    $L[TD] colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
+          "  <tr class=\"c\">
+".        "    <td class=\"b\" colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
 ";
     $lsticky=$thread[sticky];
 
@@ -358,19 +358,19 @@ echo announcement_row($fid,3,4);
       }
     }
 
-    print "  $L[$tr]>
-".        "    $L[TD1]>$status</td>
-".        "    $L[TD]>$icon</td>
+    print "<tr class=\"$tr\" align=\"center\">
+".        "    <td class=\"b n1\">$status</td>
+".        "    <td class=\"b\">$icon</td>
 ".($showforum?
-          "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
-".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$taglist$pagelist</td>
-".        "    $L[TD]>".userlink($thread,'u1',$config[startedbyminipic])."</td>
-".        "    $L[TD]>$thread[replies]</td>
-".        "    $L[TD]>$thread[views]</td>
-".        "    $L[TD]><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by&nbsp;".userlink($thread,'u2',$config[forumminipic])."&nbsp;<a href='thread.php?pid=$thread[lastid]#$thread[lastid]'>&raquo;</a></font></td>
+          "    <td class=\"b\"><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
+".        "    <td class=\"b\" align=\"left\">".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$taglist$pagelist</td>
+".        "    <td class=\"b\">".userlink($thread,'u1',$config[startedbyminipic])."</td>
+".        "    <td class=\"b\">$thread[replies]</td>
+".        "    <td class=\"b\">$thread[views]</td>
+".        "    <td class=\"b\"><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by&nbsp;".userlink($thread,'u2',$config[forumminipic])."&nbsp;<a href='thread.php?pid=$thread[lastid]#$thread[lastid]'>&raquo;</a></font></td>
 ";
   }
-  print "$L[TBLend]
+  print "</table>
 ".      "$forumjumplinks$fpagelist$fpagebr
 ".      "$topbot
 ";

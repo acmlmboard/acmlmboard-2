@@ -66,11 +66,11 @@ if($_POST[banuser]=="Ban User") {
 $loguser['blocksprites']=1;
 pageheader('Ban User');
 print "<form action='banmanager.php?id=$uid' method='post'>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    User has been banned.<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the user')."
-".        "$L[TBLend]
+".        "</table>
 ";
                 } else { //Modern redirect*/
                   redirect("profile.php?id=$user[id]",-1);
@@ -91,11 +91,11 @@ error("Error", "This user is not a Banned User.<br> <a href=./>Back to main</a> 
 $loguser['blocksprites']=1;
 pageheader('Unban User');
 print "<form action='banmanager.php?id=$uid' method='post'>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    User has been unbanned.<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the user')."
-".        "$L[TBLend]
+".        "</table>
 ";
              } else { //Modern redirect*/
                   redirect("profile.php?id=$user[id]",-2);
@@ -137,28 +137,28 @@ RenderPageBar($pagebar);
 if (isset($_GET['unban']))
 {
 print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
-".    "$L[TBL1]>
-".    "  $L[TRh]>$L[TD]>Unban User
-".    "  $L[TR]>$L[TD1c]>
+".    "<table cellspacing=\"0\" class=\"c1\">
+".    "  <tr class=\"h\"><td class=\"b\">Unban User
+".    "  <tr><td class=\"b n1\" align=\"center\">
 ".    "    <br>
-".        "  $L[TR1]>
-".        "    $L[TD1c]>
-".        "      $L[INPs]=\"unbanuser\" value=\"Unban User\">
-".    "$L[TBLend]
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b n1\" align=\"center\">
+".        "      <input type=\"submit\" class=\"submit\" name=\"unbanuser\" value=\"Unban User\">
+".    "</table>
 ";
 }
 else
 {
 print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
-".    "$L[TBL1]>
+".    "<table cellspacing=\"0\" class=\"c1\">
 ".
         catheader('Ban User')."
-".        "  $L[TR]>
-".        "    $L[TD1c]>Reason:</td>
-".        "      $L[TD2]>$L[INPt]='title' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Expires?</td>
-".        "      $L[TD2]>".fieldselect("tempbanned",0,array("600"=>"10 minutes",
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Reason:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='title' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Expires?</td>
+".        "      <td class=\"b n2\">".fieldselect("tempbanned",0,array("600"=>"10 minutes",
 						      "3600"=>"1 hour",
 						      "10800"=>"3 hours",
 						      "86400"=>"1 day",
@@ -169,11 +169,11 @@ print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/fo
 						      "2419200"=>"1 month",
 						      "4838400"=>"2 months",
 						      "0"=>"never"))."</td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
-".        "      $L[INPs]=\"banuser\" value=\"Ban User\">
-".    "$L[TBLend]
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\">
+".        "      <input type=\"submit\" class=\"submit\" name=\"banuser\" value=\"Ban User\">
+".    "</table>
 ";
 }
 

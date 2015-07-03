@@ -91,24 +91,24 @@ else
   $spancolor ="";
 }
 
-  print "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] colspan=2>$num user".($num>1?'s':'')." found.</td>
-".      "  $L[TR]>
-".      "    $L[TD1] width=60>Sort by:</td>
-".      "    $L[TD2c]>
+  print "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"h\">
+".      "    <td class=\"b h\" colspan=2>$num user".($num>1?'s':'')." found.</td>
+".      "  <tr>
+".      "    <td class=\"b n1\" width=60>Sort by:</td>
+".      "    <td class=\"b n2\" align=\"center\">
 ".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Posts</a> |
 ".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."EXP</a> |
 ".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Username</a> |
 ".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Registration date</a>
-".      "  $L[TR]>
-".      "    $L[TD1] width=60>Order by:</td>
-".      "    $L[TD2c]>
+".      "  <tr>
+".      "    <td class=\"b n1\" width=60>Order by:</td>
+".      "    <td class=\"b n2\" align=\"center\">
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'d',$customnc,$displayn)."Descending</a> |
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'a',$customnc,$displayn)."Ascending</a>
-".      "  $L[TR]>
-".      "    $L[TD1]>Sex:</td>
-".      "    $L[TD2c]>
+".      "  <tr>
+".      "    <td class=\"b n1\">Sex:</td>
+".      "    <td class=\"b n2\" align=\"center\">
 ".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$malecolor."Male".$spancolor."</a> |
 ".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$femalecolor."Female".$spancolor."</a> |
 ".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$nacolor."N/A".$spancolor."</a> |
@@ -126,21 +126,21 @@ print   "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini,$orderby,$customnc,$displ
 
 //Added the sort by displayname feature - SquidEmpress
 if($config['displayname'])
-print      "  $L[TR]>
-".      "    $L[TD1]>Displayname:</td>
-".      "    $L[TD2c]>
+print      "  <tr>
+".      "    <td class=\"b n1\">Displayname:</td>
+".      "    <td class=\"b n2\" align=\"center\">
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,'0')."Regular</a> |
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,'1')."Displayname</a>";
 
-print      "  $L[TR]>
-".      "    $L[TD1]>Image:</td>
-".      "    $L[TD2c]>
+print      "  <tr>
+".      "    <td class=\"b n1\">Image:</td>
+".      "    <td class=\"b n2\" align=\"center\">
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0',$orderby,$customnc,$displayn)."Avatars</a> |
 ".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby,$customnc,$displayn)."Minipics</a>";
 
-print      "  $L[TR]>
-".      "    $L[TD1]>Group:</td>
-".      "    $L[TD2c]>";
+print      "  <tr>
+".      "    <td class=\"b n1\">Group:</td>
+".      "    <td class=\"b n2\" align=\"center\">";
 $c = 0;
 foreach ($groups as $k => $v) {  
   echo $v;
@@ -151,7 +151,7 @@ foreach ($groups as $k => $v) {
 echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini,$orderby,$customnc,$displayn)."All Staff</a>
 "." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini,$orderby,$customnc,$displayn)."All</a>
 ".      "      
-".      "$L[TBLend]
+".      "</table>
 ".      "<br>";
 
 //Need to replace a few things if $mini=1 -Emuz

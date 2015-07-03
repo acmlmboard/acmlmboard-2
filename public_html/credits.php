@@ -47,59 +47,59 @@
    foreach ($programmers as $programmer => $contribution)
     {
      $programmerlist .= "
-           $L[TR]>
-              $L[TD1]>$programmer</td>$L[TD1]>$contribution</td>
+           <tr>
+              <td class=\"b n1\">$programmer</td><td class=\"b n1\">$contribution</td>
            </tr>";
     }
    foreach ($gitcontributors as $gitcontributor => $gitcontribution)
     {
      $gitcontributorlist .= "
-           $L[TR]>
-              $L[TD1]>$gitcontributor</td>$L[TD1]>$gitcontribution</td>
+           <tr>
+              <td class=\"b n1\">$gitcontributor</td><td class=\"b n1\">$gitcontribution</td>
            </tr>";
     }
    foreach ($contributors as $contributor => $contribution)
     {
      $contributorlist .= "
-           $L[TR]>
-              $L[TD1]>$contributor</td>$L[TD1]>$contribution</td>
+           <tr>
+              <td class=\"b n1\">$contributor</td><td class=\"b n1\">$contribution</td>
            </tr>";
     }
     unset($programmer, $gitcontributor, $contributor, $contribution);
     
     print "
-           $L[TBL1]>
-           $L[TRh]>$L[TDh]>Board Credits</td></tr>
-           $L[TR]>$L[TD1]>&nbsp;Acmlmboard 2 started back in 2005 by Acmlm as a cleaner rewrite for the original AB1.
+           <table cellspacing=\"0\" class=\"c1\">
+           <tr class=\"h\"><td class=\"b h\">Board Credits</td></tr>
+           <tr><td class=\"b n1\">&nbsp;Acmlmboard 2 started back in 2005 by Acmlm as a cleaner rewrite for the original AB1.
            The major new feature he wished to implement is a fully functional battle RPG based on the system be built for the first board.
            However shortly after starting he put AB2 aside, instead some of the cosmetic features eventually ended up in AB1, but the rest of the code would stay dormant until 2007.
            In 2007 AB2 launched with AB 2.0... <h1>This is a WIP.</h1></td></tr>
            </table> <!-- End the table here so you don't have to deal with colspan. -->
-           $L[TBL1]>
-           $L[TRg]> <!-- TRg is a secondary heading. -->
-           $L[TD]>Programmer</td>$L[TD]>Core Contributors</td>
+           <table cellspacing=\"0\" class=\"c1\">
+           <tr class=\"c\"> <!-- TRg is a secondary heading. -->
+           <td class=\"b\">Programmer</td><td class=\"b\">Core Contributors</td>
            </tr>
            $programmerlist
-           $L[TRg]> <!-- This space is for those who contributed in other ways. -->
-           $L[TD]>Name</td>$L[TD]>Contributions</td>
+           <tr class=\"c\"> <!-- This space is for those who contributed in other ways. -->
+           <td class=\"b\">Name</td><td class=\"b\">Contributions</td>
            </tr>
            $contributorlist
-           $L[TRg]> <!-- This space is for those who contributed in other ways. -->
-           <!-- $L[TD]>Name</td>$L[TD]>Contributions from Git</td>
+           <tr class=\"c\"> <!-- This space is for those who contributed in other ways. -->
+           <!-- <td class=\"b\">Name</td><td class=\"b\">Contributions from Git</td>
            </tr>
            $gitcontributorlist -->
            </table><br>
-           $L[TBL1]>
-           $L[TRh]>$L[TDh]>Additional Thanks</td></tr>
-           $L[TR]>$L[TD1]>Thanks to everyone who's supported us during our revival of AB2. <br>
+           <table cellspacing=\"0\" class=\"c1\">
+           <tr class=\"h\"><td class=\"b h\">Additional Thanks</td></tr>
+           <tr><td class=\"b n1\">Thanks to everyone who's supported us during our revival of AB2. <br>
            Thank you to everyone who helped with the start of Kafuka, without your support we wouldn't have got this far.<br>
            Finally, thanks goes to Acmlm for allowing us to continue working on AB2, as well as Scrydan and DJ Bouche who spent
            more single focus time than anyone else for 2.5, and 2.6.
            <hr>3rd Party tools: <a href=\"http://code.google.com/p/google-code-prettify/\">Prettify</a></td></tr>
            </table><br />
-           $L[TBL1]>
-           $L[TRh]>$L[TDh]>Dedications</td></tr>
-           $L[TR]>$L[TD1]><center><h3 style=\"display:inline;\">Taryn Burke: 1987-2014</h3><br/>The continued work on Acmlmboard 2 is dedicated to Taryn Burke. Long time member of almost every version of Acmlm's Board there was. May you be remembered as long as there are Acmlmboards.</center></td></tr>
+           <table cellspacing=\"0\" class=\"c1\">
+           <tr class=\"h\"><td class=\"b h\">Dedications</td></tr>
+           <tr><td class=\"b n1\"><center><h3 style=\"display:inline;\">Taryn Burke: 1987-2014</h3><br/>The continued work on Acmlmboard 2 is dedicated to Taryn Burke. Long time member of almost every version of Acmlm's Board there was. May you be remembered as long as there are Acmlmboards.</center></td></tr>
            </table>";
   
     pagefooter();

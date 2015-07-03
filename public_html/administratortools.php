@@ -74,33 +74,33 @@ $rpglvlbarwidth = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="rpgl
 $atnname  = $sql->resultq('SELECT `txtval` FROM `misc` WHERE `field`="atnname"');
 
 print "<form action='administratortools.php' method='post' enctype='multipart/form-data'>
-".        " $L[TBL1]>
+".        " <table cellspacing=\"0\" class=\"c1\">
 ".
            catheader('Administrator tools')."
-".       "  $L[TRg]>
-".       "    $L[TDh] colspan=6>General settings</td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Board Title:</td>
-".        "      $L[TD2]>$L[INPt]='boardtitle' size='40' maxlength='255' value='".$boardtitletext."' class='right'></td>
+".       "  <tr class=\"c\">
+".       "    <td class=\"b h\" colspan=6>General settings</td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Board Title:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='boardtitle' size='40' maxlength='255' value='".$boardtitletext."' class='right'></td>
 ".           fieldrow('Board Theme'           ,fieldselect('defaulttheme', $defaultthemetext, themelist()))."
-".         "  $L[TR]>
-".        "    $L[TD1c]>Trash Forum ID:</td>
-".        "      $L[TD2]>$L[INPt]='trashid' size='3' maxlength='3' value='".$trashidint."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Board Font Size:</td>
-".        "      $L[TD2]>$L[INPt]='defaultfontsize' size='3' maxlength='3' value='".$defaultfontsizeint."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Avatar X Dimension:</td>
-".        "      $L[TD2]>$L[INPt]='avatardimx' size='3' maxlength='3' value='".$avatardimxint."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Avatar Y Dimension:</td>
-".        "      $L[TD2]>$L[INPt]='avatardimy' size='3' maxlength='3' value='".$avatardimyint."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Projected Date Posts:</td>
-".        "      $L[TD2]>$L[INPt]='topposts' size='7' maxlength='7' value='".$topposts."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Projected Date Threads:</td>
-".        "      $L[TD2]>$L[INPt]='topthreads' size='7' maxlength='7' value='".$topthreads."' class='right'></td>
+".         "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Trash Forum ID:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='trashid' size='3' maxlength='3' value='".$trashidint."' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Board Font Size:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='defaultfontsize' size='3' maxlength='3' value='".$defaultfontsizeint."' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Avatar X Dimension:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='avatardimx' size='3' maxlength='3' value='".$avatardimxint."' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Avatar Y Dimension:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='avatardimy' size='3' maxlength='3' value='".$avatardimyint."' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Projected Date Posts:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='topposts' size='7' maxlength='7' value='".$topposts."' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Projected Date Threads:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='topthreads' size='7' maxlength='7' value='".$topthreads."' class='right'></td>
 ".    fieldrow('Memberlist Color Links', fieldoption('memberlistcolorlinks',$memberlistcolorlinks,array('Disable', 'Enable')))."
 ".    fieldrow('Badge System', fieldoption('badgesystem',$badgesystem,array('Disable', 'Enable')))."
 ".    fieldrow('Sprite System', fieldoption('spritesystem',$spritesystem,array('Disable', 'Enable')))."
@@ -114,29 +114,29 @@ print "<form action='administratortools.php' method='post' enctype='multipart/fo
 ".    fieldrow('AB1.x Num Graphics', fieldoption('userpgnum',$userpgnum,array('Disable', 'Enable')))."
 ".    fieldrow('All Themes Num Graphics', fieldoption('userpgnumdefault',$userpgnumdefault,array('Disable', 'Enable')))."
 ".    fieldrow('EXP Level Bars', fieldoption('alwaysshowlvlbar',$alwaysshowlvlbar,array('Disable', 'Enable')))."
-".        "  $L[TR]>
-".        "    $L[TD1c]>EXP Bar Size:</td>
-".        "      $L[TD2]>$L[INPt]='rpglvlbarwidth' size='3' maxlength='3' value='".$rpglvlbarwidth."' class='right'></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Attention Box Name:</td>
-".        "      $L[TD2]>$L[INPt]='atnname' size='40' maxlength='255' value='".$atnname."' class='right'></td>
-".       "  $L[TRg]>
-".       "    $L[TDh] colspan=6>Miscellaneous settings</td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">EXP Bar Size:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='rpglvlbarwidth' size='3' maxlength='3' value='".$rpglvlbarwidth."' class='right'></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Attention Box Name:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='atnname' size='40' maxlength='255' value='".$atnname."' class='right'></td>
+".       "  <tr class=\"c\">
+".       "    <td class=\"b h\" colspan=6>Miscellaneous settings</td>
 ".    fieldrow('Enable Registration', fieldoption('regdisable',$rtool['regdisable'],array('Enable', 'Disable')))."
-".        "  $L[TR]>
-".        "    $L[TD1c]>Disable Registering Message:</td>
-".        "      $L[TD2]>$L[TXTa]='regdisabletext' rows=8 cols=120>".$regdisabletext."</textarea></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Disable Registering Message:</td>
+".        "      <td class=\"b n2\"><textarea wrap=\"virtual\" name='regdisabletext' rows=8 cols=120>".$regdisabletext."</textarea></td>
 ".    fieldrow('Enable Lockdown', fieldoption('lockdown',$ltool['lockdown'],array('Do not set', 'Set')))."
-".        "  $L[TR]>
-".        "    $L[TD1c]>Lockdown Message (Leave blank for default):</td>
-".        "      $L[TD2]>$L[TXTa]='txtval' rows=8 cols=120>".$lockdowntext."</textarea></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Board Email:</td>
-".        "      $L[TD2]>$L[INPt]='emailaddress' size='40' maxlength='60' value='".$boardemail."' class='right'></td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>$L[INPs]=action value='Apply changes'></td>
-".        " $L[TBLend]
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Lockdown Message (Leave blank for default):</td>
+".        "      <td class=\"b n2\"><textarea wrap=\"virtual\" name='txtval' rows=8 cols=120>".$lockdowntext."</textarea></td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Board Email:</td>
+".        "      <td class=\"b n2\"><input type=\"text\" name='emailaddress' size='40' maxlength='60' value='".$boardemail."' class='right'></td>
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\"><input type=\"submit\" class=\"submit\" name=action value='Apply changes'></td>
+".        " </table>
 ";
 
 pagefooter();

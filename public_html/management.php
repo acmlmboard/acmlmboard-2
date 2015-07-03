@@ -35,15 +35,15 @@ if (has_perm("admin-tools-access"))
 //Inspired by Tierage's dashboard.php in Blargboard Plus. - SquidEmpress
 $mlinkstext = '';
 foreach ($mlinks as $l)
-	$mlinkstext .= ($mlinkstext?' ':'')."<a href=\"{$l['url']}\"</a>$L[INPs]=action value='{$l['title']}'></a>";
+	$mlinkstext .= ($mlinkstext?' ':'')."<a href=\"{$l['url']}\"</a><input type=\"submit\" class=\"submit\" name=action value='{$l['title']}'></a>";
 
-print "$L[TBL1]>
-".    "  $L[TRh]>$L[TD]>Board management tools
-".    "  $L[TR]>$L[TD1c]>
+print "<table cellspacing=\"0\" class=\"c1\">
+".    "  <tr class=\"h\"><td class=\"b\">Board management tools
+".    "  <tr><td class=\"b n1\" align=\"center\">
 ".    "    <br>
 ".    "    $mlinkstext<br>
 ".    "    <br>
-".    "$L[TBLend]
+".    "</table>
 ";
 
 pagefooter();

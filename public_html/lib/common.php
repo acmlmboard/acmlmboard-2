@@ -261,7 +261,7 @@ $feedicons = "";
 // also added number_format to views
 // also changed the title to be "pagetitle - boardname" and not vice-versa
 function pageheader($pagetitle = "", $fid = 0) {
-	global $L, $dateformat, $sql, $log, $loguser, $sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
+	global  $dateformat, $sql, $log, $loguser, $sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
 	$logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays, $pwdsalt, $pwdsalt2;
 
 	if (ini_get("register_globals")) {
@@ -287,25 +287,25 @@ function pageheader($pagetitle = "", $fid = 0) {
 		$ae = "";
 
 	$extratitle = "
-                     $L[TBL1] width=\"100%\" align=\"center\">
-                       $L[TRh]>
-                          $L[TDh]>$config[atnname] $ae</td>
-                        $L[TR2] align=\"center\">
-                          $L[TDs]>" . ($t = $sql->resultq("SELECT `txtval` FROM `misc` WHERE `field`='attention'")) . "
+                     <table cellspacing=\"0\" class=\"c1\" width=\"100%\" align=\"center\">
+                       <tr class=\"h\">
+                          <td class=\"b h\">$config[atnname] $ae</td>
+                        <tr class=\"n2\" align=\"center\">
+                          <td class=\"b sfont\">" . ($t = $sql->resultq("SELECT `txtval` FROM `misc` WHERE `field`='attention'")) . "
                           </td>
-                     $L[TBLend]";
+                     </table>";
 	if ($t == "")
 		$extratitle = $ae;
 
 	if ($extratitle) {
 		$boardlogo = "
-             $L[TBL] width=100%>
-               $L[TRc]>
-                 $L[TD] style=\"border:none!important\" valign=\"center\"><a href=\"$homepageurl\"><img src=\"$logofile\"></a></td>
-                 $L[TD] style=\"border:none!important\" valign=\"center\" width=\"300\">
+             <table cellspacing=\"0\" width=100%>
+               <tr align=\"center\">
+                 <td class=\"b\" style=\"border:none!important\" valign=\"center\"><a href=\"$homepageurl\"><img src=\"$logofile\"></a></td>
+                 <td class=\"b\" style=\"border:none!important\" valign=\"center\" width=\"300\">
                    $extratitle
                  </td>
-             $L[TBLend]";
+             </table>";
 	}
 
 	$feedicons .= feedicon("img/rss.png", "rss.php");
@@ -354,15 +354,15 @@ function pageheader($pagetitle = "", $fid = 0) {
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
       </head>
       <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs
-      $L[TBL1]>
-        $L[TRT2c]>
-        $L[TD1c] colspan=\"3\">$boardlogo</td>
+      <table cellspacing=\"0\" class=\"c1\">
+        <tr class=\"nt n2\" align=\"center\">
+        <td class=\"b n1\" align=\"center\" colspan=\"3\">$boardlogo</td>
         </tr>
-        $L[TR2c]>
-          $L[TD]>
+        <tr class=\"n2\" align=\"center\">
+          <td class=\"b\">
           <div style=\"width: 150px\">Views: 
           <span title=\"And " . number_format($botviews) . " views by search engine spiders.\">" . number_format($views) . "</span></div></td>
-          $L[TD] width=\"100%\"><span style=\"float:right\">$feedicons$ssllnk</span>
+          <td class=\"b\" width=\"100%\"><span style=\"float:right\">$feedicons$ssllnk</span>
             <a href=\"./\">Main</a>
           | <a href=\"faq.php\">FAQ</a>
           " . (has_perm("use-uploader") ? " | <a href=\"./uploader\">Uploader</a>" : "") . "
@@ -376,9 +376,9 @@ function pageheader($pagetitle = "", $fid = 0) {
           | <a href=\"online.php\">Online users</a>
           | <a href=\"search.php\">Search</a>
           </td>
-          $L[TD]><div style=\"width: 150px\">" . cdate($dateformat, ctime()) . "</div></td>
-        $L[TR1c]>
-          $L[TD] colspan=\"3\">
+          <td class=\"b\"><div style=\"width: 150px\">" . cdate($dateformat, ctime()) . "</div></td>
+        <tr class=\"n1\" align=\"center\">
+          <td class=\"b\" colspan=\"3\">
             " . ($log ? userlink($logbar) : "Guest") . ": ";
 
 	if ($log) {
@@ -408,14 +408,14 @@ function pageheader($pagetitle = "", $fid = 0) {
 			else
 				$lastmsg = '';
 
-			$oldpmsgbox = "$L[TBL1]>
-" . "  $L[TRh]>
-" . "    $L[TDh] colspan=2>Private Messages</td>
-" . "  $L[TR]>
-" . "    $L[TD1] width=17>$status</td>
-" . "    $L[TD2]>
+			$oldpmsgbox = "<table cellspacing=\"0\" class=\"c1\">
+" . "  <tr class=\"h\">
+" . "    <td class=\"b h\" colspan=2>Private Messages</td>
+" . "  <tr>
+" . "    <td class=\"b n1\" width=17>$status</td>
+" . "    <td class=\"b n2\">
 " . "      <a href=private.php>Private messages</a> -- You have $totalpms private message" . ($totalpms != 1 ? 's' : '') . "$unreadpms.$lastmsg
-" . "  $L[TBLend]
+" . "  </table>
 " . "  <br>
 ";
 		} else
@@ -493,22 +493,22 @@ function pageheader($pagetitle = "", $fid = 0) {
 	if($log) {
 		// no point in generating logout form if they aren't logged in.
 		print "<form action=\"login.php\" method=\"post\" name=\"logout\">
-                 $L[INPh]=\"action\" value=\"logout\">
-                 $L[INPh]=\"p\" value=" . md5($pwdsalt2 . $loguser['pass'] . $pwdsalt) . ">
+                 <input type=\"hidden\" name=\"action\" value=\"logout\">
+                 <input type=\"hidden\" name=\"p\" value=" . md5($pwdsalt2 . $loguser['pass'] . $pwdsalt) . ">
                </form>";
 	}
 
 	if (!empty($radar)) {
 		print " 
-             $L[TR]>
-               $L[TD1c] colspan=3>
+             <tr>
+               <td class=\"b n1\" align=\"center\" colspan=3>
                  $radar
 			  </td>
 			</tr>";
 	}
 
 	print "
-			$L[TBLend]
+			</table>
 			<br>";
 
 	$hiddencheck = "AND `hidden`='0' ";
@@ -552,12 +552,12 @@ function pageheader($pagetitle = "", $fid = 0) {
 			$onuserlist .= " | $numbots bot" . ($numbots != 1 ? "s" : "");
 		}
 
-		print "$L[TBL1]>
-               $L[TR1]>
-               $L[TD1c]>$onuserlist
+		print "<table cellspacing=\"0\" class=\"c1\">
+               <tr class=\"n1\">
+               <td class=\"b n1\" align=\"center\">$onuserlist
               </td>
               </tr>
-			 $L[TBLend]
+			 </table>
 			 <br>";
 	} else if ($showonusers) {
 		//[KAWA] Copypastadaption from ABXD, with added activity limiter.
@@ -588,8 +588,8 @@ function pageheader($pagetitle = "", $fid = 0) {
 		if (count($birthdays)) {
 			$birthdaystoday = implode(", ", $birthdays);
 			$birthdaybox = "
-        $L[TR1c]>
-        $L[TD2c]>
+        <tr class=\"n1\" align=\"center\">
+        <td class=\"b n2\" align=\"center\">
         Birthdays today: $birthdaystoday";
 		}
 
@@ -664,31 +664,31 @@ function pageheader($pagetitle = "", $fid = 0) {
 		$activethreads = $sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '" . (ctime() - 86400) . "'");
 
 		print "
-	     $L[TBL1]>$birthdaybox
-           $L[TR]>
-             $L[TD1]>
-               $L[TBL] width=\"100%\">
-                 $L[TR]>
-                   $L[TDn] width=\"250\"></td>
-                   $L[TDnc]>
+	     <table cellspacing=\"0\" class=\"c1\">$birthdaybox
+           <tr>
+             <td class=\"b n1\">
+               <table cellspacing=\"0\" width=\"100%\">
+                 <tr>
+                   <td class=\"nb\" width=\"250\"></td>
+                   <td class=\"nb\" align=\"center\">
                      <span class=\"white-space:nowrap\"> <!--This was <nobr>, note: find class instead of this-->
                        $count[t] threads and $count[p] posts total | 
                        $count[d] new posts today, $count[h] last hour.<br>
                        $activeusers active users and $activethreads active threads during the last day.<br> 
                      </span>
                    </td>
-                   $L[TDnr] width=\"250\">
+                   <td class=\"nb\" align=\"right\" width=\"250\">
                     $count[u] registered users<br>
                     Newest: " . userlink($lastuser) . "
                    </td>
                  </tr>
-               $L[TBLend]
-           $L[TR]>
-             $L[TD2c]>
+               </table>
+           <tr>
+             <td class=\"b n2\" align=\"center\">
                $onuserlist
 			 </td>
 		   </tr>
-		 $L[TBLend]";
+		 </table>";
 		
 		if(!empty($oldpmsgbox)) {
 			print"<br>\n$oldpmsgbox";
@@ -697,22 +697,21 @@ function pageheader($pagetitle = "", $fid = 0) {
 }
 
 function pagestats() {
-	global $start, $L, $sql;
+	global $start, $sql;
 	$time = usectime() - $start;
 	print "<br>
-           $L[TBL2]>
-             $L[TD1]>
+           <table cellspacing=\"0\" class=\"c2\">
+             <td class=\"b n1\">
                <center>
                  " . sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024) . "<br>
                  MySQL - queries: $sql->queries, rows: $sql->rowsf/$sql->rowst, time: " . sprintf("%1.3f seconds.", $sql->time) . "<br>
                </center>
-           $L[TBLend]";
+           </table>";
 }
 
 function miscbar() {
-	global $L;
-	//pagestats();
-	print "<br>$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src=\"img/poweredbyacmlm.PNG\">$L[TBLend]";
+		//pagestats();
+	print "<br><table cellspacing=\"0\" class=\"c2\"><tr align=\"center\"><td class=\"b n2\" align=\"left\"><center><img src=\"img/poweredbyacmlm.PNG\"></table>";
 }
 
 function noticemsg($name, $msg) {
@@ -738,14 +737,14 @@ function error($name, $msg) {
 
 function pagefooter() {
 	//Used for Affiliates, buttons, links, and navigational tools -Emuz
-	global $L, $abversion, $abdate, $boardprog;
+	global  $abversion, $abdate, $boardprog;
 	//pagestats();
 
 	print "<br>
-           $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
+           <table cellspacing=\"0\" class=\"c2\"><tr align=\"center\"><td class=\"b n2\" align=\"left\"><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>
              &copy; 2005-2015 $boardprog
-           $L[TBLend]";
+           </table>";
 	pagestats();
 	//miscbar(); disabled until needed. -Emuz
 }

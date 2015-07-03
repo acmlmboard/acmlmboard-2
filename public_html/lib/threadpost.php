@@ -22,7 +22,7 @@ function usegfxnums()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config;
+    global $dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
 
     $post[head]=str_replace("<!--", "&lt;!--", $post[head]);
@@ -67,16 +67,16 @@ function usegfxnums()
       if($post[id])
         $postlinks.=($postlinks?' | ':'')."ID: $post[id]";
 
-      $text="$L[TBL1]>
-".          "  $L[TR]>
-".          "    $L[TD1] style=border-bottom:0;border-right:0;width:180px height=17>
+      $text="<table cellspacing=\"0\" class=\"c1\">
+".          "  <tr>
+".          "    <td class=\"b n1\" style=border-bottom:0;border-right:0;width:180px height=17>
 ".          "      ".userlink($post,'u',$config[threadminipic])."</td>
-".          "    $L[TD1] style=border-left:0>
-".          "      $L[TBL] width=100%>
-".          "        $L[TDns]>(post deleted)</td>
-".          "        $L[TDnsr]>$postlinks</td>
-".          "      $L[TBLend]
-".          "$L[TBLend]";
+".          "    <td class=\"b n1\" style=border-left:0>
+".          "      <table cellspacing=\"0\" width=100%>
+".          "        <td class=\"nb sfont\">(post deleted)</td>
+".          "        <td class=\"nb sfont\" align=\"right\">$postlinks</td>
+".          "      </table>
+".          "</table>";
       return $text;
     }
 
@@ -97,8 +97,8 @@ function usegfxnums()
       // I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
       if($post[isannounce]) {
           $postheaderrow =
-            "$L[TRh]>
-               $L[TD] colspan=2>".$post['ttitle']."</td>
+            "<tr class=\"h\">
+               <td class=\"b\" colspan=2>".$post['ttitle']."</td>
              </tr>
             ";
       } 
@@ -138,9 +138,9 @@ $tbar1=($type==0 && !$isBlocked) ? "topbar".$post['uid']."_1" : "";
 $tbar2=($type==0 && !$isBlocked) ? "topbar".$post['uid']."_2" : "";
 $sbar=($type==0 && !$isBlocked) ? "sidebar".$post['uid'] : "";
 $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
-      $text="$L[TBL1] id=".$post['id'].">
+      $text="<table cellspacing=\"0\" class=\"c1\" id=".$post['id'].">
 ".        "  $postheaderrow 
-".        "  $L[TR]>
+".        "  <tr>
 ".        "    <td class=\"b n1 $tbar1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
 ".        "      ".userlink($post,'u',$config[threadminipic]).
 
@@ -148,12 +148,12 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 /*" ".gettokenstring($post[uid])."</td> //[KAWA] Removed in favor of profile field
 ".*/        "    </td>
 ".        "    <td class=\"b n1 $tbar2\" style=\"border-left:0\" width=100%>
-".        "      $L[TBL] width=100%>
-".        "       $L[TR]>
-".        "        $L[TDns]>Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>
-".        "        $L[TDnsr]>$postlinks</td>
-".        "      $L[TBLend]
-".        "  $L[TR] valign=top>
+".        "      <table cellspacing=\"0\" width=100%>
+".        "       <tr>
+".        "        <td class=\"nb sfont\">Posted on ".cdate($dateformat,$post[date])."$threadlink$revisionstr</td>
+".        "        <td class=\"nb sfont\" align=\"right\">$postlinks</td>
+".        "      </table>
+".        "  <tr valign=top>
 ".        "    <td class='b n1 sfont $sbar' style=\"border-top:0;\">
 ";
       if($type==0){
@@ -221,7 +221,7 @@ else $text.=      "      <br>Level: ".calclvl($exp)."
       $text.=
           "    </td>
 ".        "    <td class=\"b n2 $mbar\" id=\"post_".$post['id']."\">".postfilter(amptags($post,$post['uhead']). $post[text] .amptags($post,$post['usign']), $post[nosmilies] || $loguser[hidesmilies])."</td>
-".        "$L[TBLend]
+".        "</table>
 ";
     }
     return $text;

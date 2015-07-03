@@ -49,20 +49,18 @@
   
   function makecode($match)
   {
-	global $L;
-	$code = htmlspecialchars($match[1]);
+		$code = htmlspecialchars($match[1]);
 	$list = array("\r\n","[",":",")","_","@","-");
     $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
+	return "<table cellspacing=\"0\" style=\"width: 90%; min-width: 90%;\"><tr><td class=\"b n3\"><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
   }
  
   function makeirc($match)
   {
-    global $L;
-	$code = htmlspecialchars($match[1]);
+    	$code = htmlspecialchars($match[1]);
     $list = array("\r\n","[",":",")","_","@","-");
     $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
+    return "<table cellspacing=\"0\" style=\"width: 90%; min-width: 90%;\"><tr><td class=\"b n3\"><code style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
   } 
   function makesvg($match)
   {
@@ -82,13 +80,12 @@
   
   function makeswf($match)
   {
-	global $L;
-	static $swfid = 0;
+		static $swfid = 0;
 	
 	// in case you wonder why there is double html escaping going on:
 	// we first escape the URL attribute, with ENT_QUOTES, to make sure that it doesn't leak out from anything
 	// and then we escape the whole link's onclick attribute so that it doesn't leak out either (this guarantees valid HTML, too)
-	return "$L[TBL]>$L[TR]>$L[TD3] width=\"{$match[1]}\" height=\"".($match[2]+4)."\" style=\"text-align:center\">
+	return "<table cellspacing=\"0\"><tr><td class=\"b n3\" width=\"{$match[1]}\" height=\"".($match[2]+4)."\" style=\"text-align:center\">
 ".		"	<div style=\"padding:0px\" id=\"swf".(++$swfid)."\"></div>
 ".		"	<div style=\"font-size:50px\" id=\"swf{$swfid}play\">
 ".		"		<a href=\"#\" onclick=\"".htmlspecialchars("document.getElementById('swf{$swfid}').innerHTML='<embed src=\"".htmlspecialchars($match[3],ENT_QUOTES)."\" width=\"{$match[1]}\" height=\"{$match[2]}\"></embed>';document.getElementById('swf{$swfid}stop').style.display='block';document.getElementById('swf{$swfid}play').style.display='none';return false;")."\">&#x25BA;</a>
@@ -113,7 +110,7 @@
   }
 
  function postfilter($msg, $nosmilies=0){
-    global $smilies, $L, $config, $sql, $swfid;
+    global $smilies, $config, $sql, $swfid;
 
     //[blackhole89] - [code] tag
     $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
@@ -300,25 +297,23 @@
   }
 
   function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
-    global $L;
-    if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name' tabindex=\"-1\"></font></a></td>";
+        if($names=="") $names=$name;
+    return "<td class=\"b n3\" id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name' tabindex=\"-1\"></font></a></td>";
   }
   
   function posttoolbar()
   {
-	global $L;
-	return posttoolbutton("message","B","Bold","[b]","[/b]")
+		return posttoolbutton("message","B","Bold","[b]","[/b]")
            .posttoolbutton("message","I","Italic","[i]","[/i]")
            .posttoolbutton("message","U","Underline","[u]","[/u]")
            .posttoolbutton("message","S","Strikethrough","[s]","[/s]")
-           ."$L[TD2]>&nbsp;</td>"
+           ."<td class=\"b n2\">&nbsp;</td>"
            .posttoolbutton("message","_","IRC","[irc]","[/irc]")
            .posttoolbutton("message","/","URL","[url]","[/url]")
            .posttoolbutton("message","!","Spoiler","[spoiler]","[/spoiler]","sp")
            .posttoolbutton("message","&#133;","Quote","[quote]","[/quote]","qt")
            .posttoolbutton("message",";","Code","[code]","[/code]","cd")
-           ."$L[TD2]>&nbsp;</td>"
+           ."<td class=\"b n2\">&nbsp;</td>"
            .posttoolbutton("message","[]","IMG","[img]","[/img]")
            .posttoolbutton("message","%","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
 		   .posttoolbutton("message","YT","YouTube","[youtube]","[/youtube]","yt");

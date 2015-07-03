@@ -62,11 +62,11 @@
   
  if (!$user)
   {
-    print "$L[TBL1]>
-             $L[TD1c]>
+    print "<table cellspacing=\"0\" class=\"c1\">
+             <td class=\"b n1\" align=\"center\">
                This user doesn't exist!<br>
                <a href=./>Back to main</a>
-           $L[TBLend]";
+           </table>";
    die(pagefooter());
   }
   
@@ -311,11 +311,11 @@
                /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Edit profile');
-		print "$L[TBL1]>
-".        "  $L[TD1c]>
+		print "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    Profile changes saved!<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
-".        "$L[TBLend]
+".        "</table>
 ";
                 } else { //Modern redirect*/
                   redirect("profile.php?id=$user[id]","Profile was edited successfully.");
@@ -340,11 +340,11 @@
   /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Edit profile');
-  print "$L[TBL1]>
-".        "  $L[TD1c]>
+  print "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    The theme will be previewed<br>
 ".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
-".        "$L[TBLend]
+".        "</table>
 ";
    } else { //Modern redirect*/
    redirect("/?theme=$_POST[theme]",0);
@@ -382,24 +382,24 @@
     foreach($timeformats as $format)
       $timelist[$format]=($format?$format.' ('.cdate($format,ctime()).')':'');
 
-    $passinput="$L[INPp]=pass size=13 maxlength=32> / Retype: $L[INPp]=pass2 size=13 maxlength=32>";
+    $passinput="<input type=\"password\" name=pass size=13 maxlength=32> / Retype: <input type=\"password\" name=pass2 size=13 maxlength=32>";
     $birthinput="
-".        "      Month: $L[INPt]=birthM size=2 maxlength=2 value=$birthM>
-".        "      Day:   $L[INPt]=birthD size=2 maxlength=2 value=$birthD>
-".        "      Year:  $L[INPt]=birthY size=4 maxlength=4 value=$birthY>
+".        "      Month: <input type=\"text\" name=birthM size=2 maxlength=2 value=$birthM>
+".        "      Day:   <input type=\"text\" name=birthD size=2 maxlength=2 value=$birthD>
+".        "      Year:  <input type=\"text\" name=birthY size=4 maxlength=4 value=$birthY>
 ".        "    ";
     $tzoffinput="
-".        "      $L[INPt]=tzoffH size=3 maxlength=3 value=".(int)($user[tzoff]/3600)."> :
-".        "      $L[INPt]=tzoffM size=2 maxlength=2 value=".floor(abs($user[tzoff]/60)%60).">
+".        "      <input type=\"text\" name=tzoffH size=3 maxlength=3 value=".(int)($user[tzoff]/3600)."> :
+".        "      <input type=\"text\" name=tzoffM size=2 maxlength=2 value=".floor(abs($user[tzoff]/60)%60).">
 ".        "    ";
     //http://jscolor.com/try.php
     $colorinput="
 <script type=text/javascript src=jscolor/jscolor.js></script>
-".        "      $L[INPt]=nick_color class=color value=".$user['nick_color']."><input type=checkbox name=enablecolor value=1 id=enablecolor ".($user[enablecolor]?"checked":"")."><label for=enablecolor>Enable Color</label>
+".        "      <input type=\"text\" name=nick_color class=color value=".$user['nick_color']."><input type=checkbox name=enablecolor value=1 id=enablecolor ".($user[enablecolor]?"checked":"")."><label for=enablecolor>Enable Color</label>
 ".        "    ";
 
     print "<form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
-".        " $L[TBL1]>
+".        " <table cellspacing=\"0\" class=\"c1\">
 ".
            catheader('Login information')."
 ".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
@@ -508,12 +508,12 @@ if ($config['alwaysshowlvlbar'])
 ".           fieldrow('Posting Toolbar', fieldoption('posttoolbar',$user['posttoolbar'],array('Show Toolbar', 'Hide Toolbar')))."
 ".
            catheader('&nbsp;')."
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>$L[INPs]=action value='Edit profile'>
-".        "    $L[INPs]=action value='Preview theme'></td>
-".        " $L[TBLend]
-".        " $L[INPh]=token value='$token'>
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\"><input type=\"submit\" class=\"submit\" name=action value='Edit profile'>
+".        "    <input type=\"submit\" class=\"submit\" name=action value='Preview theme'></td>
+".        " </table>
+".        " <input type=\"hidden\" name=token value='$token'>
 ".        "</form>
 ";
   }

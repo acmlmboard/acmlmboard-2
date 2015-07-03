@@ -27,36 +27,36 @@
 
   $d=explode(",",decryptpwd($_COOKIE[pass]));
 
-  $data.="$L[TBL1] style='width:200px!important'>
-".       "  $L[TRh]>
-".       "    $L[TDh] colspan=2>Current data
-".       "  $L[TRh]>
-".       "    $L[TDh]>Field
-".       "    $L[TDh]>Value
-".       "  $L[TR1]>
-".       "    $L[TD1c]>generating IP
-".       "    $L[TD2c]>$d[0]
-".       "  $L[TR1]>
-".       "    $L[TD1c]>password hash
-".       "    $L[TD2c]><i>*snip*</i>";
+  $data.="<table cellspacing=\"0\" class=\"c1\" style='width:200px!important'>
+".       "  <tr class=\"h\">
+".       "    <td class=\"b h\" colspan=2>Current data
+".       "  <tr class=\"h\">
+".       "    <td class=\"b h\">Field
+".       "    <td class=\"b h\">Value
+".       "  <tr class=\"n1\">
+".       "    <td class=\"b n1\" align=\"center\">generating IP
+".       "    <td class=\"b n2\" align=\"center\">$d[0]
+".       "  <tr class=\"n1\">
+".       "    <td class=\"b n1\" align=\"center\">password hash
+".       "    <td class=\"b n2\" align=\"center\"><i>*snip*</i>";
   for($i=2;strlen($d[$i]);++$i) {
-    $data.="  $L[TR1]>
-".         "    $L[TD1c]>allowed range
-".         "    $L[TD2c]>".$d[$i];
+    $data.="  <tr class=\"n1\">
+".         "    <td class=\"b n1\" align=\"center\">allowed range
+".         "    <td class=\"b n2\" align=\"center\">".$d[$i];
   }
-  $data.="$L[TBLend]<br>";
+  $data.="</table><br>";
 
   print "$data
-".      "<form action='lcookie.php' method='post'>$L[INPh]='action' value='update'>
-".      "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh]>Modify allowed ranges
-".      "  $L[TR1]>
-".      "    $L[TD2]>$L[INPt]='ranges' value='".implode(",",array_slice($d,2))."' style='width:80%'>$L[INPs] value='Update'>
+".      "<form action='lcookie.php' method='post'><input type=\"hidden\" name='action' value='update'>
+".      "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"h\">
+".      "    <td class=\"b h\">Modify allowed ranges
+".      "  <tr class=\"n1\">
+".      "    <td class=\"b n2\"><input type=\"text\" name='ranges' value='".implode(",",array_slice($d,2))."' style='width:80%'><input type=\"submit\" class=\"submit\" name value='Update'>
 ".      "            <br><font class='sfont'>Data must be provided as comma-separated IPs without spaces,
 ".      "            each potentially ending in a single * wildcard. (e.g. <font color='#C0C020'>127.*,10.0.*,1.2.3.4</font>)
 ".      "            Faulty data might result in instant self-destruction of your login cookie.</font>
-".      "$L[TBLend]</form>";
+".      "</table></form>";
 
   pagefooter();
 

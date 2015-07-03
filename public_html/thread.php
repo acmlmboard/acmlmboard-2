@@ -23,13 +23,13 @@
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+".      "<table cellspacing=\"0\" class=\"c1\" width=\"100%\" id=\"edit\"><tr class=\"h\"><td class=\"b h\">";
 if($_COOKIE['pstbon']>=1){
 	$rdmsg.="Post Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div><br>";
+".	"<tr><td class=\"b n1\" align=\"left\">Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div><br>";
   } else {
 	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Post was edited successfully.</td></tr></table></div>";
+".	"<tr><td class=\"b n1\" align=\"left\">Post was edited successfully.</td></tr></table></div>";
 }
 }
 
@@ -455,9 +455,9 @@ if($_COOKIE['pstbon']>=1){
     if($thread[ispoll])
     {
       $poll=
-          "<br>$L[TBL1]>
-".        "  $L[TR1]>
-".        "    $L[TD1] colspan=2>".htmlval($thread[question])."
+          "<br><table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b n1\" colspan=2>".htmlval($thread[question])."
 ";
       $opts=$sql->query("SELECT o.*,(COUNT(*) & (NOT ISNULL(v.user))*1023) c,((NOT ISNULL(w.user))*1) s FROM polloptions o LEFT JOIN pollvotes v ON v.id=o.id LEFT JOIN pollvotes w ON w.user='$loguser[id]' AND w.id=o.id WHERE poll=$tid GROUP BY o.id");
       $total=$sql->resultq("SELECT COUNT(DISTINCT v.user) FROM polloptions o, pollvotes v WHERE o.poll=$tid AND v.id=o.id");
@@ -466,11 +466,11 @@ if($_COOKIE['pstbon']>=1){
       {
         $h=$opt[s]?"*":"";
 	$cond=$log&&(($thread[multivote]&&!$opt[s])||$thread[changeable]||!$mytotal);
-        $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote=".urlencode(packsafenumeric($opt[id])).">"):"").htmlval($opt[option]).($cond?"</a>":"")." $h$L[TD3]><img src=\"gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]\">";
+        $poll.="<tr class=\"n2\"><td class=\"b n2\">".($cond?("<a href=thread.php?id=$tid&act=vote&vote=".urlencode(packsafenumeric($opt[id])).">"):"").htmlval($opt[option]).($cond?"</a>":"")." $h<td class=\"b n3\"><img src=\"gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]\">";
       }
       $poll.=
-          "  $L[TR2]>$L[TDs] colspan=2>Multiple voting is ".($thread[multivote]?"":"not")." allowed. Changing your vote is ".($thread[changeable]?"":"not")." allowed. $total ".($total==1?"user has":"users have")." voted so far.
-".        "$L[TBLend]
+          "  <tr class=\"n2\"><td class=\"b sfont\" colspan=2>Multiple voting is ".($thread[multivote]?"":"not")." allowed. Changing your vote is ".($thread[changeable]?"":"not")." allowed. $total ".($total==1?"user has":"users have")." voted so far.
+".        "</table>
 ";
     }
 
@@ -504,19 +504,19 @@ $thumbCount = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE tid=".$tid)
 if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
 
     $topbot=
-          "$L[TBL] width=100%>$L[TR]>
-".        "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread[title])." $thumbsUp</td>
-".        "  $L[TDnr]>
+          "<table cellspacing=\"0\" width=100%><tr>
+".        "  <td class=\"nb\"><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread[title])." $thumbsUp</td>
+".        "  <td class=\"nb\" align=\"right\">
 ".        "  $newreply
 ".        "  </td>
-".        "$L[TBLend]
+".        "</table>
 ";
 
   }elseif($viewmode=="user"){
     $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Posts by ".userlink($user,"",$config[showminipic])."</td>
-".        "$L[TBLend]
+          "<table cellspacing=\"0\" width=100%>
+".        "  <td class=\"nb\"><a href=./>Main</a> - Posts by ".userlink($user,"",$config[showminipic])."</td>
+".        "</table>
 ";
   }
   elseif($viewmode=="announce") {
@@ -528,35 +528,35 @@ if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
     }
 
     $topbot=
-          "$L[TBL] width=100%>$L[TR]>
-".        "  $L[TDn]><a href=./>Main</a> ".($announcefid? "- <a href=forum.php?id=$announcefid>$announceftitle</a> ":"")."- Announcements</td>
-".        "  $L[TDnr]>
+          "<table cellspacing=\"0\" width=100%><tr>
+".        "  <td class=\"nb\"><a href=./>Main</a> ".($announcefid? "- <a href=forum.php?id=$announcefid>$announceftitle</a> ":"")."- Announcements</td>
+".        "  <td class=\"nb\" align=\"right\">
 ".        "    $newreply
 ".        "  </td>
-".        "$L[TBLend]
+".        "</table>
 ";
   }
 elseif($viewmode=="time"){
     $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
-".        "$L[TBLend]
+          "<table cellspacing=\"0\" width=100%>
+".        "  <td class=\"nb\"><a href=./>Main</a> - Latest posts</td>
+".        "</table>
 ";
   }
 elseif(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log){
     $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Deleted Posts Tracker</td>
-".        "$L[TDnr]>$deletedposts
-".        "$L[TBLend]
+          "<table cellspacing=\"0\" width=100%>
+".        "  <td class=\"nb\"><a href=./>Main</a> - Deleted Posts Tracker</td>
+".        "<td class=\"nb\" align=\"right\">$deletedposts
+".        "</table>
 ";
   }
 elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log){
     $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Deleted Posts Tracker</td>
-".        "$L[TDnr]>$alldeletedposts
-".        "$L[TBLend]
+          "<table cellspacing=\"0\" width=100%>
+".        "  <td class=\"nb\"><a href=./>Main</a> - Deleted Posts Tracker</td>
+".        "<td class=\"nb\" align=\"right\">$alldeletedposts
+".        "</table>
 ";
   }else
   {
@@ -658,9 +658,9 @@ function trashConfirm(e) {
 
 
     $modlinks=
-          "$L[TBL2]>$L[TR2]>
+          "<table cellspacing=\"0\" class=\"c2\"><tr class=\"n2\">
 ".        "  <form action=thread.php method=post name=mod>
-".        "  $L[TD3]>
+".        "  <td class=\"b n3\">
 ".        "    <span id=moptions>
 ".        "    $opt options:
 ".        "    $stick
@@ -732,7 +732,7 @@ function trashConfirm(e) {
 ".        "    <input type=hidden name=c value=".md5($pwdsalt2.$loguser[pass].$pwdsalt).">
 ".        "  </td>
 ".        "  </form>
-".        "$L[TBLend]
+".        "</table>
 ";
   }
 
@@ -831,42 +831,42 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
   if($_COOKIE['pstbon']>=1){ print $rdmsg;}
     print "
 ".        "
-".        "$L[TBL1] name=quickreply id=quickreply>
+".        "<table cellspacing=\"0\" class=\"c1\" name=quickreply id=quickreply>
 ".        " <form action=newreply.php method=post>
-".        "  $L[TRh] onclick='togglequickreply();' style='cursor: pointer'>
-".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
+".        "  <tr class=\"h\" onclick='togglequickreply();' style='cursor: pointer'>
+".        "    <td class=\"b h\" colspan=2>Warp Whistle Reply</a></td>
 ";
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
+    print "  <input type=\"hidden\" name=name value=\"".htmlval($loguser[name])."\">
+".        "  <input type=\"hidden\" name=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
-    print "  $L[TR] $quickreplydisplay >
+    print "  <tr $quickreplydisplay >
 ";
     if($loguser[posttoolbar]!=1)
-print     "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]
+print     "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
+".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr class='toolbar'>$toolbar</table>
 ";
-print     "  $L[TR] $quickreplydisplay >
-".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>$quotetext</textarea></td>
-".        "  $L[TR1] $quickreplydisplay >
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
-".        "      $L[INPh]=tid value=$tid>
-".        "      $L[INPs]=action value=Submit>
-".        "      $L[INPs]=action value=Preview>
+print     "  <tr $quickreplydisplay >
+".        "    <td class=\"b n1\" align=\"center\" width=120>Reply:</td>
+".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=8 cols=80>$quotetext</textarea></td>
+".        "  <tr class=\"n1\" $quickreplydisplay >
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\">
+".        "      <input type=\"hidden\" name=tid value=$tid>
+".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
+".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()." 
-".        "      $L[INPc]=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
-".        "      $L[INPc]=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+          "      <select name=mid>".moodlist()." 
+".        "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
+".        "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
-    print "     $L[INPc]=close id=close value=1 ><label for=close>Close thread</label>
-                ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1><label for=stick>Stick thread</label>" : "")."
-                ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
+    print "     <input type=\"checkbox\" name=close id=close value=1 ><label for=close>Close thread</label>
+                ".(!$thread[sticky] ? "<input type=\"checkbox\" name=stick id=stick value=1><label for=stick>Stick thread</label>" : "")."
+                ".($thread[sticky] ? "<input type=\"checkbox\" name=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
-".        "$L[TBLend]<br>
+".        "</table><br>
 ";
   }
 

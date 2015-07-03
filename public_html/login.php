@@ -11,10 +11,10 @@ $rdmsg="";
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+".      "<table cellspacing=\"0\" class=\"c1\" width=\"100%\" id=\"edit\"><tr class=\"h\"><td class=\"b h\">";
 if($_COOKIE['pstbon']==-1){
 	$rdmsg.="You are now registered!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Please login.</td></tr></table></div>"; }
+".	"<tr><td class=\"b n1\" align=\"left\">Please login.</td></tr></table></div>"; }
 }
 
   $act=$_POST[action];
@@ -26,7 +26,7 @@ if($_COOKIE['pstbon']==-1){
     }else{
        $err="Invalid username or password, cannot log in.";
     }
-    $print="  $L[TD1c]>$print</td>";
+    $print="  <td class=\"b n1\" align=\"center\">$print</td>";
   }elseif($act=='logout'){
     setcookie('user',0);
     setcookie('pass','');
@@ -36,21 +36,21 @@ if($_COOKIE['pstbon']==-1){
   pageheader('Login');
   if($_COOKIE['pstbon']){ print $rdmsg;}
  if($err) noticemsg("Error", $err);
-  print "$L[TBL1]>
+  print "<table cellspacing=\"0\" class=\"c1\">
 <form action=login.php method=post>
-".         "  $L[TRh]>
-".         "    $L[TDh] colspan=2>Login</td>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Username:</td>
-".         "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password:</td>
-".         "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-".         "  $L[TR1]>
-".         "    $L[TD]>&nbsp;</td>
-".         "    $L[TD]>$L[INPs]=action value=Login></td>
+".         "  <tr class=\"h\">
+".         "    <td class=\"b h\" colspan=2>Login</td>
+".         "  <tr>
+".         "    <td class=\"b n1\" align=\"center\" width=120>Username:</td>
+".         "    <td class=\"b n2\"><input type=\"text\" name=name size=25 maxlength=25></td>
+".         "  <tr>
+".         "    <td class=\"b n1\" align=\"center\">Password:</td>
+".         "    <td class=\"b n2\"><input type=\"password\" name=pass size=13 maxlength=32></td>
+".         "  <tr class=\"n1\">
+".         "    <td class=\"b\">&nbsp;</td>
+".         "    <td class=\"b\"><input type=\"submit\" class=\"submit\" name=action value=Login></td>
 ".         " </form>
-".      "$L[TBLend]
+".      "</table>
 ";
   pagefooter();
 ?>

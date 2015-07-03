@@ -40,7 +40,7 @@ VALUES (
 	}
 	if (!$act || $act == 'Save and continue') {
         pageheader('Post Radar');
-		print "$L[TBL1]><form action='postradar.php' method='post' enctype='multipart/form-data'>".catheader('Edit Post Radar');
+		print "<table cellspacing=\"0\" class=\"c1\"><form action='postradar.php' method='post' enctype='multipart/form-data'>".catheader('Edit Post Radar');
 		$radar_users = list_post_radar(retrieve_post_radar($targetuserid, 'name'));
 		
 		$res = $sql->query('select id,name,posts FROM users ORDER BY name');
@@ -56,22 +56,22 @@ VALUES (
 		$radar_remlist = array(-1 => 'Do not remove anyone') + $radar_remlist;
 		print fieldrow('Remove an user',fieldselect('post_radar_rem','-1',$radar_remlist));
 		print catheader('&nbsp;')."
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>$L[INPs]=action value='Save and continue'> $L[INPs]=action value='Save and finish'></td>
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\"><input type=\"submit\" class=\"submit\" name=action value='Save and continue'> <input type=\"submit\" class=\"submit\" name=action value='Save and finish'></td>
 ".        " </form>
-".        "$L[TBLend]
+".        "</table>
 ";
 	} else if ($act == 'Save and finish') {
         /*if($loguser[redirtype]==0){ //Classical Redirect
        $loguser['blocksprites']=1;
 	pageheader('Post Radar');
-		print "$L[TBL1]>
-".        "  $L[TD1c]>
+		print "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
 ".        "    Post Radar saved!<br>
 ".        "    ".redirect("index.php",'the forum Index')."
-".        "$L[TBLend]
+".        "</table>
 ";
          } else { //Modern redirect*/
               redirect("index.php",-1);

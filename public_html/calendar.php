@@ -30,6 +30,8 @@
     } else {
         $day = 0;
     }
+
+    if($year < -1000000000000000000 || $year > 1000000000000000000) error("Error", "Invalid year");
         
     
     $mtstamp = mktime(0,0,0,$month,1,$year);
@@ -129,6 +131,8 @@
     for ($i = $year-2; $i <= $year+2; $i++) {//year links
         if ($i == $year) {
             print " $i\n";
+        } else if ($i < -1000000000000000000 || $i > 1000000000000000000) {
+            print " \n";
         } else {
             print " <a href=\"calendar.php?m=$month&amp;y=$i\">$i</a>\n";
         }

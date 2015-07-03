@@ -237,6 +237,8 @@
 
 		  $sql->query("UPDATE users SET "
 					 . ($targetgroup?"`group_id` = $targetgroup, ":"")
+					 . ($_POST['permaban']?"`tempbanned` = '0', ":"")
+					 . ($_POST['title']?"`title` = 'Banned permanently: $_POST[title]', ":"`title` = 'Banned permanently', ")
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
@@ -277,7 +279,7 @@
                . setfield('signsep').','
                . setfield('longpages').','
                . setfield('rankset') .','
-               . (checkctitle($targetuserid)?(setfield('title')   .','):'')
+               . (checkctitle($targetuserid) && !$_POST['permaban']?(setfield('title')   .','):'')
                . setfield('realname').','
                . setfield('location').','
                . setfield('email')   .','
@@ -409,6 +411,7 @@ if (has_perm("edit-users"))
   print
            catheader('Administrative bells and whistles')."
 ".           fieldrow('Group'      ,fieldselect('group_id',$user['group_id'],$listgroup))."
+".           (($user['tempbanned']>0) ? fieldrow('Ban Information'         ,'<input type=checkbox name=permaban value=1 id=permaban><label for=permaban>Make ban permanent</label>') : "" )."
 ";
 
   print
@@ -490,7 +493,7 @@ if ($config['spritesystem'])
 ".           fieldrow('Smilies', fieldoption('hidesmilies',$user['hidesmilies'],array('Show smilies', 'Do not show smilies')))."
 ".           fieldrow('Hide Email', fieldoption('emailhide',$user['emailhide'],array('Show my email', 'Hide my email')))."
 ";
- if (has_perm("show-online") || has_perm("edit-user-show-online"))
+ if ($user['id']=$loguser['id'] && has_perm("show-online") || has_perm("edit-user-show-online"))
  print"
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
 ";

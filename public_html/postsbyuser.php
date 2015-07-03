@@ -34,7 +34,7 @@
       $i=0;
       while($post=$sql->fetch($p)) {
         if(!(can_view_forum($post))) $tlink="<i>(Restricted forum)</i>";
-        else $tlink="<a href=thread.php?pid=$post[id]#$post[id]>$post[title]</a>";
+        else $tlink="<a href=thread.php?pid=$post[pid]#$post[pid]>$post[title]</a>";
         $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
 ".              "  $L[TDc]>$post[pid]
 ".              "  $L[TDc]>#$post[num]

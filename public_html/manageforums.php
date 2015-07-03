@@ -184,6 +184,47 @@ else if ($_POST['delforum'])
 	deleteperms('forums', $fid);
 	die(header('Location: manageforums.php'));
 }
+else if ($_POST['savechan'])
+{
+	// save new/existing channel
+	
+	$chanid = $_GET['chanid'];
+	$channame = autodeslash($_POST['channame']);
+	
+	if (!trim($channame))
+		$error = 'Please enter a name for the channel.';
+	else
+	{
+		if ($chanid == 'new')
+		{
+			$chanid = $sql->resultq("SELECT MAX(id) FROM announcechans");
+			if (!$chanid) $chanid = 0;
+			$chanid++;
+			
+			$sql->prepare("INSERT INTO announcechans (id,chan) VALUES (?,?)", array($chanid, $channame));
+		}
+		else
+		{
+			$chanid = (int)$chanid;
+			if (!$sql->resultp("SELECT COUNT(*) FROM announcechans WHERE id=?",array($chanid)))
+				die(header('Location: manageforums.php'));
+			
+			$sql->prepare("UPDATE announcechans SET chan=? WHERE id=?", array($channame, $chanid));
+		}
+		
+		die(header('Location: manageforums.php?chanid='.$chanid));
+	}
+}
+else if ($_POST['delchan'])
+{
+	// delete channel
+	
+	$chanid = (int)$_GET['chanid'];
+        $sql->prepare("UPDATE forums SET announcechan_id=? WHERE announcechan_id=?", array('0', $chanid));
+	$sql->prepare("DELETE FROM announcechans WHERE id=?",array($chanid));
+	
+	die(header('Location: manageforums.php'));
+}
 
 
 pageheader('Forum management');
@@ -381,6 +422,40 @@ else if ($fid = $_GET['fid'])
 	print 	"</form>
 ";
 }
+else if ($chanid = $_GET['chanid'])
+{
+	// channel editor
+	
+	if ($chanid == 'new')
+	{
+		$chan = array('id' => 0, 'chan' => '');
+	}
+	else
+	{
+		$chanid = (int)$chanid;
+		$chan = $sql->fetchp("SELECT * FROM announcechans WHERE id=?",array($chanid));
+	}
+	
+	print 	"<form action=\"\" method=\"POST\">
+".			"	<table cellspacing=\"0\" class=\"c1\">
+".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>".($chanid=='new' ? 'Create':'Edit')." channel</td></tr>
+".			"		<tr>
+".			"			<td class=\"b n1\" align=\"center\">Name:</td>
+".			"			<td class=\"b n2\"><input type=\"text\" name=\"channame\" value=\"".htmlspecialchars($chan['chan'])."\" size=50 maxlength=500></td>
+".			"		</tr>
+".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>&nbsp;</td></tr>
+".			"		<tr>
+".			"			<td class=\"b n1\" align=\"center\">&nbsp;</td>
+".			"			<td class=\"b n2\">
+".			"				<input type=\"submit\" class=\"submit\" name=\"savechan\" value=\"Save channel\"> ".($chanid=='new' ? '':"
+".			"				<input type=\"submit\" class=\"submit\" name=\"delchan\" value=\"Delete channel\" onclick=\"if (!confirm('Really delete this channel?')) return false;\"> ")."
+".			"				<button type=\"button\" class=\"submit\" id=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
+".			"			</td>
+".			"		</tr>
+".			"	</table>
+".                      "</form>
+";
+}
 else
 {
 	// main page -- category/forum listing
@@ -394,6 +469,11 @@ else
 	$forums = array();
 	while ($forum = $sql->fetch($qforums))
 		$forums[$forum['id']] = $forum;
+
+	$qchans = $sql->query("SELECT id,chan FROM announcechans ORDER BY id");
+	$chans = array();
+	while ($chan = $sql->fetch($qchans))
+		$chans[$chan['id']] = $chan;
 	
 	$catlist = ''; $c = 1;
 	foreach ($cats as $cat)
@@ -417,9 +497,17 @@ else
 ";
 		$c = ($c==1) ? 2:1;
 	}
+
+	$chanlist = ''; $c = 1;
+	foreach ($chans as $chan)
+	{
+		$chanlist .= "$L[TR]>{$L['TD'.$c]}><a href=\"?chanid={$chan['id']}\">{$chan['chan']}</a></td></tr>
+";
+		$c = ($c==1) ? 2:1;
+	}
 	
 	print 	"$L[TBL] style=\"width:100%;\">$L[TR]>
-".			"	$L[TD] style=\"width:50%; vertical-align:top; padding-right:0.5em;\">
+".			"	$L[TD] style=\"width:33.33%; vertical-align:top; padding-right:0.5em;\">
 ".			"		$L[TBL1]>
 ".			"			$L[TRh]>$L[TDh]>Categories</td></tr>
 ".			"			$catlist
@@ -427,13 +515,21 @@ else
 ".			"			$L[TR]>$L[TD1]><a href=\"?cid=new\">New category</a></td></tr>
 ".			"		$L[TBLend]
 ".			"	</td>
-".			"	$L[TD] style=\"width:50%; vertical-align:top; padding-left:0.5em;\">
+".			"	$L[TD] style=\"width:33.33%; vertical-align:top; padding-left:0.5em; padding-right:0.5em;\">
 ".			"		$L[TBL1]>
 ".			"			$L[TRh]>$L[TDh]>Forums</td></tr>
 ".			"			$forumlist
 ".			"			$L[TRh]>$L[TDh]>&nbsp;</td></tr>
 ".			"			$L[TR]>$L[TD1]><a href=\"?fid=new\">New forum</a></td></tr>
 ".			"		$L[TBLend]
+".			"	</td>
+".			"	<td class=\"b\" style=\"width:33.33%; vertical-align:top; padding-left:0.5em;\">
+".			"		<table cellspacing=\"0\" class=\"c1\">
+".			"			<tr class=\"h\"><td class=\"b h\">Channels</td></tr>
+".			"			$chanlist
+".			"			<tr class=\"h\"><td class=\"b h\">&nbsp;</td></tr>
+".			"			<tr><td class=\"b n1\"><a href=\"?chanid=new\">New channel</a></td></tr>
+".			"		</table>
 ".			"	</td>
 ".			"</tr>$L[TBLend]
 ";

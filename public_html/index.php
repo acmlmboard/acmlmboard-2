@@ -19,7 +19,7 @@
   require 'lib/common.php';
 
   $rdmsg="";
-  if(isset($_COOKIE['pstbon'])){
+  if($_COOKIE['pstbon']==-1){
 	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
  $rdmsg="<script language=\"javascript\">
 	function dismiss()

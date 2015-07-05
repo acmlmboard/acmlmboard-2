@@ -29,7 +29,7 @@ class Text_Diff {
      *                           lines from a file.
      * @param array $to_lines    An array of strings.
      */
-    function Text_Diff($engine, $params)
+    function __construct($engine, $params)
     {
         // Backward compatibility workaround.
         if (!is_string($engine)) {
@@ -44,7 +44,7 @@ class Text_Diff {
 
         require_once 'lib/diff/Diff/Engine/' . $engine . '.php';
         $class = 'Text_Diff_Engine_' . $engine;
-        $diff_engine = &new $class();
+        $diff_engine = new $class();
 
         $this->_edits = call_user_func_array(array($diff_engine, 'diff'), $params);
     }
@@ -62,7 +62,7 @@ class Text_Diff {
      *
      * Example:
      * <code>
-     * $diff = &new Text_Diff($lines1, $lines2);
+     * $diff = new Text_Diff($lines1, $lines2);
      * $rev = $diff->reverse();
      * </code>
      *
@@ -225,7 +225,7 @@ class Text_MappedDiff extends Text_Diff {
      * @param array $mapped_to_lines    This array should have the same number
      *                                  of elements as $to_lines.
      */
-    function Text_MappedDiff($from_lines, $to_lines,
+    function __contruct($from_lines, $to_lines,
                              $mapped_from_lines, $mapped_to_lines)
     {
         assert(count($from_lines) == count($mapped_from_lines));
@@ -287,7 +287,7 @@ class Text_Diff_Op {
  */
 class Text_Diff_Op_copy extends Text_Diff_Op {
 
-    function Text_Diff_Op_copy($orig, $final = false)
+    function __contruct($orig, $final = false)
     {
         if (!is_array($final)) {
             $final = $orig;
@@ -298,7 +298,7 @@ class Text_Diff_Op_copy extends Text_Diff_Op {
 
     function &reverse()
     {
-        $reverse = &new Text_Diff_Op_copy($this->final, $this->orig);
+        $reverse = new Text_Diff_Op_copy($this->final, $this->orig);
         return $reverse;
     }
 
@@ -312,7 +312,7 @@ class Text_Diff_Op_copy extends Text_Diff_Op {
  */
 class Text_Diff_Op_delete extends Text_Diff_Op {
 
-    function Text_Diff_Op_delete($lines)
+    function __contruct($lines)
     {
         $this->orig = $lines;
         $this->final = false;
@@ -320,7 +320,7 @@ class Text_Diff_Op_delete extends Text_Diff_Op {
 
     function &reverse()
     {
-        $reverse = &new Text_Diff_Op_add($this->orig);
+        $reverse = new Text_Diff_Op_add($this->orig);
         return $reverse;
     }
 
@@ -334,7 +334,7 @@ class Text_Diff_Op_delete extends Text_Diff_Op {
  */
 class Text_Diff_Op_add extends Text_Diff_Op {
 
-    function Text_Diff_Op_add($lines)
+    function __contruct($lines)
     {
         $this->final = $lines;
         $this->orig = false;
@@ -342,7 +342,7 @@ class Text_Diff_Op_add extends Text_Diff_Op {
 
     function &reverse()
     {
-        $reverse = &new Text_Diff_Op_delete($this->final);
+        $reverse = new Text_Diff_Op_delete($this->final);
         return $reverse;
     }
 
@@ -356,7 +356,7 @@ class Text_Diff_Op_add extends Text_Diff_Op {
  */
 class Text_Diff_Op_change extends Text_Diff_Op {
 
-    function Text_Diff_Op_change($orig, $final)
+    function __contruct($orig, $final)
     {
         $this->orig = $orig;
         $this->final = $final;
@@ -364,7 +364,7 @@ class Text_Diff_Op_change extends Text_Diff_Op {
 
     function &reverse()
     {
-        $reverse = &new Text_Diff_Op_change($this->final, $this->orig);
+        $reverse = new Text_Diff_Op_change($this->final, $this->orig);
         return $reverse;
     }
 

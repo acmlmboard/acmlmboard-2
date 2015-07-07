@@ -1,105 +1,115 @@
 <?php
-  require "lib/function.php";
 
-  header("Content-type: text/html; charset=utf-8");
+	require "lib/function.php";
+
+	header("Content-type: text/html; charset=utf-8");
+
+	//[Scrydan] Added these three variables to make editing quicker.
+	$boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
+	$abdate    = "4/25/2015";
+	$abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
+
+	if($config['sqlconfig']) {
+
+		// Fallback to the config.php settings in the event that the SQL settings don't load properly or aren't set.
+		$configsql = array();
+		foreach($config as $cfg_key => $cfg_value) {
+			$configsql[$cfg_key] = array('intval' => (int)$cfg_value, 'txtval' => $cfg_value);
+		}
+
+		if($res = $sql->query("SELECT * from `misc`")) {
+			while($row = $sql->fetch($res)) {
+				$configsql[$row['field']] = $row;
+			}
+		}
+
+		$trashid							= $configsql['trashid']['intval'];
+		$boardtitle							= $configsql['boardtitle']['txtval'];
+		$defaulttheme						= $configsql['defaulttheme']['txtval'];
+		$defaultfontsize					= $configsql['defaultfontsize']['intval'];
+
+		$avatardimx							= $configsql['avatardimx']['intval'];
+		$avatardimy							= $configsql['avatardimy']['intval'];
+
+		$config['topposts']					= $configsql['topposts']['intval'];
+		$config['topthreads']				= $configsql['topthreads']['intval'];
+
+		$config['memberlistcolorlinks']		= $configsql['memberlistcolorlinks']['intval'];
+		$config['badgesystem']				= $configsql['badgesystem']['intval'];
+		$config['spritesystem']				= $configsql['spritesystem']['intval'];
+
+		$config['extendedprofile']			= $configsql['extendedprofile']['intval'];
+		$config['threadprevnext']			= $configsql['threadprevnext']['intval'];
+
+		$config['displayname']				= $configsql['displayname']['intval'];
+		$config['perusercolor']				= $configsql['perusercolor']['intval'];
+		$config['usernamebadgeeffects']		= $configsql['usernamebadgeeffects']['intval'];
+		$config['useshadownccss']			= $configsql['useshadownccss']['intval'];
+		$config['nickcolorcss']				= $configsql['nickcolorcss']['intval'];
+
+		$config['userpgnum']				= $configsql['userpgnum']['intval'];
+		$config['userpgnumdefault']			= $configsql['userpgnumdefault']['intval'];
+		$config['alwaysshowlvlbar']			= $configsql['alwaysshowlvlbar']['intval'];
+		$config['rpglvlbarwidth']			= $configsql['rpglvlbarwidth']['intval'];
+		$config['atnname']					= $configsql['atnname']['txtval'];
+	}
+
+	$userip  = $_SERVER['REMOTE_ADDR'];
+	$userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
+	$url     = getenv("SCRIPT_NAME");
+	if($q = getenv("QUERY_STRING"))
+		$url.="?$q";
+
+	require "lib/login.php";
+
+	$a = $sql->fetchq("SELECT `intval`,`txtval` FROM `misc` WHERE `field`='lockdown'");
+	if($a['intval']) {
+		//lock down
+		if(has_perm('bypass-lockdown'))
+			print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
+		else //Everyone else gets the wonderful lockdown page.
+		{
+			include "lib/locked.php";
+			die();
+		}
+	}
+
+	if(!$log) {
+		$loguser               = array();
+		$loguser['id']         = 0;	
+		$loguser['group_id']   = 1;
+		$loguser['tzoff']      = 0;
+		$loguser['timezone']   = "UTC";
+		$loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
+		$loguser['dateformat'] = "m-d-y";
+		$loguser['timeformat'] = "h:i A";
+		$loguser['signsep']    = 0;
+		$loguser['theme']      = $defaulttheme;
+		$loguser['ppp'] = 20;
+		$loguser['tpp'] = 20;
+
+		if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE 6.0") !== false)
+			$loguser['theme'] = "minerslament";
+
+		$loguser['blocksprites'] = 1;
+	}
   
-  //[Scrydan] Added these three variables to make editing quicker.
-  $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "5/31/2015";
-  $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
+	$flocalmod=$sql->fetchq("SELECT `uid` FROM `forummods`");
+		if($loguser['id'] == $flocalmod['uid']) {
+		$loguser['modforums']=array();
+		$modf=$sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");
+		while($m=$sql->fetch($modf)) {
+			$loguser['modforums'][$m['fid']] = 1;
+		}
+	}
 
-  if($config['sqlconfig']) {
-    $things = $sql->query("SELECT * from `misc`");
-    while($stuff=$sql->fetch($things)) $configsql[$stuff['field']]=$stuff;
+	require "lib/timezone.php";
+	dobirthdays(); //Called here to account for timezone bugs.
 
-    $trashid=$configsql['trashid']['intval'];
-    $boardtitle=$configsql['boardtitle']['txtval'];
-    $defaulttheme=$configsql['defaulttheme']['txtval'];
-    $defaultfontsize=$configsql['defaultfontsize']['intval'];
-
-    $avatardimx=$configsql['avatardimx']['intval'];
-    $avatardimy=$configsql['avatardimy']['intval'];
-
-    $config['topposts']=$configsql['topposts']['intval'];
-    $config['topthreads']=$configsql['topthreads']['intval'];
-
-    $config['memberlistcolorlinks']=$configsql['memberlistcololinks']['intval'];
-    $config['badgesystem']=$configsql['badgesystem']['intval'];
-    $config['spritesystem']=$configsql['spritesystem']['intval'];
-
-    $config['extendedprofile']=$configsql['extendedprofile']['intval'];
-    $config['threadprevnext']=$configsql['threadprevnext']['intval'];
-
-    $config['displayname']=$configsql['displayname']['intval'];
-    $config['perusercolor']=$configsql['perusercolor']['intval'];
-    $config['usernamebadgeeffects']=$configsql['usernamebadgeeffects']['intval'];
-    $config['useshadownccss']=$configsql['useshadownccss']['intval'];
-    $config['nickcolorcss']=$configsql['nickcolorcss']['intval'];
-
-    $config['userpgnum']=$configsql['userpgnum']['intval'];
-    $config['userpgnumdefault']=$configsql['userpgnumdefault']['intval'];
-    $config['alwaysshowlvlbar']=$configsql['alwaysshowlvlbar']['intval'];
-    $config['rpglvlbarwidth']=$configsql['rpglvlbarwidth']['intval'];
-    $config['atnname']=$configsql['atnname']['txtval'];
-  }
-
-  $userip  = $_SERVER['REMOTE_ADDR'];
-  $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
-  $url     = getenv("SCRIPT_NAME");
-  if($q = getenv("QUERY_STRING"))
-    $url.="?$q";
-
-  require "lib/login.php";
-
-  $a = $sql->fetchq("SELECT `intval`,`txtval` FROM `misc` WHERE `field`='lockdown'");
-  
-  if($a['intval'])
-   {
-    //lock down
-    if(has_perm('bypass-lockdown'))
-    print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
-   else //Everyone else gets the wonderful lockdown page.
-    {
-     include "lib/locked.php";
-     die();
-    }
-   }
-
-  if(!$log)
-   {
-    $loguser               = array();
-    $loguser['id']         = 0;	
-    $loguser['group_id']   = 1;
-    $loguser['tzoff']      = 0;
-    $loguser['timezone']   = "UTC";
-    $loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
-    $loguser['dateformat'] = "m-d-y";
-    $loguser['timeformat'] = "h:i A";
-    $loguser['signsep']    = 0;
-    $loguser['theme']      = $defaulttheme;
-    if(strpos($_SERVER['HTTP_USER_AGENT'], "MSIE 6.0") !== false)
-     $loguser['theme'] = "minerslament";
-    $loguser['blocksprites']=1;
-   }
-  
-  $flocalmod=$sql->fetchq("SELECT `uid` FROM `forummods`");
-  if($loguser['id'] == $flocalmod['uid'])
-   {
-    $loguser['modforums']=array();
-    $modf=$sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");
-   while($m=$sql->fetch($modf))
-    {
-     $loguser['modforums'][$m['fid']]=1;
-    }
-   }
-
-  require "lib/timezone.php";
-  dobirthdays(); //Called here to account for timezone bugs.
-
-  if($loguser['ppp'] < 1)
-   $loguser['ppp'] = 20;
-  if($loguser['tpp'] < 1)
-   $loguser['tpp'] = 20;
+	if($loguser['ppp'] < 1)
+		$loguser['ppp'] = 20;
+	if($loguser['tpp'] < 1)
+		$loguser['tpp'] = 20;
 
   //2007-02-19 blackhole89 - needs to be here because it requires loguser data
   require "lib/ipbans.php";
@@ -110,6 +120,7 @@
 
   $dateformat = "$loguser[dateformat] $loguser[timeformat]";
 
+  $bots = array();
   $bota=$sql->query("SELECT `bot_agent` FROM `robots`");
   while($robots=$sql->fetch($bota)){
     $bots[]=$robots['bot_agent'];

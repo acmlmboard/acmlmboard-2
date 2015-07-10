@@ -1,7 +1,9 @@
 <?php
 	require 'lib/common.php';
 	needs_login(1);
-	$targetuserid = $loguser['id'];
+	
+	//Prevent SQLi
+	$targetuserid = intval($loguser['id']);
 
 	if (!can_edit_user($targetuserid)) $targetuserid = 0;
 
@@ -11,30 +13,35 @@
 	
 	$act=$_POST[action];
 	if ($act == 'Save and continue' || $act == 'Save and finish') {
-		if ($_POST['post_radar_add'] != -1) {
-			$user_add = $sql->fetchq('SELECT id FROM users WHERE id = '.$_POST['post_radar_add']);
+	
+	    //Prevent SQLi
+		$radar_add = intval($_POST['post_radar_add']);
+		$radar_rem = intval($_POST['post_radar_rem']);
+		
+		if ($radar_add != -1) {
+			$user_add = $sql->fetchq('SELECT id FROM users WHERE id = '.$radar_add);
 			if (!$user_add) {
                               error("Error", "This user does not exist!");
 			}
-			if ($sql->numrows($sql->query('SELECT user2_id FROM post_radar WHERE user_id = '.$targetuserid.' AND user2_id = '.$_POST['post_radar_add'].' AND dtime IS NULL')) != 0) {
+			if ($sql->numrows($sql->query('SELECT user2_id FROM post_radar WHERE user_id = '.$targetuserid.' AND user2_id = '.$radar_add.' AND dtime IS NULL')) != 0) {
                               error("Error", "This user is already in your post radar.");
 			}
 			
 			$qr= 'INSERT INTO `post_radar` ( `user_id` , `user2_id` , `ctime` )
 VALUES (
-'.addslashes($targetuserid).', '.addslashes($_POST['post_radar_add']).', UNIX_TIMESTAMP( ))';
+'.$targetuserid.', '.$radar_add.', UNIX_TIMESTAMP( ))';
 			$sql->query($qr);
 		}
-		if ($_POST['post_radar_rem'] != -1) {
-			$user_rem = $sql->fetchq('SELECT id FROM users WHERE id = '.$_POST['post_radar_rem']);
+		if ($radar_rem != -1) {
+			$user_rem = $sql->fetchq('SELECT id FROM users WHERE id = '.$radar_rem);
 			if (!$user_rem) {
                               error("Error", "This user does not exist!");
 			}
-			$qr = 'SELECT user2_id FROM post_radar WHERE user_id = '.$targetuserid.' AND user2_id = '.$_POST['post_radar_rem'].' AND dtime IS NULL';
+			$qr = 'SELECT user2_id FROM post_radar WHERE user_id = '.$targetuserid.' AND user2_id = '.$radar_rem.' AND dtime IS NULL';
 			if ($sql->numrows($sql->query($qr)) == 0) {
                               error("Error", "This user is not in your Post Radar.");
 			}
-			$qr= 'UPDATE `post_radar` SET `dtime` = UNIX_TIMESTAMP( ) WHERE user_id = '.$targetuserid.' AND user2_id = '.$_POST['post_radar_rem'];
+			$qr= 'UPDATE `post_radar` SET `dtime` = UNIX_TIMESTAMP( ) WHERE user_id = '.$targetuserid.' AND user2_id = '.$radar_rem;
 			$sql->query($qr);
 		}
 	}

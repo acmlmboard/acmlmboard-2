@@ -155,11 +155,13 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
 		@$sql->query("INSERT DELAYED INTO `log` VALUES(UNIX_TIMESTAMP(),'$userip','$loguser[id]','" . addslashes($_SERVER['HTTP_USER_AGENT']) . " :: " . addslashes($url) . " :: $postvars')");
 	}
 
-	$ref = $_SERVER['HTTP_REFERER'];
-	$ref2 = substr($ref, 0, 25);
-	if ($ref && !strpos($ref2, $config['address'])) {
-		$sql->query("INSERT INTO `ref` SET `time`='" . ctime() . "', `userid`='$loguser[id]', `urlfrom`='" . addslashes($ref) . "',
-                                          `urlto`='" . addslashes($url) . "', `ipaddr`='" . $_SERVER['REMOTE_ADDR'] . "'");
+	if(!empty($_SERVER['HTTP_REFERER'])) {
+		$ref = $_SERVER['HTTP_REFERER'];
+		$ref2 = substr($ref, 0, 25);
+		if ($ref && !strpos($ref2, $config['address'])) {
+			$sql->query("INSERT INTO `ref` SET `time`='" . ctime() . "', `userid`='$loguser[id]', `urlfrom`='" . addslashes($ref) . "',
+											  `urlto`='" . addslashes($url) . "', `ipaddr`='" . $_SERVER['REMOTE_ADDR'] . "'");
+		}
 	}
 
 	if (!$bot) {
@@ -740,13 +742,18 @@ function pagefooter() {
 	global  $abversion, $abdate, $boardprog;
 	//pagestats();
 
-	print "<br>
-           <table cellspacing=\"0\" class=\"c2\"><tr align=\"center\"><td class=\"b n2\" align=\"left\"><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
-             Acmlmboard v$abversion ($abdate)<br>
-             &copy; 2005-2015 $boardprog
-           </table>";
+	echo "<br>
+	<table cellspacing=\"0\" class=\"c2\">
+		<tr align=\"center\">
+			<td class=\"b n2\" align=\"center\"><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br />
+				Acmlmboard v$abversion ($abdate)<br />
+				&copy; 2005-2015 $boardprog
+			</td>
+		</tr>
+	</table>";
+	
 	pagestats();
-	//miscbar(); disabled until needed. -Emuz
+	//miscbar();
 }
 
 ?>

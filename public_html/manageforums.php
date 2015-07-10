@@ -37,7 +37,7 @@ if ($_POST['savecat'])
 	// save new/existing category
 	
 	$cid = $_GET['cid'];
-	$title = autodeslash($_POST['title']);
+	$title = stripslashes($_POST['title']);
 	$ord = (int)$_POST['ord'];
 	$private = $_POST['private'] ? 1:0;
 	
@@ -83,8 +83,8 @@ else if ($_POST['saveforum'])
 
 	$fid = $_GET['fid'];
 	$cat = (int)$_POST['cat'];
-	$title = autodeslash($_POST['title']);
-	$descr = autodeslash($_POST['descr']);
+	$title = stripslashes($_POST['title']);
+	$descr = stripslashes($_POST['descr']);
 	$ord = (int)$_POST['ord'];
 	$private = $_POST['private'] ? 1:0;
 	$trash = $_POST['trash'] ? 1:0;
@@ -189,7 +189,7 @@ else if ($_POST['savechan'])
 	// save new/existing channel
 	
 	$chanid = $_GET['chanid'];
-	$channame = autodeslash($_POST['channame']);
+	$channame = stripslashes($_POST['channame']);
 	
 	if (!trim($channame))
 		$error = 'Please enter a name for the channel.';

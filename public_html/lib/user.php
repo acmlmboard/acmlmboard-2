@@ -40,7 +40,7 @@ function checkctitle($uid) {
 		return false;
 
 	if ($uid == $loguser['id'] && has_perm('edit-own-title')) {
-		if ($loguser['group_id'] != $defaultgroup['id'])
+		if ($loguser['group_id'] != $defaultgroup) // resultq returns the actual field... not sure why this was comparing against an array.
 			return true;
 
 		if ($loguser['posts'] >= 100)

@@ -9,7 +9,7 @@ class mysql {
 	public $time = 0;
 	public $db = null;
 	public $debug_mode = false; // change this to enable SQL query dumps
-
+	
 	function connect($host, $user, $pass) {
 		$this->db = new mysqli($host, $user, $pass);
 		return $this->db;
@@ -25,7 +25,7 @@ class mysql {
 	}
 
 	function query($query) {
-		if ($this->debug_mode && $_GET['sqldebug'])
+		if ($this->debug_mode && isset($_GET['sqldebug']))
 			print "{$this->queries} $query<br>";
 
 		$start = usectime();

@@ -627,6 +627,7 @@ if ($tid &&
 		if ($thread['tags'] & (1 << $t['bit']))
 			$taglinks.="<a href=javascript:submittag('$t[bit]')>$t[tag]</a> ";
 	}
+
 	$taglinks.="<input type=\"button\" class=\"submit\" value=\"Cancel\" onclick=\"hidethreadedit(); return false;\">";
 	$taglinks = addcslashes($taglinks, "'"); //because of javascript, single quotes will gum up the works
 

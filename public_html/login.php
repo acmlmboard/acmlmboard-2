@@ -50,7 +50,7 @@ print "<table cellspacing=\"0\" class=\"c1\">
 " . "    <td class=\"b n2\"><input type=\"text\" name=name size=25 maxlength=25></td>
 " . "  <tr>
 " . "    <td class=\"b n1\" align=\"center\">Password:</td>
-" . "    <td class=\"b n2\"><input type=\"password\" name=pass size=13 maxlength=32></td>
+" . "    <td class=\"b n2\"><input type=\"password\" name=pass size=13 maxlength=32> - <a href=\"resetpassword.php\">Lost password?</a></td>
 " . "  <tr class=\"n1\">
 " . "    <td class=\"b\">&nbsp;</td>
 " . "    <td class=\"b\"><input type=\"submit\" class=\"submit\" name=action value=Login></td>

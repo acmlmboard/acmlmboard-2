@@ -21,7 +21,7 @@
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '
-                      ."WHERE p.id=$pid AND t.announce=1 AND t.forum IN ".forums_with_view_perm());
+                      ."WHERE p.id=$pid AND t.announce=1 AND (t.forum IN ".forums_with_view_perm()." OR (t.forum IN (0, NULL) AND t.announce>=1))");
 
 
   if (!$thread) $pid = 0;
@@ -36,7 +36,7 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
   }
 
   $top='<a href=./>Main</a> '
-    ."- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> "
+    .($thread[forum]==0 ? "- <a href=thread.php?announce=0>Announcements</a> " : "- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> ")
     .'- Edit announcement title';
 
   $res=$sql->query  ("SELECT u.id, p.user, p.mood, p.nolayout, pt.text "

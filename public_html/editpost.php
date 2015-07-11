@@ -41,8 +41,7 @@
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '
-                      ."WHERE p.id=$pid AND t.forum IN ".forums_with_view_perm());
-
+                      ."WHERE p.id=$pid AND (t.forum IN ".forums_with_view_perm()." OR (t.forum IN (0, NULL) AND t.announce>=1))");
 
   if (!$thread) $pid = 0;
 if($act!="Submit"){ //Classical Redirect
@@ -70,8 +69,8 @@ if($act!="Submit"){ //Classical Redirect
   }
 
   $top='<a href=./>Main</a> '
-    ."- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> "
-    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> '
+    .($thread[announce] && $thread[forum]==0 ? "- <a href=thread.php?announce=0>Announcements</a> " : "- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> ")
+    .($thread[announce] && $thread[forum]==0 ? "- ".htmlval($thread[title])." " : "- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> ')
     .'- Edit post';
 
   $res=$sql->query  ("SELECT u.id, p.user, p.mood, p.nolayout, pt.text "

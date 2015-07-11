@@ -172,6 +172,7 @@ if ($user['url'][0] == "!") {
 $post['date'] = ctime();
 $post['ip'] = $user['ip'];
 $post['num'] = 0; //$user[posts];  #2/26/2007 xkeeper - threadpost can hide "1/" now
+
 $post['mood'] = -1;
 $post['id'] = -1;
 $post['nolayout'] = 0;

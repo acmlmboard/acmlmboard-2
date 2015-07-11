@@ -538,12 +538,12 @@ function pageheader($pagetitle = "", $fid = 0) {
 		$onuserlist = "$onusercount user" . ($onusercount != 1 ? "s" : "") . " currently in $fname" . ($onusercount > 0 ? ": " : "") . $onuserlist;
 
 		//[Scrydan] Changed from the commented code below to save a query.
-		$onlineguests = $sql->query("SELECT bot FROM `guests` WHERE `lastforum`='$fid' AND `date` > '" . (ctime() - 300) . "'");
-		while ($chkonline = $sql->fetch($onlineguests)) {
-			if ($chkonline['bot'] == 1) {
-				$numbots++;
-			} else {
-				$numguests++;
+		$numbots = 0;
+		$numguests = 0;
+		if($result = $sql->query("SELECT COUNT(*) as guest_count, SUM(`bot`) as bot_count FROM `guests` WHERE `lastforum` = '$fid' AND `date` > '" . (ctime() - 300) . "'")) {
+			if($data = $sql->fetch($result)) {
+				$numbots = $data['bot_count'];
+				$numguests = $data['guest_count'] - $numbots;
 			}
 		}
 

@@ -235,10 +235,13 @@
 				   . " WHERE `id` = $user[id]"
 				   );
 
+		  $banreason = ””;
+		  if($_POST['title']) $banreason = "`title` = 'Banned permanently: $_POST[title]', ";
+		  else $banreason = "`title` = 'Banned permanently', ";
+
 		  $sql->query("UPDATE users SET "
 					 . ($targetgroup?"`group_id` = $targetgroup, ":"")
-					 . ($_POST['permaban']?"`tempbanned` = '0', ":"")
-					 . ($_POST['title']?"`title` = 'Banned permanently: $_POST[title]', ":"`title` = 'Banned permanently', ")
+					 . ($_POST['permaban']?"`tempbanned` = '0', $banreason":"")
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
@@ -347,7 +350,7 @@
 ".        "$L[TBLend]
 ";
    } else { //Modern redirect*/
-   redirect("/?theme=$_POST[theme]",0);
+   redirect("/{$config[path]}?theme=$_POST[theme]",0);
    //}
   die(pagefooter());
   }

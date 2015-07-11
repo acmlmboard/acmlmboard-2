@@ -44,9 +44,9 @@ while ($ncr = $sql->fetch($ncx)) {
 
 }
 
-if ($config['perusercolor']){
-	$customucolors = "<br />If you see a user with a colour not present on this list, than that user has a specific colour assigned to them.";
-}
+
+$customucolors = $config['perusercolor'] ? "<br />If you see a user with a colour not present on this list, than that user has a specific colour assigned to them." : '';
+
 /*Highlighting system core
 Not ready yet. Do not uncomment until ready.
 $hl=$_GET['hl'];

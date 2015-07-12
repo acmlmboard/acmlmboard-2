@@ -283,7 +283,7 @@ function RenderActions($actions, $ret = false) {
 	$out = '';
 	$i = 0;
 	foreach ($actions as $action) {
-		if ($action['confirm']) {
+		if (isset($action['confirm'])) {
 			if ($action['confirm'] === true)
 				$confirmmsg = 'Are you sure you want to ' . $action['title'] . '?';
 			else

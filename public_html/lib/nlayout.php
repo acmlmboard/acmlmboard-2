@@ -474,4 +474,63 @@ function announcement_row($announcefid, $aleftspan, $arightspan) {
 	}
 }
 
+/*
+ * New template functions
+ */
+function tpl_display($file, $tpl_vars = array()) {
+
+	global  $dateformat, $sql, $log, $loguser, $sqlpass, $views, $botviews, $sqluser, $boardtitle, 
+			$extratitle, $boardlogo, $homepageurl, $themefile, $logofile, $url, $config, $feedicons, 
+			$favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays, 
+			$pwdsalt, $pwdsalt2, $abversion, $abdate, $boardprog;
+
+	// TODO: possibly sandbox the template file.
+	
+	// these are required for page-header
+	$g_tpl_vars = array();
+	$g_tpl_vars['page-title'] = isset($tpl_vars['page-title']) ? htmlentities($tpl_vars['page-title']) : 'Default Page Title';
+	$g_tpl_vars['board-title'] = htmlentities($boardtitle);
+	$g_tpl_vars['meta'] = $config['meta'];
+	$g_tpl_vars['theme'] = $themefile;
+	$g_tpl_vars['font-size'] = $loguser['fontsize'];
+	
+	// required for page footer.
+	$g_tpl_vars['ab-version'] = $abversion;
+	$g_tpl_vars['ab-date'] = $abdate;
+	$g_tpl_vars['ab-credits'] = $boardprog;
+	
+	$path = sprintf('%s/templates/%s.html.php', dirname(__DIR__), $file);
+	if(!file_exists($path)) {
+		echo sprintf('<strong>Error: Template file `%s` is missing!</strong>', $file);
+	}
+	
+	include_once($path);
+}
+
+function tpl_input_text($name, $value = '', $size = 0, $maxlength = 0) {
+	printf("<input type=\"text\" name=\"%s\" id=\"%s\"%s%s%s />\n",
+		htmlentities($name),
+			htmlentities($name),
+		!empty($value) ? sprintf(' value="%s"', htmlentities($value)) : '',
+		$size > 0 ? sprintf(' size="%d"', $size) : '',
+		$maxlength > 0 ? sprintf(' maxlength="%d"', $maxlength) : '');
+}
+
+function tpl_input_textarea($name, $value = '', $rows = 0, $cols = 0) {
+	printf("<textarea wrap=\"virtual\" name=\"%s\" id=\"%s\"%s%s>%s</textarea>\n",
+		htmlentities($name),
+		htmlentities($name),
+		$rows > 0 ? sprintf(' rows="%d"', $rows) : '',
+		$cols > 0 ? sprintf(' cols="%d"', $cols) : '',
+		!empty($value) ? htmlentities($value) : '');
+}
+
+function tpl_input_checkbox($name, $label, $checked = false) {
+	printf("<label><input type=\"checkbox\" name=\"%s\" id=\"%s\" value=\"1\"%s /> %s</label>\n",
+		htmlentities($name), htmlentities($name), $checked ? ' checked' : '', htmlentities($label));
+}
+
+function tpl_table_alternate($rows, $colors = array('n1','n2'), $highlight_index = -1, $highlight_color = 'n3') {
+	
+}
 ?>

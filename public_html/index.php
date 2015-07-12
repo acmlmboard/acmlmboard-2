@@ -133,18 +133,20 @@ while ($forum = $sql->fetch($forums)) {
 		$lastpost = 'None';
 
 	if ($forum['lastdate'] > ($log ? $forum['rtime'] : ctime() - 3600)) {
-		if ($log)
+		if ($log) {
 			$thucount = $sql->resultq("SELECT count(*) FROM threads t"
 					. " LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id])"
 					. " LEFT JOIN forumsread f ON (f.fid=t.forum AND f.uid=$loguser[id])"
 					. " WHERE t.forum=$forum[id]"
 					. " AND ((r.time < t.lastdate OR isnull(r.time)) AND (f.time < t.lastdate OR isnull(f.time)))"
 					. " AND (r.uid=$loguser[id] OR isnull(r.uid))");
-
-		//$status="<img src=\"gfx/new.php?type=n&num=$thucount\" alt=\"NEW\r\n$thucount\">";
-		$status = rendernewstatus("n", $thucount);
-	} else
+			$status = rendernewstatus("n", $thucount);
+		} else {
+			$status = '&nbsp;';
+		}
+	} else {
 		$status = '&nbsp;';
+	}
 
 	if (isset($ignores[$forum['id']])) {
 		$status = "&nbsp;";

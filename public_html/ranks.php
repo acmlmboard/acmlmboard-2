@@ -166,26 +166,26 @@ print "<form action='ranks.php?action=editrankset&rankset=$getrankset' method='p
     pageheader("Rankset Listing");
         if($_COOKIE['pstbon']) { 
         print $rdmsg; }
-    print "$L[TBL]>
-             $L[TR]>
+    print "<table cellspacing=\"0\">
+             <tr>
                <td>
-                 $L[TBL1]>
-                   $L[TRh]>
-                     $L[TD1] width=\"50%\">Rank Set</td>
+                 <table cellspacing=\"0\" class=\"c1\">
+                   <tr class=\"h\">
+                     <td class=\"b n1\" width=\"50%\">Rank Set</td>
                    </tr>
-                   $L[TR1]>
-                     $L[TD1]>$rankselection$inaclnk$linkviewall$editlinks</td>
+                   <tr class=\"n1\">
+                     <td class=\"b n1\">$rankselection$inaclnk$linkviewall$editlinks</td>
                    </tr>
                  </table>
                </td>
              </tr>
            </table><br>
-           $L[TBL1]>
-            $L[TRh]>
-               $L[TD] width=\"150px\">Rank</td>
-               $L[TD] width=\"50px\">Posts</td>
-               $L[TD] width=\"100px\">Users On Rank</td>
-               $L[TD]>Users On Rank</td>
+           <table cellspacing=\"0\" class=\"c1\">
+            <tr class=\"h\">
+               <td class=\"b\" width=\"150px\">Rank</td>
+               <td class=\"b\" width=\"50px\">Posts</td>
+               <td class=\"b\" width=\"100px\">Users On Rank</td>
+               <td class=\"b\">Users On Rank</td>
              </tr>";
     
     $i = 1;
@@ -227,11 +227,11 @@ print "<form action='ranks.php?action=editrankset&rankset=$getrankset' method='p
       $rankimage .= "<img src=\"img/ranksets/$rank[dirname]/$rank[image]\">";
      }
      print "
-             $L[TR]>
-               $L[TD1]>".(($usercount-$idlecount) || $blockunknown == false ? "$rank[str]" : "???")."</td>
-               $L[TD2c]>".(($usercount-$idlecount) || $blockunknown == false ? "$neededposts" : "???")."</td>
-               $L[TD2c]>$usercount</td>
-               $L[TD1c]>$usersonthisrank ".($idlecount?"($idlecount inactive)":"")."</td>
+             <tr>
+               <td class=\"b n1\">".(($usercount-$idlecount) || $blockunknown == false ? "$rank[str]" : "???")."</td>
+               <td class=\"b n2\" align=\"center\">".(($usercount-$idlecount) || $blockunknown == false ? "$neededposts" : "???")."</td>
+               <td class=\"b n2\" align=\"center\">$usercount</td>
+               <td class=\"b n1\" align=\"center\">$usersonthisrank ".($idlecount?"($idlecount inactive)":"")."</td>
              </tr>";
 
      //"<!--$rankset[neededposts] $rankset[title] $rankimage<br>-->\n";
@@ -251,11 +251,11 @@ print "<form action='ranks.php?action=editrankset&rankset=$getrankset' method='p
     if ($rankset['image'])
       $rankimage = "<img src=\"img/ranksets/$rankset[dirname]/$rankset[image]\">";
      print "
-             $L[TR]>
-               $L[TD1]>$rankset[title]<br>$rankimage</td>
-               $L[TD]>$neededposts</td>
-               $L[TD] width=\"100px\">(amount of users who rank this)</td>
-               $L[TD]>$usersonthisrank</td>
+             <tr>
+               <td class=\"b n1\">$rankset[title]<br>$rankimage</td>
+               <td class=\"b\">$neededposts</td>
+               <td class=\"b\" width=\"100px\">(amount of users who rank this)</td>
+               <td class=\"b\">$usersonthisrank</td>
              </tr>";
 
      //"<!--$rankset[neededposts] $rankset[title] $rankimage<br>-->\n";

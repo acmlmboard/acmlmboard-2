@@ -349,11 +349,11 @@
 ".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
 ".        "$L[TBLend]
 ";
-   } else { //Modern redirect*/
-   redirect("/{$config[path]}?theme=$_POST[theme]",0);
-   //}
-  die(pagefooter());
-  }
+	  } else { //Modern redirect */
+	redirect("/index.php?theme={$_POST['theme']}", 0);
+	//}
+	die(pagefooter());
+}
 
   pageheader('Edit profile');
 

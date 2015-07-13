@@ -33,7 +33,7 @@ $forums=$sql->query("SELECT f.* "
                    ."ORDER BY c.ord,ord");
 
 $cat=-1;
-$fsel="$L[SEL]=f>$L[OPT]=0>Any</option>";
+$fsel="<select name=f><option value=0>Any</option>";
 
 while($forum=$sql->fetch($forums)){
   if($forum[cat]!=$cat){
@@ -42,29 +42,29 @@ while($forum=$sql->fetch($forums)){
   }
   $sel="";
   if($_GET[f]==$forum[id]) $sel=" selected";
-  $fsel.="$L[OPT]=$forum[id]$sel>$forum[title]</option>";
+  $fsel.="<option value=$forum[id]$sel>$forum[title]</option>";
 }
 $fsel.="</select>";
 
-print "$L[TBL1]>
-".    "  $L[TRh]>
-" .   "    $L[TDh]>Search</td>
-"  .  "  $L[TR]>
-"   . "    $L[TD1] style=padding:10 height=150 valign=top>
+print "<table cellspacing=\"0\" class=\"c1\">
+".    "  <tr class=\"h\">
+" .   "    <td class=\"b h\">Search</td>
+"  .  "  <tr>
+"   . "    <td class=\"b n1\" style=padding:10 height=150 valign=top>
 "    ."      <form action=search.php method=get>
 "   . "      <table cellpadding=0 cellspacing=0><tr><td>
 "  .  "      <table cellpadding=0 cellspacing=0 style=cursor:default;width:100%><tr><td width=15 class=bblone>&nbsp;<td width=60 class=lame style='border-left:1px solid black' align=center id=searchbtn onclick=field('search')><b>Search</b><td width=60 class='n2 superlame' align=center id=filterbtn onclick=field('filter')><b>Filters</b><td width=60 class='n2 superlame' align=center id=emptybtn onclick=field('empty')><b>Harbl</b><td class=bblone>&nbsp;</table>
 " .   "      <tr><td style='padding:3;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black'>
 ".    "      <div id=searchdiv>$HARBL>
-" .   "      <tr><td>Search for:&nbsp;<td>$L[INPt]=q size=40 value='".htmlspecialchars(stripslashes($_GET[q]), ENT_QUOTES)."'><td>&nbsp;$L[INPs]=action value=Search></td>
-"  .  "      <tr><td><td>in:&nbsp;$L[INPr]=w value=0 id=threadtitle".(($_GET[w]==0)?" checked":"")."><label for=threadtitle>&nbsp;thread title</label>&nbsp;$L[INPr]=w value=1 id=posttext".(($_GET[w]==1)?" checked":"")."><label for=posttext>&nbsp;post text</label><td>
+" .   "      <tr><td>Search for:&nbsp;<td><input type=\"text\" name=q size=40 value='".htmlspecialchars(stripslashes($_GET[q]), ENT_QUOTES)."'><td>&nbsp;<input type=\"submit\" class=\"submit\" name=action value=Search></td>
+"  .  "      <tr><td><td>in:&nbsp;<input type=\"radio\" class=\"radio\" name=w value=0 id=threadtitle".(($_GET[w]==0)?" checked":"")."><label for=threadtitle>&nbsp;thread title</label>&nbsp;<input type=\"radio\" class=\"radio\" name=w value=1 id=posttext".(($_GET[w]==1)?" checked":"")."><label for=posttext>&nbsp;post text</label><td>
 "   . "      </table></div>
 "    ."      <div id=filterdiv style=display:none>$HARBL>
 "   . "      <tr><td>Forum:&nbsp;<td>$fsel
-"  .  "      <tr><td>Thread creator:&nbsp;<td>$L[INPt]=t value='".htmlspecialchars(stripslashes($_GET[t]), ENT_QUOTES)."'>
-" .   "      <tr><td>Post creator:&nbsp;<td>$L[INPt]=p value='".htmlspecialchars(stripslashes($_GET[p]), ENT_QUOTES)."'>
+"  .  "      <tr><td>Thread creator:&nbsp;<td><input type=\"text\" name=t value='".htmlspecialchars(stripslashes($_GET[t]), ENT_QUOTES)."'>
+" .   "      <tr><td>Post creator:&nbsp;<td><input type=\"text\" name=p value='".htmlspecialchars(stripslashes($_GET[p]), ENT_QUOTES)."'>
 ".    "      <tr><td> <td><font class='sfont'>% acts as a generic wildcard.</font>
-" .   "      <tr><td><td>$L[INPs]=action value=Search>
+" .   "      <tr><td><td><input type=\"submit\" class=\"submit\" name=action value=Search>
 "  .  "      </table></div>
 "   . "      <div id=emptydiv style=display:none>";
 
@@ -79,18 +79,18 @@ if($_GET[action] == "Search") {
 if(strlen($_GET[q]) > 3) {
 	print "<br>
 ".        "<div id=pleasewait>
-".        "$L[TBL1]>
-".        "  $L[TRh]>
-".        "    $L[TDh]>Results</td>
-".        "  $L[TR]>
-".        "    $L[TD1] style=padding:25 align=center>
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"h\">
+".        "    <td class=\"b h\">Results</td>
+".        "  <tr>
+".        "    <td class=\"b n1\" style=padding:25 align=center>
 ".        "    Search in progress...
 ".        "</table>
 ".        "</div>
 ".        "<div id=youwaited style=display:none>
-".        "$L[TBL1]>
-".        "  $L[TRh]>
-".        "    $L[TDh]>Results</td>
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"h\">
+".        "    <td class=\"b h\">Results</td>
 ".        "</table>";
 if($_GET[w] == 1) {
 
@@ -237,17 +237,17 @@ else {
                    ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
 );
   print "<br>
-".      "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".      "    $L[TDh] width=17>&nbsp;</td>
+".      "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"h\">
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
 ".($showforum?
-        "    $L[TDh]>Forum</td>":'')."
-".      "    $L[TDh]>Title</td>
-".      "    $L[TDh] width=130>Started by</td>
-".      "    $L[TDh] width=50>Replies</td>
-".      "    $L[TDh] width=50>Views</td>
-".      "    $L[TDh] width=130>Last post</td>
+        "    <td class=\"b h\">Forum</td>":'')."
+".      "    <td class=\"b h\">Title</td>
+".      "    <td class=\"b h\" width=130>Started by</td>
+".      "    <td class=\"b h\" width=50>Replies</td>
+".      "    <td class=\"b h\" width=50>Views</td>
+".      "    <td class=\"b h\" width=130>Last post</td>
 ";
 
   $lsticky=0;
@@ -274,35 +274,35 @@ else {
       $status='&nbsp;';
 
     if(!$thread[title])
-      $thread[title]=' ';
+      $thread[title]='ï¿½';
 
     if($thread[icon])
       $icon="<img src=$thread[icon] height=15>";
     else
       $icon='&nbsp;';
 
-    if($thread[sticky])
-      $tr='TR1c';
+    if($thread['sticky'])
+      $tr = 'n1';
     else
-      $tr=($i%2?'TR2':'TR3').'c';
+      $tr = ($i % 2 ? 'n2' :'n3');
 
-    if(!$thread[sticky] && $lsticky)
+    if(!$thread['sticky'] && $lsticky)
       print
-          "  $L[TRg]>
-".        "    $L[TD] colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
+          "  <tr class=\"c\">
+".        "    <td class=\"b\" colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
 ";
-    $lsticky=$thread[sticky];
+    $lsticky=$thread['sticky'];
 
-    print "  $L[$tr]>
-".        "    $L[TD1]>$status</td>
-".        "    $L[TD]>$icon</td>
+    print "<tr class=\$tr\" align=\"center\">
+".        "    <td class=\"b n1\">$status</td>
+".        "    <td class=\"b\">$icon</td>
 ".($showforum?
-          "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
-".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$pagelist</td>
-".        "    $L[TD]>".userlink($thread,'u1')."</td>
-".        "    $L[TD]>$thread[replies]</td>
-".        "    $L[TD]>$thread[views]</td>
-".        "    $L[TD]><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by ".userlink($thread,'u2')."</font></td>
+          "    <td class=\"b\"><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
+".        "    <td class=\"b\" align=\"left\">".($thread[ispoll]?"<img src=img/poll.gif height=10>":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$pagelist</td>
+".        "    <td class=\"b\">".userlink($thread,'u1')."</td>
+".        "    <td class=\"b\">$thread[replies]</td>
+".        "    <td class=\"b\">$thread[views]</td>
+".        "    <td class=\"b\"><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by ".userlink($thread,'u2')."</font></td>
 ";
   }
 
@@ -317,7 +317,7 @@ else {
         $fpagelist.=" <a href=search.php?q=".urlencode($_GET[q])."&action=Search&w=0&f=0&t=&p=&page=$p>$p</a>";
   }
 
-  print "$L[TBLend]
+  print "</table>
 ".      "$fpagelist
 ";
 

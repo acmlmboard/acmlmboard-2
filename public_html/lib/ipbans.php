@@ -28,11 +28,11 @@
 	  
       pageheader('IP banned');
       print
-          "$L[TBL1]>
-".        "  $L[TR2]>
-".        "    $L[TD1c]>
+          "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"n2\">
+".        "    <td class=\"b n1\" align=\"center\">
 ".        "      Sorry, but your IP address appears to be banned from this board.
-".        "$L[TBLend]
+".        "</table>
 ";
       pagefooter();
       die();
@@ -43,12 +43,12 @@
       {
         pageheader('IP restricted');
         print
-          "$L[TBL1]>
-".        "  $L[TR2]>
-".        "    $L[TD1c]>
+          "<table cellspacing=\"0\" class=\"c1\">
+".        "  <tr class=\"n2\">
+".        "    <td class=\"b n1\" align=\"center\">
 ".        "      Access from your IP address to this board appears to be limited.<br>
 ".        "      <A HREF=login.php>Login</A>
-".        "$L[TBLend]
+".        "</table>
 ";
         pagefooter();
         die();

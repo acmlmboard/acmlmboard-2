@@ -44,9 +44,9 @@ while ($ncr = $sql->fetch($ncx)) {
 
 }
 
-if ($config['perusercolor']){
-	$customucolors = "<br />If you see a user with a colour not present on this list, than that user has a specific colour assigned to them.";
-}
+
+$customucolors = $config['perusercolor'] ? "<br />If you see a user with a colour not present on this list, than that user has a specific colour assigned to them." : '';
+
 /*Highlighting system core
 Not ready yet. Do not uncomment until ready.
 $hl=$_GET['hl'];
@@ -55,13 +55,11 @@ $hls=explode($hl,":");
 
 //Begin written FAQ
 
-$L[FAQTD]="$L[TD1] style='padding:10px!important;'";
-
-print "$L[TBL1]>
-".    "  $L[TRh]>
-".    "    $L[TDh]>FAQ</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
+print "<table cellspacing=\"0\" class=\"c1\">
+".    "  <tr class=\"h\">
+".    "    <td class=\"b h\">FAQ</td>
+".    "  <tr>
+".    "    <td class=\"b n1\" style='padding:10px!important;'>
 ".    "    <a href=\"#gpg\">General Posting Guidelines</a><br><br>";
 
 if($config['spritesystem'] == true) print "    <a href=\"#sprite\">What are these little character doodads appearing on the board?</a><br>";
@@ -90,9 +88,9 @@ print     "    <a href=\"#avatar\">What are avatars & mood avatars?</a><br>
 ".    "    </td>
 ".    "</table><br>";
 
-print "$L[TBL1]>
-".    "  $L[TRh]>$L[TDh]><a name='gpg'>General Posting Guidelines:
-".    "  $L[TR]>$L[FAQTD]>Posting on a message forum is generally relaxed.  There are, however, a few things to keep in mind when posting.
+print "<table cellspacing=\"0\" class=\"c1\">
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='gpg'>General Posting Guidelines:
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Posting on a message forum is generally relaxed.  There are, however, a few things to keep in mind when posting.
 ".    "  <ul style=\"list-style-type: decimal;\">
 ".    "  <li>One word posts.  These types of posts generally do not add to the conversation topic and should be avoided at all cost.  Come on, at least form a complete sentence!
 ".    "  <li>Trolling/flaming/drama.  This behavior is totally unacceptable and will be dealt with accordingly, namely with a warning.  Direct (or even indirect) personal attacks on <b><u><i>any</i></u></b> member of this community for any reason whatsoever will result in immediate action.  Do NOT test us on this.
@@ -127,23 +125,23 @@ print "$L[TBL1]>
 ".    "  <br><b><u>Disclaimer</u></b>:
 ".    "  <br>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.";
 
-if($config['spritesystem'] == true) print    "  $L[TRh]>$L[TDh]><a name='sprite'>What are these little character doodads appearing on the board?
-".    "  $L[TR]>$L[FAQTD]>Those are called Sprites. If you click on them, you will have \"found\" them and will be logged <a href=\"sprites.php\">here</a>. Collect them all!";
+if($config['spritesystem'] == true) print    "  <tr class=\"h\"><td class=\"b h\"><a name='sprite'>What are these little character doodads appearing on the board?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Those are called Sprites. If you click on them, you will have \"found\" them and will be logged <a href=\"sprites.php\">here</a>. Collect them all!";
 
-print    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go?
-".    "  $L[TR]>$L[FAQTD]>It was probably moved or deleted by a staff member. If it was deleted, please make sure your thread meets the criteria we have established. If it was moved, look into the other forums and consider why it was moved there. If you have any questions, PM a staff member.
+print    "  <tr class=\"h\"><td class=\"b h\"><a name='move'>I just made a thread, where did it go?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>It was probably moved or deleted by a staff member. If it was deleted, please make sure your thread meets the criteria we have established. If it was moved, look into the other forums and consider why it was moved there. If you have any questions, PM a staff member.
 
-".    "  $L[TRh]>$L[TDh]><a name='rude'>I feel that a user is being rude to me. What do I do?
-".    "  $L[TR]>$L[FAQTD]>Stay cool. Don't further disrupt the thread by responding <b>at all</b> to the rudeness. Let a member of staff know with a link to the offending post(s). Please note that responding to the rudeness is promoting flaming, which is a punishable offense.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='rude'>I feel that a user is being rude to me. What do I do?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Stay cool. Don't further disrupt the thread by responding <b>at all</b> to the rudeness. Let a member of staff know with a link to the offending post(s). Please note that responding to the rudeness is promoting flaming, which is a punishable offense.
 
-".    "  $L[TRh]>$L[TDh]><a name='badge'>What are badges?
-".    "  $L[TR]>$L[FAQTD]>Badges are special trinkets that a user gathers through special means. You can acquire them from staff, meeting special requirements, or even find them somewhere. For example; sometimes special contests will be held, with a badge given for those who participate and/or win said competition.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='badge'>What are badges?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Badges are special trinkets that a user gathers through special means. You can acquire them from staff, meeting special requirements, or even find them somewhere. For example; sometimes special contests will be held, with a badge given for those who participate and/or win said competition.
 
-".    "  $L[TRh]>$L[TDh]><a name='acs'>What is \"ACS\"?
-".    "  $L[TR]>$L[FAQTD]>ACS stands for Acmlm Champion Series. It is an ongoing posting contest which is found in General Chat. All general posting rules apply.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='acs'>What is \"ACS\"?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>ACS stands for Acmlm Champion Series. It is an ongoing posting contest which is found in General Chat. All general posting rules apply.
 
-".    "  $L[TRh]>$L[TDh]><a name='smile'>Are smilies and BBCode supported?
-".    "  $L[TR]>$L[FAQTD]>There are some smilies here, a chart is below to show what smilies are supported.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='smile'>Are smilies and BBCode supported?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>There are some smilies here, a chart is below to show what smilies are supported.
 ".    "  <br>$smilietext 
 ".    "  <br><a name='tags'></a>Likewise, a selection of BBCode is supported. See the chart below.
 ".    "  <table class=table cellspacing=0>
@@ -172,17 +170,17 @@ print    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go
 	 <tr><td class='b n1'>[youtube]<i>video id</i>[/youtube]</td><td class='b n2'>Creates an embeded YouTube video.</td>
 	 </table>
 
-".    "  $L[TRh]>$L[TDh]><a name='irc'>What's this IRC thing I keep hearing about?
-".    "  $L[TR]>$L[FAQTD]>If you have an IRC client like mIRC, you can join a chatroom hosted by the Acmlmboard community. All crazy kinds of things can happen there, but will you take the plunge? Connect to the server irc.nolimitzone.com and join the channel. Mibbit is a great client to start with if you don't know what you're doing.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='irc'>What's this IRC thing I keep hearing about?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>If you have an IRC client like mIRC, you can join a chatroom hosted by the Acmlmboard community. All crazy kinds of things can happen there, but will you take the plunge? Connect to the server irc.nolimitzone.com and join the channel. Mibbit is a great client to start with if you don't know what you're doing.
 
-".    "  $L[TRh]>$L[TDh]><a name='reg'>Can I register more than one account?
-".    "  $L[TR]>$L[FAQTD]>No, you may not. Most uses for a secondary account tend to be to bypass bans. The the most common non-malicious use is to have a different name, and we have another feature will allow this cleanly.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='reg'>Can I register more than one account?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>No, you may not. Most uses for a secondary account tend to be to bypass bans. The the most common non-malicious use is to have a different name, and we have another feature will allow this cleanly.
 
-".    "  $L[TRh]>$L[TDh]><a name='layout'>How do I get a layout?
-".    "  $L[TR]>$L[FAQTD]>You must code one yourself. Sometimes there are others who might be willing to help you with your layout. If your layout is bad, you may find it deleted by a staff member. Make sure that when you design your layout, it isn't hard to read and doesn't stretch the tables.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='layout'>How do I get a layout?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>You must code one yourself. Sometimes there are others who might be willing to help you with your layout. If your layout is bad, you may find it deleted by a staff member. Make sure that when you design your layout, it isn't hard to read and doesn't stretch the tables.
 
-".    "  $L[TRh]>$L[TDh]><a name='css'>What are we not allowed to do in our custom CSS layouts?
-".    "  $L[TR]>$L[FAQTD]>While we allow very open and customizable layouts and side bars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a member of staff. Staff has discretion in deciding violations. This list is expected to be updated regularly, so please make sure to stay up to date.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='css'>What are we not allowed to do in our custom CSS layouts?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>While we allow very open and customizable layouts and side bars, we have a few rules that will be strictly enforced. Please read them over and follow them. Loss of post layout privileges will be enacted for those who are repeat offenders. If in doubt ask a member of staff. Staff has discretion in deciding violations. This list is expected to be updated regularly, so please make sure to stay up to date.
 ".    "  <br>The following are not allowed:
 ".    "  <ul style=\"list-style-type: decimal;\">
 ".    "  <li>Modification of anyone else's post layout <b>for any reason</b>.
@@ -193,8 +191,8 @@ print    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go
 ".    "  </ul>
 
 
-".    "  $L[TRh]>$L[TDh]><a name='title'>How do I get a custom title?
-".    "  $L[TR]>$L[FAQTD]>Custom titles are titles you can use in addition to, or in place of the ranks provided by the board. There are three ways to get them:
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='title'>How do I get a custom title?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Custom titles are titles you can use in addition to, or in place of the ranks provided by the board. There are three ways to get them:
 ".    "  <ul style=\"list-style-type: decimal;\">
 ".    "  <li>After 100 posts, or if you have been around 2 months you will need 50.
 ".    /*"  <li>Receive the *badge name goes here* badge. This can be given by staff, by special event, or by meeting a pre-determined goal.
@@ -202,15 +200,15 @@ print    "  $L[TRh]>$L[TDh]><a name='move'>I just made a thread, where did it go
 ".    "  </ul>
 ".    "  <br>The custom title is a reward for being an active member of the community. Use of the custom title to impersonate staff, or to flame members/staff may result in the loss of custom title.
 
-".    "  $L[TRh]>$L[TDh]><a name='rpg'>RPG Stats
-".    "  $L[TR]>$L[FAQTD]>The RPG stats are based on your post count. Currently they are purely cosmetic. They were a part of a forum battle system developed by Acmlm.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='rpg'>RPG Stats
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>The RPG stats are based on your post count. Currently they are purely cosmetic. They were a part of a forum battle system developed by Acmlm.
 
-".    "  $L[TRh]>$L[TDh]><a name='itemshop'>Items and the Item Shop
-".    "  $L[TR]>$L[FAQTD]>Items are equipment that is actually a part of the RPG stat system. Like in an RPG equipment can boost your stats. An item shop allows you to use the RPG coins you get from posting to buy items and equipment. However, it doesn't currently matter what your stats are since they don't do anything right now, as said above.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='itemshop'>Items and the Item Shop
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Items are equipment that is actually a part of the RPG stat system. Like in an RPG equipment can boost your stats. An item shop allows you to use the RPG coins you get from posting to buy items and equipment. However, it doesn't currently matter what your stats are since they don't do anything right now, as said above.
 ";
 if($syndromenable == 1){
-print "  $L[TRh]>$L[TDh]><a name='syndrome'>Acmlmboard Syndromes
-".    "  $L[TR]>$L[FAQTD]>The syndromes are an old Acmlmboard tradition carried over from the first version. Syndrome are triggered when you reach the amount of posts posted per day listed in the table below.
+print "  <tr class=\"h\"><td class=\"b h\"><a name='syndrome'>Acmlmboard Syndromes
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>The syndromes are an old Acmlmboard tradition carried over from the first version. Syndrome are triggered when you reach the amount of posts posted per day listed in the table below.
 ".    "  <br><table class=table cellspacing=0>
 	    <tr><td class='b h'>Posts</td><td class='b h'>Syndrome
 	    <tr><td class='b n1'> 75</td><td class='b n2'>".syndrome(75)."
@@ -226,8 +224,8 @@ print "  $L[TRh]>$L[TDh]><a name='syndrome'>Acmlmboard Syndromes
 	    <tr><td class='b n1'>600</td><td class='b n2'>".syndrome(600)."
 	  </table>";
 }
-print "  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
-".    "  $L[TR]>$L[FAQTD]>amp tags (or &tags&) are tags that allow you to put some of for your profile and RPG stats in a post. They can be incorporated into a layout or used once in a post.
+print "  <tr class=\"h\"><td class=\"b h\"><a name='amps'>&Tags& (Amp tags)
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>amp tags (or &tags&) are tags that allow you to put some of for your profile and RPG stats in a post. They can be incorporated into a layout or used once in a post.
 ".    "  <br>	<table class=table cellspacing=0>
 	  <tr><td class='b h'>Tag</td><td class='b h'>Value
 	  <tr><td class='b n1'>&postnum&	</td><td class='b n2'>Current post count
@@ -248,24 +246,24 @@ print "  $L[TRh]>$L[TDh]><a name='amps'>&Tags& (Amp tags)
 	  <tr><td class='b n1'>&rankname&		</td><td class='b n2'>Text only current rank, according to your amount of posts 
 	  <tr><td class='b n1'>&postrank&		</td><td class='b n2'>Shows your rank by number of posts 
 	 </table>";
-if($config['displayname'] == true) print    "  $L[TRh]>$L[TDh]><a name='dispname'>Display Name System
-".    "  $L[TR]>$L[FAQTD]>The display name system allows you to have your name displayed as something other than your account's name. For example \"Acmlm\" might decided he would like to have his name display as \"Milly\" for a while. With this system he would be allowed to do so without changing his actual login account name. It is forbidden to use this to flame or impersonate other members. Your real login name will be visible on your profile. Misuse of this feature will result in blocking of your ability to use it, and possibly further action if warranted. ";
+if($config['displayname'] == true) print    "  <tr class=\"h\"><td class=\"b h\"><a name='dispname'>Display Name System
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>The display name system allows you to have your name displayed as something other than your account's name. For example \"Acmlm\" might decided he would like to have his name display as \"Milly\" for a while. With this system he would be allowed to do so without changing his actual login account name. It is forbidden to use this to flame or impersonate other members. Your real login name will be visible on your profile. Misuse of this feature will result in blocking of your ability to use it, and possibly further action if warranted. ";
 
-print    "  $L[TRh]>$L[TDh]><a name='avatar'>What are avatars & mood avatars?
-".    "  $L[TR]>$L[FAQTD]>Avatars are a form of display picture which appears beside your posts and in your profile. Likewise, a mood avatar allows you to display a different picture as opposed to the one specified in your profile.
+print    "  <tr class=\"h\"><td class=\"b h\"><a name='avatar'>What are avatars & mood avatars?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Avatars are a form of display picture which appears beside your posts and in your profile. Likewise, a mood avatar allows you to display a different picture as opposed to the one specified in your profile.
 
-".    "  $L[TRh]>$L[TDh]><a name='private'>Are private messages supported?
-".    "  $L[TR]>$L[FAQTD]>Yes. Your private message inbox is represented by an envelope icon which is highlighted green when you have unread messages. Likewise, you may send a user a message from here, or alternatively use \"Send Private Message\" from the user's profile.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='private'>Are private messages supported?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Yes. Your private message inbox is represented by an envelope icon which is highlighted green when you have unread messages. Likewise, you may send a user a message from here, or alternatively use \"Send Private Message\" from the user's profile.
 
-".    "  $L[TRh]>$L[TDh]><a name='search'>Search Feature
-".    "  $L[TR]>$L[FAQTD]>The search feature is used to search the forum posts and threads for whatever you may be looking for. It has the ability to be filtered by forum and user it was posted by.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='search'>Search Feature
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>The search feature is used to search the forum posts and threads for whatever you may be looking for. It has the ability to be filtered by forum and user it was posted by.
 
-".    "  $L[TRh]>$L[TDh]><a name='calendar'>What is the calendar for?
-".    "  $L[TR]>$L[FAQTD]>The calendar lists user birthdays and special board events.
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='calendar'>What is the calendar for?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>The calendar lists user birthdays and special board events.
 
-".    "  $L[TRh]>$L[TDh]><a name='usercols'>What do the username colours mean?</td>
-".    "  $L[TR]>
-".    "    $L[FAQTD]>
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='usercols'>What do the username colours mean?</td>
+".    "  <tr>
+".    "    <td class=\"b n1\" style='padding:10px!important;'>
 ".    "      They reflect the gender setting and group of the user.<table>
 ".$nctable."      </table>".$customucolors."
 ".    "</table>";

@@ -16,12 +16,12 @@
     if($user[id]) {
       
       $print="<a href=./>Main</a> - Posts by user ".($user[displayname]?$user[displayname]:$user[name])."<br><br>
-".           "$L[TBL1]>
-".           "  $L[TRh]>
-".           "    $L[TDh]>ID
-".           "    $L[TDh]>Num.
-".           "    $L[TDh]>Posted on
-".           "    $L[TDh]>Thread title
+".           "<table cellspacing=\"0\" class=\"c1\">
+".           "  <tr class=\"h\">
+".           "    <td class=\"b h\">ID
+".           "    <td class=\"b h\">Num.
+".           "    <td class=\"b h\">Posted on
+".           "    <td class=\"b h\">Thread title
 ".           "  </tr>";
 
       $numposts=$sql->fetchq("SELECT COUNT(*) c FROM posts WHERE user=$id");
@@ -35,14 +35,14 @@
       while($post=$sql->fetch($p)) {
         if(!(can_view_forum($post))) $tlink="<i>(Restricted forum)</i>";
         else $tlink="<a href=thread.php?pid=$post[pid]#$post[pid]>$post[title]</a>";
-        $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
-".              "  $L[TDc]>$post[pid]
-".              "  $L[TDc]>#$post[num]
-".              "  $L[TDc]>".cdate($dateformat,$post[date])."
-".              "  $L[TD]>$tlink
+        $print.="<tr class=\"".(($i=!$i)?"n3":"n2").">
+".              "  <td class=\"b\" align=\"center\">$post[pid]
+".              "  <td class=\"b\" align=\"center\">#$post[num]
+".              "  <td class=\"b\" align=\"center\">".cdate($dateformat,$post[date])."
+".              "  <td class=\"b\">$tlink
 ".              "</tr>";
       }
-      $print.="$L[TBLend]";
+      $print.="</table>";
 
       if($numposts<=$loguser[tpp])
         $fpagelist='<br>';
@@ -56,18 +56,18 @@
       }
 
     } else {
-      $print="$L[TBL1]>
-".           "  $L[TR2]>
-".           "    $L[TD1c]>
+      $print="<table cellspacing=\"0\" class=\"c1\">
+".           "  <tr class=\"n2\">
+".           "    <td class=\"b n1\" align=\"center\">
 ".           "      This user does not exist.
-".           "$L[TBLend]";
+".           "</table>";
     }
   } else {
-    $print="$L[TBL1]>
-".         "  $L[TR2]>
-".         "    $L[TD1c]>
+    $print="<table cellspacing=\"0\" class=\"c1\">
+".         "  <tr class=\"n2\">
+".         "    <td class=\"b n1\" align=\"center\">
 ".         "      You must specify a user ID.
-".         "$L[TBLend]";
+".         "</table>";
   }
 
   //This is heavily based off of AB1's code so posts by thread and posts by forum need to be cleaned at some point.
@@ -81,31 +81,31 @@ if(!$time) $time=86400;
   $print= "Posts by $username in threads$during:
 ".      "<br>
 ".       timelink1(3600).'|'.timelink1(86400).'|'.timelink1(604800).'|'.timelink1(2592000)."
-".           "$L[TBL1]>
-".           "  $L[TRh]>
-".	"$L[TDh]>#
-".	"$L[TDh]>Thread
-".	"$L[TDh]>Posts
-".	"$L[TDh]>Thread total
+".           "<table cellspacing=\"0\" class=\"c1\">
+".           "  <tr class=\"h\">
+".	"<td class=\"b h\">#
+".	"<td class=\"b h\">Thread
+".	"<td class=\"b h\">Posts
+".	"<td class=\"b h\">Thread total
 ".      "  </tr>
   ";
   for($i=1;$t=$sql->fetch($posters);$i++){
     $print.= "
 	<tr>
-".	"$L[TDc]>$i</td>
-".	"$L[TD] align=left>
+".	"<td class=\"b\" align=\"center\">$i</td>
+".	"<td class=\"b\" align=left>
     ";
     if(!(can_view_forum($t)))
 	$print.= "<i>(Restricted forum)</i>";
     else $print.= "<a href=thread.php?id=$t[id]>$t[title]</a>";
     $print.= "
 	</td>
-".	"$L[TDc]>$t[cnt]</td>
-".     "$L[TDc]>".($t[replies]+1)."</td>
+".	"<td class=\"b\" align=\"center\">$t[cnt]</td>
+".     "<td class=\"b\" align=\"center\">".($t[replies]+1)."</td>
 ".     "  </tr>
     ";
   }
-      $print.="$L[TBLend]";
+      $print.="</table>";
             $fpagelist="";
   }
   
@@ -124,12 +124,12 @@ if(!$time) $time=86400;
   $print= "Posts $by$username in forums$during:
 ".      "<br>
 ".       timelink2(3600).'|'.timelink2(86400).'|'.timelink2(604800).'|'.timelink2(2592000)."
-".           "$L[TBL1]>
-".           "  $L[TRh]>
-".	"$L[TDh]>#
-".	"$L[TDh]>Forum
-".	"$L[TDh]>Posts
-".	"$L[TDh]>Forum total
+".           "<table cellspacing=\"0\" class=\"c1\">
+".           "  <tr class=\"h\">
+".	"<td class=\"b h\">#
+".	"<td class=\"b h\">Forum
+".	"<td class=\"b h\">Posts
+".	"<td class=\"b h\">Forum total
 ".      "  </tr>
   ";
   for($i=1;$f=$sql->fetch($posters);$i++){
@@ -137,14 +137,14 @@ if(!$time) $time=86400;
 	if(!(can_view_forum($f))) $link="<i>(Restricted forum)</i>";
 	else $link="<a href=forum.php?id=$f[id]>$f[title]</a>";
       $print.= "
-".	"$L[TDc]>$i</td>
-".	"$L[TD]>$link</td>
-".	"$L[TDc]>$f[cnt]</td>
-".	"$L[TDc]>$f[posts]</td>
+".	"<td class=\"b\" align=\"center\">$i</td>
+".	"<td class=\"b\">$link</td>
+".	"<td class=\"b\" align=\"center\">$f[cnt]</td>
+".	"<td class=\"b\" align=\"center\">$f[posts]</td>
 ".      "  </tr>
       ";
   }
-      $print.="$L[TBLend]";
+      $print.="</table>";
             $fpagelist="";
   }
   
@@ -161,11 +161,11 @@ if(!$time) $time=86400;
   $print= "Posts$from by time of day$during:
 ".      "<br>
 ".       timelink3(3600).'|'.timelink3(86400).'|'.timelink3(604800).'|'.timelink3(2592000)."
-".           "$L[TBL1]>
-".           "  $L[TRh]>
-".	"$L[TDh] width=40>Hour
-".	"$L[TDh] width=50>Posts
-".	"$L[TDh]>&nbsp<tr>";
+".           "<table cellspacing=\"0\" class=\"c1\">
+".           "  <tr class=\"h\">
+".	"<td class=\"b h\" width=40>Hour
+".	"<td class=\"b h\" width=50>Posts
+".	"<td class=\"b h\">&nbsp<tr>";
   for($i=0;$i<24;$i++) $postshour[$i]=0;
   while($h=$sql->fetch($posts)) $postshour[$h[hour]]=$h[cnt];
   for($i=0;$i<24;$i++) if($postshour[$i]>$max) $max=$postshour[$i];
@@ -173,12 +173,12 @@ if(!$time) $time=86400;
     if($i) $print.= '<tr>';
     $bar="<img src=gfx/rpg/bar-on.png width=".(@floor($postshour[$i]/$max*10000)/100).'% height=8>';
     $print.= "
-".	"$L[TD2]>$i</td>
-".	"$L[TD2]>$postshour[$i]</td>
-".	"$L[TD2] width=100%>$bar</td>
+".	"<td class=\"b n2\">$i</td>
+".	"<td class=\"b n2\">$postshour[$i]</td>
+".	"<td class=\"b n2\" width=100%>$bar</td>
     ";
   }
-      $print.="$L[TBLend]";
+      $print.="</table>";
             $fpagelist="";
     }
 

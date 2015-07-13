@@ -3,18 +3,18 @@ include('lib/common.php');
 
 pageheader('Graphs');
 
-  print "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh]>
+  print "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"h\">
+".      "    <td class=\"b h\">
 ".      "      Posts per day (strong: 8-day average)
-".      "    $L[TDh]>
+".      "    <td class=\"b h\">
 ".      "      Distribution of last 24 hours' new posts
-".      "  $L[TR1]>
-".      "    $L[TDc] width=960>
+".      "  <tr class=\"n1\">
+".      "    <td class=\"b\" align=\"center\" width=960>
 ".      "      <img src=gfx/statsgraph.php>
-".      "    $L[TD] style=text-align:right>
+".      "    <td class=\"b\" style=text-align:right>
 ".      "      <img src=gfx/forumsgraph.php>
-".      "$L[TBLend]";
+".      "</table>";
 
 pagefooter();
 

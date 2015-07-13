@@ -327,13 +327,12 @@ function needs_login($head=0) {
 	if (!$log) { 
 		if ($head) pageheader('Login required');
 		$err = "You need to be logged in to do that!<br><a href=login.php>Please login here.</a>";	
-	  global $L;
-      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+	        print
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "     $err
-".      "$L[TBLend]
+".      "</table>
 ";
       pagefooter();
       die();
@@ -342,13 +341,12 @@ function needs_login($head=0) {
 
 
 /*function no_perm() {
-	  global $L;
-      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+	        print
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "      You have no permissions to do this!<br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
+".      "</table>
 ";
       pagefooter();
       die();
@@ -364,39 +362,36 @@ function grouplink($usex, $gid) {
 }
 
 /*function forum_not_found() {
-	  global $L;
-      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+	        print
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "      Forum does not exist. <br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
+".      "</table>
 ";
       pagefooter();
       die();
 }*/
 
 /*function pm_not_found() {
-	  global $L;
-      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+	        print
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "      Private message does not exist. <br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
+".      "</table>
 ";
       pagefooter();
       die();
 }*/
 
 /*function thread_not_found() {
-	  global $L;
-      print
-        "$L[TBL1]>
-".      "  $L[TR2]>
-".      "    $L[TD1c]>
+	        print
+        "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"n2\">
+".      "    <td class=\"b n1\" align=\"center\">
 ".      "      Thread does not exist. <br> <a href=./>Back to main</a> 
-".      "$L[TBLend]
+".      "</table>
 ";
       pagefooter();
       die();

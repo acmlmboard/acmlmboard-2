@@ -14,13 +14,13 @@ if ($regdis['intval'] == 1) {
 	else 
 		$reason = "Registration is currently disabled.";
 
-	print "$L[TBL1]>$L[TD1c]>
-	".         "  $L[TRh]>
-	".         "    $L[TDh] colspan=2>Registration is disabled</td>
-	".         "  $L[TR]>
-	".         "    $L[TD1c] width=120>$reason For more information please read the board announcements or visit us on <a href=irc.php>IRC</a><br/>
+	print "<table cellspacing=\"0\" class=\"c1\"><td class=\"b n1\" align=\"center\">
+	".         "  <tr class=\"h\">
+	".         "    <td class=\"b h\" colspan=2>Registration is disabled</td>
+	".         "  <tr>
+	".         "    <td class=\"b n1\" align=\"center\" width=120>$reason For more information please read the board announcements or visit us on <a href=irc.php>IRC</a><br/>
 	".           "  <a href=./>Back to main</a></td></td>
-	".      "$L[TBLend]
+	".      "</table>
 	";
 	pagefooter();
 	die();
@@ -36,12 +36,12 @@ if (isProxy()) {
 	else 
 		$reason = "Security Check Failure";
 
-	print "$L[TBL1]>$L[TD1c]>
-		".         "  $L[TRh]>
-		".         "    $L[TDh] colspan=2>Registration is denied</td>
-		".         "  $L[TR]>
-		".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins at ".($boardemailaddress).".</a></td></td>
-		".      "$L[TBLend]
+	print "<table cellspacing=\"0\" class=\"c1\"><td class=\"b n1\" align=\"center\">
+		".         "  <tr class=\"h\">
+		".         "    <td class=\"b h\" colspan=2>Registration is denied</td>
+		".         "  <tr>
+		".         "    <td class=\"b n1\" align=\"center\" width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins at ".($boardemailaddress).".</a></td></td>
+		".      "</table>
 		";
 
 	pagefooter();
@@ -153,37 +153,37 @@ if($act == 'Register'){
 
     $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
  if(!empty($err)) noticemsg("Error", $err);
-  print "$L[TBL1]>
+  print "<table cellspacing=\"0\" class=\"c1\">
 ".         " <form action=register.php method=post>
-".         "  $L[TRh]>
-".         "    $L[TDh] colspan=2>Register</td>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>&nbsp;</td>
-".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Username:</td>
-".         "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password:</td>
-".         "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password (again):</td>
-".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
+".         "  <tr class=\"h\">
+".         "    <td class=\"b h\" colspan=2>Register</td>
+".         "  <tr>
+".         "    <td class=\"b n1\" align=\"center\" width=120>&nbsp;</td>
+".         "    <td class=\"b n2\"><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
+".         "  <tr>
+".         "    <td class=\"b n1\" align=\"center\" width=120>Username:</td>
+".         "    <td class=\"b n2\"><input type=\"text\" name=name size=25 maxlength=25></td>
+".         "  <tr>
+".         "    <td class=\"b n1\" align=\"center\">Password:</td>
+".         "    <td class=\"b n2\"><input type=\"password\" name=pass size=13 maxlength=32></td>
+".         "  <tr>
+".         "    <td class=\"b n1\" align=\"center\">Password (again):</td>
+".         "    <td class=\"b n2\"><input type=\"password\" name=pass2 size=13 maxlength=32></td>
 ".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
 ".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
 ";
     if($config['registrationpuzzle'])
     print     
-           "  $L[TR]>
-".         "    $L[TD1c] width=120>$puzzle</td>
-".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
+           "  <tr>
+".         "    <td class=\"b n1\" align=\"center\" width=120>$puzzle</td>
+".         "    <td class=\"b n2\"><input type=\"text\" name=puzzle size=13 maxlength=6></td>
 ";
     print
-           "  $L[TR1]>
-".         "    $L[TD]>&nbsp;</td>
-".         "    $L[TD]>$L[INPs]=action value=Register></td>
+           "  <tr class=\"n1\">
+".         "    <td class=\"b\">&nbsp;</td>
+".         "    <td class=\"b\"><input type=\"submit\" class=\"submit\" name=action value=Register></td>
 ".         " </form>
-".      "$L[TBLend]
+".      "</table>
 ";
   pagefooter();
 ?>

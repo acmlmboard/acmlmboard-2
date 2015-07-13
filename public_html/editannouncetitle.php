@@ -58,21 +58,21 @@ if(!$act){
   pageheader('Edit announcement title',$thread[forum]);
     print "$top
 ".        "<br><br>
-".        "$L[TBL1]>
+".        "<table cellspacing=\"0\" class=\"c1\">
 ".        " <form action=editannouncetitle.php method=post>
-".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Edit Announcement Title</td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Title:</td>
-".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value='".$thread[title]."' class='right'></td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
-".        "      $L[INPh]=pid value=$pid>
-".        "      $L[INPs]=action value=Submit>
+".        "  <tr class=\"h\">
+".        "    <td class=\"b h\" colspan=2>Edit Announcement Title</td>
+".        "  <tr>
+".        "    <td class=\"b n1\" align=\"center\">Title:</td>
+".        "    <td class=\"b n2\"><input type=\"text\" name=title size=100 maxlength=100 value='".$thread[title]."' class='right'></td>
+".        "  <tr class=\"n1\">
+".        "    <td class=\"b\">&nbsp;</td>
+".        "    <td class=\"b\">
+".        "      <input type=\"hidden\" name=pid value=$pid>
+".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
 ".        "    </td>
 ".        " </form>
-".        "$L[TBLend]
+".        "</table>
 ";
   }elseif($act=='Submit'){
     $sql->query("UPDATE threads SET title='$_POST[title]' WHERE id='$thread[id]'");
@@ -82,11 +82,11 @@ if(!$act){
   pageheader('Edit announcement title',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
+".        "<table cellspacing=\"0\" class=\"c1\">
+".        "  <td class=\"b n1\" align=\"center\">
 ".        "    Announcement title edited!<br>
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".        "$L[TBLend]
+".        "</table>
 ";
 } else { //Modern redirect*/
   redirect("thread.php?pid=$pid#edit","-1");

@@ -11,8 +11,7 @@ function monospace($t)
 //partially involves code pirated on the internets, but I was lazy.
 function diff($old,$new) 
 {
-   global $L;
-   # split the source text into arrays of lines
+      # split the source text into arrays of lines
    $t1 = explode("\n",$old);
    $x=array_pop($t1); 
    if ($x>'') $t1[]="$x\n\\ No newline at end of file";
@@ -76,10 +75,10 @@ function diff($old,$new)
       //modified by blackhole89 starting here
       //if ($op==1) $out[] = "{$xstr}d{$y1}";
       //elseif ($op==3) $out[] = "{$xstr}c{$ystr}";
-      if ($op==1 || $op==3) $out[] = "<table border=0 width=100%>$L[TR1]>$L[TD3]>";
+      if ($op==1 || $op==3) $out[] = "<table border=0 width=100%><tr class=\"n1\"><td class=\"b n3\">";
       while ($x0<$x1) { $out[] = monospace('- ').$t1[$x0]; $x0++; }   # deleted elems
-      if ($op==2) $out[] = "<table border=0 width=100%>$L[TR1]>$L[TD1] width=100%>";
-      elseif ($op==3) $out[] = "</table><table border=0 width=100%>$L[TR1]>$L[TD1]>";
+      if ($op==2) $out[] = "<table border=0 width=100%><tr class=\"n1\"><td class=\"b n1\" width=100%>";
+      elseif ($op==3) $out[] = "</table><table border=0 width=100%><tr class=\"n1\"><td class=\"b n1\">";
       while ($y0<$y1) { $out[] = monospace('+ ').$t2[$y0]; $y0++; }   # added elems
       $out[]='</table>';
     }

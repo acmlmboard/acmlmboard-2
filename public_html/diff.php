@@ -68,10 +68,10 @@ function diff($old,$new)
       //modified by blackhole89 starting here
       //if ($op==1) $out[] = "{$xstr}d{$y1}";
       //elseif ($op==3) $out[] = "{$xstr}c{$ystr}";
-      $out[] = "<table border=0>$L[TR1]>$L[TD3]>";
+      $out[] = "<table border=0><tr class=\"n1\"><td class=\"b n3\">";
       while ($x0<$x1) { $out[] = '< '.$t1[$x0]; $x0++; }   # deleted elems
-      if ($op==2) $out[] = "<table border=0>$L[TR1]>$L[TD1]>";
-      elseif ($op==3) $out[] = '</table><table border=0>$L[TR1]>$L[TD1]>';
+      if ($op==2) $out[] = "<table border=0><tr class=\"n1\"><td class=\"b n1\">";
+      elseif ($op==3) $out[] = '</table><table border=0><tr class=\"n1\"><td class=\"b n1\">';
       while ($y0<$y1) { $out[] = '> '.$t2[$y0]; $y0++; }   # added elems
       $out[]='</table>';
     }

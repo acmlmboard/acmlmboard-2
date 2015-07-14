@@ -119,11 +119,11 @@ class Text_Diff_Renderer_inline extends Text_Diff_Renderer {
         /* We want to split on word boundaries, but we need to
          * preserve whitespace as well. Therefore we split on words,
          * but include all blocks of whitespace in the wordlist. */
-        $diff = &new Text_Diff($this->_splitOnWords($text1, $nl),
+        $diff = new Text_Diff($this->_splitOnWords($text1, $nl),
                                $this->_splitOnWords($text2, $nl));
 
         /* Get the diff in inline format. */
-        $renderer = &new Text_Diff_Renderer_inline(array_merge($this->getParams(),
+        $renderer = new Text_Diff_Renderer_inline(array_merge($this->getParams(),
                                                                array('split_level' => 'words')));
 
         /* Run the diff and get the output. */

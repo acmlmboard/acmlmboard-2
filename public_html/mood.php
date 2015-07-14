@@ -103,14 +103,14 @@
 //Default Avatar.
   $u=$sql->fetch($sql->query("SELECT `usepic` FROM `users` WHERE `id`=".$edid));
   if($u['usepic']>=1){ $aurl="gfx/userpic.php?id=".$edid."&r=".$u['usepic']; }
-  print "<div style=\"margin: 4px; float: left; display:inline-block;\">$L[TBL1]>
-  $L[TRh]>
-    $L[TDh]>Default</td>
+  print "<div style=\"margin: 4px; float: left; display:inline-block;\"><table cellspacing=\"0\" class=\"c1\">
+  <tr class=\"h\">
+    <td class=\"b h\">Default</td>
   </tr>
-  $L[TR]>
-    $L[TD2]><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url($aurl) no-repeat center;\" id=\"defava\"></div>
-  </tr>$L[TR]>
-    $L[TD1]><a href=\"#\" onclick=\"edit(-1,'','')\">Edit</a> | <a href=\"#\" onclick=\"del(-1,'Default')\">Delete</a></td>
+  <tr>
+    <td class=\"b n2\"><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url($aurl) no-repeat center;\" id=\"defava\"></div>
+  </tr><tr>
+    <td class=\"b n1\"><a href=\"#\" onclick=\"edit(-1,'','')\">Edit</a> | <a href=\"#\" onclick=\"del(-1,'Default')\">Delete</a></td>
   </tr>
 </table></div>";
 
@@ -126,44 +126,44 @@
   } else {
     $aurl=stripslashes($mav['url']);
   }
-  print "<div style=\"margin: 4px; float: left; display:inline-block;\" id=\"mood".$mav['id']."\">$L[TBL1]>
-  $L[TRh]>
-    $L[TDh]>".stripslashes($mav['label'])."</td>
+  print "<div style=\"margin: 4px; float: left; display:inline-block;\" id=\"mood".$mav['id']."\"><table cellspacing=\"0\" class=\"c1\">
+  <tr class=\"h\">
+    <td class=\"b h\">".stripslashes($mav['label'])."</td>
   </tr>
-  $L[TR]>
-    $L[TD2]><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url(".$aurl.") no-repeat center;\"></div>
-  </tr>$L[TR]>
-    $L[TD1]><a href=\"#\" onclick=\"edit(".$mav['id'].",'".htmlspecialchars($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".htmlspecialchars($mav['label'])."')\">Delete</a></td>
+  <tr>
+    <td class=\"b n2\"><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url(".$aurl.") no-repeat center;\"></div>
+  </tr><tr>
+    <td class=\"b n1\"><a href=\"#\" onclick=\"edit(".$mav['id'].",'".htmlspecialchars($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".htmlspecialchars($mav['label'])."')\">Delete</a></td>
   </tr>
 </table></div>";
 }
 if($fid==0){ $fid=$lid+1; } //If no free ID.
 if($fid<=64){
-  print "<div style=\"margin: 4px; float: left; display:inline-block;\" id=\"mood64\">$L[TBL1]>
-  $L[TRh]>
-    $L[TDh] style=\"width:180px;\">&nbsp</td>
+  print "<div style=\"margin: 4px; float: left; display:inline-block;\" id=\"mood64\"><table cellspacing=\"0\" class=\"c1\">
+  <tr class=\"h\">
+    <td class=\"b h\" style=\"width:180px;\">&nbsp</td>
   </tr>
-  </tr>$L[TR]>
-    $L[TD1]><a href=\"#\" onclick=\"edit(".$fid.",'(Label)', '')\">Add New</a></td>
+  </tr><tr>
+    <td class=\"b n1\"><a href=\"#\" onclick=\"edit(".$fid.",'(Label)', '')\">Add New</a></td>
   </tr>
 </table></div>";
 }
-  print "<br clear=\"all\"><div id=\"editpane\" style=\"display:none;\"><form id=\"f\" action=\"mood.php$lnkex\" enctype=\"multipart/form-data\" method=\"post\">$L[TBL1]>
-  $L[TRh]>
-    $L[TDh] colspan=2>Editing mood avatar</td>
+  print "<br clear=\"all\"><div id=\"editpane\" style=\"display:none;\"><form id=\"f\" action=\"mood.php$lnkex\" enctype=\"multipart/form-data\" method=\"post\"><table cellspacing=\"0\" class=\"c1\">
+  <tr class=\"h\">
+    <td class=\"b h\" colspan=2>Editing mood avatar</td>
   </tr>
-  $L[TR] id=\"em\">
-    $L[TD1]>Label</td>
-    $L[TD2]>$L[INPt]=\"label\" id=\"label\" size=50 maxlength=100></td>
-  </tr>$L[TR]>
-    $L[TD1]>Upload File</td>
-    $L[TD2]><input type=\"file\" name=\"picture\" size=50></td>
-  </tr>$L[TR] id=\"em2\">
-    $L[TD1]>Web link</td>
-    $L[TD2]>$L[INPt]=\"url\" id=\"url\" size=50 maxlength=250></td>
-  </tr>$L[TR]>
-    $L[TD1]><input type=\"hidden\" name=\"id\" id=\"id\"></td>
-    $L[TD2]><input type=\"submit\" name='a' value=\"Save\"></td>
+  <tr id=\"em\">
+    <td class=\"b n1\">Label</td>
+    <td class=\"b n2\"><input type=\"text\" name=\"label\" id=\"label\" size=50 maxlength=100></td>
+  </tr><tr>
+    <td class=\"b n1\">Upload File</td>
+    <td class=\"b n2\"><input type=\"file\" name=\"picture\" size=50></td>
+  </tr><tr id=\"em2\">
+    <td class=\"b n1\">Web link</td>
+    <td class=\"b n2\"><input type=\"text\" name=\"url\" id=\"url\" size=50 maxlength=250></td>
+  </tr><tr>
+    <td class=\"b n1\"><input type=\"hidden\" name=\"id\" id=\"id\"></td>
+    <td class=\"b n2\"><input type=\"submit\" name='a' value=\"Save\"></td>
   </tr></table></form></div>";
   pagefooter();
 ?>

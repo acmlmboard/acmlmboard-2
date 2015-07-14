@@ -11,10 +11,10 @@
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+".      "<table cellspacing=\"0\" class=\"c1\" width=\"100%\" id=\"edit\"><tr class=\"h\"><td class=\"b h\">";
 if($_COOKIE['pstbon']==-1){
 	$rdmsg.="Sent!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>The private message has been sent successfully.</td></tr></table></div>"; }
+".	"<tr><td class=\"b n1\" align=\"left\">The private message has been sent successfully.</td></tr></table></div>"; }
 }
 
   needs_login(1);
@@ -87,10 +87,10 @@ if($_COOKIE['pstbon']==-1){
     $link2='?'.($id!=$loguser[id]?"id=$id&":'')."view=$_GET[view]&showdel=1>View deleted";
 
   $topbot=
-        "$L[TBL] width=100%>
-".      "  $L[TDn]><a href=./>Main</a> - $title</td>
-".      "  $L[TDnr]><a href=private.php$link2</a> | <a href=private.php$link</a> | <a href=sendprivate.php>Send new</a></td>
-".      "$L[TBLend]
+        "<table cellspacing=\"0\" width=100%>
+".      "  <td class=\"nb\"><a href=./>Main</a> - $title</td>
+".      "  <td class=\"nb\" align=\"right\"><a href=private.php$link2</a> | <a href=private.php$link</a> | <a href=sendprivate.php>Send new</a></td>
+".      "</table>
 ";
 
   if($pmsgc<=$loguser[tpp])
@@ -112,13 +112,13 @@ if($_COOKIE['pstbon']==-1){
 ".      "<br>
 ";
     if($_COOKIE['pstbon']){ print $rdmsg;}
-print   "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".      "    $L[TDh]>Title</td>
-".      "    $L[TDh] width=130>$tablehead</td>
-".      "    $L[TDh] width=130>Sent on</td>
+print   "<table cellspacing=\"0\" class=\"c1\">
+".      "  <tr class=\"h\">
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
+".      "    <td class=\"b h\" width=17>&nbsp;</td>
+".      "    <td class=\"b h\">Title</td>
+".      "    <td class=\"b h\" width=130>$tablehead</td>
+".      "    <td class=\"b h\" width=130>Sent on</td>
 ";
 
   for($i=1;$pmsg=$sql->fetch($pmsgs);$i++){
@@ -128,17 +128,16 @@ print   "$L[TBL1]>
     if(!$pmsg[title])
       $pmsg[title]='(untitled)';
 
-    $tr=($i%2?'TR2':'TR3').'c';
-
-    print "  $L[$tr]>
-".        "    $L[TD2]><a href=private.php?action=del&id=$pmsg[id]&showdel=$showdel&view=$_GET[view]><img src=img/delete.png></a></td>
-".        "    $L[TD1]>$status</td>
-".        "    $L[TDl]><a href=showprivate.php?id=$pmsg[id]>".forcewrap(htmlval($pmsg[title]))."</a></td>
-".        "    $L[TD]>".userlink($pmsg,'u')."</td>
-".        "    $L[TD]><nobr>".cdate($dateformat,$pmsg['date'])."</nobr></td>
+    $tr = ($i % 2 ? 'n2' :'n3');
+    print "<tr class=\"$tr\" align=\"center\">
+".        "    <td class=\"b n2\"><a href=private.php?action=del&id=$pmsg[id]&showdel=$showdel&view=$_GET[view]><img src=img/delete.png></a></td>
+".        "    <td class=\"b n1\">$status</td>
+".        "    <td class=\"b\" align=\"left\"><a href=showprivate.php?id=$pmsg[id]>".forcewrap(htmlval($pmsg[title]))."</a></td>
+".        "    <td class=\"b\">".userlink($pmsg,'u')."</td>
+".        "    <td class=\"b\"><nobr>".cdate($dateformat,$pmsg['date'])."</nobr></td>
 ";
   }
-  print "$L[TBLend]
+  print "</table>
 ".      "$fpagelist
 ".      "$topbot
 ";

@@ -37,11 +37,11 @@ pageheader();
 if(!$log)
 {
 	print "
-	$L[TBL1]>
-		$L[TD1c]>
+	<table cellspacing=\"0\" class=\"c1\">
+		<td class=\"b n1\" align=\"center\">
 			You must be logged in to check your captured Sprites!<br>
 			<a href=./>Back to main</a> or <a href=login.php>login</a>
-	$L[TBLend]
+	</table>
 ";
 	pagefooter();
 	die();

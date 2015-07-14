@@ -1,63 +1,63 @@
 <?php
-  
-  include('lib/common.php');
 
-  if(!$log){
-    needs_login(1);
-  }
+include('lib/common.php');
 
-  if($_POST[action]=="update") {
-    $err="";
-    if(!preg_match("/^([0-9|.|,|\*]*)$/",$_POST[ranges]))
-      $err="      Range string contains illegal characters.
-".         "      <a href=''>Go back</a> or <a href='index.php'>give up</a>.";
+if (!$log) {
+	needs_login(1);
+}
 
-    if($err){
-      print "<a href=./>Main</a> - Error";
-      noticemsg("Error", $err);
-      pagefooter();
-      die();
-    }else{
-      $_COOKIE[pass]=packlcookie(unpacklcookie($_COOKIE[pass]),$_POST[ranges]);
-      setcookie('pass',$_COOKIE[pass],2147483647);
-    }
-  }
+$action = isset($_POST['action']) ? $_POST['action'] : '';
+if ($action == "update") {
+	$err = "";
+	if (!preg_match("/^([0-9|.|,|\*]*)$/", $_POST['ranges']))
+		$err = "      Range string contains illegal characters.
+" . "      <a href=''>Go back</a> or <a href='index.php'>give up</a>.";
 
-  pageheader('Advanced login cookie setup');
+	if ($err) {
+		print "<a href=./>Main</a> - Error";
+		noticemsg("Error", $err);
+		pagefooter();
+		die();
+	} else {
+		$_COOKIE['pass'] = packlcookie(unpacklcookie($_COOKIE['pass']), $_POST['ranges']);
+		setcookie('pass', $_COOKIE['pass'], 2147483647);
+	}
+}
 
-  $d=explode(",",decryptpwd($_COOKIE[pass]));
+pageheader('Advanced login cookie setup');
 
-  $data.="$L[TBL1] style='width:200px!important'>
-".       "  $L[TRh]>
-".       "    $L[TDh] colspan=2>Current data
-".       "  $L[TRh]>
-".       "    $L[TDh]>Field
-".       "    $L[TDh]>Value
-".       "  $L[TR1]>
-".       "    $L[TD1c]>generating IP
-".       "    $L[TD2c]>$d[0]
-".       "  $L[TR1]>
-".       "    $L[TD1c]>password hash
-".       "    $L[TD2c]><i>*snip*</i>";
-  for($i=2;strlen($d[$i]);++$i) {
-    $data.="  $L[TR1]>
-".         "    $L[TD1c]>allowed range
-".         "    $L[TD2c]>".$d[$i];
-  }
-  $data.="$L[TBLend]<br>";
+$dsegments = explode(",", decryptpwd($_COOKIE['pass']));
 
-  print "$data
-".      "<form action='lcookie.php' method='post'>$L[INPh]='action' value='update'>
-".      "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh]>Modify allowed ranges
-".      "  $L[TR1]>
-".      "    $L[TD2]>$L[INPt]='ranges' value='".implode(",",array_slice($d,2))."' style='width:80%'>$L[INPs] value='Update'>
-".      "            <br><font class='sfont'>Data must be provided as comma-separated IPs without spaces,
-".      "            each potentially ending in a single * wildcard. (e.g. <font color='#C0C020'>127.*,10.0.*,1.2.3.4</font>)
-".      "            Faulty data might result in instant self-destruction of your login cookie.</font>
-".      "$L[TBLend]</form>";
+$data="<table cellspacing=\"0\" class=\"c1\" style='width:200px!important'>
+" . "  <tr class=\"h\">
+" . "    <td class=\"b h\" colspan=2>Current data
+" . "  <tr class=\"h\">
+" . "    <td class=\"b h\">Field
+" . "    <td class=\"b h\">Value
+" . "  <tr class=\"n1\">
+" . "    <td class=\"b n1\" align=\"center\">generating IP
+" . "    <td class=\"b n2\" align=\"center\">$dsegments[0]
+" . "  <tr class=\"n1\">
+" . "    <td class=\"b n1\" align=\"center\">password hash
+" . "    <td class=\"b n2\" align=\"center\"><i>******</i>";
+for ($i = 2; $i < count($dsegments);  $i++) {
+	$data.="  <tr class=\"n1\">
+" . "    <td class=\"b n1\" align=\"center\">allowed range
+" . "    <td class=\"b n2\" align=\"center\">" . $dsegments[$i];
+}
+$data.="</table><br>";
 
-  pagefooter();
+print "$data
+" . "<form action='lcookie.php' method='post'><input type=\"hidden\" name='action' value='update'>
+" . "<table cellspacing=\"0\" class=\"c1\">
+" . "  <tr class=\"h\">
+" . "    <td class=\"b h\">Modify allowed ranges
+" . "  <tr class=\"n1\">
+" . "    <td class=\"b n2\"><input type=\"text\" name='ranges' value='" . implode(",", array_slice($dsegments, 2)) . "' style='width:80%'><input type=\"submit\" class=\"submit\" name value='Update'>
+" . "            <br><font class='sfont'>Data must be provided as comma-separated IPs without spaces,
+" . "            each potentially ending in a single * wildcard. (e.g. <font color='#C0C020'>127.*,10.0.*,1.2.3.4</font>)
+" . "            Faulty data might result in instant self-destruction of your login cookie.</font>
+" . "</table></form>";
 
+pagefooter();
 ?>

@@ -46,19 +46,19 @@ if($_COOKIE['pstbon']==1){
 
     $rankposts = array();
     
-   if (($_GET[action]=='addrankset'||$_GET[action]=='editrankset'||$_GET[action]=='deleterankset'||$_GET[action]=='editranks')&&!has_perm('"edit-ranks')) {
+   if (($_GET['action']=='addrankset'||$_GET['action']=='editrankset'||$_GET['action']=='deleterankset'||$_GET['action']=='editranks')&&!has_perm('edit-ranks')) {
      error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
 
-   if ($_GET[action]=='deleterankset' && ($getrankset < 2 || $getrankset > $totalranks)) {
+   if ($_GET['action']=='deleterankset' && ($getrankset < 2 || $getrankset > $totalranks)) {
      error("Error", "The Mario, Dots, and None ranksets may not be deleted on the board.<br> <a href=./>Back to main</a>"); }
 
-   if ($_GET[action]=='deleterankset' && $getrankset >= 2 && $getrankset != unpacksafenumeric($_GET['token'])) {
+   if ($_GET['action']=='deleterankset' && $getrankset >= 2 && $getrankset != unpacksafenumeric($_GET['token'])) {
      error("Error", "Invalid token.<br> <a href=./>Back to main</a>"); }
 
-  if (($_GET[action]=='addrankset' && $_POST[action]=='Submit' && $_POST['newname']=='') || ($_GET[action]=='editrankset' && $_POST[action]=='Submit' && $_POST['editname']=='')) {
+  if (($_GET['action']=='addrankset' && $_POST['action']=='Submit' && $_POST['newname']=='') || ($_GET['action']=='editrankset' && $_POST['action']=='Submit' && $_POST['editname']=='')) {
      error("Error", "Please enter a name for this rankset.<br> <a href=./>Back to main</a>"); }
 
-   if ($_GET[action]=='addrankset' && $_POST[action]=='Submit' && has_perm('"edit-ranks')) {
+   if ($_GET['action']=='addrankset' && $_POST['action']=='Submit' && has_perm('edit-ranks')) {
      $newname = $sql->escape($_POST['newname']);
      $getrankset = $sql->resultq("SELECT MAX(id) FROM ranksets");
      if (!$getrankset) $getrankset = 0;
@@ -66,13 +66,13 @@ if($_COOKIE['pstbon']==1){
      $sql->prepare("INSERT INTO ranksets (`id`,`name`) VALUES (?,?)", array($getrankset, $newname));
      redirect("ranks.php", 1); }
 
-   if ($_GET[action]=='editrankset' && $_POST[action]=='Submit' && has_perm('"edit-ranks')) {
+   if ($_GET['action']=='editrankset' && $_POST['action']=='Submit' && has_perm('edit-ranks')) {
      $getrankset = intval($getrankset);
      $editname = $sql->escape($_POST['editname']);
      $sql->prepare("UPDATE ranksets SET `name`=?  WHERE id=?", array($editname, $getrankset));
      redirect("ranks.php", 2); }
 
-   if ($_GET[action]=='deleterankset' && $getrankset >= 2 && $getrankset == unpacksafenumeric($_GET['token']) && has_perm('"edit-ranks')) {
+   if ($_GET['action']=='deleterankset' && $getrankset >= 2 && $getrankset == unpacksafenumeric($_GET['token']) && has_perm('edit-ranks')) {
      $getrankset = intval($getrankset);
      $sql->prepare("DELETE FROM ranksets WHERE id=?",array($getrankset));
      redirect("ranks.php", 3); }

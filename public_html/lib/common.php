@@ -337,21 +337,8 @@ function pageheader($pagetitle = "", $fid = 0) {
       <title>$pagetitle$boardtitle</title>
       $config[meta]
       <link rel=\"icon\" type=\"image/png\" href=\"$favicon\">
-      <style>
-       .spoiler1
-        {
-         border: 1px dotted rgba(255,255,255,0.5);
-        }
-       .spoiler2
-        {
-         opacity: 0;
-        }
-       .spoiler2:hover
-        {
-         opacity: 1;
-        }
-      </style>
-      <link rel=\"stylesheet\" href=\"css/$themefile\">
+      <link rel=\"stylesheet\" type=\"text/css\" href=\"css/base.css\" />
+      <link rel=\"stylesheet\" type=\"text/css\" href=\"css/$themefile\" />
       <link href=\"lib/prettify/sunburst.css\" type=\"text/css\" rel=\"stylesheet\" />
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
 	  <script type=\"text/javascript\" src=\"//code.jquery.com/jquery-1.11.3.min.js\"></script>

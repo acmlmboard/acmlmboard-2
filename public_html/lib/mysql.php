@@ -8,6 +8,7 @@ class mysql {
 	public $rowst = 0;
 	public $time = 0;
 	public $db = null;
+	public $query_log = array();
 	public $debug_mode = false; // change this to enable SQL query dumps
 	
 	function connect($host, $user, $pass) {
@@ -25,9 +26,7 @@ class mysql {
 	}
 
 	function query($query) {
-		if ($this->debug_mode && isset($_GET['sqldebug']))
-			print "{$this->queries} $query<br>";
-
+		$error = '';
 		$start = usectime();
 		if (($res = $this->db->query($query)) !== FALSE) {
 			$this->queries++;
@@ -37,7 +36,17 @@ class mysql {
 				$this->rowst += $this->db->affected_rows;
 			}
 		} else {
-			print $this->error();
+			$error = $this->error();
+		}
+		
+		if ($this->debug_mode) {
+			$this->query_log[] = array(
+				'index' => $this->queries, 
+				'query' => $query, 
+				'execution_time' => usectime() - $start,
+				'num_rows' => is_object($res) ? $res->num_rows : 0,
+				'affected_rows' => $this->db->affected_rows,
+				'error' => $this->db->error);
 		}
 
 		$this->time+=usectime() - $start;

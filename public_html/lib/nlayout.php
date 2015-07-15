@@ -28,12 +28,18 @@ function urlcreate($url, $query) {
  * An associative array of cell data values:
  *    key                -> column key (must match the header column key)
  *    value              -> cell value
+ * 
+ * `class`
  *
  */
-function RenderTable($data, $headers) {
+function RenderTable($data, $headers, $class = 'c1') {
 	$zebra = 0;
+	
+	if(empty($class) || !is_string($class)) {
+		$class = 'c1';
+	}
 
-	print "<table cellspacing=\"0\" class=\"c1\">\n";
+	print "<table cellspacing=\"0\" class=\"".$class."\">\n";
 	print "\t<tr class=\"h\">\n";
 	foreach ($headers as $headerID => $headerCell) {
 		if (isset($headerCell['hidden']) && $headerCell['hidden'])

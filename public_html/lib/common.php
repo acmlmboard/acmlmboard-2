@@ -354,6 +354,7 @@ function pageheader($pagetitle = "", $fid = 0) {
       <link rel=\"stylesheet\" href=\"css/$themefile\">
       <link href=\"lib/prettify/sunburst.css\" type=\"text/css\" rel=\"stylesheet\" />
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
+	  <script type=\"text/javascript\" src=\"//code.jquery.com/jquery-1.11.3.min.js\"></script>
       </head>
       <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs
       <table cellspacing=\"0\" class=\"c1\">
@@ -709,6 +710,37 @@ function pagestats() {
                  MySQL - queries: $sql->queries, rows: $sql->rowsf/$sql->rowst, time: " . sprintf("%1.3f seconds.", $sql->time) . "<br>
                </center>
            </table>";
+	
+	if($sql->debug_mode) {
+		print "<br />";
+		$headers = array(
+			array('caption'=>'index'),
+			array('caption'=>'query'),
+			array('caption'=>'execution_time'),
+			array('caption'=>'num_rows'),
+			array('caption'=>'affected_rows'),
+			array('caption'=>'error'),
+		);
+		RenderTable($sql->query_log, $headers);
+		print "<br />";
+		$data = array();
+		foreach($GLOBALS as $k => $v) {
+			if (is_object($v)) {
+				$val = 'object(' . get_class($v) . ')';
+			} elseif(is_array($v)) {
+				$val = 'array('.count($v).')';
+			} else {
+				$val = (string)$v;
+			}
+			$data[] = array(htmlentities($k), htmlentities($val));
+		}
+		$headers = array(
+			array('caption'=>'key'),
+			array('caption'=>'value')
+		);
+		RenderTable($data, $headers);
+	}
+	
 }
 
 function miscbar() {

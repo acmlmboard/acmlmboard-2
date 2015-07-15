@@ -54,7 +54,7 @@ $actions = array(
 'editprofileext.php?action=edit&id='.$exf['id']),
   array('title' => 'Delete','href' => 
 'editprofileext.php?action=del&id='.$exf['id'], 
-confirm => true),
+'confirm' => true),
 );
 	
 $format = array("%%%VAL%%%", "<", ">");

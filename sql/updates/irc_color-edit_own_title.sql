@@ -4,5 +4,7 @@
 
 ALTER TABLE `group` CHANGE  `color`  `irc_color` VARCHAR( 16 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ;
 
+ALTER TABLE `deletedgroups` CHANGE `color` `irc_color` VARCHAR( 16 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ;
+
 UPDATE `perm` SET  `id` =  'edit-own-title',
 `title` =  'Edit Own Title' WHERE  `perm`.`id` =  'edit-title';

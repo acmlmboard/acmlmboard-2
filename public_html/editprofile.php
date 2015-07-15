@@ -228,14 +228,17 @@ if ($act == 'Edit profile') {
 					. " WHERE `id` = $user[id]"
 			);
 
+		  $banreason = ””;
+		  if($_POST['title']) $banreason = "`title` = 'Banned permanently: {$_POST['title']}', ";
+		  else $banreason = "`title` = 'Banned permanently', ";
+
 			$sql->query("UPDATE users SET "
 					. ($targetgroup ? "`group_id` = $targetgroup, " : "")
-					. ($_POST['permaban'] ? "`tempbanned` = '0', " : "")
-					. ($_POST['title'] ? "`title` = 'Banned permanently: $_POST[title]', " : "`title` = 'Banned permanently', ")
+					. ($_POST['permaban'] ? "`tempbanned` = '0', $banreason" : "")
 					. "`name` = '$targetname'"
 					. " WHERE `id`=$user[id]"
 			);
-		}
+		} 
 		if (checkcextendedprofile($targetuserid)) {
 			$qallfields = $sql->query("SELECT * FROM `profileext`");
 			$count = false;
@@ -338,7 +341,7 @@ if ($act == 'Preview theme') {
 	  ".        "</table>
 	  ";
 	  } else { //Modern redirect */
-	redirect("/?theme={$_POST['theme']}", 0);
+	redirect("/index.php?theme={$_POST['theme']}", 0);
 	//}
 	die(pagefooter());
 }

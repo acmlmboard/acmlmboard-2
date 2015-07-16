@@ -8,8 +8,9 @@ function LoadBlocklayouts() {
 
 	$blocklayouts = array();
 	$rBlocks = $sql->query("select * from blockedlayouts where blockee = " . $loguser['id']);
-	while ($block = $sql->fetch($rBlocks))
+	while ($block = $sql->fetch($rBlocks)) {
 		$blocklayouts[$block['user']] = 1;
+	}
 }
 
 function usegfxnums() {
@@ -24,17 +25,18 @@ function usegfxnums() {
 
 function threadpost($post, $type, $pthread = '') {
 	global $dateformat, $loguser, $sql, $blocklayouts, $syndromenable, $config, $signsep;
-	
+
 	$exp = calcexp($post['uposts'], (ctime() - $post['uregdate']) / 86400);
 
-	$post['head'] = str_replace("<!--", "&lt;!--", $post['head']);
-	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']);
+	//$post['head'] = str_replace("<!--", "&lt;!--", $post['head']);
+	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']); 
 
-	$post['text'] = $post['head'] . $post['text'] . $signsep[$loguser['signsep']] . $post['sign'];
+	//$post['text'] = $post['head'] . $post['text'] . $signsep[$loguser['signsep']] . $post['sign'];
+	//$post['text'] = $post['text'] . $signsep[$loguser['signsep']]; // I could find 'head' or 'sign' anywhere, and they appear to be appended below.
 
 	//This allows config level enable or disable of syndromes.
 	if ($syndromenable == 1)
-		$actsyn = @$sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=" . $post['uid'] . " AND date>" . (ctime() - 86400)), 0, 0);
+		$actsyn = $sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=" . $post['uid'] . " AND date>" . (ctime() - 86400)), 0, 0);
 	else
 		$actsyn = 0;
 
@@ -55,9 +57,12 @@ function threadpost($post, $type, $pthread = '') {
 	//if($post[nolayout]) {
 	//[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || $loguser['blocklayouts'];
-	if ($isBlocked)
-		$post['usign'] = $post['uhead'] = "";
+	$flag_block_layouts = isset($blocklayouts[$post['uid']]) && $blocklayouts[$post['uid']];
+	$isBlocked = $flag_block_layouts || $post['nolayout'] || $loguser['blocklayouts'];
+	if ($isBlocked) {
+		$post['usign'] = '';
+		$post['uhead'] = '';
+	}
 	//}
 	//post has been deleted, display placeholder
 	if ($post['deleted']) {
@@ -67,8 +72,9 @@ function threadpost($post, $type, $pthread = '') {
 			$postlinks.="<a href=\"editpost.php?pid=" . urlencode(packsafenumeric($post[id])) . "&amp;act=undelete\">Undelete</a>";
 		}
 
-		if ($post['id'])
+		if ($post['id']) {
 			$postlinks.=($postlinks ? ' | ' : '') . "ID: $post[id]";
+		}
 
 		$text = "<table cellspacing=\"0\" class=\"c1\">
 " . "  <tr>
@@ -90,20 +96,20 @@ function threadpost($post, $type, $pthread = '') {
 			$threadlink = '';
 			$postlinks = '';
 			$revisionstr = '';
-			
-			if ($pthread)
-				$threadlink = ", in <a href=\"thread.php?id=$pthread[id]\">" . htmlval($pthread['title']) . "</a>";
 
-			if ($post['id'])
-				$postlinks = "<a href=\"thread.php?pid=$post[id]#$post[id]\">Link</a>";  // headlinks for posts
+			if (is_array($pthread) && count($pthread) > 0) {
+				$threadlink = ", in <a href=\"thread.php?id={$pthread['id']}\">" . htmlval($pthread['title']) . "</a>";
+			}
 
-				
-//2007-03-08 blackhole89
+			if (isset($post['id'])) {
+				$postlinks = "<a href=\"thread.php?pid={$post['id']}#{$post['id']}\">Link</a>"; // headlinks for posts
+			}
+
 			if ($post['revision'] >= 2)
 				$revisionstr = " (rev. {$post['revision']} of " . cdate($dateformat, $post['ptdate']) . " by " . userlink_by_id($post['ptuser']) . ")";
 
 			// I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
-			if ($post['isannounce']) {
+			if (isset($post['isannounce']) && $post['isannounce']) {
 				$postheaderrow = "<tr class=\"h\">
                <td class=\"b\" colspan=2>" . $post['ttitle'] . "</td>
              </tr>
@@ -116,7 +122,7 @@ function threadpost($post, $type, $pthread = '') {
 			if (can_edit_post($post) && $post['id'])
 				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
 
-			if (can_edit_post($post) && $post['id'] && $post['isannounce'])
+			if (can_edit_post($post) && $post['id'] && (isset($post['isannounce']) && $post['isannounce']))
 				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editannouncetitle.php?pid=$post[id]\">Edit Title</a>";
 
 			if ($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])))
@@ -130,7 +136,7 @@ function threadpost($post, $type, $pthread = '') {
 
 			if (can_view_forum_post_history(getforumbythread($post['thread'])) && $post['maxrevision'] > 1) {
 				$revisionstr.=" | Go to revision: ";
-				for ($i = 1; $i <= $post['maxrevision'];  ++$i)
+				for ($i = 1; $i <= $post['maxrevision']; ++$i)
 					$revisionstr.="<a href=\"thread.php?pid=$post[id]&amp;pin=$post[id]&amp;rev=$i#$post[id]\">$i</a> ";
 			}
 
@@ -171,13 +177,14 @@ function threadpost($post, $type, $pthread = '') {
 					}
 				}
 
-				if ($post['usign']) {
-					$signsep = $post['usignsep'] ? '' : '____________________<br>';
-
-					if (!$post['uhead'])
-						$post['usign'] = '<br><br><small>' . $signsep . $post['usign'] . '</small>';
-					else
-						$post['usign'] = '<br><br>' . $signsep . $post['usign'];
+				// TODO: Figure out why this worked before...
+				if (!empty($post['usign'])) {
+					$_signsep = $post['usignsep'] ? '' : '____________________<br>'; // so we dont overwrite the global.
+					if (empty($post['uhead'])) {
+						$post['usign'] = '<br><br><small>' . $_signsep . $post['usign'] . '</small>';
+					} else {
+						$post['usign'] = '<br><br>' . $_signsep . $post['usign'];
+					}
 				}
 
 				//2/26/2007 xkeeper - making "posts: [[xxx/]]yyy" conditional instead of constant
@@ -196,11 +203,11 @@ function threadpost($post, $type, $pthread = '') {
 " . "      <br>" . rpglabel2img("exp", "EXP:") . " " . rpgnum2img($exp) . "
 " . "      <br>" . rpglabel2img("fornext", "For Next:") . " " . rpgnum2img(calcexpleft($exp)) . "
 " . "      <br>
-" . "      <br>Since: " . cdate('m-d-y', $post[uregdate]) . "
+" . "      <br>Since: " . cdate('m-d-y', $post['uregdate']) . "
 " . "      $location
 " . "      <br>
 " . "      <br>Last post: $lastpost
-" . "      <br>Last view: " . timeunits(ctime() - $post[ulastview]) . "
+" . "      <br>Last view: " . timeunits(ctime() - $post['ulastview']) . "
 ";
 				/* Normal Rendering */
 				else
@@ -216,7 +223,7 @@ function threadpost($post, $type, $pthread = '') {
 " . "      <br>
 " . "      <br>Last post: $lastpost
 " . "      <br>Last view: " . timeunits(ctime() - $post['ulastview']);
-			}else {
+			} else {
 				$text.="
 " . "      Posts: $post[num]/$post[uposts]
 ";

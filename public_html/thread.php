@@ -70,32 +70,27 @@ if ($ppp < 0 || $ppp > 1000000000000000) {
 	error("Error", "Invalid posts per page number");
 }
 
-if (isset($_REQUEST['id'])) {
-	$tid = (int)$_REQUEST['id'];
+$tid			= isset($_REQUEST['id'])	? (int)$_REQUEST['id'] : 0;
+
+$uid			= isset($_GET['user'])		? (int)$_GET['user'] : 0;
+$timeval		= isset($_GET['time'])		? (int)$_GET['time'] : 0;
+$announcefid	= isset($_GET['announce'])	? (int)$_GET['announce'] : 0;
+$pid			= isset($_GET['pid'])		? (int)$_GET['pid'] : 0;
+
+if ($tid > 0) {
 	$viewmode = "thread";
-	
-} elseif (isset($_GET['user'])) {
-	$uid = (int)$_GET['user'];
+} elseif ($uid > 0) {
 	$viewmode = "user";
-	
-} elseif (isset($_GET['time'])) {
-	$timeval = (int)$_GET['time'];
+} elseif ($timeval > 0) {
 	$viewmode = "time";
-	
-} elseif (isset($_GET['announce'])) {
-	$announcefid = (int)$_GET['announce'];
+} elseif ($announcefid > 0) {
 	$viewmode = "announce";
-	
 } elseif (isset($_GET['deletedposts'])) {
 	$viewmode = "deletedposts";
-	
 } elseif (isset($_GET['alldeletedposts'])) {
 	$viewmode = "alldeletedposts";
-	
-}
-// "link" support (i.e., thread.php?pid=999whatever)
-elseif (isset($_GET['pid'])) {
-	$pid = (int)$_GET['pid'];
+} elseif ($pid > 0) {
+	// "link" support (i.e., thread.php?pid=999whatever)
 	$numpid = $sql->fetchq("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
 	if (!$numpid) {
 		error("Error", "Thread post does not exist. <br> <a href=./>Back to main</a>");
@@ -117,10 +112,11 @@ elseif (isset($_GET['pid'])) {
 	error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
 }
 
-if ($viewmode == "thread")
+if ($viewmode == "thread") {
 	$threadcreator = $sql->resultq("SELECT user FROM threads WHERE id=$tid");
-else
+} else {
 	$threadcreator = 0;
+}
 
 $action = '';
 $userbar = '';
@@ -130,8 +126,8 @@ $post_c = isset($_POST['c']) ? $_POST['c'] : '';
 $act = isset($_POST['action']) ? $_POST['action'] : '';
 
 //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
-if ($tid && $log && $post_c == md5($pwdsalt2 . $loguser['pass'] . $pwdsalt) && (can_edit_forum_threads(getforumbythread($tid)) ||
-		($loguser['id'] == $threadcreator && $act == "rename" && has_perm('rename-own-thread')))) {
+if ($tid && $log && $post_c == md5($pwdsalt2 . $loguser['pass'] . $pwdsalt) && 
+		(can_edit_forum_threads(getforumbythread($tid)) || ($loguser['id'] == $threadcreator && $act == "rename" && has_perm('rename-own-thread')))) {
 
 	if ($act == 'stick') {
 		$action = ',sticky=1';
@@ -156,8 +152,9 @@ if ($tid && $log && $post_c == md5($pwdsalt2 . $loguser['pass'] . $pwdsalt) && (
 		error("Error", "Unknown action.");
 	}
 
-	if ($config['log'] >= '2')
+	if ($config['log'] >= '2') {
 		$sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'" . $_SERVER['REMOTE_ADDR'] . "','$loguser[id]','ACTION: " . addslashes($act . " " . $tid . " " . $_POST['arg']) . "')");
+	}
 }
 
 checknumeric($_GET['pin']);
@@ -165,16 +162,12 @@ checknumeric($_GET['rev']);
 //determine string for revision pinning
 if ($_GET['pin'] && $_GET['rev'] && can_view_forum_post_history(getforumbythread($tid))) {
 	$pinstr = "AND (pt2.id<>$_GET[pin] OR pt2.revision<>($_GET[rev]+1)) ";
-} else
+} else {
 	$pinstr = "";
+}
 
 if ($viewmode == "thread") {
-	if (!$tid)
-		$tid = 0;
-	$sql->query("UPDATE threads "
-			. "SET views=views+1 $action "
-			. "WHERE id=$tid");
-
+	$sql->query("UPDATE threads SET views=views+1 $action WHERE id=$tid");
 	$thread = $sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, t.forum fid" . ($log ? ', r.time frtime' : '') . ' '
 			. "FROM threads t LEFT JOIN forums f ON f.id=t.forum "
 			. ($log ? "LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) " : '')
@@ -201,28 +194,24 @@ if ($viewmode == "thread") {
 			$nextnewer.=" | ";
 		$nextoldnew = "$nextnewer $nextolder";
 		$userbar .= "<div style='text-align: right;'>" . $nextoldnew . "</div>";
-	}
-
-	else {
+	} else {
 		$nextnewer = "";
 		$nextolder = "";
 	}
-
-
-
+	
 	if ($thread['ispoll']) {
 		if ($_GET['act'] == "vote" && $log) {
 			$vote = unpacksafenumeric($_GET['vote']);
 			if ($vote > -1) {
-				if ($thread[multivote]) {
-					if ($thread[changeable]) {
+				if ($thread['multivote']) {
+					if ($thread['changeable']) {
 						//changeable multivotes toggle
 						$res = $sql->query("DELETE FROM pollvotes WHERE user='$loguser[id]' AND id='$vote'");
 						if (!$sql->affectedrows())
 							$sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
 					} else
 						$sql->query("REPLACE INTO pollvotes VALUES($vote,$loguser[id])");
-				} else if ($thread[changeable]) {
+				} else if ($thread['changeable']) {
 					$sql->query("DELETE v FROM pollvotes v LEFT JOIN polloptions o ON o.id=v.id WHERE v.user=$loguser[id] AND o.poll=$tid");
 					$sql->query("INSERT INTO pollvotes VALUES($vote,$loguser[id])");
 				} else {
@@ -251,8 +240,9 @@ if ($viewmode == "thread") {
 	pageheader($thread['title'], $thread['fid']);
 
 	//mark thread as read // 2007-02-21 blackhole89
-	if ($log && $thread['lastdate'] > $thread['frtime'])
+	if ($log && $thread['lastdate'] > $thread['frtime']) {
 		$sql->query("REPLACE INTO threadsread VALUES ($loguser[id],$thread[id]," . ctime() . ")");
+	}
 
 	//check for having to mark the forum as read too
 	if ($log) {
@@ -284,16 +274,17 @@ if ($viewmode == "thread") {
 
 	//load tags
 	$tags = array();
-	$t = $sql->query("SELECT * FROM tags WHERE fid=$thread[fid]");
-	while ($tt = $sql->fetch($t))
+	$t = $sql->query("SELECT * FROM tags WHERE fid={$thread['fid']}");
+	while ($tt = $sql->fetch($t)) {
 		$tags[] = $tt;
+	}
 }elseif ($viewmode == "user") {
 	$user = $sql->fetchq("SELECT * "
 			. "FROM users "
 			. "WHERE id=$uid ");
 	//title
 	pageheader("Posts by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
-	$posts = $sql->query("SELECT " . userfields('u', 'u') . ",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+	$posts = $sql->query("SELECT " . userfields('u', 'u') . ",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, c.private cprivate, t.title ttitle, t.forum tforum "
 			. "FROM posts p "
 			. "LEFT JOIN poststext pt ON p.id=pt.id "
 //		      ."JOIN ("
@@ -308,7 +299,7 @@ if ($viewmode == "thread") {
 			. "ORDER BY p.id "
 			. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp);
 
-	$thread[replies] = $sql->resultq("SELECT count(*) "
+	$thread['replies'] = $sql->resultq("SELECT count(*) "
 			. "FROM posts p "
 			. "LEFT JOIN threads t ON p.thread=t.id "
 			. "LEFT JOIN forums f ON f.id=t.forum "
@@ -324,7 +315,7 @@ if ($viewmode == "thread") {
 		pageheader('Announcements');
 	}
 
-	$posts = $sql->query("SELECT " . userfields('u', 'u') . ",$fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
+	$posts = $sql->query("SELECT " . userfields('u', 'u') . ",$fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.private fprivate, f.id fid, f.cat cat, c.private cprivate, t.title ttitle, t.forum tforum, p.announce isannounce "
 			. "FROM posts p "
 			. "LEFT JOIN poststext pt ON p.id=pt.id "
 			. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr " //SQL barrel roll
@@ -336,9 +327,7 @@ if ($viewmode == "thread") {
 			. "ORDER BY p.id DESC "
 			. "LIMIT " . (($page - 1) * $ppp) . "," . $ppp);
 
-
-
-	$thread[replies] = $sql->resultq("SELECT count(*) "
+	$thread['replies'] = $sql->resultq("SELECT count(*) "
 					. "FROM posts p "
 					. "LEFT JOIN threads t ON p.thread=t.id "
 					. "LEFT JOIN forums f ON f.id=t.forum "
@@ -587,7 +576,9 @@ if ($tid &&
 		$edit = "<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
 
 		//KAWA: Made it a dropdown list. The change isn't alone in this file, but it's clear where it starts and ends if you want to put this on 2.1+delta.
-		$r = $sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
+		$r = $sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private "
+				. "FROM forums f "
+				. "LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
 		$fmovelinks = "<select id=\"forumselect\">";
 		$c = -1;
 		while ($d = $sql->fetch($r)) {
@@ -736,45 +727,51 @@ if (has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $vie
 
 if ($timeval) {
 	print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
-          <a href=forum.php?time=$timeval>By Threads</a> | By Posts</a></div><br>";
+          <a href=\"forum.php?time=$timeval\">By Threads</a> | By Posts</a></div><br />";
 	print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">' .
 			timelink(900) . '|' . timelink(3600) . '|' . timelink(86400) . '|' . timelink(604800)
 			. "</div>";
 }
 
+print "$modlinks\n";
+print "$pagelist\n";
+print "$poll\n";
 
-print "$modlinks
-" . "$pagelist
-" . "$poll
-";
+	//var_dump($thread);
 while ($post = $sql->fetch($posts)) {
-	if ($post['fid']) {
-		if (!can_view_forum(array('id' => $post['fid'], 'private' => $post['fprivate'])))
+	//var_dump($post);
+	if (isset($post['fid']) && $post['fid']) {
+		if (!can_view_forum(array('id' => $post['fid'], 'private' => $post['fprivate'], 'cat' => $post['cat'], 'cprivate'=> $post['cprivate']))) {
 			continue;
+		}
 	}
+	$pthread = array();
 	if ($uid || $timeval) {
 		$pthread['id'] = $post['tid'];
 		$pthread['title'] = $post['ttitle'];
 	}
-	if ($post['id'] != $_GET['pin']) {
+	$pin = isset($_GET['pin']) ? (int)$_GET['pin'] : 0;
+	if ($post['id'] != $pin) {
 		$post['maxrevision'] = $post['revision']; // not pinned, hence the max. revision equals the revision we selected
 	} else {
-		$post['maxrevision'] = $sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
+		$post['maxrevision'] = $sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$pin");
 	}
-	if (can_edit_forum_posts($thread['forum']) && $post['id'] == $_GET['pin'])
+	if (can_edit_forum_posts($thread['forum']) && $post['id'] == $pin) {
 		$post['deleted'] = false;
-	
-	if ($post['id'] == $_REQUEST['pid'] && $_COOKIE['pstbon'] == "-1") {
-		print $rdmsg;
 	}
 
-	print "<br>
-" . threadpost($post, 0, $pthread);
+	if (isset($_REQUEST['pid']) && isset($_COOKIE['pstbon']) 
+			&& $post['id'] == $_REQUEST['pid'] && $_COOKIE['pstbon'] == "-1") {
+		print $rdmsg;
+	}
+	
+	//var_dump($post);
+
+	print "<br />\n" . threadpost($post, 0, $pthread);
 }
 
 
-print "$pagelist$pagebr
-" . "<br>";
+print "$pagelist$pagebr<br />";
 
 if ($thread['id'] && can_create_forum_post($faccess) && !$thread['closed']) {
 	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
@@ -833,11 +830,10 @@ if ($thread['id'] && can_create_forum_post($faccess) && !$thread['closed']) {
 ";
 	print "  <tr $quickreplydisplay >
 ";
-	if ($loguser['posttoolbar'] != 1)
-		print "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-" . "    <td class=\"b n2\"><table cellspacing=\"0\"><tr class='toolbar'>$toolbar</table>
-";
-	
+	if ($loguser['posttoolbar'] != 1) {
+		print "    <td class=\"b n1\" align=\"center\" width=120>Format:</td><td class=\"b n2\"><table cellspacing=\"0\"><tr class='toolbar'>$toolbar</table>\n";
+	}
+
 	// TODO: WHERE IS QUOTE TEXT??
 	if(!isset($quotetext)) $quotetext = '';
 	

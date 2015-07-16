@@ -266,12 +266,12 @@ if ($err) {
 " . "  <button type=\"button\" class=\"submit\" id=addopt onclick=\"addOption();return false;\">Add choice</button></td>
 " . "<tr>
 " . "  <td class=\"b n1\" align=\"center\">Options:</td>
-" . "  <td class=\"b n2\"><input type=\"checkbox\" name=multivote " . ($_POST[multivote] ? "checked" : "") . " value=1 id=mv><label for=mv>Allow multiple voting</label> | <input type=\"checkbox\" name=changeable " . ($_POST[changeable] ? "checked" : "") . " value=1 id=ch><label for=ch>Allow changing one's vote</label>
+" . "  <td class=\"b n2\"><input type=\"checkbox\" name=multivote " . ($_POST['multivote'] ? "checked" : "") . " value=1 id=mv><label for=mv>Allow multiple voting</label> | <input type=\"checkbox\" name=changeable " . ($_POST[changeable] ? "checked" : "") . " value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
 		$pollprev.="</table>";
 	}
 
-	pageheader("New $type", $forum[id]);
+	pageheader("New $type", $forum['id']);
 	print "$top - Preview
 " . "$pollprev<br>
 " . "<table cellspacing=\"0\" class=\"c1\">
@@ -284,22 +284,22 @@ if ($err) {
 " . " <table cellspacing=\"0\" class=\"c1\">
 " . "  <tr class=\"h\">
 " . "    <td class=\"b h\" colspan=2>$typecap</td>
-" . "      <input type=\"hidden\" name=name value=\"" . htmlval(stripslashes($_POST[name])) . "\">
+" . "      <input type=\"hidden\" name=name value=\"" . htmlval(stripslashes($_POST['name'])) . "\">
 " . "      <input type=\"hidden\" name=passenc value=\"$pass\">
 " . "  <tr>
 " . "    <td class=\"b n1\" align=\"center\">$typecap title:</td>
-" . "    <td class=\"b n2\"><input type=\"text\" name=title size=100 maxlength=100 value=\"" . htmlval($_POST[title]) . "\"></td>
+" . "    <td class=\"b n2\"><input type=\"text\" name=title size=100 maxlength=100 value=\"" . htmlval($_POST['title']) . "\"></td>
 " . $tagsin . "
 " . $pollin . "
 ";
-	if ($loguser[posttoolbar] != 1)
+	if ($loguser['posttoolbar'] != 1)
 		print "  <tr>
 " . "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
 " . "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
 ";
 	print "  <tr>
 " . "    <td class=\"b n1\" align=\"center\" width=120>Post:</td>
-" . "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=10 cols=80>" . htmlval($_POST[message]) . "</textarea></td>
+" . "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=10 cols=80>" . htmlval($_POST['message']) . "</textarea></td>
 " . "  <tr class=\"n1\">
 " . "    <td class=\"b\">&nbsp;</td>
 " . "    <td class=\"b\">
@@ -348,9 +348,11 @@ if ($err) {
 	$user['posts'] ++;
 
 	$tagsum = 0;
-	for ($i = 0; $i < 32;  ++$i)
-		if ($_POST["tag$i"])
-			$tagsum|=(1 << $i);
+	for ($i = 0; $i < 32; ++$i) {
+		if (isset($_POST["tag$i"])) {
+			$tagsum |= (1 << $i);
+		}
+	}
 
 	$mid = (isset($_POST['mid']) ? (int) $_POST['mid'] : -1);
 	if ($announce) {

@@ -9,18 +9,18 @@ require 'lib/common.php';
 $page = isset($_GET['page']) && $page > 0 ? (int)$_GET['page'] : 1;
 $fid = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 $uid = isset($_GET['user']) ? (int)$_GET['user'] : 0;
+$time = isset($_GET['time']) ? (int)$_GET['time'] : 0;
 
-if ($fid = $_GET['id']) {
-	checknumeric($fid);
-
+if ($fid > 0) {
 	if ($log) {
 		$forum = $sql->fetchq("SELECT f.*, r.time rtime FROM forums f "
 				. "LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) "
 				. "WHERE f.id=$fid AND f.id IN " . forums_with_view_perm());
 		if (!$forum['rtime'])
 			$forum['rtime'] = 0;
-	} else
+	} else {
 		$forum = $sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN " . forums_with_view_perm());
+	}
 
 
 	if (!isset($forum['id'])) {
@@ -95,8 +95,7 @@ if ($fid = $_GET['id']) {
 " . "  <td class=\"nb\" align=\"right\">" . $editforumlink . $ignoreLink . (can_create_forum_thread($forum) ? "| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>" : "") . "</td>
 " . "</table>
 ";
-} elseif ($uid = $_GET['user']) {
-	checknumeric($uid);
+} elseif ($uid > 0) {
 	$user = $sql->fetchq("SELECT * FROM users WHERE id=$uid");
 
 	pageheader("Threads by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
@@ -129,7 +128,7 @@ if ($fid = $_GET['id']) {
 " . "  <td class=\"nb\"><a href=./>Main</a> - Threads by " . ($user[displayname] ? $user[displayname] : $user[name]) . "</td>
 " . "</table>
 ";
-} elseif ($time = $_GET[time]) {
+} elseif ($time > 0) {
 	checknumeric($time);
 	$mintime = ctime() - $time;
 
@@ -137,8 +136,6 @@ if ($fid = $_GET['id']) {
 
 	$threads = $sql->query("SELECT " . userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ", t.*, f.id fid, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
-
-
     (NOT ISNULL(p.id)) ispoll, f.title ftitle" . ($log ? ', (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread' : '') . ' '
 			. "FROM threads t "
 			. "LEFT JOIN users u1 ON u1.id=t.user "
@@ -171,15 +168,12 @@ if ($fid = $_GET['id']) {
 " . "  <td class=\"nb\"><a href=./>Main</a> - Latest posts</td>
 " . "</table>
 ";
-}elseif (isset($_GET[fav]) && has_perm('view-favorites')) {
+}elseif (isset($_GET['fav']) && has_perm('view-favorites')) {
 
 	pageheader("Favorite Threads");
 
-
 	$threads = $sql->query("SELECT " . userfields('u1', 'u1') . "," . userfields('u2', 'u2') . ", t.*, f.id fid, f.title ftitle, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
-
-
     (NOT ISNULL(p.id)) ispoll" . ($log ? ", (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread" : '') . ' '
 			. "FROM threads t "
 			. "LEFT JOIN users u1 ON u1.id=t.user "
@@ -193,9 +187,9 @@ if ($fid = $_GET['id']) {
 			. "WHERE th.uid=$loguser[id] "
 			. "AND f.id IN " . forums_with_view_perm() . " "
 			. "ORDER BY t.sticky DESC, t.lastdate DESC "
-			. "LIMIT " . (($page - 1) * $loguser[tpp]) . "," . $loguser[tpp]);
+			. "LIMIT " . (($page - 1) * $loguser['tpp']) . "," . $loguser['tpp']);
 
-	$forum[threads] = $sql->resultq("SELECT count(*) "
+	$forum['threads'] = $sql->resultq("SELECT count(*) "
 			. "FROM threads t "
 			. "LEFT JOIN forums f ON f.id=t.forum "
 			. "LEFT JOIN categories c ON f.cat=c.id "
@@ -213,9 +207,10 @@ if ($fid = $_GET['id']) {
 $showforum = $uid || $time;
 
 //Forum Jump - SquidEmpress
+$forumjumplinks = '';
 if (!$uid && !$time && !isset($_GET['fav'])) {
 	$r = $sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
-	$forumjumplinks = "<table><td>$fonttag Forum jump: </td>
+	$forumjumplinks = "<table><td>Forum jump: </td>
         <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
 	$c = -1;
 	while ($d = $sql->fetch($r)) {
@@ -240,17 +235,19 @@ if ($forum['threads'] <= $loguser['tpp']) {
 	$fpagebr = '';
 } else {
 	$fpagelist = '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">Pages:';
-	for ($p = 1; $p <= 1 + floor(($forum[threads] - 1) / $loguser[tpp]); $p++)
-		if ($p == $page)
+	for ($p = 1; $p <= 1 + floor(($forum['threads'] - 1) / $loguser['tpp']); $p++) {
+		if ($p == $page) {
 			$fpagelist.=" $p";
-		elseif ($fid)
+		} elseif ($fid) {
 			$fpagelist.=" <a href=forum.php?id=$fid&page=$p>$p</a>";
-		elseif ($uid)
+		} elseif ($uid) {
 			$fpagelist.=" <a href=forum.php?user=$uid&page=$p>$p</a>";
-		elseif ($time)
+		} elseif ($time) {
 			$fpagelist.=" <a href=forum.php?time=$time&page=$p>$p</a>";
+		}
+	}
 	$fpagelist.='</div>';
-	$fpagebr = '<br>';
+	$fpagebr = '<br />';
 }
 
 print $topbot;
@@ -265,7 +262,6 @@ print "<br>
 " . "<table cellspacing=\"0\" class=\"c1\">";
 
 if ($fid) {
-
 	echo announcement_row(0, 3, 4);
 	echo announcement_row($fid, 3, 4);
 }

@@ -22,7 +22,7 @@ if (!can_edit_user($targetuserid)) {
 if ($targetuserid == 0) {
 	if ($config['rootuseremail']) {
 		if ((has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) && $user['email'] != "") {
-			$email = "<br>" . userlink($user) . "'s email: " . $user[email] . "<br>";
+			$email = "<br>" . userlink($user) . "'s email: " . $user['email'] . "<br>";
 		} else {
 			$email = "";
 		}
@@ -398,7 +398,7 @@ if (empty($act)) {
 " . " <table cellspacing=\"0\" class=\"c1\">
 " .
 			catheader('Login information') . "
-" . (has_perm("edit-users") ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user[name])) . "
+" . (has_perm("edit-users") ? fieldrow('Username', fieldinput(40, 255, 'name')) : fieldrow('Username', $user['name'])) . "
 " . (checkcdisplayname($targetuserid) ? fieldrow('Display name', fieldinput(40, 255, 'displayname')) : "" ) . "
 " . fieldrow('Password', $passinput) . "
 ";

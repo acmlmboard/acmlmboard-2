@@ -733,9 +733,17 @@ if ($timeval) {
 			. "</div>";
 }
 
-print "$modlinks\n";
-print "$pagelist\n";
-print "$poll\n";
+if(!empty($modlinks)) {
+	print "$modlinks\n";
+}
+
+if(!empty($pagelist)) {
+	print "$pagelist\n";
+}
+
+if(!empty($poll)) {
+	print "$poll\n";
+}
 
 	//var_dump($thread);
 while ($post = $sql->fetch($posts)) {
@@ -773,7 +781,7 @@ while ($post = $sql->fetch($posts)) {
 
 print "$pagelist$pagebr<br />";
 
-if ($thread['id'] && can_create_forum_post($faccess) && !$thread['closed']) {
+if (isset($thread['id']) && $thread['id'] && can_create_forum_post($faccess) && !$thread['closed']) {
 	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 	$toolbar = posttoolbar();
 

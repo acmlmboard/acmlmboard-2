@@ -67,7 +67,7 @@ function checkcusercolor($uid) {
 	if (!$config["perusercolor"])
 		return false;
 
-	if (!$loguser[id])
+	if (!$loguser['id'])
 		return false;
 	if (has_perm_revoked('has-customusercolor'))
 		return false;
@@ -234,8 +234,9 @@ function getrank($set, $posts) {
 	global $ranks, $sql, $rankcache;
 
 	// [Mega-Mario] rank cache. In the lack of a better solution, avoids doing the same thing over and over again...
-	if (isset($rankcache[$set][$posts]))
+	if (isset($rankcache[$set][$posts])) {
 		return $rankcache[$set][$posts];
+	}
 
 	if ($set == "-1") {
 		$r = renderdotrank($posts);

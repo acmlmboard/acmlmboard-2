@@ -71,20 +71,20 @@ if ($log && $action == 'markread') {
 // Moved pageheader here so that we can do header()s without fucking everything up again
 pageheader();
 
-$categs = $sql->query("SELECT * "
-		. "FROM categories "
-		. "ORDER BY ord,id");
+$categs = $sql->query("SELECT * FROM categories ORDER BY `ord`, `id`");
 while ($c = $sql->fetch($categs)) {
-	if (can_view_cat($c))
+	if (can_view_cat($c)) {
 		$categ[$c['id']] = $c;
+	}
 }
 
 //[KAWA] ABXD does ignores with a very nice SQL trick that I think Mega-Mario came up with one day.
 //Unfortunately, this place is too hairy to add the trick to so I'll have to use a third query to collect the ignores. The first is categories. The second is the forum list itself.
 $ignores = array();
 $ignoreQ = $sql->query("SELECT * FROM ignoredforums WHERE uid = " . $loguser['id']);
-while ($i = $sql->fetch($ignoreQ))
+while ($i = $sql->fetch($ignoreQ)) {
 	$ignores[$i['fid']] = true;
+}
 
 $forums = $sql->query("SELECT f.*" . ($log ? ", r.time rtime" : '') . ", c.private cprivate, " . userfields('u', 'u') . ", u.minipic uminipic "
 		. "FROM forums f "
@@ -113,8 +113,9 @@ echo
 
 $lmods = array();
 $r = $sql->query("SELECT f.fid, " . userfields('u') . " FROM forummods f LEFT JOIN users u ON u.id=f.uid");
-while ($mod = $sql->fetch($r))
+while ($mod = $sql->fetch($r)) {
 	$lmods[$mod['fid']][] = $mod;
+}
 
 while ($forum = $sql->fetch($forums)) {
 	if (!can_view_forum($forum))
@@ -151,15 +152,19 @@ while ($forum = $sql->fetch($forums)) {
 	if (isset($ignores[$forum['id']])) {
 		$status = "&nbsp;";
 		$ignoreFX = "style=\"opacity: 0.5;\"";
-	} else
+	} else {
 		$ignoreFX = "";
+	}
 
 	$modstring = "";
-	if (isset($lmods[$forum['id']]))
-		foreach ($lmods[$forum['id']] as $mod)
+	if (isset($lmods[$forum['id']])) {
+		foreach ($lmods[$forum['id']] as $mod) {
 			$modstring.=userlink($mod) . ", ";
-	if ($modstring)
+		}
+	}
+	if ($modstring) {
 		$modstring = "<br>(moderated by: " . substr($modstring, 0, -2) . ")";
+	}
 //    else $modstring="<p>&nbsp;</p>";
 	print
 			"  <tr align=\"center\">

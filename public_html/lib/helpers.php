@@ -24,4 +24,13 @@ function getcategorybythread($tid) {
 	return getcategorybyforum(getforumbythread($tid));
 }
 
+function generate_random_string($length) {
+	$output = '';
+	$character_list = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz$+/~';
+	for ($i = 0; $i < $length; ++$i) {
+		$output .= $character_list[mt_rand(0, strlen($character_list) - 1)];
+	}
+	return $output;
+}
+
 ?>

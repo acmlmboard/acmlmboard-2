@@ -17,11 +17,20 @@ if(isset($tpl_vars['error_message'])) {
 		</tr>
 		<tr>
 			<td class="b n1" align="center" width="120">Username:</td>
-			<td class="b n2"><input type="text" name="name" size="25" maxlength="25" /></td>
+			<td class="b n2"><input type="text" name="username" size="25" maxlength="25" /></td>
 		</tr>
 		<tr>
 			<td class="b n1" align="center">Password:</td>
-			<td class="b n2"><input type="password" name="pass" size="13" maxlength="32" /> - <a href="resetpassword.php">Lost password?</a></td>
+			<td class="b n2"><input type="password" name="password" size="13" maxlength="32" /></td>
+		</tr>
+		<tr>
+			<td class="b n1">&nbsp;</td>
+			<td class="b n2">
+				<ul>
+					<li><a href="register.php">Register</a></li>
+					<li><a href="resetpassword.php">Forgot your password?</a></li>
+				</ul>
+			</td>
 		</tr>
 		<tr class="n1">
 			<td class="b">&nbsp;</td>

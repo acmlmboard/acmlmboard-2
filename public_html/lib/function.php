@@ -1,6 +1,8 @@
 <?php
 require 'lib/classes/mysql.php';
+require 'lib/classes/request.php';
 require 'lib/classes/forum.php';
+require 'lib/classes/actionrouter.php';
 
 require 'lib/datetime.php';
 require 'lib/request.php';

@@ -386,7 +386,7 @@ function fieldoption($field, $checked, $choices) {
 
 // 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
 function fieldselect($field, $checked, $choices) {
-	$text = "<select name=$field>\n";
+	$text = "<select name=\"$field\">\n";
 	foreach ($choices as $key => $val) {
 		$text .= "\t<option value=\"$key\"" . ($key == $checked ? ' selected' : '') . ">$val</option>\n";
 	}
@@ -537,7 +537,18 @@ function tpl_input_checkbox($name, $label, $checked = false) {
 		htmlentities($name), htmlentities($name), $checked ? ' checked' : '', htmlentities($label));
 }
 
-function tpl_table_alternate($rows, $colors = array('n1','n2'), $highlight_index = -1, $highlight_color = 'n3') {
-	
+function tpl_input_list($field, $checked, $choices) {
+	printf("<select name=\"%s\">\n", $field);
+	foreach ($choices as $key => $val) {
+		printf("\t<option value=\"%s\"%s>%s</option>\n", $key, ($key == $checked ? ' selected' : ''), $val);
+	}
+	printf("</select>\n");
+}
+
+function tpl_input_options($field, $checked, $choices) {
+	foreach ($choices as $key => $value) {
+		printf("<label><input type=\"radio\" class=\"radio\" name=\"%s\" value=\"%s\"%s />%s</label>\n",
+				$field, $key, ($key == $checked ? ' selected' : ''), $value);
+	}
 }
 ?>

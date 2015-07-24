@@ -276,9 +276,9 @@ if (has_perm('edit-permissions')) {
 	if (!has_perm('ban-users'))
 		$banuser = "";
 	elseif ($user['group_id'] != $bannedgroup)
-		$banuser = "| <a href=\"banmanager.php?id=" . $user['id'] . "\">Ban user</a>";
+		$banuser = "| <a href=\"banmanager.php?action=ban-user&amp;id=" . $user['id'] . "\">Ban user</a>";
 	elseif ($user['group_id'] = $bannedgroup)
-		$banuser = "| <a href=\"banmanager.php?unban&id=" . $user['id'] . "\">Unban user</a>";
+		$banuser = "| <a href=\"banmanager.php?action=unban-user&amp;id=" . $user['id'] . "\">Unban user</a>";
 }
 
 //[KAWA] Blocklayout ported from ABXD

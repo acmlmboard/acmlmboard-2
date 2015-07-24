@@ -1,181 +1,173 @@
 <?php
+
 require 'lib/common.php';
 
-//Alternative to editing users' profiles. - SquidEmpress
-//Based off of banhammer.php from Blargboard by StapleButter.
+class BanManager {
+	static function permissionCheck($request_arguments) {
+		global $sql, $loguser;
+		
+		if (!has_perm('ban-users')) {
+			return FALSE;
+		}
+		
+		$id = $request_arguments['id'];
+		$tuser = $sql->fetchp("SELECT `group_id` FROM `users` WHERE `id` = ?", array($id));
+		if ((is_root_gid($tuser['group_id']) || (!can_edit_user_assets($tuser['group_id']) && $id != $loguser['id'])) && !has_perm('no-restrictions')) {
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	static function banUserForm($request_arguments) {
+		global $sql;
+		
+		$id = $request_arguments['id'];
+		
+		if(!$request_arguments['id']) {
+			tpl_display('generic-error', array('error_message'=>'Invalid user ID provided.'));
+			return true;
+		}
+		
+		$result = $sql->fetchp("SELECT `id`, `name` FROM `users` WHERE `id` = ?", array($id));
+		if (!$result) {
+			tpl_display('generic-error', array('error_message'=>'Invalid user ID provided.'));
+			return true;
+		}
 
-$uid = $loguser['id'];
- 
-  if (isset($_GET['id'])) {
-    $temp = $_GET['id'];
-    if (checknumeric($temp))
-      $uid = $temp;
-  }
+		tpl_display('banmanager-banuser', array('id' => $id, 'name' => $result['name']));
+		
+		return true;
+	}
+	
+	static function banUserSubmit($request_arguments) {
+		global $sql;
+		
+		$id = $request_arguments['id'];
+		$expiration_time = $request_arguments['expiration_time'];
+		
+		$banned_group_id = $sql->resultq("SELECT `id` FROM `group` WHERE `banned` = 1;");
+		
+		$user = $sql->fetchp("SELECT * FROM `users` WHERE `id` = ?;", array($id));
+		if(!isset($user)) {
+			tpl_display('generic-error', array('error_message' => 'Invalid user.'));
+			return true;
+		}
+		
+		if ($expiration_time > 0) {
+			$expiration_time = ctime() + $expiration_time;
+			$ban_reason = "Banned until " . date("m-d-y h:i A", $expiration_time);
+		} else {
+			$ban_reason = "Banned permanently";
+		}
+		
+		if (!empty($request_arguments['reason'])) {
+			$ban_reason .= ': ' . htmlspecialchars($request_arguments['reason']);
+		}
 
- if (!has_perm('ban-users'))
-   {
-     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
-   }
-   
-   //From editperms.php
-   $id = (int)$_GET['id'];
+		$sql->prepare("UPDATE `users` SET `group_id` = ? WHERE `id` = ?;", array($banned_group_id, $user['id']));
+		$sql->prepare("UPDATE `users` SET `title` = ? WHERE `id` = ?;", array($ban_reason, $user['id']));
+		$sql->prepare("UPDATE `users` SET `tempbanned` = ? WHERE id=' ?;", array($expiration_time, $user['id']));
 
-    $tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
-	if ((is_root_gid($tuser[$u.'group_id']) || (!can_edit_user_assets($tuser[$u.'group_id']) && $id!=$loguser['id'])) && !has_perm('no-restrictions')) 
-	{
-		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
-	} 
- 
-   if($uid = $_GET['id']) {
-     checknumeric($uid);
-     $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
-     if(!$numid) {
-     error("Error", "Invalid user ID.");
-    }
-   }
+		redirect("profile.php?id={$user['id']}", -1);
+		
+		return true;
+	}
+	
+	static function unbanUserForm($request_arguments) {
+		global $sql;
+		
+		$id = $request_arguments['id'];
+		
+		if(!$request_arguments['id']) {
+			tpl_display('generic-error', array('error_message' => 'Invalid user ID provided.'));
+			return true;
+		}
+		
+		$result = $sql->fetchp("SELECT `id`, `name` FROM `users` WHERE `id` = ?", array($id));
+		if (!$result) {
+			tpl_display('generic-error', array('error_message' => 'Invalid user ID provided.'));
+			return true;
+		}
 
-$bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
-$defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+		tpl_display('banmanager-unbanuser', array('id' => $id, 'name' => $result['name']));
+		
+		return true;
+	}
+	
+	static function unbanUserSubmit($request_arguments) {
+		global $sql;
+		
+		$id = $request_arguments['id'];
+		$banned_group_id = $sql->resultq("SELECT `id` FROM `group` WHERE `banned` = 1;");
+		$default_group_id = $sql->resultq("SELECT `id` FROM `group` WHERE `default` = 1;");
+		
+		$user = $sql->fetchp("SELECT * FROM `users` WHERE `id` = ?;", array($id));
+		if(!isset($user)) {
+			tpl_display('generic-error', array('error_message' => 'Invalid user.'));
+			return true;
+		}
+		
+		if ($user['group_id'] != $banned_group_id) {
+			tpl_display('generic-error', array('error_message' => 'This user is not currently banned.'));
+			return true;
+		}
+		
+		$sql->prepare("UPDATE `users` SET `group_id` = ? WHERE `id` = ?;", array($default_group_id, $user['id']));
+		$sql->prepare("UPDATE `users` SET `title` = ? WHERE `id` = ?;", array('', $user['id']));
+		$sql->prepare("UPDATE `users` SET `tempbanned` = ? WHERE id=' ?;", array(0, $user['id']));
 
-global $user;
- 
-  $user = $sql->fetchq("SELECT * FROM users WHERE `id` = $uid");
-
-//Concatenation like in ABXD
-if($_POST[banuser]=="Ban User") {
-      $tempban=ctime()+($_POST[tempbanned]);
-      $tempban="Banned until ".date("m-d-y h:i A",$tempban);
-      if ($_POST['tempbanned']>0)
-      {
-      $banreason=$tempban;
-      if ($_POST['title']) {
-      $banreason .= ': '.htmlspecialchars($_POST['title']); }
-      }
-      else
-      {
-      $banreason="Banned permanently";
-      if ($_POST['title']) {
-      $banreason .= ': '.htmlspecialchars($_POST['title']); }
-      }
-
-      $sql->query("UPDATE users SET group_id='$bannedgroup[id]' WHERE id='$user[id]'");
-      $sql->query("UPDATE users SET title='$banreason' WHERE id='$user[id]'");
-      $sql->query("UPDATE users SET tempbanned='".($_POST[tempbanned]>0?($_POST[tempbanned]+time()):0)."' WHERE id='$user[id]'");
-
-               /*if($loguser[redirtype]==0){ //Classical Redirect
-$loguser['blocksprites']=1;
-pageheader('Ban User');
-print "<form action='banmanager.php?id=$uid' method='post'>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
-".        "    User has been banned.<br>
-".        "    ".redirect("profile.php?id=$user[id]",'the user')."
-".        "</table>
-";
-                } else { //Modern redirect*/
-                  redirect("profile.php?id=$user[id]",-1);
-                //}
-die(pagefooter());
-    }
-
-elseif($_POST[unbanuser]=="Unban User") {
-if ($user['group_id'] != $bannedgroup['id'])
-{
-error("Error", "This user is not a Banned User.<br> <a href=./>Back to main</a> "); 
-}
-      $sql->query("UPDATE users SET group_id='$defaultgroup[id]' WHERE id='$user[id]'");
-      $sql->query("UPDATE users SET title='' WHERE id='$user[id]'");
-      $sql->query("UPDATE users SET tempbanned='0' WHERE id='$user[id]'");
-
-              /*if($loguser[redirtype]==0){ //Classical Redirect
-$loguser['blocksprites']=1;
-pageheader('Unban User');
-print "<form action='banmanager.php?id=$uid' method='post'>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
-".        "    User has been unbanned.<br>
-".        "    ".redirect("profile.php?id=$user[id]",'the user')."
-".        "</table>
-";
-             } else { //Modern redirect*/
-                  redirect("profile.php?id=$user[id]",-2);
-             //}
-die(pagefooter());
-    }
-
-if (isset($_GET['unban']))
-{
-pageheader('Unban User');
-}
-else
-{
-pageheader('Ban User');
-}
-
-if (isset($_GET['unban']))
-{
-$pagebar = array
-  (
-	  'breadcrumb' => array(array('href'=>'/.', 'title'=>'Main'), array('href'=>'index.php', 'title'=>'Forums')),
-	  'title' => 'Unban User',
-	  'actions' => array(),
-  	  'message' => $errmsg
-  );
-}
-else
-{
-$pagebar = array
-  (
-	  'breadcrumb' => array(array('href'=>'/.', 'title'=>'Main'), array('href'=>'index.php', 'title'=>'Forums')),
-	  'title' => 'Ban User',
-	  'actions' => array(),
-  	  'message' => $errmsg
-  );
-}
-RenderPageBar($pagebar);
-  
-if (isset($_GET['unban']))
-{
-print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
-".    "<table cellspacing=\"0\" class=\"c1\">
-".    "  <tr class=\"h\"><td class=\"b\">Unban User
-".    "  <tr><td class=\"b n1\" align=\"center\">
-".    "    <br>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b n1\" align=\"center\">
-".        "      <input type=\"submit\" class=\"submit\" name=\"unbanuser\" value=\"Unban User\">
-".    "</table>
-";
-}
-else
-{
-print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
-".    "<table cellspacing=\"0\" class=\"c1\">
-".
-        catheader('Ban User')."
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Reason:</td>
-".        "      <td class=\"b n2\"><input type=\"text\" name='title' class='right'></td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Expires?</td>
-".        "      <td class=\"b n2\">".fieldselect("tempbanned",0,array("600"=>"10 minutes",
-						      "3600"=>"1 hour",
-						      "10800"=>"3 hours",
-						      "86400"=>"1 day",
-						      "172800"=>"2 days",
-						      "259200"=>"3 days",
-						      "604800"=>"1 week",
-						      "1209600"=>"2 weeks",
-						      "2419200"=>"1 month",
-						      "4838400"=>"2 months",
-						      "0"=>"never"))."</td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"submit\" class=\"submit\" name=\"banuser\" value=\"Ban User\">
-".    "</table>
-";
+		redirect("profile.php?id=$user[id]", -2);
+		
+		return true;
+	}
 }
 
-pagefooter();
+$router = new ActionRouter();
+
+$router->register('ban-user', 
+	ActionRouter::REQUEST_METHOD_GET, 
+	array(
+		array('GET', 'id', 0, 'integer')
+	),
+	array('BanManager', 'banUserForm'),
+	array('BanManager', 'permissionCheck')
+);
+
+$router->register('ban-user', 
+	ActionRouter::REQUEST_METHOD_POST, 
+	array(
+		array('POST', 'id', 0, 'integer'),
+		array('POST', 'reason', 'none', 'string'),
+		array('POST', 'expiration_time', 600, 'integer')
+	),
+	array('BanManager', 'banUserSubmit'),
+	array('BanManager', 'permissionCheck')
+);
+
+$router->register('unban-user', 
+	ActionRouter::REQUEST_METHOD_GET, 
+	array(
+		array('GET', 'id', 0, 'integer')
+	),
+	array('BanManager', 'unbanUserForm'),
+	array('BanManager', 'permissionCheck')
+);
+
+$router->register('unban-user', 
+	ActionRouter::REQUEST_METHOD_POST, 
+	array(
+		array('POST', 'id', 0, 'integer')
+	),
+	array('BanManager', 'unbanUserSubmit'),
+	array('BanManager', 'permissionCheck')
+);
+
+try {
+	$action = isset($_REQUEST['action']) ? $_REQUEST['action'] : '';
+	$router->handle($action);
+} catch(Exception $e) {
+	error('Error', $e->getMessage());
+}
+
 ?>

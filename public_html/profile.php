@@ -106,12 +106,16 @@ if ($pfound && $thread) {
 	$lastpostlink = "<br>in <i>(restricted forum)</i>";
 }
 
-//[KAWA] Adapting to new theme system...
-$themes = unserialize(file_get_contents("themes_serial.txt"));
-$themename = $themes[0][0];
+$themes = array();
+$result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0;");
+while($row = $sql->fetch($result)) {
+	$themes[] = $row;
+}
+
+$themename = $themes[0]['name'];
 foreach ($themes as $theme) {
-	if ($theme[1] == $user['theme']) {
-		$themename = $theme[0];
+	if ($theme['basename'] == $user['theme']) {
+		$themename = $theme['name'];
 		break;
 	}
 }

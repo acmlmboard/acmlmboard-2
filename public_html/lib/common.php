@@ -1,4 +1,5 @@
 <?php
+$start_memory_usage = memory_get_usage(false);
 require "lib/function.php";
 
 header("Content-type: text/html; charset=utf-8");
@@ -20,6 +21,7 @@ if ($config['sqlconfig']) {
 		while ($row = $sql->fetch($res)) {
 			$configsql[$row['field']] = $row;
 		}
+		$res->free();
 	}
 
 	$trashid = $configsql['trashid']['intval'];
@@ -51,6 +53,8 @@ if ($config['sqlconfig']) {
 	$config['alwaysshowlvlbar'] = $configsql['alwaysshowlvlbar']['intval'];
 	$config['rpglvlbarwidth'] = $configsql['rpglvlbarwidth']['intval'];
 	$config['atnname'] = $configsql['atnname']['txtval'];
+	
+	unset($configsql);
 }
 
 $userip = $_SERVER['REMOTE_ADDR'];
@@ -195,12 +199,15 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
                  ON DUPLICATE KEY UPDATE `views`=`views`+1");
 }
 
-//[KAWA] ABXD-style theme system
-$themelist = unserialize(file_get_contents("themes_serial.txt"));
+$themelist = array();
+$result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0;");
+while($row = $sql->fetch($result)) {
+	$themelist[$row['basename']] = $row;
+}
 
 //Config definable theme override
 if ($config['override_theme'] && !has_special_perm("bypass-theme-override")) { //If defined in config & current user does not have the special bypass perm; use the theme defined.
-	$theme = $config[override_theme];
+	$theme = $config['override_theme'];
 } elseif (isset($_GET['theme'])) {
 	$theme = $_GET['theme'];
 } else {
@@ -214,16 +221,17 @@ if (is_file("css/" . $theme . ".css")) {
 	//then try PHP
 	$themefile = $theme . ".php";
 } else { //then fall back to Standard
-	$theme = $themelist[0][1];
-	$themefile = $theme . ".css";
+	$theme = $themelist['0']['basename'];
+	$themefile = $themelist['0']['filename'];
 }
 
-if ($config['override_logo'] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
-	$logofile = $config[override_logo];
-elseif (is_file("theme/" . $theme . "/logo.png"))
+if ($config['override_logo'] && !has_special_perm("bypass-logo-override")) { //Config override for the logo file
+	$logofile = $config['override_logo'];
+} elseif (is_file("theme/" . $theme . "/logo.png")) {
 	$logofile = "theme/" . $theme . "/logo.png";
-else
+} else {
 	$logofile = $defaultlogo;
+}
 
 $rpgimageset = '';
 
@@ -266,9 +274,6 @@ function pageheader($pagetitle = "", $fid = 0) {
 	global  $dateformat, $sql, $log, $loguser, $sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
 	$logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays, $pwdsalt, $pwdsalt2;
 
-	if (ini_get("register_globals")) {
-		print "<span style=\"color: red;\"> Warning: register_globals is enabled.</style>";
-	}
 	// this is the only common.php location where we reliably know $fid.
 	if ($log) {
 		$sql->query("UPDATE `users` SET `lastforum`='$fid' WHERE `id`='$loguser[id]'");
@@ -343,8 +348,13 @@ function pageheader($pagetitle = "", $fid = 0) {
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
 	  <script type=\"text/javascript\" src=\"//code.jquery.com/jquery-1.11.3.min.js\"></script>
       </head>
-      <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs
-      <table cellspacing=\"0\" class=\"c1\">
+      <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs";
+	
+	if (ini_get("register_globals")) {
+		print "<span style=\"color: red;\"> Warning: register_globals is enabled.</style>";
+	}
+    
+	print "  <table cellspacing=\"0\" class=\"c1\">
         <tr class=\"nt n2\" align=\"center\">
         <td class=\"b n1\" align=\"center\" colspan=\"3\">$boardlogo</td>
         </tr>
@@ -392,11 +402,12 @@ function pageheader($pagetitle = "", $fid = 0) {
 		}
 		//Starts code for the classic PM box.
 		if ($config['classicpms'] && has_perm('view-own-pms')) {
-			if ($totalpms > 0)
+			if ($totalpms > 0) {
 				$lastmsg = "<br>
 " . "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from " . userlink($pmsgs, 'u') . ' on ' . cdate($dateformat, $pmsgs[date]) . '.</font>';
-			else
+			} else {
 				$lastmsg = '';
+			}
 
 			$oldpmsgbox = "<table cellspacing=\"0\" class=\"c1\">
 " . "  <tr class=\"h\">
@@ -548,7 +559,7 @@ function pageheader($pagetitle = "", $fid = 0) {
               </td>
               </tr>
 			 </table>
-			 <br>";
+			 <br />";
 	} else if ($showonusers) {
 		//[KAWA] Copypastadaption from ABXD, with added activity limiter.
 		$birthdaylimit = 86400 * $inactivedays;
@@ -678,22 +689,23 @@ function pageheader($pagetitle = "", $fid = 0) {
                $onuserlist
 			 </td>
 		   </tr>
-		 </table>";
+		 </table>
+		 <br />\n";
 		
 		if(!empty($oldpmsgbox)) {
-			print"<br>\n$oldpmsgbox";
+			print $oldpmsgbox;
 		}
 	}
 }
 
 function pagestats() {
-	global $start, $sql;
+	global $start, $sql, $start_memory_usage;
 	$time = usectime() - $start;
 	print "<br>
            <table cellspacing=\"0\" class=\"c2\">
              <td class=\"b n1\">
                <center>
-                 " . sprintf("Page rendered in %1.3f seconds. (%dKB of memory used)", $time, memory_get_usage(false) / 1024) . "<br>
+                 " . sprintf("Page rendered in %1.3f seconds. (%dKB of memory start, %dKB of memory used)", $time,  $start_memory_usage / 1024, memory_get_usage(false) / 1024) . "<br>
                  MySQL - queries: $sql->queries, rows: $sql->rowsf/$sql->rowst, time: " . sprintf("%1.3f seconds.", $sql->time) . "<br>
                </center>
            </table>";
@@ -710,22 +722,16 @@ function pagestats() {
 		);
 		RenderTable($sql->query_log, $headers);
 		print "<br />";
+		/*
 		$data = array();
 		foreach($GLOBALS as $k => $v) {
-			if (is_object($v)) {
-				$val = 'object(' . get_class($v) . ')';
-			} elseif(is_array($v)) {
-				$val = 'array('.count($v).')';
-			} else {
-				$val = (string)$v;
-			}
-			$data[] = array(htmlentities($k), htmlentities($val));
+			$data[] = array(htmlentities($k), "<pre>".htmlentities(var_export ($v,true))."</pre>");
 		}
 		$headers = array(
 			array('caption'=>'key'),
 			array('caption'=>'value')
 		);
-		RenderTable($data, $headers);
+		RenderTable($data, $headers);*/
 	}
 	
 }

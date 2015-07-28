@@ -3,34 +3,57 @@
 require("lib/common.php");
 pageheader();
 
-
-print "Scanning for new themes...<br>";
-
+$inserted_rows = 0;
 $files = scandir("css");
 sort($files);
-foreach($files as $f)
-{
-	if($f[0] == ".")
+
+print "
+	<table cellspacing=\"0\" class=\"c1\">
+		<tr class=\"h\">
+			<td class=\"b h\" colspan=2>Update Themes</td>
+		</tr>
+		<tr>
+			<td class=\"b n1\">
+				<p>Scanning for new themes...</p>
+				<ul>
+";
+
+foreach ($files as $file_name) {
+	if ($file_name[0] == ".") {
 		continue;
-	$snarf = file_get_contents("css/".$f);
-	$snarf = str_replace("\r\n", "\n", $snarf);
-	if(preg_match("~/* META\n(.*?)\n(.*?)\n*/\n~s", $snarf, $matches))
-	{
-		$n = $matches[1];
-		$d = substr($matches[2], 0, -2);
-		//print "Got a hit on ".$f."! Its name is \"$n\", description \"$d\".<br>";
-		$f2 = str_replace(".css", "", str_replace(".php", "", $f));
-		if($d != "")
-			$newlist[] = array($n, $f2, $d);
-		else
-			$newlist[] = array($n, $f2);
+	}
+	
+	$file_hash = md5_file("css/$file_name");
+	$file_content = file_get_contents("css/$file_name");
+	$file_content = str_replace("\r\n", "\n", $file_content);
+	
+	if (preg_match("~/* META\n(.*?)\n(.*?)\n*/\n~s", $file_content, $matches)) {
+		$theme_name = trim($matches[1]);
+		$theme_description = trim(substr($matches[2], 0, -2));
+		$theme_base_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file_name); // theme without file extension
+		
+		if(!empty($theme_description)) {
+			$sql->prepare("INSERT INTO `themes` (`name`, `description`, `basename`, `filename`, `filehash`) VALUES (?, ?, ?, ?, ?)",
+				array($theme_name, $theme_description, $theme_base_name, $file_name, $file_hash));
+		} else {
+			$sql->prepare("INSERT INTO `themes` (`name`, `basename`, `filename`, `filehash`) VALUES (?, ?, ?, ?)",
+				array($theme_name, $theme_base_name, $file_name, $file_hash));
+		}
+		printf("<li>Inserting `%s` into `themes`...</li>\n", htmlentities($theme_name));
+		if($sql->affectedrows() > 0) {
+			$inserted_rows += 1;
+		}
 	}
 }
+print "</ul>\n";
 
-file_put_contents("themes_serial.txt", serialize($newlist));
+$theme_count = $sql->resultq("SELECT COUNT(*) FROM `themes`;");
+print "<p><strong>Currently installed themes: </strong>$theme_count</p>\n";
 
-print "We now have ".count($newlist)." themes.";
+print "</td>\n";
+print "</tr>\n";
+print "</table>\n";
+
 
 pagefooter();
-
 ?>

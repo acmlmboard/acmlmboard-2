@@ -421,15 +421,17 @@ function itemselect($field, $current, $cat) {
 function themelist() {
 	global $sql, $loguser;
 
-	$t = $sql->query("SELECT `theme`, COUNT(*) AS 'count' FROM `users` GROUP BY `theme`");
-	while ($x = $sql->fetch($t))
+	$themeuser = array();
+	$t = $sql->query("SELECT `theme`, COUNT(*) AS `count` FROM `users` GROUP BY `theme`");
+	while ($x = $sql->fetch($t)) {
 		$themeuser[$x['theme']] = intval($x['count']);
-
-	$themes = unserialize(file_get_contents("themes_serial.txt"));
+	}
+	
 	$themelist = array();
-	foreach ($themes as $t) {
-		$themeusers = isset($themeuser[$t[1]]) ? $themeuser[$t[1]] : 0;
-		$themelist[$t[1]] = $t[0] . ($themeusers ? (" [$themeusers user" . ($themeusers == 1 ? "" : "s") . "]") : "");
+	$result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0;");
+	while($row = $sql->fetch($result)) {
+		$themeusers = isset($themeuser[$row['basename']]) ? $themeuser[$row['basename']] : 0;
+		$themelist[$row['basename']] = $row['name'] . ($themeusers ? (" [$themeusers user" . ($themeusers == 1 ? "" : "s") . "]") : "");
 	}
 
 	return $themelist;

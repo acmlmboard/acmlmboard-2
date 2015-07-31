@@ -35,8 +35,6 @@ class mysql {
 			} else {
 				$this->rowst += $this->db->affected_rows;
 			}
-		} else {
-			$error = $this->error();
 		}
 		
 		if ($this->debug_mode) {
@@ -95,6 +93,10 @@ class mysql {
 	function prepare($query, $phs = array()) {
 		return $this->query($this->preparesql($query, $phs));
 	}
+	
+	function native_prepare($query) {
+		return $this->db->prepare($query);
+	}
 
 	function fetch($result) {
 		$start = usectime();
@@ -119,6 +121,7 @@ class mysql {
 				$res = $fetched_row[$col];
 				$this->rowsf++;
 			}
+			$result->free();
 		}
 
 		$this->time+=usectime() - $start;
@@ -130,6 +133,7 @@ class mysql {
 			if($row = $this->fetch($result)) {
 				return $row;
 			}
+			$result->free();
 		}
 		return null;
 	}

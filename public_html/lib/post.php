@@ -188,7 +188,7 @@ function postfilter($msg, $nosmilies = 0) {
 	$msg = preg_replace("'\[quote=(.*?)\]'si", '<blockquote><span class="quotedby"><i>Posted by \\1</i></span><hr>', $msg);
 	$msg = preg_replace("'>>([0-9]+)'si", '>><a href=thread.php?pid=\\1#\\1>\\1</a>', $msg);
 	//dynamically convert SSL and non-SSL links
-	if (isssl()) {
+	if (is_ssl()) {
 		$msg = str_replace($config['base'], $config['sslbase'], $msg);
 	} else {
 		$msg = str_replace($config['sslbase'], $config['base'], $msg);

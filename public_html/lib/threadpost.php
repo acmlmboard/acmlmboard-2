@@ -35,10 +35,11 @@ function threadpost($post, $type, $pthread = '') {
 	//$post['text'] = $post['text'] . $signsep[$loguser['signsep']]; // I could find 'head' or 'sign' anywhere, and they appear to be appended below.
 
 	//This allows config level enable or disable of syndromes.
-	if ($syndromenable == 1)
+	if ($syndromenable == 1) {
 		$actsyn = $sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=" . $post['uid'] . " AND date>" . (ctime() - 86400)), 0, 0);
-	else
+	} else {
 		$actsyn = 0;
+	}
 
 	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
 	$post['utitle'] = $post['ranktext']

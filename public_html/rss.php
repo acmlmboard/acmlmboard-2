@@ -7,7 +7,7 @@ require 'lib/common.php';
 $thread = isset($_GET['thread']) ? (int)$_GET['thread'] : 0;
 $forum = isset($_GET['forum']) ? (int)$_GET['forum'] : 0;
 
-if (isssl()) {
+if (is_ssl()) {
 	$config['base'] = $config['sslbase'];
 }
 

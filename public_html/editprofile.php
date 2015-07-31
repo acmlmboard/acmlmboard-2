@@ -106,8 +106,9 @@ if ($act == 'Edit profile') {
 			}
 		}
 	}
-	if ($_POST['minipicdel'])
+	if (isset($_POST['minipicdel'])) {
 		$minipic = "\"\"";
+	}
 	$usepic = 'usepic';
 	$fname = $_FILES['picture'];
 	if ($fname['size'] > 0) {
@@ -140,7 +141,9 @@ if ($act == 'Edit profile') {
 	$pass = $_POST['pass'];
 	if (!strlen($_POST['pass2']))
 		$pass = "";
-	$tztotal = $_POST['tzoffH'] * 3600 + $_POST['tzoffM'] * 60 * ($_POST['tzoffH'] < 0 ? -1 : 1);
+
+	// this isn't even being submitted anymore...
+	//$tztotal = $_POST['tzoffH'] * 3600 + $_POST['tzoffM'] * 60 * ($_POST['tzoffH'] < 0 ? -1 : 1);
 	//Validate birthday values.
 	if (!$_POST['birthM'] || !$_POST['birthD']) //Reject if any are missing.
 		$birthday = -1;
@@ -228,7 +231,7 @@ if ($act == 'Edit profile') {
 					. " WHERE `id` = $user[id]"
 			);
 
-		  $banreason = ””;
+		  $banreason = '';
 		  if($_POST['title']) $banreason = "`title` = 'Banned permanently: {$_POST['title']}', ";
 		  else $banreason = "`title` = 'Banned permanently', ";
 
@@ -294,7 +297,7 @@ if ($act == 'Edit profile') {
 				. setfield('posttoolbar') . ','
 				. (has_perm("show-online") || has_perm("edit-user-show-online") ? (setfield('hidden') . ',') : '')
 				. setfield('timezone') . ','
-				. "tzoff=$tztotal,"
+//				. "tzoff=$tztotal,"
 				. "birth='$birthday',"
 				. "usepic=$usepic,"
 				. "minipic=$minipic,"
@@ -403,12 +406,13 @@ if (empty($act)) {
 " . fieldrow('Password', $passinput) . "
 ";
 
-	if (has_perm("edit-users"))
+	if (has_perm("edit-users")) {
 		print
 				catheader('Administrative bells and whistles') . "
 " . fieldrow('Group', fieldselect('group_id', $user['group_id'], $listgroup)) . "
 " . (($user['tempbanned'] > 0) ? fieldrow('Ban Information', '<input type=checkbox name=permaban value=1 id=permaban><label for=permaban>Make ban permanent</label>') : "" ) . "
 ";
+	}
 
 	print
 			catheader('Appearance') . "
@@ -419,7 +423,7 @@ if (empty($act)) {
 " . (checkcusercolor($targetuserid) ? fieldrow('Custom username color', $colorinput) : "" ) . "
 ";
 
-	if (has_perm("edit-users"))
+	if (has_perm("edit-users")) {
 		print catheader('RPG Stats') . "
   " . fieldrow('Coins', fieldinputrpg(9, 7, 'GP')) . "
   " . fieldrow('Frog Coins', fieldinputrpg(9, 7, 'gcoins')) . "
@@ -430,6 +434,7 @@ if (empty($act)) {
   " . fieldrow('Boots', itemselect('eq5', $userrpgdata['eq5'], 5)) . "
   " . fieldrow('Accessory', itemselect('eq6', $userrpgdata['eq6'], 6)) . "
   ";
+	}
 
 	print
 			catheader('Personal information') . "

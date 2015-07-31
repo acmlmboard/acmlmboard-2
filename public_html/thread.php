@@ -70,26 +70,26 @@ if ($ppp < 0 || $ppp > 1000000000000000) {
 	error("Error", "Invalid posts per page number");
 }
 
-$tid			= isset($_REQUEST['id'])	? (int)$_REQUEST['id'] : 0;
+$tid			= isset($_REQUEST['id'])	? (int)$_REQUEST['id'] : -1;
 
-$uid			= isset($_GET['user'])		? (int)$_GET['user'] : 0;
-$timeval		= isset($_GET['time'])		? (int)$_GET['time'] : 0;
-$announcefid	= isset($_GET['announce'])	? (int)$_GET['announce'] : 0;
-$pid			= isset($_GET['pid'])		? (int)$_GET['pid'] : 0;
+$uid			= isset($_GET['user'])		? (int)$_GET['user'] : -1;
+$timeval		= isset($_GET['time'])		? (int)$_GET['time'] : -1;
+$announcefid	= isset($_GET['announce'])	? (int)$_GET['announce'] : -1;
+$pid			= isset($_GET['pid'])		? (int)$_GET['pid'] : -1;
 
-if ($tid > 0) {
+if ($tid != -1) {
 	$viewmode = "thread";
-} elseif ($uid > 0) {
+} elseif ($uid != -1) {
 	$viewmode = "user";
-} elseif ($timeval > 0) {
+} elseif ($timeval != -1) {
 	$viewmode = "time";
-} elseif ($announcefid > 0) {
+} elseif ($announcefid != -1) {
 	$viewmode = "announce";
 } elseif (isset($_GET['deletedposts'])) {
 	$viewmode = "deletedposts";
 } elseif (isset($_GET['alldeletedposts'])) {
 	$viewmode = "alldeletedposts";
-} elseif ($pid > 0) {
+} elseif ($pid != -1) {
 	// "link" support (i.e., thread.php?pid=999whatever)
 	$numpid = $sql->fetchq("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
 	if (!$numpid) {
@@ -753,6 +753,11 @@ while ($post = $sql->fetch($posts)) {
 			continue;
 		}
 	}
+	// I dunno.... :-/
+	if (!isset($thread['forum'])) {
+		$thread['forum'] = $post['fid'];
+	}
+
 	$pthread = array();
 	if ($uid || $timeval) {
 		$pthread['id'] = $post['tid'];
@@ -764,6 +769,7 @@ while ($post = $sql->fetch($posts)) {
 	} else {
 		$post['maxrevision'] = $sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$pin");
 	}
+	
 	if (can_edit_forum_posts($thread['forum']) && $post['id'] == $pin) {
 		$post['deleted'] = false;
 	}

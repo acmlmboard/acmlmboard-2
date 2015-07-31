@@ -13,9 +13,9 @@ if (!has_perm('edit-smilies')) {
 	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 }
 
-$id = $r['id'];
+$id = isset($r['id']) ? $r['id'] : 0;
 
-if ($r['action'] == "del") {
+if (isset($r['action']) && $r['action'] == "del") {
 	unset($r['action']);
 	$smiliey = $sql->fetchp('SELECT * FROM smilies WHERE text=?', array($id));
 	if (!$id)

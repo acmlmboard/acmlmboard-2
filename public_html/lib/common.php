@@ -5,9 +5,9 @@ require "lib/function.php";
 header("Content-type: text/html; charset=utf-8");
 
 //[Scrydan] Added these three variables to make editing quicker.
-$boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
+$boardprog = "Acmlm, Emuz, <a href=\"credits.php\">et al</a>.";
 $abdate = "7/13/2015";
-$abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
+$abversion = "2.6.0 <span style=\"color: #EE4444; font-style: italic;\">Experimental</span>";
 
 if ($config['sqlconfig']) {
 
@@ -57,24 +57,12 @@ if ($config['sqlconfig']) {
 	unset($configsql);
 }
 
-$userip = $_SERVER['REMOTE_ADDR'];
-$userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
-$url = getenv("SCRIPT_NAME");
-if ($q = getenv("QUERY_STRING"))
-	$url.="?$q";
+$userip		= $_SERVER['REMOTE_ADDR'];
+$userfwd	= isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? addslashes($_SERVER['HTTP_X_FORWARDED_FOR']) : ''; //We add slashes to that because the header is under users' control
+$url		= isset($_SERVER['SCRIPT_NAME']) ? addslashes($_SERVER['SCRIPT_NAME']) : '';
+$url		.= !empty($_SERVER["QUERY_STRING"]) ? $_SERVER["QUERY_STRING"] : '';
 
 require "lib/login.php";
-
-$a = $sql->fetchq("SELECT `intval`,`txtval` FROM `misc` WHERE `field`='lockdown'");
-if ($a['intval']) {
-	//lock down
-	if (has_perm('bypass-lockdown'))
-		print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
-	else { //Everyone else gets the wonderful lockdown page.
-		include "lib/locked.php";
-		die();
-	}
-}
 
 if (!$log) {
 	$loguser = array();
@@ -90,8 +78,9 @@ if (!$log) {
 	$loguser['ppp'] = 20;
 	$loguser['tpp'] = 20;
 
-	if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE 6.0") !== false)
+	if (strpos($_SERVER['HTTP_USER_AGENT'], "MSIE 6.0") !== false) {
 		$loguser['theme'] = "minerslament";
+	}
 
 	$loguser['blocksprites'] = 1;
 }
@@ -108,19 +97,21 @@ if ($loguser['id'] == $flocalmod['uid']) {
 require "lib/timezone.php";
 dobirthdays(); //Called here to account for timezone bugs.
 
-if ($loguser['ppp'] < 1)
+if ($loguser['ppp'] < 1) {
 	$loguser['ppp'] = 20;
-if ($loguser['tpp'] < 1)
+}
+if ($loguser['tpp'] < 1) {
 	$loguser['tpp'] = 20;
+}
 
 //2007-02-19 blackhole89 - needs to be here because it requires loguser data
 require "lib/ipbans.php";
 
 //Unban users whose tempbans have expired. - SquidEmpress
-$defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+$defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default` = 1");
 $sql->query('UPDATE users SET group_id=' . $defaultgroup . ', title="", tempbanned="0" WHERE tempbanned<' . ctime() . ' AND tempbanned>0');
 
-$dateformat = "$loguser[dateformat] $loguser[timeformat]";
+$dateformat = "{$loguser['dateformat']} {$loguser['timeformat']}";
 
 $bots = array();
 $bota = $sql->query("SELECT `bot_agent` FROM `robots`");
@@ -143,9 +134,9 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
 			sendirc("{irccolor-base}" . get_irc_groupname($loguser['group_id']) . " {irccolor-name}" . ($loguser['displayname'] ? $loguser['displayname'] : $loguser['name']) . "{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}", $config['staffchan']);
 		}
 
-		$sql->query("UPDATE `users` SET `lastview`=" . ctime() . ",`ip`='$userip', `ipfwd`='$userfwd', `url`='" . (isssl() ? "!" : "") . addslashes($url) . "', `ipbanned`='0' WHERE `id`='$loguser[id]'");
+		$sql->query("UPDATE `users` SET `lastview`=" . ctime() . ",`ip`='$userip', `ipfwd`='$userfwd', `url`='" . (is_ssl() ? "!" : "") . addslashes($url) . "', `ipbanned`='0' WHERE `id`='$loguser[id]'");
 	} else {
-		$sql->query('INSERT INTO `guests` (`date`, `ip`, `url`, `useragent`, `bot`) VALUES (' . ctime() . ",'$userip','" . (isssl() ? "!" : "") . addslashes($url) . "', '" . addslashes($_SERVER['HTTP_USER_AGENT']) . "', '$bot')");
+		$sql->query('INSERT INTO `guests` (`date`, `ip`, `url`, `useragent`, `bot`) VALUES (' . ctime() . ",'$userip','" . (is_ssl() ? "!" : "") . addslashes($url) . "', '" . addslashes($_SERVER['HTTP_USER_AGENT']) . "', '$bot')");
 	}
 
 	//[blackhole89]
@@ -241,8 +232,9 @@ if ($config['userpgnumdefault'])
 $statusimageset = '';
 
 if ($config['userpgnum'] || $config['alwaysshowlvlbar']) {
-	if (is_file("theme/" . $theme . "/rpg/0.png"))
+	if (is_file("theme/" . $theme . "/rpg/0.png")) {
 		$rpgimageset = "theme/" . $theme . "/rpg/";
+	}
 }
 
 $statusimageset = '';
@@ -317,7 +309,7 @@ function pageheader($pagetitle = "", $fid = 0) {
 
 	$feedicons .= feedicon("img/rss.png", "rss.php");
 
-	if (isssl()) {
+	if (is_ssl()) {
 		$ssllnk = "<img src=\"img/sslon.gif\" title=\"SSL enabled\">";
 	} else if (!$config['showssl']) {
 		$ssllnk = "";
@@ -348,7 +340,9 @@ function pageheader($pagetitle = "", $fid = 0) {
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
 	  <script type=\"text/javascript\" src=\"//code.jquery.com/jquery-1.11.3.min.js\"></script>
       </head>
-      <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs";
+      <body style=\"font-size: {$loguser['fontsize']}%\" onload=\"prettyPrint()\">";
+	
+	print "$dongs\n";
 	
 	if (ini_get("register_globals")) {
 		print "<span style=\"color: red;\"> Warning: register_globals is enabled.</style>";
@@ -419,8 +413,9 @@ function pageheader($pagetitle = "", $fid = 0) {
 " . "  </table>
 " . "  <br>
 ";
-		} else
+		} else {
 			$oldpmsgbox = '';
+		}
 
 		if (!$config['disablemodernpms'] && has_perm('view-own-pms')) {
 			if ($unreadpms) {
@@ -439,24 +434,28 @@ function pageheader($pagetitle = "", $fid = 0) {
 
 	//mark forum read
 	checknumeric($fid);
-	if ($fid)
+	if ($fid) {
 		$markread = array("url" => "index.php?action=markread&fid=$fid", "title" => "Mark forum read");
-	else
+	} else {
 		$markread = array("url" => "index.php?action=markread&fid=all", "title" => "Mark all forums read");
+	}
 
 	$userlinks = array();
 	$ul = 0;
 
 	if (!$log) {
-		if (has_perm("register"))
+		if (has_perm("register")) {
 			$userlinks[$ul++] = array('url' => "register.php", 'title' => 'Register');
-		if (has_perm("view-login"))
+		}
+		if (has_perm("view-login")) {
 			$userlinks[$ul++] = array('url' => "login.php", 'title' => 'Login');
-	}
-	else {
-		if (has_perm("logout"))
+		}
+	} else {
+		if (has_perm("logout")) {
 			$userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+		}
 	}
+	
 	if ($log) {
 		if (has_perm("update-own-profile"))
 			$userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
@@ -574,13 +573,13 @@ function pageheader($pagetitle = "", $fid = 0) {
 			else
 				$p = "(";
 			//Patch to fix 2 digit birthdays. Needs retooled to a modern datetime system. -Emuz
-			if ($b['2'] <= 99 && $b['2'] > 15)
+			if ($b['2'] <= 99 && $b['2'] > 15) {
 				$y = date("Y") - ($b['2'] + 1900) . ")";
-			else if ($b['2'] <= 14 && $b['2'] > 0)
+			} else if ($b['2'] <= 14 && $b['2'] > 0) {
 				$y = date("Y") - ($b['2'] + 2000) . ")";
-			else if ($b['2'] <= 0 && $b['2'] > -2)
+			} else if ($b['2'] <= 0 && $b['2'] > -2) {
 				$y = "";
-			else
+			} else
 				$y = date("Y") - $b[2] . ")";
 			$birthdays[] = userlink($user) . " " . $p . "" . $y;
 		}

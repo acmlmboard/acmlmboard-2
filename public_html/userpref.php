@@ -3,20 +3,15 @@
 require 'lib/function.php';
 require 'lib/login.php';
 
+$field = isset($_GET['field']) ? $_GET['field'] : '';
+$value = isset($_GET['value']) ? (int)$_GET['value'] : 0;
+
 $ret = -1;
 if ($log) {
 	if (has_perm('update-own-profile')) {
-		$field = $_GET['field'];
-		$value = $_GET['value'];
-		if ($field == 'hidequickreply') {
-			$dbfield = 'hidequickreply';
-			$dbvalue = $value;
-			checknumeric($value);
-			if ($value != 0 && $value != 1) $value = 0;
-		}
-		else $dbfield = 0;
-		if ($dbfield) {
-			$sql->prepare("UPDATE `users` SET `$dbfield`=? WHERE id=?",array($dbvalue,$loguser['id']));
+		$whitelisted_fields = array('hidequickreply');
+		if (in_array($field, $whitelisted_fields)) {
+			$sql->prepare("UPDATE `users` SET `$field` = ? WHERE id= ?", array($value, $loguser['id']));
 			$ret = 0;
 		}
 	}

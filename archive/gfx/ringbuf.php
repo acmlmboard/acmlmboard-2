@@ -7,10 +7,15 @@ class ringbuf {
 	public $buf = array();
 
 	function push($a) {
+		/*
+		// what the hell is this crap?
 		for ($i = ($this->size - 1); $i >= 0;  --$i) {
 			$this->buf[$i + 1] = $this->buf[$i];
 		}
 		$this->buf[0] = $a;
+		*/
+		array_unshift($this->buf, $a);
+		var_dump($this->buf);
 		if ($this->fill < $this->size)
 			$this->fill++;
 	}

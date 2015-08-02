@@ -23,11 +23,12 @@ imagefilledrectangle($im, 0, 0, 960, 340, $cblank);
 imagealphablending($im, TRUE);
 for ($i = 0; $i < 320; $i+=20) {
 	imagefilledrectangle($im, 0, $i, 960, $i + 9, $ch1);
-	imagettftext($im, 7, 0, 906, $i + 14, $cwhite, "verdana.ttf", (310 - $i) * 2);
+	imagettftext($im, 7, 0, 906, $i + 14, $cwhite, dirname(__FILE__) . "/verdana.ttf", (310 - $i) * 2);
 	imagefilledrectangle($im, 896, $i + 10, 900, $i + 10, $cwhite);
 }
-for ($i = 0; $i < 960; $i+=128)
+for ($i = 0; $i < 960; $i+=128) {
 	imagefilledrectangle($im, $i, 0, $i + 64, 320, $ch1);
+}
 imagealphablending($im, FALSE);
 imagefilledrectangle($im, 0, 320, 960, 340, $ch2);
 
@@ -51,7 +52,7 @@ while ($day = $sql->fetch($stats)) {
 	imageline($im, $x - 1, 320 - $yold / 2, $x - 0, 320 - $abuf->get() / 2, $c2);
 
 	if (!(($x - 1) % 64)) {
-		imagettftext($im, 7, 0, $x, 10, $cwhite, "/var/sites/acmlmboard/board/gfx/verdana.ttf", $day[date]);
+		imagettftext($im, 7, 0, $x, 10, $cwhite, dirname(__FILE__)."/verdana.ttf", $day[date]);
 	}
 
 	$users = $day['users'];

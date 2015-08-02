@@ -1,12 +1,13 @@
 <?php
 $start_memory_usage = memory_get_usage(false);
+$start = microtime(true);
 require "lib/function.php";
 
 header("Content-type: text/html; charset=utf-8");
 
 //[Scrydan] Added these three variables to make editing quicker.
 $boardprog = "Acmlm, Emuz, <a href=\"credits.php\">et al</a>.";
-$abdate = "7/13/2015";
+$abdate = "8/2/2015";
 $abversion = "2.6.0 <span style=\"color: #EE4444; font-style: italic;\">Experimental</span>";
 
 if ($config['sqlconfig']) {
@@ -94,7 +95,8 @@ if ($loguser['id'] == $flocalmod['uid']) {
 	}
 }
 
-require "lib/timezone.php";
+date_default_timezone_set($loguser['timezone']);
+
 dobirthdays(); //Called here to account for timezone bugs.
 
 if ($loguser['ppp'] < 1) {

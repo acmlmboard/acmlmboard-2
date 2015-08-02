@@ -4,17 +4,14 @@ require 'lib/classes/request.php';
 require 'lib/classes/forum.php';
 require 'lib/classes/actionrouter.php';
 
-require 'lib/datetime.php';
-require 'lib/request.php';
+require 'lib/helpers.php';
 require 'lib/layout.php';
 require 'lib/config.php';
 require 'lib/database.php';
 require 'lib/perm.php';
-require 'lib/helpers.php';
 require 'lib/thread.php';
 require 'lib/auth.php';
 require 'lib/user.php';
-require 'lib/smilies.php';
 require 'lib/post.php';
 require 'lib/syndrome.php';
 require 'lib/board.php';

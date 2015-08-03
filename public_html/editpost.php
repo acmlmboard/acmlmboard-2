@@ -45,7 +45,7 @@ $thread = $sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.private fpri
 if (!$thread)
 	$pid = 0;
 if ($act != "Submit") { //Classical Redirect
-	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>";
 }
 $toolbar = posttoolbar();
 

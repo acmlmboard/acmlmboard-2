@@ -24,7 +24,7 @@ $thread = $sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.private fpri
 if (!$thread)
 	$pid = 0;
 if ($act != "Submit") {
-	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>";
 } else if (!can_edit_post(array('user' => $thread['puser'], 'tforum' => $thread['forum']))) {
 	error("Error", "<a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>");
 } elseif ($pid == -1) {

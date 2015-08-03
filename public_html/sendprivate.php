@@ -7,7 +7,7 @@
   needs_login(1);
 
   if($act!="Submit"){
-    echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+    echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>";
   }
 
   $top='<a href=./>Main</a> '

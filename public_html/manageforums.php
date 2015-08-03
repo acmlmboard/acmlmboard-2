@@ -230,7 +230,7 @@ else if ($_POST['delchan'])
 pageheader('Forum management');
 
 ?>
-<script type="text/javascript" src="manageforums.js"></script>
+<script type="text/javascript" src="js/manageforums.js"></script>
 <script type="text/javascript" src="jscolor/jscolor.js"></script>
 <style type="text/css">label { white-space: nowrap; } input:disabled { opacity: 0.5; }</style>
 <?php

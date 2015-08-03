@@ -59,12 +59,12 @@ else
 	$forum = $sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN " . forums_with_view_perm());
 
 if ($act != "Submit") {
-	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>";
 	$toolbar = posttoolbar();
 
 	if ($ispoll) {
 		echo '<script type="text/javascript" src="jscolor/jscolor.js"></script>';
-		echo '<script type="text/javascript" src="polleditor.js"></script>';
+		echo '<script type="text/javascript" src="js/polleditor.js"></script>';
 		$optfield = '<div><input type="text" name="opt[]" size=40 maxlength=40 value="%s"> - Color: <input class="color" name="col[]" value="%02X%02X%02X"> - <button class="submit" onclick="removeOption(this.parentNode);return false;">Remove</button></div>';
 	}
 }

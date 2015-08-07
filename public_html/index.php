@@ -72,7 +72,7 @@ if ($log && $action == 'markread') {
 pageheader();
 
 $categs = $sql->query("SELECT * FROM categories ORDER BY `ord`, `id`");
-while ($c = $sql->fetch($categs)) {
+while ($c = $sql->fetch_assoc($categs)) {
 	if (can_view_cat($c)) {
 		$categ[$c['id']] = $c;
 	}
@@ -82,7 +82,7 @@ while ($c = $sql->fetch($categs)) {
 //Unfortunately, this place is too hairy to add the trick to so I'll have to use a third query to collect the ignores. The first is categories. The second is the forum list itself.
 $ignores = array();
 $ignoreQ = $sql->query("SELECT * FROM ignoredforums WHERE uid = " . $loguser['id']);
-while ($i = $sql->fetch($ignoreQ)) {
+while ($i = $sql->fetch_assoc($ignoreQ)) {
 	$ignores[$i['fid']] = true;
 }
 
@@ -113,11 +113,11 @@ echo
 
 $lmods = array();
 $r = $sql->query("SELECT f.fid, " . userfields('u') . " FROM forummods f LEFT JOIN users u ON u.id=f.uid");
-while ($mod = $sql->fetch($r)) {
+while ($mod = $sql->fetch_assoc($r)) {
 	$lmods[$mod['fid']][] = $mod;
 }
 
-while ($forum = $sql->fetch($forums)) {
+while ($forum = $sql->fetch_assoc($forums)) {
 	if (!can_view_forum($forum))
 		continue;
 
@@ -135,7 +135,7 @@ while ($forum = $sql->fetch($forums)) {
 
 	if ($forum['lastdate'] > ($log ? $forum['rtime'] : ctime() - 3600)) {
 		if ($log) {
-			$thucount = $sql->resultq("SELECT count(*) FROM threads t"
+			$thucount = $sql->query_result("SELECT count(*) FROM threads t"
 					. " LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id])"
 					. " LEFT JOIN forumsread f ON (f.fid=t.forum AND f.uid=$loguser[id])"
 					. " WHERE t.forum=$forum[id]"

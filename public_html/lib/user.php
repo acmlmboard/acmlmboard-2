@@ -8,14 +8,14 @@ function dobirthdays() { //Function for calling after we get the timezone for th
 	// [Mega-Mario] Check for birthdays globally.
 	// Makes stuff like checking for rainbow usernames a lot easier.
 	$rbirthdays = $sql->query("SELECT `id` FROM `users` WHERE `birth` LIKE '" . date('m-d') . "%'");
-	while ($bd = $sql->fetch($rbirthdays))
+	while ($bd = $sql->fetch_assoc($rbirthdays))
 		$userbirthdays[$bd['id']] = true;
 	return;
 }
 
 function checkuser($name, $pass) {
 	global $sql;
-	$id = $sql->resultq("SELECT id FROM users WHERE (name='$name' OR displayname='$name') AND pass='$pass'");
+	$id = $sql->query_result("SELECT id FROM users WHERE (name='$name' OR displayname='$name') AND pass='$pass'");
 	if (!$id)
 		$id = 0;
 	return $id;
@@ -24,14 +24,14 @@ function checkuser($name, $pass) {
 function checkuid($userid, $pass) {
 	global $sql;
 	checknumeric($userid);
-	$user = $sql->fetchq("SELECT * FROM users WHERE id=$userid AND pass='" . addslashes($pass) . "'");
+	$user = $sql->query_fetch("SELECT * FROM users WHERE id=$userid AND pass='" . addslashes($pass) . "'");
 	return $user;
 }
 
 function checkctitle($uid) {
 	global $sql, $loguser;
 
-	$defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+	$defaultgroup = $sql->query_result("SELECT id FROM `group` WHERE `default`=1");
 
 	if (!$loguser['id'])
 		return false;
@@ -90,7 +90,7 @@ function checkcusercolor($uid) {
 function checkcdisplayname($uid) {
 	global $sql, $loguser, $config;
 
-	$defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default` = 1");
+	$defaultgroup = $sql->query_result("SELECT id FROM `group` WHERE `default` = 1");
 
 	if (!$config['displayname'])
 		return false;
@@ -252,7 +252,7 @@ function getrank($set, $posts) {
 	}
 
 	if ($set) {
-		$d = $sql->fetchq("SELECT str FROM ranks WHERE rs=$set AND p<=$posts ORDER BY p DESC LIMIT 1");
+		$d = $sql->query_fetch("SELECT str FROM ranks WHERE rs=$set AND p<=$posts ORDER BY p DESC LIMIT 1");
 		$rankcache[$set][$posts] = $d['str'];
 		return $d['str'];
 	}
@@ -313,7 +313,7 @@ function userfields($tbl = '', $pf = '') {
 
 function userlink_by_id($uid, $usemini = '') {
 	global $sql;
-	$u = $sql->fetchp("SELECT " . userfields() . ",minipic FROM users WHERE id=?", array($uid));
+	$u = $sql->prepare_query_fetch("SELECT " . userfields() . ",minipic FROM users WHERE id=?", array($uid));
 	$u['showminipic'] = $usemini;
 	return userlink($u);
 }

@@ -14,7 +14,7 @@ checknumeric($pid);
 
 needs_login(1);
 
-$thread = $sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
+$thread = $sql->query_fetch('SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
 		. 'FROM posts p '
 		. 'LEFT JOIN threads t ON t.id=p.thread '
 		. 'LEFT JOIN forums f ON f.id=t.forum '
@@ -44,12 +44,12 @@ $res = $sql->query("SELECT u.id, p.user, p.mood, p.nolayout, pt.text "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "WHERE p.id=$pid");
 
-if (@$sql->numrows($res) < 1) {
+if (@$sql->num_rows($res) < 1) {
 	error("Error", "<a href=http://board.kafuka.org/profile.php?id=156><span class=nc12 style=color:#FF3399;>SquidEmpress</span></a> decided to put this message here because she felt like it.<br> <a href=./>Back to main</a>");
 }
 
 
-$post = $sql->fetch($res);
+$post = $sql->fetch_assoc($res);
 if (!$act) {
 	pageheader('Edit announcement title', $thread['forum']);
 	print "$top

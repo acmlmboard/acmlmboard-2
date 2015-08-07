@@ -217,12 +217,12 @@ function set_irc_style($fcolor, $bcolor, $style) {
 
 function get_irc_displayname() {
 	global $loguser, $config, $sql, $irccolor;
-	$q = $sql->fetch($sql->query("SELECT `char`,`irc_color` FROM `group` WHERE id=$loguser[group_id]"));
+	$q = $sql->fetch_assoc($sql->query("SELECT `char`,`irc_color` FROM `group` WHERE id=$loguser[group_id]"));
 	$group_prefix = $q['char'];
 	$group_color = $q['irc_color'];
 
 	//Since $loguser[sex] give me nothing..
-	$qu = $sql->fetch($sql->query("SELECT `sex` FROM users WHERE id=$loguser[id]"));
+	$qu = $sql->fetch_assoc($sql->query("SELECT `sex` FROM users WHERE id=$loguser[id]"));
 	$sex = $qu['sex'];
 
 	if ($group_prefix && $config['ircnickprefix']) {
@@ -254,7 +254,7 @@ function get_irc_displayname() {
 function get_irc_usercolor() {
 	//Note: This should/will be used to return more than just the logged in user. 
 	global $loguser, $sql;
-	$q = $sql->fetch($sql->query("SELECT `irc_color` FROM `group` WHERE id=$loguser[group_id]"));
+	$q = $sql->fetch_assoc($sql->query("SELECT `irc_color` FROM `group` WHERE id=$loguser[group_id]"));
 	$group_color = $q['irc_color'];
 
 	if ($group_color) {
@@ -267,7 +267,7 @@ function get_irc_usercolor() {
 function get_irc_groupname($gid) {
 	global $sql;
 
-	$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?", array($gid));
+	$group = $sql->prepare_query_fetch("SELECT * FROM `group` WHERE id=?", array($gid));
 	if (!$group['title']) {
 		return "";
 	} else {

@@ -14,7 +14,7 @@ pageheader("Edit Sprites");
 $spritecateg = array();
 $qspritecateg = $sql->query("SELECT `id`, `name` FROM `spritecateg`");
 
-while ($allspcquery = $sql->fetch($qspritecateg)) {
+while ($allspcquery = $sql->fetch_assoc($qspritecateg)) {
 	$spritecateg[$allspcquery['id']] = $allspcquery['name'];
 }
 $id = $r['id'];
@@ -22,10 +22,10 @@ $id = $r['id'];
 if ($r['action'] == "del") {
 	unset($r['action']);
 	if ($id > 0) {
-		$sprite = $sql->fetchp('SELECT * FROM sprites WHERE id=?', array($id));
+		$sprite = $sql->prepare_query_fetch('SELECT * FROM sprites WHERE id=?', array($id));
 		if (!$sprites)
 			$pagebar['message'] = "Unable to delete sprite: invalid sprite ID.";
-		else if ($sql->prepare('DELETE FROM sprites WHERE id=?', array($id))) {
+		else if ($sql->prepare_query('DELETE FROM sprites WHERE id=?', array($id))) {
 			$pagebar['message'] = "Sprite successfully deleted.";
 		} else {
 			$pagebar['message'] = "Unable to delete sprite.";
@@ -54,7 +54,7 @@ if (empty($r['action'])) {
 
 	$data = array();
 	$monReq = $sql->query("SELECT * FROM sprites ORDER BY id ASC");
-	while ($mon = $sql->fetch($monReq)) {
+	while ($mon = $sql->fetch_assoc($monReq)) {
 		$pics = explode("|", $mon['pic']);
 		$pic = $pics[0];
 		$actions = array(
@@ -89,7 +89,7 @@ if (empty($r['action'])) {
 
 		if ($r['action'] == "edit" && $id > 0) {
 
-			if ($sql->prepare('UPDATE sprites SET 
+			if ($sql->prepare_query('UPDATE sprites SET 
 name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? WHERE id=?;', array(
 						$s['name'],
 						$s['franchiseid'],
@@ -107,7 +107,7 @@ name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? WHERE id=?;'
 				$pagebar['message'] = "Unable to update  sprite.";
 			}
 		} elseif ($r['action'] == "new") {
-			if ($sql->prepare('INSERT INTO sprites SET
+			if ($sql->prepare_query('INSERT INTO sprites SET
 name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? ;', array(
 						$s['name'],
 						$s['franchiseid'],
@@ -119,7 +119,7 @@ name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? ;', array(
 						$s['rarity'],
 							)
 					)) {
-				$id = $sql->insertid();
+				$id = $sql->insert_id();
 				$r['action'] = "edit";
 				$pagebar['message'] = "Sprite successfully created.";
 			} else {
@@ -133,7 +133,7 @@ name=?,franchiseid=?,pic=?,alt=?,anchor=?,title=?,flavor=?,rarity=? ;', array(
 
 
 	if ($id > 0) {
-		$t = $sql->fetchp('SELECT * FROM sprites WHERE id=?', array($id));
+		$t = $sql->prepare_query_fetch('SELECT * FROM sprites WHERE id=?', array($id));
 		if (!$t) {
 			noticemsg("Error", "Invalid sprite ID");
 			pagefooter();

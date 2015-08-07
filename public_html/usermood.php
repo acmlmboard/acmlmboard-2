@@ -35,9 +35,9 @@ if ($targetuserid == 0) {
 $id = (isset($_GET['i']) ? $_GET['i'] : (isset($_POST['aid']) ? $_POST['aid'] : -1 ));
 $id = (int) $id;
 
-$activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user` = $targetuserid and `id`=" . $id . " union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
+$activeavatar = $sql->query_fetch("select `id`,`label`,`url`,`local`,1 `existing` from `mood` where `user` = $targetuserid and `id`=" . $id . " union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
 $avatars = $sql->query("select * from `mood` where `user`= " . $targetuserid . " ");
-$numavatars = $sql->resultq("select count(*) from `mood` where `user` = " . $targetuserid);
+$numavatars = $sql->query_result("select count(*) from `mood` where `user` = " . $targetuserid);
 
 if (isset($_POST['a']) && $_POST['a'][0] == 'D' && $activeavatar['existing']) {
 	$sql->query("delete from mood where id= " . $id . " and user = " . $targetuserid);
@@ -47,7 +47,7 @@ if (isset($_POST['a']) && $_POST['a'][0] == 'D' && $activeavatar['existing']) {
 if (isset($_POST['a']) && $_POST['a'][0] == 'S' && ($numavatars < 64 || $activeavatar['existing'])) {
 	//vet the image
 	$islocal = ($_POST['islocal'] != 'on' ? 1 : 0);
-	$avatarid = ($activeavatar['existing'] == 1 ? $id : $sql->resultq("select (id + 1) nid from `mood` where user = " . $targetuserid . " union select 1 nid order by nid  desc"));
+	$avatarid = ($activeavatar['existing'] == 1 ? $id : $sql->query_result("select (id + 1) nid from `mood` where user = " . $targetuserid . " union select 1 nid order by nid  desc"));
 	if ($islocal && $fname = $_FILES['picture']['name']) {
 		$fext = strtolower(substr($fname, -4));
 		$error = '';
@@ -130,11 +130,11 @@ if (isset($_POST['a']) && $_POST['a'][0] == 'S' && ($numavatars < 64 || $activea
 	}
 }
 
-$activeavatar = $sql->fetchq("select `id`,`label`,`url`,`local`, 1 `existing` from `mood` where `user`= " . $targetuserid . " and `id`=" . addslashes($id) . " union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
-$numavatars = $sql->resultq("select count(*) from `mood` where `user`= " . $targetuserid . " ");
+$activeavatar = $sql->query_fetch("select `id`,`label`,`url`,`local`, 1 `existing` from `mood` where `user`= " . $targetuserid . " and `id`=" . addslashes($id) . " union select 0 `id`, '(Label)' `label`, '' `url`, 1 `local`, 0 `existing`");
+$numavatars = $sql->query_result("select count(*) from `mood` where `user`= " . $targetuserid . " ");
 $avatars = $sql->query("select * from `mood` where `user`=" . $targetuserid);
 if ($target) {
-	$targetname = $sql->resultq("select `name` from `users` where `id`='$targetuserid'");
+	$targetname = $sql->query_result("select `name` from `users` where `id`='$targetuserid'");
 }
 
 // Moved pageheader here so that I can do header()s without everything going haywire up again
@@ -153,7 +153,7 @@ print "<form id=\"f\" action=\"usermood.php$targetgeta\" enctype=\"multipart/for
 " . "  <tr>
 " . "    <td class=\"b n1\" style=\"vertical-align: top\" rowspan='4'>";
 
-while ($row = $sql->fetch($avatars)) {
+while ($row = $sql->fetch_assoc($avatars)) {
 	print "<a href=\"?a=e&i=$row[id]$targetget\">" . stripslashes($row['label']) . "</a><br>";
 }
 

@@ -39,7 +39,7 @@ if ($r['action'] == "del") {
 	if ((is_root_gid($id) || !can_edit_group_assets($id) && $id != $loguser['group_id']) && !has_perm('no-restrictions')) {
 		$pagebar['message'] = "You do not have the permissions to revoke this group.";
 	} else if ($id > 0) {
-		if ($sql->prepare('DELETE FROM user_group WHERE user_id=? AND group_id=? LIMIT 1', array($uid, $id))) {
+		if ($sql->prepare_query('DELETE FROM user_group WHERE user_id=? AND group_id=? LIMIT 1', array($uid, $id))) {
 			$pagebar['message'] = "User successfully removed from group.";
 		} else {
 			$pagebar['message'] = "Unable to remove user from group.";
@@ -68,7 +68,7 @@ if (empty($r['action'])) {
 	$sndgReq = $sql->query("SELECT * FROM `group`
                        RIGHT JOIN `user_group` ON `group`.`id` = `user_group`.`group_id`
                        WHERE `user_group`.`user_id`='$uid'");
-	while ($sndg = $sql->fetch($sndgReq)) {
+	while ($sndg = $sql->fetch_assoc($sndgReq)) {
 
 		$actions = array(
 			/* array('title' => 'Edit','href' => 
@@ -99,7 +99,7 @@ if (empty($r['action'])) {
 
 		if ($r['action'] == "edit" && $id > 0) {
 
-			if ($sql->prepare('UPDATE user_groupf SET 
+			if ($sql->prepare_query('UPDATE user_groupf SET 
 badge_id=?,badge_var=?,user_id=? WHERE user_id=? AND id=?;', array(
 						$s['badge_id'],
 						$s['badge_var'],
@@ -114,8 +114,8 @@ badge_id=?,badge_var=?,user_id=? WHERE user_id=? AND id=?;', array(
 		} elseif ($r['action'] == "new") {
 			if ((is_root_gid($s['badge_id']) || !can_edit_group_assets($s['badge_id']) && $s['badge_id'] != $loguser['group_id']) && !has_perm('no-restrictions'))
 				$pagebar['message'] = "You do not have the permissions to assign this group.";
-			else if ($sql->prepare('INSERT INTO user_group SET user_id=?,group_id=?,sortorder=? ;', array( $uid, $s['badge_id'], 0))) {
-				$id = $sql->insertid();
+			else if ($sql->prepare_query('INSERT INTO user_group SET user_id=?,group_id=?,sortorder=? ;', array( $uid, $s['badge_id'], 0))) {
+				$id = $sql->insert_id();
 				$r['action'] = "edit";
 				$pagebar['message'] .= "Group successfully added.";
 			} else {
@@ -129,7 +129,7 @@ badge_id=?,badge_var=?,user_id=? WHERE user_id=? AND id=?;', array(
 
 
 	if ($id > 0) {
-		$t = $sql->fetchp('SELECT * FROM user_group WHERE user_id=? AND group_id=?', array($uid), array($id));
+		$t = $sql->prepare_query_fetch('SELECT * FROM user_group WHERE user_id=? AND group_id=?', array($uid), array($id));
 		$pagebar['title'] = $t['name'];
 		$pagebar['actions'] = array(
 			array('title' => 'Delete Badge', 'href' =>
@@ -166,7 +166,7 @@ badge_id=?,badge_var=?,user_id=? WHERE user_id=? AND id=?;', array(
 	$allbdg = array();
 	$qallbadges = $sql->query("SELECT `id`, `title` FROM `group`");
 
-	while ($allbdgquery = $sql->fetch($qallbadges)) {
+	while ($allbdgquery = $sql->fetch_assoc($qallbadges)) {
 		$allbdg[$allbdgquery['id']] = $allbdgquery['title'];
 	}
 

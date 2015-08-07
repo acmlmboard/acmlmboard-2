@@ -3,13 +3,13 @@
   $act=$_GET[a];
 
   if($act=='attack'){
-    $room=$sql->fetchq("SELECT * FROM rpgrooms WHERE id=$loguser[room]");
+    $room=$sql->query_fetch("SELECT * FROM rpgrooms WHERE id=$loguser[room]");
     if($room[turn]!=$uid)
       die();
 
     $users=$sql->query("SELECT * FROM usersrpg "
                       ."WHERE room=$loguser[room] AND side!=$loguser[side] AND hp>0");
-    $r=rand(0,$sql->numrows($users)-1);
+    $r=rand(0,$sql->num_rows($users)-1);
     while($u=$sql->fetch($users)){
       $r--;
       if($r<0){
@@ -30,7 +30,7 @@
     print "1 ";
     print "0 $t $dmg ";
 
-    $h=$sql->resultq("SELECT sum(hp) FROM usersrpg WHERE room=$loguser[room] AND side!=$loguser[side]");
+    $h=$sql->query_result("SELECT sum(hp) FROM usersrpg WHERE room=$loguser[room] AND side!=$loguser[side]");
     if($h>0){
       $turn1=0;
       $turn2=0;
@@ -68,7 +68,7 @@
   }
 
   if($act=='update'){
-    $room=$sql->fetchq("SELECT * FROM rpgrooms WHERE id=$loguser[room]");
+    $room=$sql->query_fetch("SELECT * FROM rpgrooms WHERE id=$loguser[room]");
 
     $users=$sql->query('SELECT *,'.sqlexp().' '
                       .'FROM users u '
@@ -79,7 +79,7 @@
     print "$room[turn] ";
 
     while($user=$sql->fetch($users)){
-      $user[name]=str_replace(' ',' ',$user[name]);
+      $user[name]=str_replace(' ','ï¿½',$user[name]);
       $st=getstats($user,$items);
 
       if($user[hp]<0) $user[hp]=$st[HP];

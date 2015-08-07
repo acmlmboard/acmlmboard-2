@@ -55,7 +55,7 @@ print "Active users on " . cdate($loguser['dateformat'], ctime() - $past * 86400
 ";
 $q = 1;
 $p = - 1;
-for ($i = 1; $user = $sql->fetch($users); $i++) {
+for ($i = 1; $user = $sql->fetch_assoc($users); $i++) {
 	if ($p != $user['num']) {
 		if ($q <= 5 && $i > 5) {
 			print "

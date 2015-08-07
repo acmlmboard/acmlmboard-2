@@ -13,7 +13,7 @@ require("lib/common.php");
   $spritecateg = array();
   $qspritecateg = $sql->query("SELECT `id`, `name` FROM `spritecateg`");
   
-  while ($allspcquery= $sql->fetch($qspritecateg))
+  while ($allspcquery= $sql->fetch_assoc($qspritecateg))
   { 
     $spritecateg[$allspcquery['id']]= $allspcquery['name'];
   
@@ -37,7 +37,7 @@ $headers = array
 
 $data = array();
 $scReq = $sql->query("SELECT * FROM spritecateg ORDER BY id ASC");
-while($sc = $sql->fetch($scReq))
+while($sc = $sql->fetch_assoc($scReq))
 {
 $actions = array(
   array('title' => 'Edit','href' => 
@@ -67,9 +67,9 @@ RenderTable($data, $headers);
 
   if ($r['action'] == "del") {
     unset($r['action']);
-        $spritecategory=$sql->fetchp('SELECT * FROM spritecateg WHERE id=?',array($id));
+        $spritecategory=$sql->prepare_query_fetch('SELECT * FROM spritecateg WHERE id=?',array($id));
         if (!$spritecategory) noticemsg("Error","Unable to delete sprite category: invalid sprite category ID.");
-     else if ($sql->prepare('DELETE FROM spritecateg WHERE id=?',array($id))) {
+     else if ($sql->prepare_query('DELETE FROM spritecateg WHERE id=?',array($id))) {
       $pagebar['message'] = "Sprite category successfully deleted.";
  }
 else {
@@ -85,7 +85,7 @@ request_variables(array('name'));
 
 if ($r['action']=="edit") {
 
-if(      $sql->prepare('UPDATE spritecateg SET 
+if(      $sql->prepare_query('UPDATE spritecateg SET 
 name=? WHERE id=?;', array(
 $spca['name'],
 $id,
@@ -101,12 +101,12 @@ else {
 }
 
 elseif ($r['action']=="new"){
-if (      $sql->prepare('INSERT INTO spritecateg SET
+if (      $sql->prepare_query('INSERT INTO spritecateg SET
 name=? ;', array(
 $spca['name'],
 )
 )) {
-$id = $sql->insertid();
+$id = $sql->insert_id();
 $r['action'] = "edit";
       $pagebar['message'] = "Sprite category successfully created.";
 }
@@ -120,7 +120,7 @@ $pagebar['breadcrumb'] = array(
     );
 
    if ($id != 0) { 
-   $tsc=$sql->fetchp('SELECT * FROM spritecateg WHERE id=?',array($id));
+   $tsc=$sql->prepare_query_fetch('SELECT * FROM spritecateg WHERE id=?',array($id));
   if (!$tsc) { noticemsg("Error", "Invalid sprite category ID"); pagefooter(); die();
   } else {
 $pagebar['title'] = $tsc['name'];

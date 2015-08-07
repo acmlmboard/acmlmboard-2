@@ -31,7 +31,7 @@ if ($act = $_POST['action']) {
 
 		$userid = checkuser($_POST['name'], $pass);
 		if ($userid) {
-			$user = $sql->fetchq("SELECT * FROM users WHERE id=$userid");
+			$user = $sql->query_fetch("SELECT * FROM users WHERE id=$userid");
 			$loguser = $user;
 			load_user_permset();
 		} else
@@ -58,7 +58,7 @@ if ($act != 'Submit') {
 			. "LIMIT $loguser[ppp]");
 }
 
-$thread = $sql->fetchq('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
+$thread = $sql->query_fetch('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
 		. 'FROM threads t '
 		. 'LEFT JOIN forums f ON f.id=t.forum '
 		. "WHERE t.id=$tid AND t.forum IN " . forums_with_view_perm());
@@ -81,7 +81,7 @@ if (!$thread) {
 }//needs function to test for perm based on $faccess /*!has_perm('create-closed-forum-post')*/
 
 if ($act == 'Submit') {
-	$lastpost = $sql->fetchq("SELECT `id`,`user`,`date` FROM `posts` WHERE `thread`=$thread[id] ORDER BY `id` DESC LIMIT 1");
+	$lastpost = $sql->query_fetch("SELECT `id`,`user`,`date` FROM `posts` WHERE `thread`=$thread[id] ORDER BY `id` DESC LIMIT 1");
 	$message = $_POST['message'];
 	if ($lastpost['user'] == $userid && $lastpost['date'] >= (ctime() - 86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
 		$err = "    You can't double post until it's been at least one day!<br>
@@ -109,7 +109,7 @@ $top = '<a href=./>Main</a> '
 $pid = isset($_GET['pid']) ? (int)$_GET['pid'] : 0;
 if ($pid) {
 	checknumeric($pid);  //nice way of adding security, really. int_val doesn't really do it (floats and whatnot), so heh
-	$post = $sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, p.thread "
+	$post = $sql->query_fetch("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, p.thread "
 			. "FROM posts p "
 			. "LEFT JOIN poststext pt ON p.id=pt.id "
 			. "LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
@@ -263,14 +263,14 @@ if ($err) {
 		if ($_POST['unstick'])
 			$modext.=",sticky=0";
 	}
-	$user = $sql->fetchq("SELECT * FROM users WHERE id=$userid");
+	$user = $sql->query_fetch("SELECT * FROM users WHERE id=$userid");
 	$user['posts'] ++;
 	$mid = (isset($_POST['mid']) ? (int) $_POST['mid'] : -1);
 
 	$sql->query("UPDATE users SET posts=posts+1,lastpost=" . ctime() . " WHERE id=$userid");
 	$sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmilies) "
 			. "VALUES ($userid,$tid," . ctime() . ",'$userip',$user[posts],$mid,$_POST[nolayout],$_POST[nosmilies])");
-	$pid = $sql->insertid();
+	$pid = $sql->insert_id();
 	$sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
 	$sql->query("UPDATE threads SET replies=replies+1,lastdate=" . ctime() . ",lastuser=$userid,lastid=$pid$modext WHERE id=$tid");
 	$sql->query("UPDATE forums SET posts=posts+1,lastdate=" . ctime() . ",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
@@ -282,7 +282,7 @@ if ($err) {
 	$c = rand(100, 500);
 	$sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
 
-	$chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?", array($thread['forum']));
+	$chan = $sql->prepare_query_result("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?", array($thread['forum']));
 
 
 	sendirc("{irccolor-base}New reply by {irccolor-name}" . get_irc_displayname() . "{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}", $chan);
@@ -310,7 +310,7 @@ if ($act != 'Submit' && !$err && can_view_forum($thread)) {
 " . "    <td class=\"b h\" colspan=2>Thread preview
 " . "</table>
 ";
-	while ($post = $sql->fetch($posts)) {
+	while ($post = $sql->fetch_assoc($posts)) {
 		$exp = calcexp($post['uposts'], ctime() - $post['uregdate']);
 		print threadpost($post, 1);
 	}

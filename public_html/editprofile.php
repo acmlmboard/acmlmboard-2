@@ -12,7 +12,7 @@ if (isset($_GET['id'])) {
 	if (checknumeric($temp))
 		$targetuserid = $temp;
 	if ($config['rootuseremail'])
-		$user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$targetuserid'");
+		$user = $sql->query_fetch("SELECT * FROM `users` WHERE `id`='$targetuserid'");
 }
 
 if (!can_edit_user($targetuserid)) {
@@ -42,7 +42,7 @@ $allgroups = $sql->query("SELECT * FROM `group` WHERE `primary`=1 $blockroot ORD
 
 $listgroup = array();
 
-while ($group = $sql->fetch($allgroups)) {
+while ($group = $sql->fetch_assoc($allgroups)) {
 	$listgroup[$group['id']] = $group['title'];
 }
 
@@ -58,7 +58,7 @@ if ($act == 'Edit profile') {
 
 global $user, $userrpg;
 
-$user = $sql->fetchq("SELECT * FROM users WHERE `id` = $targetuserid");
+$user = $sql->query_fetch("SELECT * FROM users WHERE `id` = $targetuserid");
 
 if (!$user) {
 	print "<table cellspacing=\"0\" class=\"c1\">
@@ -69,7 +69,7 @@ if (!$user) {
 	die(pagefooter());
 }
 
-$userrpg = getstats($userrpgdata = $sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
+$userrpg = getstats($userrpgdata = $sql->query_fetch('SELECT u.name, u.posts, u.regdate, r.* '
 		. 'FROM users u '
 		. 'LEFT JOIN usersrpg r ON u.id=r.id '
 		. "WHERE u.id=$user[id]"));
@@ -175,7 +175,7 @@ if ($act == 'Edit profile') {
 		}
 		$targetname = $_POST['name'];
 
-		if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
+		if ($sql->query_result("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
 			$error.="- Name already in use.<br />";
 		}
 	}
@@ -184,7 +184,7 @@ if ($act == 'Edit profile') {
 		$targetdname = $_POST['displayname'];
 
 		if (checkcdisplayname($targetuserid) && $targetdname != "") {
-			if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetdname' OR `displayname` = '$targetdname') AND `id` != $user[id]")) {
+			if ($sql->query_result("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetdname' OR `displayname` = '$targetdname') AND `id` != $user[id]")) {
 				$error.="- Displayname already in use.<br />";
 			}
 		}
@@ -205,7 +205,7 @@ if ($act == 'Edit profile') {
 		$qallfields = $sql->query("SELECT * FROM `profileext`");
 		$count = false;
 
-		while ($allfieldsgquery = $sql->fetch($qallfields)) {
+		while ($allfieldsgquery = $sql->fetch_assoc($qallfields)) {
 
 			$pdata = addslashes($_POST[$allfieldsgquery['id']]);
 
@@ -231,9 +231,11 @@ if ($act == 'Edit profile') {
 					. " WHERE `id` = $user[id]"
 			);
 
-		  $banreason = '';
-		  if($_POST['title']) $banreason = "`title` = 'Banned permanently: {$_POST['title']}', ";
-		  else $banreason = "`title` = 'Banned permanently', ";
+			$banreason = '';
+			if ($_POST['title'])
+				$banreason = "`title` = 'Banned permanently: {$_POST['title']}', ";
+			else
+				$banreason = "`title` = 'Banned permanently', ";
 
 			$sql->query("UPDATE users SET "
 					. ($targetgroup ? "`group_id` = $targetgroup, " : "")
@@ -241,17 +243,17 @@ if ($act == 'Edit profile') {
 					. "`name` = '$targetname'"
 					. " WHERE `id`=$user[id]"
 			);
-		} 
+		}
 		if (checkcextendedprofile($targetuserid)) {
 			$qallfields = $sql->query("SELECT * FROM `profileext`");
 			$count = false;
-			if ($sql->prepare('DELETE FROM `user_profileext` WHERE user_id=?', array($targetuserid))) {
+			if ($sql->prepare_query('DELETE FROM `user_profileext` WHERE user_id=?', array($targetuserid))) {
 				
 			} //Until multiples of each filed are enabled, wipe the slate.
-			while ($allfieldsgquery = $sql->fetch($qallfields)) {
+			while ($allfieldsgquery = $sql->fetch_assoc($qallfields)) {
 				if (substr(setfield($allfieldsgquery['id']), -3) != "=''") {//Should be replated with a better method.
 					$pdata = addslashes($_POST[$allfieldsgquery['id']]);
-					if ($sql->prepare('INSERT INTO `user_profileext` SET
+					if ($sql->prepare_query('INSERT INTO `user_profileext` SET
                 user_id=?,field_id=?,data=? ;', array(
 								$targetuserid,
 								$allfieldsgquery['id'],
@@ -359,7 +361,7 @@ if (empty($act)) {
 	$alltz = $sql->query("SELECT name FROM `timezones`");
 
 	$listtimezones = array();
-	while ($tz = $sql->fetch($alltz)) {
+	while ($tz = $sql->fetch_assoc($alltz)) {
 		$listtimezones[$tz['name']] = $tz['name'];
 	}
 
@@ -458,12 +460,12 @@ if (empty($act)) {
                          RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
                          WHERE `user_profileext`.`user_id`='$targetuserid'");
 		$userprof = array();
-		while ($pfield = $sql->fetch($fieldReq)) {
+		while ($pfield = $sql->fetch_assoc($fieldReq)) {
 			$userprof[$pfield['field_id']] = $pfield['data'];
 		}
 
 		$qallfields = $sql->query("SELECT * FROM `profileext`");
-		while ($allfieldsgquery = $sql->fetch($qallfields)) {
+		while ($allfieldsgquery = $sql->fetch_assoc($qallfields)) {
 			print fieldrow($allfieldsgquery['title'] . "<br /><small>" . $allfieldsgquery['description'] . " (IE: <b>" . $allfieldsgquery['example'] . "</b>)</small>", fieldinputprofile(40, 200, $allfieldsgquery['id'], $userprof));
 		}
 	}

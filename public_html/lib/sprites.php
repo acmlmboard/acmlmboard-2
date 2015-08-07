@@ -27,7 +27,7 @@
  * Common = 0 | Uncommon = 20 | 40 = Slightly Rare | Rare = 60 | Very Rare = 80 | Mew Rare = 99
  */
 
-require_once 'lib/spritelib.php';
+require_once 'lib/helpers.php';
 
 $chance = 5 + (rand(0, 6464) % 5);
 
@@ -57,7 +57,7 @@ $dongs = ""; // WHY? Just Why?!
 if ($monRequest) {
 	$monNumpty  = rand(0, 6464646) % $monRequest;
 	if($res = $sql->query("SELECT * FROM `sprites` WHERE `rarity` <= ".$monRarity." LIMIT ".$monNumpty.",1")) {
-		if($monData = $sql->fetch($res)) {
+		if($monData = $sql->fetch_assoc($res)) {
 			/*
 			//Old way to pick pics: randomly between two fields.
 			$pic = rand(0, 1) ? $monData['alt']: $monData['pic'];

@@ -1,15 +1,16 @@
 <?php
-$log=false;
+
+$log = false;
 $logpermset = array();
 
-if(!empty($_COOKIE['user']) && !empty($_COOKIE['pass'])){
-	if($user = checkuid($_COOKIE['user'], unpacklcookie($_COOKIE['pass']))) {
-		$log=true;
-		$loguser=$user;
+if (!empty($_COOKIE['user']) && !empty($_COOKIE['pass'])) {
+	if ($user = checkuid($_COOKIE['user'], unpacklcookie($_COOKIE['pass']))) {
+		$log = true;
+		$loguser = $user;
 		load_user_permset();
 	} else {
-		setcookie('user',0);
-		setcookie('pass','');
+		setcookie('user', 0);
+		setcookie('pass', '');
 		load_guest_permset();
 	}
 } else {
@@ -61,7 +62,7 @@ function scale_by_log($vect, $scale) {
 	}
 
 	$temp = array();
-	foreach($vect as $pos => $value) {
+	foreach ($vect as $pos => $value) {
 		if (!is_numeric($value)) {
 			trigger_error("Value at position $pos is not a number, using 0 (zero)", E_USER_NOTICE);
 			$value = 0;
@@ -76,4 +77,3 @@ if (has_perm('view-errors')) {
 	// set to the user defined error handler
 	//  $old_error_handler = set_error_handler("ABErrorHandler");
 }
-?>

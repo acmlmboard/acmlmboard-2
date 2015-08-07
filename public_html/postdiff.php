@@ -7,17 +7,17 @@ $pid=(int)$_GET['id'];
 $r1=(int)$_GET['o'];
 $r2=(int)$_GET['n'];
 
-$t = $sql->resultq("SELECT thread FROM posts WHERE id=$pid");
+$t = $sql->query_result("SELECT thread FROM posts WHERE id=$pid");
 if(!$t) { error("Error", "This post does not exist.<br> <a href=./>Back to main</a>"); }
-$f = $sql->resultq("SELECT forum FROM threads WHERE id=$t");
+$f = $sql->query_result("SELECT forum FROM threads WHERE id=$t");
 if(!can_view_forum_post_history($f)) { error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
 
 pageheader("Post revision differences");
 
 if(!$r1||!$r2) $r1=$r2=1;
 
-$d1=$sql->fetchq("SELECT text FROM poststext WHERE id=$pid AND revision=$r1");
-$d2=$sql->fetchq("SELECT text FROM poststext WHERE id=$pid AND revision=$r2");
+$d1=$sql->query_fetch("SELECT text FROM poststext WHERE id=$pid AND revision=$r1");
+$d2=$sql->query_fetch("SELECT text FROM poststext WHERE id=$pid AND revision=$r2");
 
 echo "<table cellspacing=\"0\" class=\"c1\" width=100% height=100><tr class=\"n1\"><td class=\"b n2\"><font face='courier new'>";
 

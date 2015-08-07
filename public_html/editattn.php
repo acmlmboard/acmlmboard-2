@@ -35,7 +35,7 @@ if (!has_perm('edit-attentions-box')) {
            </td>
        </table><br/>";
 	} else
-		$attndata = $sql->resultq("SELECT txtval FROM misc WHERE field='attention'");
+		$attndata = $sql->query_result("SELECT txtval FROM misc WHERE field='attention'");
 
 	$pageheadtxt = "Edit " . $config['atnname'];
 	pageheader($pageheadtxt);

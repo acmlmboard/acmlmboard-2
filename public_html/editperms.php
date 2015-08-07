@@ -32,7 +32,7 @@
 	{
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");		
 	}
-	$permowner = $sql->fetchp("SELECT id,title,inherit_group_id FROM `group` WHERE id=?", array($id));
+	$permowner = $sql->prepare_query_fetch("SELECT id,title,inherit_group_id FROM `group` WHERE id=?", array($id));
 	$type = 'group';
 	$typecap = 'Group';
   }
@@ -40,7 +40,7 @@
   {
 	$id = (int)$_GET['uid'];
 
-	$tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
+	$tuser = $sql->prepare_query_fetch("SELECT `group_id` FROM users WHERE id=?",array($id));
 	if ((is_root_gid($tuser[$u.'group_id']) || (!can_edit_user_assets($tuser[$u.'group_id']) && $id!=$loguser['id'])) && !has_perm('no-restrictions')) 
 	{
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
@@ -50,14 +50,14 @@
 	{
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
-	$permowner = $sql->fetchp("SELECT u.id,u.name AS title,u.group_id,g.title AS group_title FROM users u LEFT JOIN `group` g ON g.id=u.group_id WHERE u.id=?", array($id));
+	$permowner = $sql->prepare_query_fetch("SELECT u.id,u.name AS title,u.group_id,g.title AS group_title FROM users u LEFT JOIN `group` g ON g.id=u.group_id WHERE u.id=?", array($id));
 	$type = 'user';
 	$typecap = 'User';
   }
   else if (isset($_GET['fid']))
   {
 	$id = (int)$_GET['fid'];
-	$permowner = $sql->fetchp("SELECT id,title FROM forums WHERE id=?", array($id));
+	$permowner = $sql->prepare_query_fetch("SELECT id,title FROM forums WHERE id=?", array($id));
 	$type = 'forum';
 	$typecap = 'Forum';
   }
@@ -83,7 +83,7 @@
 	$bindval = (int)$_POST['bindval_new'];
 	
 	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
-    $sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
+    $sql->prepare_query("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,'',?,?)",
 		array($id, $type, $permid, $bindval, $revoke)); 
     $msg="The ".title_for_perm($permid)." permission has been successfully assigned!"; 
     } else { 
@@ -100,7 +100,7 @@
 	$bindval = (int)$_POST['bindval'][$pid];
 	
 	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
-    $sql->prepare("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
+    $sql->prepare_query("UPDATE `x_perm` SET `perm_id`=?, `bindvalue`=?, `revoke`=? WHERE `id`=?",
 		array($permid, $bindval, $revoke, $pid)); 
     $msg="The ".title_for_perm($permid)." permission has been successfully edited!"; 
     } else { 
@@ -113,7 +113,7 @@
 	$pid = $keys[0];
 	$permid = stripslashes($_POST['permid'][$pid]);
 	if(has_perm('no-restrictions') || $permid != 'no-restrictions') { 
-    $sql->prepare("DELETE FROM `x_perm`WHERE `id`=?", array($pid)); $msg="The ".title_for_perm($permid)." permission has been successfully deleted!"; 
+    $sql->prepare_query("DELETE FROM `x_perm`WHERE `id`=?", array($pid)); $msg="The ".title_for_perm($permid)." permission has been successfully deleted!"; 
     } else { 
     $msg="You do not have the permissions to delete the ".title_for_perm($permid)." permission!"; 
     } 
@@ -141,7 +141,7 @@
   
   $permset = PermSet($type, $id);
   $row = array(); $i = 0;
-  while ($perm = $sql->fetch($permset))
+  while ($perm = $sql->fetch_assoc($permset))
   {
 	$pid = $perm['id'];
 	
@@ -195,7 +195,7 @@
 	$parentid = $permowner['inherit_group_id'];
 	while ($parentid > 0)
 	{
-		$parent = $sql->fetchp("SELECT title,inherit_group_id FROM `group` WHERE id=?", array($parentid));
+		$parent = $sql->prepare_query_fetch("SELECT title,inherit_group_id FROM `group` WHERE id=?", array($parentid));
 		$permoverview .= '<br>'.htmlspecialchars($parent['title']).':<br>';
 		$permoverview .= PermTable(PermSet('group', $parentid));
 		
@@ -210,15 +210,15 @@
 	$parentid = $permowner['group_id'];
 	while ($parentid > 0)
 	{
-		$parent = $sql->fetchp("SELECT title,inherit_group_id FROM `group` WHERE id=?", array($parentid));
+		$parent = $sql->prepare_query_fetch("SELECT title,inherit_group_id FROM `group` WHERE id=?", array($parentid));
 		$permoverview .= '<br>'.htmlspecialchars($parent['title']).':<br>';
 		$permoverview .= PermTable(PermSet('group', $parentid));
 		
 		$parentid = $parent['inherit_group_id'];
 	}
 	
-	$secgroups = $sql->prepare("SELECT g.id,g.title FROM user_group ug LEFT JOIN `group` g ON ug.group_id=g.id WHERE ug.user_id=? ORDER BY ug.sortorder DESC", array($id));
-	while ($secgroup = $sql->fetch($secgroups))
+	$secgroups = $sql->prepare_query("SELECT g.id,g.title FROM user_group ug LEFT JOIN `group` g ON ug.group_id=g.id WHERE ug.user_id=? ORDER BY ug.sortorder DESC", array($id));
+	while ($secgroup = $sql->fetch_assoc($secgroups))
 	{
 		$permoverview .= '<hr>';
 		$permoverview .= '<strong>Permissions inherited from secondary group \''.htmlspecialchars($secgroup['title']).'\':</strong><br>';
@@ -226,7 +226,7 @@
 		$parentid = $secgroup['id'];
 		while ($parentid > 0)
 		{
-			$parent = $sql->fetchp("SELECT title,inherit_group_id FROM `group` WHERE id=?", array($parentid));
+			$parent = $sql->prepare_query_fetch("SELECT title,inherit_group_id FROM `group` WHERE id=?", array($parentid));
 			$permoverview .= '<br>'.htmlspecialchars($parent['title']).':<br>';
 			$permoverview .= PermTable(PermSet('group', $parentid));
 			
@@ -263,7 +263,7 @@
 			ORDER BY pc.sortorder ASC, p.title ASC");
 			
 		$permlist = array();
-		while ($perm = $sql->fetch($perms))
+		while ($perm = $sql->fetch_assoc($perms))
 			$permlist[] = $perm;
 	}
 		
@@ -298,7 +298,7 @@
   function PermSet($type, $id)
   {
 	global $sql;
-	return $sql->prepare("
+	return $sql->prepare_query("
 		SELECT 
 			x.*,
 			p.title AS permtitle,
@@ -318,7 +318,7 @@
 	$ret = '';
 	
 	$i = 0;
-	while ($perm = $sql->fetch($permset))
+	while ($perm = $sql->fetch_assoc($permset))
 	{
 		$key = $perm['perm_id'];
 		if ($perm['bindvalue']) $key .= '['.$perm['bindvalue'].']';

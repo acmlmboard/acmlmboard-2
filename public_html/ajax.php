@@ -26,7 +26,7 @@ switch($action) {
 			break;
 		}
 		
-		$results = $sql->fetchq("SELECT ".userfields()." FROM `users` WHERE `name` LIKE '$name%' ORDER BY `name` LIMIT 0,$maxresults;");
+		$results = $sql->query_fetch("SELECT ".userfields()." FROM `users` WHERE `name` LIKE '$name%' ORDER BY `name` LIMIT 0,$maxresults;");
 		if($results) {
 			$response_data['result'] = 'success';
 			$response_data['data'] = $results;

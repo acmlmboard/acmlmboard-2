@@ -11,7 +11,7 @@ class BanManager {
 		}
 		
 		$id = $request_arguments['id'];
-		$tuser = $sql->fetchp("SELECT `group_id` FROM `users` WHERE `id` = ?", array($id));
+		$tuser = $sql->prepare_query_fetch("SELECT `group_id` FROM `users` WHERE `id` = ?", array($id));
 		if ((is_root_gid($tuser['group_id']) || (!can_edit_user_assets($tuser['group_id']) && $id != $loguser['id'])) && !has_perm('no-restrictions')) {
 			return FALSE;
 		}
@@ -29,7 +29,7 @@ class BanManager {
 			return true;
 		}
 		
-		$result = $sql->fetchp("SELECT `id`, `name` FROM `users` WHERE `id` = ?", array($id));
+		$result = $sql->prepare_query_fetch("SELECT `id`, `name` FROM `users` WHERE `id` = ?", array($id));
 		if (!$result) {
 			tpl_display('generic-error', array('error_message'=>'Invalid user ID provided.'));
 			return true;
@@ -46,9 +46,9 @@ class BanManager {
 		$id = $request_arguments['id'];
 		$expiration_time = $request_arguments['expiration_time'];
 		
-		$banned_group_id = $sql->resultq("SELECT `id` FROM `group` WHERE `banned` = 1;");
+		$banned_group_id = $sql->query_result("SELECT `id` FROM `group` WHERE `banned` = 1;");
 		
-		$user = $sql->fetchp("SELECT * FROM `users` WHERE `id` = ?;", array($id));
+		$user = $sql->prepare_query_fetch("SELECT * FROM `users` WHERE `id` = ?;", array($id));
 		if(!isset($user)) {
 			tpl_display('generic-error', array('error_message' => 'Invalid user.'));
 			return true;
@@ -65,9 +65,9 @@ class BanManager {
 			$ban_reason .= ': ' . htmlspecialchars($request_arguments['reason']);
 		}
 
-		$sql->prepare("UPDATE `users` SET `group_id` = ? WHERE `id` = ?;", array($banned_group_id, $user['id']));
-		$sql->prepare("UPDATE `users` SET `title` = ? WHERE `id` = ?;", array($ban_reason, $user['id']));
-		$sql->prepare("UPDATE `users` SET `tempbanned` = ? WHERE id=' ?;", array($expiration_time, $user['id']));
+		$sql->prepare_query("UPDATE `users` SET `group_id` = ? WHERE `id` = ?;", array($banned_group_id, $user['id']));
+		$sql->prepare_query("UPDATE `users` SET `title` = ? WHERE `id` = ?;", array($ban_reason, $user['id']));
+		$sql->prepare_query("UPDATE `users` SET `tempbanned` = ? WHERE id=' ?;", array($expiration_time, $user['id']));
 
 		redirect("profile.php?id={$user['id']}", -1);
 		
@@ -84,7 +84,7 @@ class BanManager {
 			return true;
 		}
 		
-		$result = $sql->fetchp("SELECT `id`, `name` FROM `users` WHERE `id` = ?", array($id));
+		$result = $sql->prepare_query_fetch("SELECT `id`, `name` FROM `users` WHERE `id` = ?", array($id));
 		if (!$result) {
 			tpl_display('generic-error', array('error_message' => 'Invalid user ID provided.'));
 			return true;
@@ -99,10 +99,10 @@ class BanManager {
 		global $sql;
 		
 		$id = $request_arguments['id'];
-		$banned_group_id = $sql->resultq("SELECT `id` FROM `group` WHERE `banned` = 1;");
-		$default_group_id = $sql->resultq("SELECT `id` FROM `group` WHERE `default` = 1;");
+		$banned_group_id = $sql->query_result("SELECT `id` FROM `group` WHERE `banned` = 1;");
+		$default_group_id = $sql->query_result("SELECT `id` FROM `group` WHERE `default` = 1;");
 		
-		$user = $sql->fetchp("SELECT * FROM `users` WHERE `id` = ?;", array($id));
+		$user = $sql->prepare_query_fetch("SELECT * FROM `users` WHERE `id` = ?;", array($id));
 		if(!isset($user)) {
 			tpl_display('generic-error', array('error_message' => 'Invalid user.'));
 			return true;
@@ -113,9 +113,9 @@ class BanManager {
 			return true;
 		}
 		
-		$sql->prepare("UPDATE `users` SET `group_id` = ? WHERE `id` = ?;", array($default_group_id, $user['id']));
-		$sql->prepare("UPDATE `users` SET `title` = ? WHERE `id` = ?;", array('', $user['id']));
-		$sql->prepare("UPDATE `users` SET `tempbanned` = ? WHERE id=' ?;", array(0, $user['id']));
+		$sql->prepare_query("UPDATE `users` SET `group_id` = ? WHERE `id` = ?;", array($default_group_id, $user['id']));
+		$sql->prepare_query("UPDATE `users` SET `title` = ? WHERE `id` = ?;", array('', $user['id']));
+		$sql->prepare_query("UPDATE `users` SET `tempbanned` = ? WHERE id=' ?;", array(0, $user['id']));
 
 		redirect("profile.php?id=$user[id]", -2);
 		

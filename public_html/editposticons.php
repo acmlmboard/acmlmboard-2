@@ -16,9 +16,9 @@ require("lib/common.php");
   if ($r['action'] == "del") {
     unset($r['action']);
     if ($id > 0) {
-        $posticon=$sql->fetchp('SELECT * FROM posticons WHERE id=?',array($id));
+        $posticon=$sql->prepare_query_fetch('SELECT * FROM posticons WHERE id=?',array($id));
         if (!$posticon) $pagebar['message'] = "Unable to delete post icon: invalid post icon ID.";
-     else if ($sql->prepare('DELETE FROM posticons WHERE id=?',array($id))) {
+     else if ($sql->prepare_query('DELETE FROM posticons WHERE id=?',array($id))) {
       $pagebar['message'] = "Post icon successfully deleted.";
  }
 else {
@@ -46,7 +46,7 @@ $headers = array
 
 $data = array();
 $piReq = $sql->query("SELECT * FROM posticons ORDER BY id ASC");
-while($pi = $sql->fetch($piReq))
+while($pi = $sql->fetch_assoc($piReq))
 {
 		$pics = explode("|", $pi['url']);
 		$pic = $pics[0];
@@ -83,7 +83,7 @@ request_variables(array('url'));
 
 if ($r['action']=="edit" && $id > 0) {
 
-if(      $sql->prepare('UPDATE posticons SET 
+if(      $sql->prepare_query('UPDATE posticons SET 
 url=? WHERE id=?;', array(
 $s['url'],
 $id,
@@ -99,12 +99,12 @@ else {
 }
 
 elseif ($r['action']=="new"){
-if (      $sql->prepare('INSERT INTO posticons SET
+if (      $sql->prepare_query('INSERT INTO posticons SET
 url=? ;', array(
 $s['url'],
 )
 )) {
-$id = $sql->insertid();
+$id = $sql->insert_id();
 $r['action'] = "edit";
       $pagebar['message'] = "Post icon successfully created.";
 }
@@ -119,7 +119,7 @@ $pagebar['breadcrumb'] = array(
 
 
 if ($id > 0) {
-    $t=$sql->fetchp('SELECT * FROM posticons WHERE id=?',array($id));
+    $t=$sql->prepare_query_fetch('SELECT * FROM posticons WHERE id=?',array($id));
   if (!$t) { noticemsg("Error", "Invalid post icon ID"); pagefooter(); die();
   } else {
 $pagebar['title'] = 'Post Icon ID '.$t['id'];

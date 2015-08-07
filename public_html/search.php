@@ -25,7 +25,7 @@ $categs = $sql->query("SELECT * "
 		. "FROM categories "
 		. "WHERE id IN " . cats_with_view_perm() . " "
 		. "ORDER BY ord");
-while ($c = $sql->fetch($categs)) {
+while ($c = $sql->fetch_assoc($categs)) {
 	$categ[$c['id']] = $c;
 }
 $forums = $sql->query("SELECT f.* "
@@ -37,7 +37,7 @@ $forums = $sql->query("SELECT f.* "
 $cat = -1;
 $fsel = "<select name=f><option value=0>Any</option>";
 
-while ($forum = $sql->fetch($forums)) {
+while ($forum = $sql->fetch_assoc($forums)) {
 	if ($forum['cat'] != $cat) {
 		$cat = $forum['cat'];
 		$fsel.="<optgroup label='" . ($categ[$cat]['title']) . "'>";
@@ -158,7 +158,7 @@ if ($_GET['action'] == "Search") {
 					. "ORDER BY p.id");
 
 
-			while ($post = $sql->fetch($posts)) {
+			while ($post = $sql->fetch_assoc($posts)) {
 				$pthread[id] = $post[tid];
 				$pthread[title] = $post[ttitle];
 				$post[text] = preg_replace($boldify, "<b>\\0</b>", $post[text]);
@@ -227,7 +227,7 @@ if ($_GET['action'] == "Search") {
 					. "LIMIT " . (($page - 1) * $loguser[tpp]) . "," . $loguser[tpp]);
 
 
-			$forum[threads] = $sql->resultq("SELECT count(*) "
+			$forum[threads] = $sql->query_result("SELECT count(*) "
 					. "FROM threads t "
 					. "LEFT JOIN users u1 ON u1.id=t.user "
 					. "LEFT JOIN forums f ON f.id=t.forum "
@@ -250,7 +250,7 @@ if ($_GET['action'] == "Search") {
 ";
 
 			$lsticky = 0;
-			for ($i = 1; $thread = $sql->fetch($threads); $i++) {
+			for ($i = 1; $thread = $sql->fetch_assoc($threads); $i++) {
 				$pagelist = '';
 				if ($thread[replies] >= $loguser[ppp]) {
 					for ($p = 1; $p <= 1 + floor($thread[replies] / $loguser[ppp]); $p++)

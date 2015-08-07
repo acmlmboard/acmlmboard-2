@@ -1,6 +1,6 @@
 <?php
   require '../lib/function.php';
-  print '°';
+  print 'ï¿½';
 
   if($n)
     $uid=checkuser($n,md5($p));
@@ -28,16 +28,16 @@
 
   function getuser($id){
     global $sql;
-    $user=$sql->fetchq('SELECT *, '.sqlexp().' '
+    $user=$sql->query_fetch('SELECT *, '.sqlexp().' '
                       .'FROM users u '
                       .'LEFT JOIN usersrpg r ON u.id=r.id '
                       ."WHERE u.id=$id");
     $r=$sql->query('SELECT '.sqlexp().' '
                   .'FROM users '
                   ."HAVING floor(exp)>$user[exp]");
-    $user[rank]=@$sql->numrows($r)+1;
+    $user[rank]=@$sql->num_rows($r)+1;
     
-    $user[name]=str_replace(' ',' ',$user[name]);
+    $user[name]=str_replace(' ','ï¿½',$user[name]);
     return $user;
   }
 ?>

@@ -12,7 +12,7 @@ if(isset($_GET['catch']))
 	if($spritehash != generate_sprite_hash($userID,$monID)) die("Not a valid capture.");
 
 	$sql->query("INSERT IGNORE INTO sprite_captures VALUES(".$userID.", ".$monID.")") or die("Could not register capture.");
-	if($sql->affectedrows() == 1)
+	if($sql->affected_rows() == 1)
 	{
 		$monName = $sql->result($sql->query("SELECT name FROM sprites WHERE id=".$monID), 0, 0);
 		$grats = "Congratulations. You caught ".$monName;
@@ -49,13 +49,13 @@ if(!$log)
 
 $captureReq = $sql->query("SELECT monid FROM sprite_captures WHERE userid = ".$loguser['id']);
 $captures = array();
-while($capt = $sql->fetch($captureReq))
+while($capt = $sql->fetch_assoc($captureReq))
 	$captures[$capt['monid']] = true;
 
 $spritecateg = array();
 $qspritecateg = $sql->query("SELECT `id`, `name` FROM `spritecateg`");
 
-while ($allspcquery= $sql->fetch($qspritecateg))
+while ($allspcquery= $sql->fetch_assoc($qspritecateg))
 { 
   $spritecateg[$allspcquery['id']]= $allspcquery['name'];
 
@@ -81,7 +81,7 @@ $headers = array
 
 $data = array();
 $monReq = $sql->query("SELECT * FROM sprites ORDER BY id ASC");
-while($mon = $sql->fetch($monReq))
+while($mon = $sql->fetch_assoc($monReq))
 {
 	if($captures[$mon['id']])
 	{

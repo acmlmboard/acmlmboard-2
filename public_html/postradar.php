@@ -23,11 +23,11 @@ if ($act == 'Save and continue' || $act == 'Save and finish') {
 	$radar_rem = intval($_POST['post_radar_rem']);
 
 	if ($radar_add != -1) {
-		$user_add = $sql->fetchq('SELECT id FROM users WHERE id = ' . $radar_add);
+		$user_add = $sql->query_fetch('SELECT id FROM users WHERE id = ' . $radar_add);
 		if (!$user_add) {
 			error("Error", "This user does not exist!");
 		}
-		if ($sql->numrows($sql->query('SELECT user2_id FROM post_radar WHERE user_id = ' . $targetuserid . ' AND user2_id = ' . $radar_add . ' AND dtime IS NULL')) != 0) {
+		if ($sql->num_rows($sql->query('SELECT user2_id FROM post_radar WHERE user_id = ' . $targetuserid . ' AND user2_id = ' . $radar_add . ' AND dtime IS NULL')) != 0) {
 			error("Error", "This user is already in your post radar.");
 		}
 
@@ -35,12 +35,12 @@ if ($act == 'Save and continue' || $act == 'Save and finish') {
 		$sql->query($qr);
 	}
 	if ($radar_rem != -1) {
-		$user_rem = $sql->fetchq('SELECT id FROM users WHERE id = ' . $radar_rem);
+		$user_rem = $sql->query_fetch('SELECT id FROM users WHERE id = ' . $radar_rem);
 		if (!$user_rem) {
 			error("Error", "This user does not exist!");
 		}
 		$qr = 'SELECT user2_id FROM post_radar WHERE user_id = ' . $targetuserid . ' AND user2_id = ' . $radar_rem . ' AND dtime IS NULL';
-		if ($sql->numrows($sql->query($qr)) == 0) {
+		if ($sql->num_rows($sql->query($qr)) == 0) {
 			error("Error", "This user is not in your Post Radar.");
 		}
 		$qr = 'UPDATE `post_radar` SET `dtime` = UNIX_TIMESTAMP( ) WHERE user_id = ' . $targetuserid . ' AND user2_id = ' . $radar_rem;
@@ -53,7 +53,7 @@ if (!$act || $act == 'Save and continue') {
 	$radar_users = list_post_radar(retrieve_post_radar($targetuserid, 'name'));
 
 	$res = $sql->query('select id,name,posts FROM users ORDER BY name');
-	while ($r = $sql->fetch($res)) {
+	while ($r = $sql->fetch_assoc($res)) {
 		$ulist[$r['name']] = $r;
 	}
 

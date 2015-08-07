@@ -36,7 +36,7 @@ $bdgReq = $sql->query("SELECT * FROM `badges`
                        RIGHT JOIN `user_badges` ON `badges`.`id` = `user_badges`.`badge_id`
                        WHERE `user_badges`.`user_id`='$userID' ORDER BY `priority` DESC");
 
-while($bdg = $sql->fetch($bdgReq))
+while($bdg = $sql->fetch_assoc($bdgReq))
 {
 
 	$pics = explode("|", $bdg['image']);

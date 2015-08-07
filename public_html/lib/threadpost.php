@@ -8,7 +8,7 @@ function LoadBlocklayouts() {
 
 	$blocklayouts = array();
 	$rBlocks = $sql->query("select * from blockedlayouts where blockee = " . $loguser['id']);
-	while ($block = $sql->fetch($rBlocks)) {
+	while ($block = $sql->fetch_assoc($rBlocks)) {
 		$blocklayouts[$block['user']] = 1;
 	}
 }
@@ -172,7 +172,7 @@ function threadpost($post, $type, $pthread = '') {
 				$picture = ($post['uusepic'] ? "<img src=\"gfx/userpic.php?id=" . $post['uid'] . "&r=" . $post['uusepic'] . "\">" : '');
 
 				if ($post['mood'] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
-					$mood = $sql->fetchq("select `url`, `local`, 1 `existing` from `mood` where `user`=$post[uid] and `id`=$post[mood] union select '' `url`, 0 `local`, 0 `existing`");
+					$mood = $sql->query_fetch("select `url`, `local`, 1 `existing` from `mood` where `user`=$post[uid] and `id`=$post[mood] union select '' `url`, 0 `local`, 0 `existing`");
 					if ($mood['existing']) {
 						$picture = (!$mood['local'] ? "<img src=\"" . htmlval($mood['url']) . "\">" : "<img src=\"gfx/userpic.php?id=" . $post['uid'] . "_" . $post['mood'] . "\">" );
 					}

@@ -27,7 +27,7 @@ $uid = $r['uid'];
 if ($r['action'] == "del") {
 	unset($r['action']);
 	if ($id > 0) {
-		if ($sql->prepare('DELETE FROM user_badges WHERE id=?', array($id))) {
+		if ($sql->prepare_query('DELETE FROM user_badges WHERE id=?', array($id))) {
 			$pagebar['message'] = "Badge successfully deleted.";
 		} else {
 			$pagebar['message'] = "Unable to remove badge.";
@@ -59,7 +59,7 @@ if (empty($r['action'])) {
 	$bdgReq = $sql->query("SELECT * FROM `badges`
                        RIGHT JOIN `user_badges` ON `badges`.`id` = `user_badges`.`badge_id`
                        WHERE `user_badges`.`user_id`='$uid' ORDER BY `priority` DESC");
-	while ($bdg = $sql->fetch($bdgReq)) {
+	while ($bdg = $sql->fetch_assoc($bdgReq)) {
 		$pics = explode("|", $bdg['image']);
 		$pic = $pics[0];
 		$actions = array(
@@ -95,7 +95,7 @@ if (empty($r['action'])) {
 
 		if ($r['action'] == "edit" && $id > 0) {
 
-			if ($sql->prepare('UPDATE user_badges SET 
+			if ($sql->prepare_query('UPDATE user_badges SET 
 badge_id=?,badge_var=?,user_id=? WHERE id=?;', array(
 						$s['badge_id'],
 						$s['badge_var'],
@@ -108,14 +108,14 @@ badge_id=?,badge_var=?,user_id=? WHERE id=?;', array(
 				$pagebar['message'] = "Unable to update Badge.";
 			}
 		} elseif ($r['action'] == "new") {
-			if ($sql->prepare('INSERT INTO user_badges SET
+			if ($sql->prepare_query('INSERT INTO user_badges SET
 user_id=?,badge_id=?,badge_var=? ;', array(
 						$uid,
 						$s['badge_id'],
 						$s['badge_var'],
 							)
 					)) {
-				$id = $sql->insertid();
+				$id = $sql->insert_id();
 				$r['action'] = "edit";
 				$pagebar['message'] = "Badge successfully assigned.";
 			} else {
@@ -129,7 +129,7 @@ user_id=?,badge_id=?,badge_var=? ;', array(
 
 
 	if ($id > 0) {
-		$t = $sql->fetchp('SELECT * FROM user_badges WHERE id=?', array($id));
+		$t = $sql->prepare_query_fetch('SELECT * FROM user_badges WHERE id=?', array($id));
 		$pagebar['title'] = $t['name'];
 		$pagebar['actions'] = array(
 			array('title' => 'Delete Badge', 'href' =>
@@ -167,7 +167,7 @@ user_id=?,badge_id=?,badge_var=? ;', array(
 	$allbdg = array();
 	$qallbadges = $sql->query("SELECT `id`, `name` FROM `badges`");
 
-	while ($allbdgquery = $sql->fetch($qallbadges)) {
+	while ($allbdgquery = $sql->fetch_assoc($qallbadges)) {
 		$allbdg[$allbdgquery['id']] = str_replace("%%%VAL%%%", '*', $allbdgquery['name']);
 	}
 

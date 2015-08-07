@@ -29,7 +29,7 @@
   }elseif(!$act=$_POST[action]){
     if($pid=$_GET[pid]){
       checknumeric($pid);
-      $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.title, pt.text "
+      $post=$sql->query_fetch("SELECT IF(u.displayname='',u.name,u.displayname) name, p.title, pt.text "
                         ."FROM pmsgs p "
                         ."LEFT JOIN pmsgstext pt ON p.id=pt.id "
                         ."LEFT JOIN users u ON p.userfrom=u.id "
@@ -43,7 +43,7 @@
 
     if($uid=$_GET[uid]){
       checknumeric($uid);
-      $userto=$sql->resultq("SELECT IF(displayname='',name,displayname) name FROM users WHERE id=$uid");
+      $userto=$sql->query_result("SELECT IF(displayname='',name,displayname) name FROM users WHERE id=$uid");
     }elseif(!$userto)
       $userto=$_POST[userto];
 
@@ -137,17 +137,17 @@ print     "  <tr>
 ".        "</table>
 ";
   }elseif($act=='Submit'){
-    $userto=$sql->resultq("SELECT id FROM users WHERE name LIKE '$_POST[userto]' OR displayname LIKE '$_POST[userto]'");
+    $userto=$sql->query_result("SELECT id FROM users WHERE name LIKE '$_POST[userto]' OR displayname LIKE '$_POST[userto]'");
 
     if($userto && $_POST[message]){
       //[blackhole89] 2007-07-26
       $recentpms=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-30) AND userfrom='$loguser[id]'");
       $secafterpm=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-$config[secafterpost]) AND userfrom='$loguser[id]'");
-    if(($sql->numrows($recentpms)>0)&&(!has_perm('consecutive-posts'))) 
+    if(($sql->num_rows($recentpms)>0)&&(!has_perm('consecutive-posts'))) 
     {
         $msg="You can't send more than one PM within 30 seconds!<br>
 ".           "Go back or <a href=sendprivate.php>try again</a>";
-      } else if(($sql->numrows($secafterpm)>0)&&(has_perm('consecutive-posts'))) {
+      } else if(($sql->num_rows($secafterpm)>0)&&(has_perm('consecutive-posts'))) {
         $msg="You can't send more than one PM within $config[secafterpost] seconds!<br>
 ".           "Go back or <a href=sendprivate.php>try again</a>";
       } else {
@@ -156,7 +156,7 @@ print     "  <tr>
           checknumeric($_POST[mid]);   
         $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout,nosmilies) "
                    ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout],$_POST[nosmilies])");
-        $pid=$sql->insertid();
+        $pid=$sql->insert_id();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
 
              /*if($loguser[redirtype]==0){

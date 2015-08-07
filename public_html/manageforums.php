@@ -12,7 +12,7 @@ if ($_GET['ajax'])
 	$ajax = $_GET['ajax'];
 	if ($ajax == 'localmodRow')
 	{
-		$user = $sql->fetchp("SELECT ".userfields()." FROM users WHERE name=? OR displayname=?",array($_GET['user'],$_GET['user']));
+		$user = $sql->prepare_query_fetch("SELECT ".userfields()." FROM users WHERE name=? OR displayname=?",array($_GET['user'],$_GET['user']));
 		if (!$user) die();
 		print $user['id'].'|'.localmodRow($user);
 	}
@@ -47,19 +47,19 @@ if ($_POST['savecat'])
 	{
 		if ($cid == 'new')
 		{
-			$cid = $sql->resultq("SELECT MAX(id) FROM categories");
+			$cid = $sql->query_result("SELECT MAX(id) FROM categories");
 			if (!$cid) $cid = 0;
 			$cid++;
 			
-			$sql->prepare("INSERT INTO categories (id,title,ord,private) VALUES (?,?,?,?)", array($cid, $title, $ord, $private));
+			$sql->prepare_query("INSERT INTO categories (id,title,ord,private) VALUES (?,?,?,?)", array($cid, $title, $ord, $private));
 		}
 		else
 		{
 			$cid = (int)$cid;
-			if (!$sql->resultp("SELECT COUNT(*) FROM categories WHERE id=?",array($cid)))
+			if (!$sql->prepare_query_result("SELECT COUNT(*) FROM categories WHERE id=?",array($cid)))
 				die(header('Location: manageforums.php'));
 			
-			$sql->prepare("UPDATE categories SET title=?, ord=?, private=? WHERE id=?", array($title, $ord, $private, $cid));
+			$sql->prepare_query("UPDATE categories SET title=?, ord=?, private=? WHERE id=?", array($title, $ord, $private, $cid));
 		}
 		
 		saveperms('categories', $cid);
@@ -72,7 +72,7 @@ else if ($_POST['delcat'])
 	// delete category
 	
 	$cid = (int)$_GET['cid'];
-	$sql->prepare("DELETE FROM categories WHERE id=?",array($cid));
+	$sql->prepare_query("DELETE FROM categories WHERE id=?",array($cid));
 	
 	deleteperms('categories', $cid);
 	die(header('Location: manageforums.php'));
@@ -97,28 +97,28 @@ else if ($_POST['saveforum'])
 	{
 		if ($fid == 'new')
 		{
-			$fid = $sql->resultq("SELECT MAX(id) FROM forums");
+			$fid = $sql->query_result("SELECT MAX(id) FROM forums");
 			if (!$fid) $fid = 0;
 			$fid++;
 			
-			$sql->prepare("INSERT INTO forums (id,cat,title,descr,ord,private,trash,readonly,announcechan_id) VALUES (?,?,?,?,?,?,?,?,?)", 
+			$sql->prepare_query("INSERT INTO forums (id,cat,title,descr,ord,private,trash,readonly,announcechan_id) VALUES (?,?,?,?,?,?,?,?,?)", 
 				array($fid, $cat, $title, $descr, $ord, $private, $trash, $readonly, $announcechan_id));
 		}
 		else
 		{
 			$fid = (int)$fid;
-			if (!$sql->resultp("SELECT COUNT(*) FROM forums WHERE id=?",array($fid)))
+			if (!$sql->prepare_query_result("SELECT COUNT(*) FROM forums WHERE id=?",array($fid)))
 				die(header('Location: manageforums.php'));
 			
-			$sql->prepare("UPDATE forums SET cat=?, title=?, descr=?, ord=?, private=?, trash=?, readonly=?, announcechan_id=? WHERE id=?", 
+			$sql->prepare_query("UPDATE forums SET cat=?, title=?, descr=?, ord=?, private=?, trash=?, readonly=?, announcechan_id=? WHERE id=?", 
 				array($cat, $title, $descr, $ord, $private, $trash, $readonly, $announcechan_id, $fid));
 		}
 		
 		// save localmods
 		
 		$oldmods = array();
-		$qmods = $sql->prepare("SELECT uid FROM forummods WHERE fid=?",array($fid));
-		while ($mod = $sql->fetch($qmods))
+		$qmods = $sql->prepare_query("SELECT uid FROM forummods WHERE fid=?",array($fid));
+		while ($mod = $sql->fetch_assoc($qmods))
 			$oldmods[$mod['uid']] = 1;
 		
 		$newmods = $_POST['localmod'];
@@ -126,19 +126,19 @@ else if ($_POST['saveforum'])
 		foreach ($oldmods as $uid=>$blarg)
 		{
 			if (!$newmods[$uid])
-				$sql->prepare("DELETE FROM forummods WHERE fid=? AND uid=?", array($fid, $uid));
+				$sql->prepare_query("DELETE FROM forummods WHERE fid=? AND uid=?", array($fid, $uid));
 		}
 		foreach ($newmods as $uid=>$blarg)
 		{
 			if (!$oldmods[$uid])
-				$sql->prepare("INSERT INTO forummods (fid,uid) VALUES (?,?)", array($fid, $uid));
+				$sql->prepare_query("INSERT INTO forummods (fid,uid) VALUES (?,?)", array($fid, $uid));
 		}
 		
 		// save tags
 		
 		$oldtags = array();
-		$qtags = $sql->prepare("SELECT bit,tag,color FROM tags WHERE fid=?",array($fid));
-		while ($tag = $sql->fetch($qtags))
+		$qtags = $sql->prepare_query("SELECT bit,tag,color FROM tags WHERE fid=?",array($fid));
+		while ($tag = $sql->fetch_assoc($qtags))
 			$oldtags[$tag['bit']] = $tag;
 		
 		$newtags = $_POST['tag'];
@@ -147,7 +147,7 @@ else if ($_POST['saveforum'])
 		{
 			$bit = (int)$rbit;
 			if (!$newtags[$bit])
-				$sql->prepare("DELETE FROM tags WHERE fid=? AND bit=?", array($fid, $bit));
+				$sql->prepare_query("DELETE FROM tags WHERE fid=? AND bit=?", array($fid, $bit));
 		}
 		foreach ($newtags as $rbit=>$rdata)
 		{
@@ -158,9 +158,9 @@ else if ($_POST['saveforum'])
 			$color = rawurldecode($data[2]);
 			
 			if ($oldtags[$bit])
-				$sql->prepare("UPDATE tags SET name=?, tag=?, color=? WHERE fid=? AND bit=?", array($name, $tag, $color, $fid, $bit));
+				$sql->prepare_query("UPDATE tags SET name=?, tag=?, color=? WHERE fid=? AND bit=?", array($name, $tag, $color, $fid, $bit));
 			else
-				$sql->prepare("INSERT INTO tags (bit,fid,name,tag,color) VALUES (?,?,?,?,?)", array($bit, $fid, $name, $tag, $color));
+				$sql->prepare_query("INSERT INTO tags (bit,fid,name,tag,color) VALUES (?,?,?,?,?)", array($bit, $fid, $name, $tag, $color));
 			
 			// create the new tag image if needed
 			if (!$oldtags[$bit] || $oldtags[$bit]['tag'] != $tag || $oldtags[$bit]['color'] != $color)
@@ -177,9 +177,9 @@ else if ($_POST['delforum'])
 	// delete forum
 	
 	$fid = (int)$_GET['fid'];
-	$sql->prepare("DELETE FROM forums WHERE id=?",array($fid));
-	$sql->prepare("DELETE FROM forummods WHERE fid=?",array($fid));
-	$sql->prepare("DELETE FROM tags WHERE fid=?",array($fid));
+	$sql->prepare_query("DELETE FROM forums WHERE id=?",array($fid));
+	$sql->prepare_query("DELETE FROM forummods WHERE fid=?",array($fid));
+	$sql->prepare_query("DELETE FROM tags WHERE fid=?",array($fid));
 	
 	deleteperms('forums', $fid);
 	die(header('Location: manageforums.php'));
@@ -197,19 +197,19 @@ else if ($_POST['savechan'])
 	{
 		if ($chanid == 'new')
 		{
-			$chanid = $sql->resultq("SELECT MAX(id) FROM announcechans");
+			$chanid = $sql->query_result("SELECT MAX(id) FROM announcechans");
 			if (!$chanid) $chanid = 0;
 			$chanid++;
 			
-			$sql->prepare("INSERT INTO announcechans (id,chan) VALUES (?,?)", array($chanid, $channame));
+			$sql->prepare_query("INSERT INTO announcechans (id,chan) VALUES (?,?)", array($chanid, $channame));
 		}
 		else
 		{
 			$chanid = (int)$chanid;
-			if (!$sql->resultp("SELECT COUNT(*) FROM announcechans WHERE id=?",array($chanid)))
+			if (!$sql->prepare_query_result("SELECT COUNT(*) FROM announcechans WHERE id=?",array($chanid)))
 				die(header('Location: manageforums.php'));
 			
-			$sql->prepare("UPDATE announcechans SET chan=? WHERE id=?", array($channame, $chanid));
+			$sql->prepare_query("UPDATE announcechans SET chan=? WHERE id=?", array($channame, $chanid));
 		}
 		
 		die(header('Location: manageforums.php?chanid='.$chanid));
@@ -220,8 +220,8 @@ else if ($_POST['delchan'])
 	// delete channel
 	
 	$chanid = (int)$_GET['chanid'];
-        $sql->prepare("UPDATE forums SET announcechan_id=? WHERE announcechan_id=?", array('0', $chanid));
-	$sql->prepare("DELETE FROM announcechans WHERE id=?",array($chanid));
+        $sql->prepare_query("UPDATE forums SET announcechan_id=? WHERE announcechan_id=?", array('0', $chanid));
+	$sql->prepare_query("DELETE FROM announcechans WHERE id=?",array($chanid));
 	
 	die(header('Location: manageforums.php'));
 }
@@ -251,7 +251,7 @@ if ($cid = $_GET['cid'])
 	else
 	{
 		$cid = (int)$cid;
-		$cat = $sql->fetchp("SELECT * FROM categories WHERE id=?",array($cid));
+		$cat = $sql->prepare_query_fetch("SELECT * FROM categories WHERE id=?",array($cid));
 	}
 	
 	print 	"<form action=\"\" method=\"POST\">
@@ -298,18 +298,18 @@ else if ($fid = $_GET['fid'])
 	else
 	{
 		$fid = (int)$fid;
-		$forum = $sql->fetchp("SELECT * FROM forums WHERE id=?",array($fid));
+		$forum = $sql->prepare_query_fetch("SELECT * FROM forums WHERE id=?",array($fid));
 	}
 	
 	$qcats = $sql->query("SELECT id,title FROM categories ORDER BY ord, id");
 	$cats = array();
-	while ($cat = $sql->fetch($qcats))
+	while ($cat = $sql->fetch_assoc($qcats))
 		$cats[$cat['id']] = $cat['title'];
 	$catlist = fieldselect('cat', $forum['cat'], $cats);
 	
 	$qchans = $sql->query("SELECT id,chan FROM announcechans ORDER BY id");
 	$chans = array(0 => 'Default');
-	while ($chan = $sql->fetch($qchans))
+	while ($chan = $sql->fetch_assoc($qchans))
 		$chans[$chan['id']] = $chan['chan'];
 	$chanlist = fieldselect('announcechan_id', $forum['announcechan_id'], $chans);
 	
@@ -373,8 +373,8 @@ else if ($fid = $_GET['fid'])
 ".			"			<td class=\"b\" id=\"modlist\" style=\"vertical-align:top;\">
 ";
 	
-	$qmods = $sql->prepare("SELECT ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid WHERE f.fid=?",array($fid));
-	while ($mod = $sql->fetch($qmods))
+	$qmods = $sql->prepare_query("SELECT ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid WHERE f.fid=?",array($fid));
+	while ($mod = $sql->fetch_assoc($qmods))
 		print "<div>".localmodRow($mod)."</div>";
 		
 	print 	"			</td>
@@ -404,8 +404,8 @@ else if ($fid = $_GET['fid'])
 ".			"			<td class=\"b\" id=\"taglist\" style=\"vertical-align:top;\">
 ";
 
-	$qtags = $sql->prepare("SELECT * FROM tags WHERE fid=?",array($fid));
-	while ($tag = $sql->fetch($qtags))
+	$qtags = $sql->prepare_query("SELECT * FROM tags WHERE fid=?",array($fid));
+	while ($tag = $sql->fetch_assoc($qtags))
 		print "<div>".tagRow($tag['name'], $tag['tag'], $fid, $tag['bit'], $tag['color'])."</div>";
 	
 	print 	"			</td>
@@ -433,7 +433,7 @@ else if ($chanid = $_GET['chanid'])
 	else
 	{
 		$chanid = (int)$chanid;
-		$chan = $sql->fetchp("SELECT * FROM announcechans WHERE id=?",array($chanid));
+		$chan = $sql->prepare_query_fetch("SELECT * FROM announcechans WHERE id=?",array($chanid));
 	}
 	
 	print 	"<form action=\"\" method=\"POST\">
@@ -462,17 +462,17 @@ else
 	
 	$qcats = $sql->query("SELECT id,title FROM categories ORDER BY ord, id");
 	$cats = array();
-	while ($cat = $sql->fetch($qcats))
+	while ($cat = $sql->fetch_assoc($qcats))
 		$cats[$cat['id']] = $cat;
 	
 	$qforums = $sql->query("SELECT f.id,f.title,f.cat FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord, c.id, f.ord, f.id");
 	$forums = array();
-	while ($forum = $sql->fetch($qforums))
+	while ($forum = $sql->fetch_assoc($qforums))
 		$forums[$forum['id']] = $forum;
 
 	$qchans = $sql->query("SELECT id,chan FROM announcechans ORDER BY id");
 	$chans = array();
-	while ($chan = $sql->fetch($qchans))
+	while ($chan = $sql->fetch_assoc($qchans))
 		$chans[$chan['id']] = $chan;
 	
 	$catlist = ''; $c = 1;
@@ -563,17 +563,17 @@ function permtable($bind, $id)
 {
 	global $sql;
 	
-	$qperms = $sql->prepare("SELECT id,title FROM perm WHERE permbind_id=?",array($bind));
+	$qperms = $sql->prepare_query("SELECT id,title FROM perm WHERE permbind_id=?",array($bind));
 	$perms = array(); 
-	while ($perm = $sql->fetch($qperms))
+	while ($perm = $sql->fetch_assoc($qperms))
 		$perms[$perm['id']] = $perm['title'];
 	
 	$groups = grouplist();
 	
-	$qpermdata = $sql->prepare("SELECT x.x_id,x.perm_id,x.revoke FROM x_perm x LEFT JOIN perm p ON p.id=x.perm_id WHERE x.x_type=? AND p.permbind_id=? AND x.bindvalue=?",
+	$qpermdata = $sql->prepare_query("SELECT x.x_id,x.perm_id,x.revoke FROM x_perm x LEFT JOIN perm p ON p.id=x.perm_id WHERE x.x_type=? AND p.permbind_id=? AND x.bindvalue=?",
 		array('group',$bind,$id));
 	$permdata = array();
-	while ($perm = $sql->fetch($qpermdata))
+	while ($perm = $sql->fetch_assoc($qpermdata))
 		$permdata[$perm['x_id']][$perm['perm_id']] = !$perm['revoke'];
 		
 	print 	"<table cellspacing=\"0\" class=\"c1\">
@@ -639,7 +639,7 @@ function deleteperms($bind, $id)
 {
 	global $sql;
 	
-	$sql->prepare("DELETE x FROM x_perm x LEFT JOIN perm p ON p.id=x.perm_id WHERE x.x_type=? AND p.permbind_id=? AND x.bindvalue=?",
+	$sql->prepare_query("DELETE x FROM x_perm x LEFT JOIN perm p ON p.id=x.perm_id WHERE x.x_type=? AND p.permbind_id=? AND x.bindvalue=?",
 		array('group', $bind, $id));
 }
 
@@ -647,9 +647,9 @@ function saveperms($bind, $id)
 {
 	global $sql, $usergroups;
 	
-	$qperms = $sql->prepare("SELECT id FROM perm WHERE permbind_id=?",array($bind));
+	$qperms = $sql->prepare_query("SELECT id FROM perm WHERE permbind_id=?",array($bind));
 	$perms = array(); 
-	while ($perm = $sql->fetch($qperms))
+	while ($perm = $sql->fetch_assoc($qperms))
 		$perms[] = $perm['id'];
 	
 	// delete the old perms
@@ -663,7 +663,7 @@ function saveperms($bind, $id)
 			
 		$myperms = $_POST['perm'][$gid];
 		foreach ($perms as $perm)
-			$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`)
+			$sql->prepare_query("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`)
 				VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, $myperms[$perm]?0:1));
 	}
 }

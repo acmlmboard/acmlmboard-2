@@ -43,7 +43,7 @@ print "<table cellspacing=\"0\" width=100%>
 				"    <td class=\"b h\" width=120>IP</td>" : '') . "
 " . "    <td class=\"b h\" width=50>Posts</td>
 ";
-for ($i = 1; $user = $sql->fetch($users); $i++) {
+for ($i = 1; $user = $sql->fetch_assoc($users); $i++) {
 	if ($user['url'][0] == '!') {
 		$user['url'] = substr($user['url'], 1);
 		$user['ssl'] = 1;
@@ -74,7 +74,7 @@ print "</table>
 " . (has_perm("view-post-ips") ?
 				"    <td class=\"b h\" width=120>IP</td>" : '') . "
 ";
-for ($i = 1; $guest = $sql->fetch($guests); $i++) {
+for ($i = 1; $guest = $sql->fetch_assoc($guests); $i++) {
 	if ($guest['url'][0] == '!') {
 		$guest['url'] = substr($guest['url'], 1);
 		$guest['ssl'] = 1;
@@ -106,7 +106,7 @@ print "</table>
 " . (has_perm("view-post-ips") ?
 				"    <td class=\"b h\" width=120>IP</td>" : '') . "
 ";
-for ($i = 1; $guest = $sql->fetch($bots); $i++) {
+for ($i = 1; $guest = $sql->fetch_assoc($bots); $i++) {
 	if ($guest['url'][0] == '!') {
 		$guest['url'] = substr($guest['url'], 1);
 		$guest['ssl'] = 1;

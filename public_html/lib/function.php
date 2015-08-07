@@ -13,7 +13,6 @@ require 'lib/thread.php';
 require 'lib/auth.php';
 require 'lib/user.php';
 require 'lib/post.php';
-require 'lib/syndrome.php';
 require 'lib/board.php';
 require 'lib/rpg.php';
 require 'lib/graphics.php';

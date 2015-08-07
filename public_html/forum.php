@@ -13,13 +13,13 @@ $time = isset($_GET['time']) ? (int)$_GET['time'] : 0;
 
 if ($fid > 0) {
 	if ($log) {
-		$forum = $sql->fetchq("SELECT f.*, r.time rtime FROM forums f "
+		$forum = $sql->query_fetch("SELECT f.*, r.time rtime FROM forums f "
 				. "LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) "
 				. "WHERE f.id=$fid AND f.id IN " . forums_with_view_perm());
 		if (!$forum['rtime'])
 			$forum['rtime'] = 0;
 	} else {
-		$forum = $sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN " . forums_with_view_perm());
+		$forum = $sql->query_fetch("SELECT * FROM forums WHERE id=$fid AND id IN " . forums_with_view_perm());
 	}
 
 
@@ -30,7 +30,7 @@ if ($fid > 0) {
 	//load tags
 	$tags = array();
 	$t = $sql->query("SELECT * FROM tags WHERE fid=$fid");
-	while ($tt = $sql->fetch($t))
+	while ($tt = $sql->fetch_assoc($t))
 		$tags[] = $tt;
 
 	$feedicons.=feedicon("img/rss2.png", "rss.php?forum=$fid", "RSS feed for this section");
@@ -41,7 +41,7 @@ if ($fid > 0) {
 	//forum access control // 2007-02-19 blackhole89 // 2011-11-09 blackhole89 tokenisation (more than 4.5 years...)
 	//2012-01-01 DJBouche Happy New Year!
 //[KAWA] Copypasting a chunk from ABXD, with some edits to make it work here.
-	$isIgnored = $sql->resultq("select count(*) from ignoredforums where uid=" . $loguser['id'] . " and fid=" . $fid) == 1;
+	$isIgnored = $sql->query_result("select count(*) from ignoredforums where uid=" . $loguser['id'] . " and fid=" . $fid) == 1;
 	if (isset($_GET['ignore'])) {
 		if (!$isIgnored && $loguser['id'] != 0) {
 			$sql->query("insert into ignoredforums values (" . $loguser['id'] . ", " . $fid . ")");
@@ -96,7 +96,7 @@ if ($fid > 0) {
 " . "</table>
 ";
 } elseif ($uid > 0) {
-	$user = $sql->fetchq("SELECT * FROM users WHERE id=$uid");
+	$user = $sql->query_fetch("SELECT * FROM users WHERE id=$uid");
 
 	pageheader("Threads by " . ($user['displayname'] ? $user['displayname'] : $user['name']));
 
@@ -118,7 +118,7 @@ if ($fid > 0) {
 			. "ORDER BY t.sticky DESC, t.lastdate DESC "
 			. "LIMIT " . (($page - 1) * $loguser[tpp]) . "," . $loguser[tpp]);
 
-	$forum[threads] = $sql->resultq("SELECT count(*) "
+	$forum[threads] = $sql->query_result("SELECT count(*) "
 			. "FROM threads t "
 			. "LEFT JOIN forums f ON f.id=t.forum "
 			. "LEFT JOIN categories c ON f.cat=c.id "
@@ -149,7 +149,7 @@ if ($fid > 0) {
 			. "  AND f.id IN " . forums_with_view_perm() . " "
 			. "ORDER BY t.lastdate DESC "
 			. "LIMIT " . (($page - 1) * $loguser[tpp]) . "," . $loguser[tpp]);
-	$forum[threads] = $sql->resultq("SELECT count(*) "
+	$forum[threads] = $sql->query_result("SELECT count(*) "
 			. "FROM threads t "
 			. "LEFT JOIN forums f ON f.id=t.forum "
 			. "LEFT JOIN categories c ON f.cat=c.id "
@@ -189,7 +189,7 @@ if ($fid > 0) {
 			. "ORDER BY t.sticky DESC, t.lastdate DESC "
 			. "LIMIT " . (($page - 1) * $loguser['tpp']) . "," . $loguser['tpp']);
 
-	$forum['threads'] = $sql->resultq("SELECT count(*) "
+	$forum['threads'] = $sql->query_result("SELECT count(*) "
 			. "FROM threads t "
 			. "LEFT JOIN forums f ON f.id=t.forum "
 			. "LEFT JOIN categories c ON f.cat=c.id "
@@ -213,7 +213,7 @@ if (!$uid && !$time && !isset($_GET['fav'])) {
 	$forumjumplinks = "<table><td>Forum jump: </td>
         <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
 	$c = -1;
-	while ($d = $sql->fetch($r)) {
+	while ($d = $sql->fetch_assoc($r)) {
 		if (!can_view_forum($d))
 			continue;
 
@@ -280,7 +280,7 @@ print "
 ";
 
 $lsticky = 0;
-for ($i = 1; $thread = $sql->fetch($threads); $i++) {
+for ($i = 1; $thread = $sql->fetch_assoc($threads); $i++) {
 	$pagelist = '';
 	if ($thread['replies'] >= $loguser['ppp']) {
 		for ($p = 1; $p <= ($pmax = (1 + floor($thread['replies'] / $loguser['ppp']))); $p++) {

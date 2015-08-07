@@ -17,7 +17,7 @@ pageheader("Edit Events");
 $user = array();
 $quser = $sql->query("SELECT `id`, `name` FROM `users`ORDER BY `id`");
 
-while ($alluserquery = $sql->fetch($quser)) {
+while ($alluserquery = $sql->fetch_assoc($quser)) {
 	$user[$alluserquery['id']] = $alluserquery['name'];
 }
 $id = $r['id'];
@@ -25,10 +25,10 @@ $id = $r['id'];
 if ($r['action'] == "del") {
 	unset($r['action']);
 	if ($id > 0) {
-		$event = $sql->fetchp('SELECT * FROM events WHERE id=?', array($id));
+		$event = $sql->prepare_query_fetch('SELECT * FROM events WHERE id=?', array($id));
 		if (!$event)
 			$pagebar['message'] = "Unable to delete event: invalid event ID.";
-		else if ($sql->prepare('DELETE FROM events WHERE id=?', array($id))) {
+		else if ($sql->prepare_query('DELETE FROM events WHERE id=?', array($id))) {
 			$pagebar['message'] = "Event successfully deleted.";
 		} else {
 			$pagebar['message'] = "Unable to delete event.";
@@ -58,8 +58,8 @@ if (empty($r['action'])) {
 
 	$data = array();
 	$eventReq = $sql->query("SELECT * FROM events ORDER BY id ASC");
-	while ($event = $sql->fetch($eventReq)) {
-		$eventuser = $sql->fetchq("SELECT * FROM `users` WHERE `id` = '$event[user]'");
+	while ($event = $sql->fetch_assoc($eventReq)) {
+		$eventuser = $sql->query_fetch("SELECT * FROM `users` WHERE `id` = '$event[user]'");
 		$actions = array(
 			array('title' => 'Edit', 'href' =>
 				'editevents.php?action=edit&id=' . $event['id']),
@@ -94,7 +94,7 @@ if (empty($r['action'])) {
 
 		if ($r['action'] == "edit" && $id > 0) {
 
-			if ($sql->prepare('UPDATE events SET 
+			if ($sql->prepare_query('UPDATE events SET 
 month=?,day=?,year=?,user=?,private=?,event_title=? WHERE id=?;', array(
 						$e['month'],
 						$e['day'],
@@ -110,7 +110,7 @@ month=?,day=?,year=?,user=?,private=?,event_title=? WHERE id=?;', array(
 				$pagebar['message'] = "Unable to update event.";
 			}
 		} elseif ($r['action'] == "new") {
-			if ($sql->prepare('INSERT INTO events SET
+			if ($sql->prepare_query('INSERT INTO events SET
 month=?,day=?,year=?,user=?,private=?,event_title=? ;', array(
 						$e['month'],
 						$e['day'],
@@ -120,7 +120,7 @@ month=?,day=?,year=?,user=?,private=?,event_title=? ;', array(
 						$e['event_title'],
 							)
 					)) {
-				$id = $sql->insertid();
+				$id = $sql->insert_id();
 				$r['action'] = "edit";
 				$pagebar['message'] = "Event successfully created.";
 			} else {
@@ -134,7 +134,7 @@ month=?,day=?,year=?,user=?,private=?,event_title=? ;', array(
 
 
 	if ($id > 0) {
-		$t = $sql->fetchp('SELECT * FROM events WHERE id=?', array($id));
+		$t = $sql->prepare_query_fetch('SELECT * FROM events WHERE id=?', array($id));
 		if (!$t) {
 			noticemsg("Error", "Invalid event ID");
 			pagefooter();

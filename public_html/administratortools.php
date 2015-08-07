@@ -57,34 +57,34 @@ if($updated) {
 //
 // It is possible to use the same field name to store an int and text value, however this
 // could cause confusion.
-$regdisable			= $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="regdisable"');
-$regdisabletext		= $sql->resultq("SELECT `txtval` FROM `misc` WHERE field='regdisabletext'");
-$lockdown			= $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="lockdown"');
-$lockdowntext		= $sql->resultq("SELECT `txtval` FROM `misc` WHERE field='lockdowntext'");
-$boardemail = $sql->resultq("SELECT `txtval` FROM `misc` WHERE field='boardemail'"); // Why was an entirely new email field added to the entire settings table?
-$trashidint = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="trashid"');
-$boardtitletext = $sql->resultq('SELECT `txtval` FROM `misc` WHERE `field`="boardtitle"');
-$defaultthemetext = $sql->resultq('SELECT `txtval` FROM `misc` WHERE `field`="defaulttheme"');
-$defaultfontsizeint = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="defaultfontsize"');
-$avatardimxint = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="avatardimx"');
-$avatardimyint = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="avatardimy"');
-$topposts = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="topposts"');
-$topthreads = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="topthreads"');
-$memberlistcolorlinks = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="memberlistcolorlinks"');
-$badgesystem = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="badgesystem"');
-$spritesystem = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="spritesystem"');
-$extendedprofile = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="extendedprofile"');
-$threadprevnext = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="threadprevnext"');
-$displayname = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="displayname"');
-$perusercolor = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="perusercolor"');
-$usernamebadgeeffects = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="usernamebadgeeffects"');
-$useshadownccss = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="useshadownccss"');
-$nickcolorcss = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="nickcolorcss"');
-$userpgnum = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="userpgnum"');
-$userpgnumdefault = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="userpgnumdefault"');
-$alwaysshowlvlbar = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="alwaysshowlvlbar"');
-$rpglvlbarwidth = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="rpglvlbarwidth"');
-$atnname = $sql->resultq('SELECT `txtval` FROM `misc` WHERE `field`="atnname"');
+$regdisable			= $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="regdisable"');
+$regdisabletext		= $sql->query_result("SELECT `txtval` FROM `misc` WHERE field='regdisabletext'");
+$lockdown			= $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="lockdown"');
+$lockdowntext		= $sql->query_result("SELECT `txtval` FROM `misc` WHERE field='lockdowntext'");
+$boardemail = $sql->query_result("SELECT `txtval` FROM `misc` WHERE field='boardemail'"); // Why was an entirely new email field added to the entire settings table?
+$trashidint = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="trashid"');
+$boardtitletext = $sql->query_result('SELECT `txtval` FROM `misc` WHERE `field`="boardtitle"');
+$defaultthemetext = $sql->query_result('SELECT `txtval` FROM `misc` WHERE `field`="defaulttheme"');
+$defaultfontsizeint = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="defaultfontsize"');
+$avatardimxint = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="avatardimx"');
+$avatardimyint = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="avatardimy"');
+$topposts = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="topposts"');
+$topthreads = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="topthreads"');
+$memberlistcolorlinks = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="memberlistcolorlinks"');
+$badgesystem = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="badgesystem"');
+$spritesystem = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="spritesystem"');
+$extendedprofile = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="extendedprofile"');
+$threadprevnext = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="threadprevnext"');
+$displayname = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="displayname"');
+$perusercolor = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="perusercolor"');
+$usernamebadgeeffects = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="usernamebadgeeffects"');
+$useshadownccss = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="useshadownccss"');
+$nickcolorcss = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="nickcolorcss"');
+$userpgnum = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="userpgnum"');
+$userpgnumdefault = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="userpgnumdefault"');
+$alwaysshowlvlbar = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="alwaysshowlvlbar"');
+$rpglvlbarwidth = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="rpglvlbarwidth"');
+$atnname = $sql->query_result('SELECT `txtval` FROM `misc` WHERE `field`="atnname"');
 
 print "<form action='administratortools.php' method='post' enctype='multipart/form-data'>
 " . " <table cellspacing=\"0\" class=\"c1\">

@@ -2,7 +2,7 @@
 
 require 'lib/common.php';
 
-$regdis = $sql->fetchq("SELECT intval, txtval FROM misc WHERE field='regdisable'");
+$regdis = $sql->query_fetch("SELECT intval, txtval FROM misc WHERE field='regdisable'");
 if ($regdis['intval'] == 1) {
 	pageheader('Register');
 
@@ -25,7 +25,7 @@ if ($regdis['intval'] == 1) {
 }
 
 
-$boardemailaddress = $sql->resultq("SELECT `emailaddress` FROM `misc` WHERE `field`='boardemail'");
+$boardemailaddress = $sql->query_result("SELECT `emailaddress` FROM `misc` WHERE `field`='boardemail'");
 if (isProxy()) {
 	pageheader('Register');
 
@@ -53,7 +53,7 @@ if ($act == 'Register') {
 	$cname = str_replace(array(' ', "\xC2\xA0"), '', $name);
 	$cname = strtolower($cname);
 
-	$dupe = $sql->resultp("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", array($cname, $cname));
+	$dupe = $sql->prepare_query_result("SELECT COUNT(*) FROM users WHERE LOWER(REPLACE(REPLACE(name,' ',''),0xC2A0,''))=? OR LOWER(REPLACE(REPLACE(displayname,' ',''),0xC2A0,''))=?", array($cname, $cname));
 
 	$sex = (int) $_POST['sex'];
 	if ($sex < 0 || $sex > 2)
@@ -66,7 +66,7 @@ if ($act == 'Register') {
 		$err = 'This username is already taken, please choose another.';
 	elseif ($name == '' || $cname == '')
 		$err = 'The username must not be empty, please choose one.';
-	elseif (($sql->resultq("SELECT COUNT(*) FROM `users` WHERE `ip` = '" . $_SERVER['REMOTE_ADDR'] . "'")) >= 3)
+	elseif (($sql->query_result("SELECT COUNT(*) FROM `users` WHERE `ip` = '" . $_SERVER['REMOTE_ADDR'] . "'")) >= 3)
 		$err = 'Too many users with this IP address.';
 	elseif (strlen($_POST['pass']) < 4)
 		$err = 'Your password must be at least 4 characters long.';
@@ -81,37 +81,37 @@ if ($act == 'Register') {
 		$query_string = sprintf("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone,fontsize,theme) VALUES ('%s', '%s', %d, %d, '%s', %d, '%s', %d, '%s');", $name, $salted_password, ctime(), ctime(), $userip, $sex, $timezone, $defaultfontsize, $defaulttheme);
 		$res = $sql->query($query_string);
 		if ($res) {
-			$id = $sql->insertid();
+			$id = $sql->insert_id();
 			$sql->query("INSERT INTO usersrpg (id) VALUES ($id)");
 
 			$ugid = 0;
 			if ($id == 1) {
-				$row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?", array(-1));
+				$row = $sql->prepare_query_fetch("SELECT id FROM `group` WHERE `default`=?", array(-1));
 				$ugid = $row['id'];
 			} else {
-				$row = $sql->fetchp("SELECT id FROM `group` WHERE `default`=?", array(1));
+				$row = $sql->prepare_query_fetch("SELECT id FROM `group` WHERE `default`=?", array(1));
 				$ugid = $row['id'];
 			}
-			$sql->prepare("UPDATE users SET group_id=? WHERE id=?", array($ugid, $id));
+			$sql->prepare_query("UPDATE users SET group_id=? WHERE id=?", array($ugid, $id));
 
 			// [Mega-Mario] mark existing threads and forums as read
-			$sql->prepare("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", array($id, ctime()));
-			$sql->prepare("INSERT INTO forumsread (uid,fid,time) SELECT ?,id,? FROM forums", array($id, ctime()));
+			$sql->prepare_query("INSERT INTO threadsread (uid,tid,time) SELECT ?,id,? FROM threads", array($id, ctime()));
+			$sql->prepare_query("INSERT INTO forumsread (uid,fid,time) SELECT ?,id,? FROM forums", array($id, ctime()));
 
 			/* count matches for IP and hash */
 			//hash
-			$a = $sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='" . md5($pwdsalt2 . $_POST[pass] . $pwdsalt) . "'");
+			$a = $sql->query_fetch("SELECT COUNT(*) as c FROM users WHERE pass='" . md5($pwdsalt2 . $_POST[pass] . $pwdsalt) . "'");
 			$m_hash = $a['c'] - 1;
 			//split the IP
 			$ipparts = explode(".", $userip);
 			// /32 matches
-			$a = $sql->fetchq("SELECT count(*) as c FROM users WHERE ip='$userip'");
+			$a = $sql->query_fetch("SELECT count(*) as c FROM users WHERE ip='$userip'");
 			$m_ip32 = $a['c'] - 1;
 			// /24
-			$a = $sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].$ipparts[2].%'");
+			$a = $sql->query_fetch("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].$ipparts[2].%'");
 			$m_ip24 = $a['c'] - 1;
 			// /16
-			$a = $sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].%'");
+			$a = $sql->query_fetch("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].%'");
 			$m_ip16 = $a['c'] - 1;
 
 			//fancy colouring (if matches exist, make it red); references to make foreach not operate on copies
@@ -137,7 +137,7 @@ $listsex = array('Male', 'Female', 'N/A');
 $alltz = $sql->query("SELECT name FROM `timezones`");
 
 $listtimezones = array();
-while ($tz = $sql->fetch($alltz)) {
+while ($tz = $sql->fetch_assoc($alltz)) {
 	$listtimezones[$tz['name']] = $tz['name'];
 }
 

@@ -4,7 +4,7 @@ require 'lib/common.php';
 pageheader('Stats');
 
 $tstats = $sql->query('SHOW TABLE STATUS');
-while ($t = $sql->fetch($tstats)) {
+while ($t = $sql->fetch_assoc($tstats)) {
 	$tbl[$t['Name']] = $t;
 }
 
@@ -30,8 +30,8 @@ function tblinfo($n) {
 
 $fields = array('maxpostsday', 'maxpostshour', 'maxpostsdaydate', 'maxpostshourdate', 'maxusers', 'maxusersdate');
 foreach ($fields as $field)
-	$$field = $sql->resultq("SELECT intval FROM misc WHERE field='$field'");
-$maxuserstext = $sql->resultq('SELECT txtval FROM misc WHERE field="maxuserstext"');
+	$$field = $sql->query_result("SELECT intval FROM misc WHERE field='$field'");
+$maxuserstext = $sql->query_result('SELECT txtval FROM misc WHERE field="maxuserstext"');
 
 print "<table cellspacing=\"0\" class=\"c1\">
 " . "  <tr class=\"h\">
@@ -97,7 +97,7 @@ $posts = 0;
 $threads = 0;
 $views = 0;
 $stats = $sql->query('SELECT * FROM dailystats');
-while ($day = $sql->fetch($stats)) {
+while ($day = $sql->fetch_assoc($stats)) {
 	print
 			"  <tr align=\"center\">
 " . "    <td class=\"b n1\">$day[date]</td>

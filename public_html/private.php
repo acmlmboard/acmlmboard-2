@@ -47,7 +47,7 @@ if($_COOKIE['pstbon']==-1){
   checknumeric($showdel);
 
   if($_GET[action]=="del") {
-    $owner=$sql->resultq("SELECT user$fieldn2 FROM pmsgs WHERE id=$id");
+    $owner=$sql->query_result("SELECT user$fieldn2 FROM pmsgs WHERE id=$id");
     if(has_perm('delete-user-pms') || ($owner==$loguser[id] && has_perm('delete-own-pms')) ) {
       $sql->query($q="UPDATE pmsgs SET del_$fieldn2=".((int)!$showdel)." WHERE id=$id");
     } else {
@@ -58,7 +58,7 @@ if($_COOKIE['pstbon']==-1){
 
   $ptitle='Private messages'.($sent?' (sent)':'');
   if($id && has_perm('view-user-pms')){
-    $user=$sql->fetchq("SELECT id,name,sex,group_id FROM users WHERE id=$id");
+    $user=$sql->query_fetch("SELECT id,name,sex,group_id FROM users WHERE id=$id");
     pageheader("$user[name]'s ".strtolower($ptitle));
     $title=userlink($user)."'s ".strtolower($ptitle);
   }else{
@@ -67,7 +67,7 @@ if($_COOKIE['pstbon']==-1){
     $title=$ptitle;
   }
 
-  $pmsgc=$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE user$fieldn2=$id AND del_$fieldn2=$showdel");
+  $pmsgc=$sql->query_result("SELECT COUNT(*) FROM pmsgs WHERE user$fieldn2=$id AND del_$fieldn2=$showdel");
   $pmsgs=$sql->query("SELECT ".userfields('u','u').", p.* "
                     ."FROM pmsgs p "
                     ."LEFT JOIN users u ON u.id=p.user$fieldn "
@@ -121,7 +121,7 @@ print   "<table cellspacing=\"0\" class=\"c1\">
 ".      "    <td class=\"b h\" width=130>Sent on</td>
 ";
 
-  for($i=1;$pmsg=$sql->fetch($pmsgs);$i++){
+  for($i=1;$pmsg=$sql->fetch_assoc($pmsgs);$i++){
     $status='&nbsp;';
     if($pmsg[unread])
       $status=rendernewstatus("n");

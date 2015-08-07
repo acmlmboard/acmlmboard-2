@@ -36,7 +36,7 @@ checknumeric($pid);
 
 needs_login(1);
 
-$thread = $sql->fetchq('SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
+$thread = $sql->query_fetch('SELECT p.user puser, t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
 		. 'FROM posts p '
 		. 'LEFT JOIN threads t ON t.id=p.thread '
 		. 'LEFT JOIN forums f ON f.id=t.forum '
@@ -80,11 +80,11 @@ $res = $sql->query("SELECT u.id, p.user, p.mood, p.nolayout, pt.text "
 		. "LEFT JOIN users u ON p.user=u.id "
 		. "WHERE p.id=$pid");
 
-if ($sql->numrows($res) < 1) {
+if ($sql->num_rows($res) < 1) {
 	$err = "    That post does not exist.";
 }
 
-$post = $sql->fetch($res);
+$post = $sql->fetch_assoc($res);
 $quotetext = htmlval($post[text]);
 if ($act == "Submit" && $post['text'] == $_POST['message']) {
 	$err = "    No changes detected.<br>
@@ -142,7 +142,7 @@ if ($err) {
 ";
 }elseif ($act == 'Preview') {
 	$_POST['message'] = stripslashes($_POST['message']);
-	$euser = $sql->fetchq("SELECT * FROM users WHERE id=$post[id]");
+	$euser = $sql->query_fetch("SELECT * FROM users WHERE id=$post[id]");
 	$post['date'] = ctime();
 	$post['ip'] = $userip;
 	$post['num'] = ++$euser['posts'];
@@ -205,9 +205,9 @@ if ($err) {
 ";
 }elseif ($act == 'Submit') {
 	$message = $_POST['message'];
-	$user = $sql->fetchq("SELECT * FROM users WHERE id=$userid");
+	$user = $sql->query_fetch("SELECT * FROM users WHERE id=$userid");
 
-	$rev = $sql->fetchq("SELECT MAX(revision) m FROM poststext WHERE id=$pid");
+	$rev = $sql->query_fetch("SELECT MAX(revision) m FROM poststext WHERE id=$pid");
 	$rev = $rev['m'];
 	$mid = (isset($_POST['mid']) ? (int) $_POST['mid'] : -1);
 	checknumeric($mid);
@@ -237,7 +237,7 @@ if ($err) {
 		$sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'" . $_SERVER['REMOTE_ADDR'] . "','$loguser[id]','ACTION: " . addslashes("post edit " . $pid . " rev " . $rev) . "')");
 	}
 
-	$chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?", array($thread['forum']));
+	$chan = $sql->prepare_query_result("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?", array($thread['forum']));
 
 	if ($thread['announce']) {
 		if ($thread['forum'] == 0) {
@@ -300,7 +300,7 @@ if ($act != 'Submit' && $act != 'delete' && $act != 'undelete' && !$err && !$thr
 " . "    <td class=\"b h\" colspan=2>Thread preview
 " . "</table>
 ";
-	while ($post = $sql->fetch($posts)) {
+	while ($post = $sql->fetch_assoc($posts)) {
 		$exp = calcexp($post['uposts'], ctime() - $post['uregdate']);
 		print threadpost($post, 1);
 	}

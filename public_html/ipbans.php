@@ -64,7 +64,7 @@
 ".       "    <td class=\"b\" width=100%>Comment</td>
 ".       "    <td class=\"b\">Actions
 ";
-    while($i=$sql->fetch($ipbans)) {
+    while($i=$sql->fetch_assoc($ipbans)) {
       echo "<tr>
 ".         "  <td class=\"b n1\"><font face='courier new'>".ipfmt($i[ipmask])."</font>
 ".         "  <td class=\"b n2\" align=\"center\"><font color=".($i[hard]?"red>Yes":"green>No")."</font>

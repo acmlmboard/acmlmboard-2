@@ -101,7 +101,7 @@
 	}
 </script>";
 //Default Avatar.
-  $u=$sql->fetch($sql->query("SELECT `usepic` FROM `users` WHERE `id`=".$edid));
+  $u=$sql->fetch_assoc($sql->query("SELECT `usepic` FROM `users` WHERE `id`=".$edid));
   if($u['usepic']>=1){ $aurl="gfx/userpic.php?id=".$edid."&r=".$u['usepic']; }
   print "<div style=\"margin: 4px; float: left; display:inline-block;\"><table cellspacing=\"0\" class=\"c1\">
   <tr class=\"h\">
@@ -118,7 +118,7 @@
   $fid=0;
   $lid=0;
   $avas = $sql->query("SELECT * FROM `mood` WHERE `user`=".$edid);
-  for($i=1;$mav=$sql->fetch($avas);$i++){
+  for($i=1;$mav=$sql->fetch_assoc($avas);$i++){
   if($lid!=($mav['id']-1) && $fid==0){ $fid=($mav['id']-1); } //Find a "free" ID.
   $lid=$mav['id'];
   if($mav['local']==1){

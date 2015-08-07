@@ -71,7 +71,7 @@ HTML;
 $action = isset($_GET['action']) ? $_GET['action'] : 'reset-form';
 
 // is something strange going on?
-$reset_requests = $sql->fetchp("SELECT COUNT(*) as `count` FROM `resetpass` WHERE `ip` = ? AND `date` > ? LIMIT 1", array($_SERVER['REMOTE_ADDR'], (time() - 3600 * 24) ));
+$reset_requests = $sql->prepare_query_fetch("SELECT COUNT(*) as `count` FROM `resetpass` WHERE `ip` = ? AND `date` > ? LIMIT 1", array($_SERVER['REMOTE_ADDR'], (time() - 3600 * 24) ));
 if($reset_requests['count'] > 3) {
 	$action = "rate-limit";
 }
@@ -88,13 +88,13 @@ switch ($action) {
 			noticemsg("Error", "Empty username provided.");
 			displayResetForm();
 		} else {
-			$user = $sql->fetchp("SELECT id, name, email FROM users WHERE name = ? LIMIT 1", array($name));
+			$user = $sql->prepare_query_fetch("SELECT id, name, email FROM users WHERE name = ? LIMIT 1", array($name));
 			if($user != null) {
 				if(empty($user['email'])) {
 					noticemsg("Error", "Unfortunately your account doesn't have any email associated with it, so we are unable to reset your password.");
 				} else {
 					$password_token = generatePasswordToken();
-					if($sql->prepare("INSERT INTO `resetpass` (`user`, `date`, `ip`, `token`) VALUES (?, ?, ?, ?);",
+					if($sql->prepare_query("INSERT INTO `resetpass` (`user`, `date`, `ip`, `token`) VALUES (?, ?, ?, ?);",
 						array($user['id'], time(), $_SERVER['REMOTE_ADDR'], $password_token))) {
 						
 						sendResetEmail($user['email'], $password_token);
@@ -113,7 +113,7 @@ switch ($action) {
 		
 	case 'change-form':
 		$token = isset($_GET['token']) ? $_GET['token'] : '';
-		$change_request = $sql->fetchp("SELECT `user`, `date`, `ip` FROM `resetpass` WHERE `token` = ? AND `completed` = 0 AND `date` > ? LIMIT 1", 
+		$change_request = $sql->prepare_query_fetch("SELECT `user`, `date`, `ip` FROM `resetpass` WHERE `token` = ? AND `completed` = 0 AND `date` > ? LIMIT 1", 
 				array($token, $token_expiration));
 		
 		if($change_request != null) {
@@ -137,14 +137,14 @@ switch ($action) {
 			noticemsg("Error", "Password needs to be at least 4 characters long.");
 			displayChangePasswordForm($token);
 		} else {
-			$change_request = $sql->fetchp("SELECT `user`, `date`, `ip` FROM `resetpass` WHERE `token` = ? AND `completed` = 0 AND `date` > ? LIMIT 1", array($token, $token_expiration));
+			$change_request = $sql->prepare_query_fetch("SELECT `user`, `date`, `ip` FROM `resetpass` WHERE `token` = ? AND `completed` = 0 AND `date` > ? LIMIT 1", array($token, $token_expiration));
 			if($change_request != null) {
-				$user = $sql->fetchp("SELECT `pass` FROM `users` WHERE `id` = ?", array($change_request['user']));
+				$user = $sql->prepare_query_fetch("SELECT `pass` FROM `users` WHERE `id` = ?", array($change_request['user']));
 				if($user != null) {
 					$salted_password = md5($pwdsalt2 . $pass . $pwdsalt);
-					$sql->prepare( "UPDATE `users` SET `pass` = ? WHERE `id` = ?;", 
+					$sql->prepare_query( "UPDATE `users` SET `pass` = ? WHERE `id` = ?;", 
 							array($salted_password, $change_request['user']) );
-					$sql->prepare( "UPDATE `resetpass` SET `oldpass` = ?, `newpass` = ?, `completed` = 1 WHERE `token` = ?;", 
+					$sql->prepare_query( "UPDATE `resetpass` SET `oldpass` = ?, `newpass` = ?, `completed` = 1 WHERE `token` = ?;", 
 							array($user['pass'], $salted_password, $token) );
 					noticemsg("Success!", "Your password has been reset! <a href=\"login.php\">Click here to login!</a>");
 				} else {

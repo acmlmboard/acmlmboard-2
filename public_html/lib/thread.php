@@ -21,16 +21,16 @@
   function movethread($id,$forum){
     global $sql;
 
-    if(!$sql->resultq("SELECT COUNT(*) FROM forums WHERE id=$forum")) return;
+    if(!$sql->query_result("SELECT COUNT(*) FROM forums WHERE id=$forum")) return;
 
-    $thread=$sql->fetchq("SELECT forum,replies FROM threads WHERE id=$id");
+    $thread=$sql->query_fetch("SELECT forum,replies FROM threads WHERE id=$id");
     $sql->query("UPDATE threads SET forum=$forum WHERE id=$id");
 
-    $last1=$sql->fetchq("SELECT lastdate,lastuser,lastid "
+    $last1=$sql->query_fetch("SELECT lastdate,lastuser,lastid "
                        ."FROM threads "
                        ."WHERE forum=$thread[forum] "
                        ."ORDER BY lastdate DESC LIMIT 1");
-    $last2=$sql->fetchq("SELECT lastdate,lastuser,lastid "
+    $last2=$sql->query_fetch("SELECT lastdate,lastuser,lastid "
                        ."FROM threads "
                        ."WHERE forum=$forum "
                        ."ORDER BY lastdate DESC LIMIT 1");

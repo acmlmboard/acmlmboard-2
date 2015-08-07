@@ -6,7 +6,7 @@ $sql->query('DELETE FROM ipbans WHERE expires<' . ctime() . ' AND expires>0');
 
 //actual ban checking
 $r = $sql->query("SELECT * FROM ipbans WHERE '$userip' LIKE ipmask");
-if ($sql->numrows($r) > 0) {
+if ($sql->num_rows($r) > 0) {
 
 	// report the IP as banned like before
 	if ($loguser)
@@ -14,11 +14,11 @@ if ($sql->numrows($r) > 0) {
 	else
 		$sql->query("UPDATE  `guests` SET `ipbanned` = '1' WHERE `ip` = '" . $_SERVER['REMOTE_ADDR'] . "'");
 
-	$bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+	$bannedgroup = $sql->query_result("SELECT id FROM `group` WHERE `banned`=1");
 
 	//a ban appears to be present. check for type
 	//and restrict user's access if necessary
-	$i = $sql->fetch($r);
+	$i = $sql->fetch_assoc($r);
 	if ($i['hard']) {
 		//hard IP ban; always restrict access fully
 //	  header("Location: http://banned.ytmnd.com/");

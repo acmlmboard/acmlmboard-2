@@ -30,7 +30,7 @@ $post_total = 0;
 $post_overall = 0;
 $j = 0;
 $tr = 'n3';
-for ($i = 1; $user = $sql->fetch($users); $i++) {
+for ($i = 1; $user = $sql->fetch_assoc($users); $i++) {
 	$post_total+=$user['num'];
 	$post_overall+=$user['posts'];
 	$tr = ($i % 2 ? 'n2' : 'n3');

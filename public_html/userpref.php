@@ -11,7 +11,7 @@ if ($log) {
 	if (has_perm('update-own-profile')) {
 		$whitelisted_fields = array('hidequickreply');
 		if (in_array($field, $whitelisted_fields)) {
-			$sql->prepare("UPDATE `users` SET `$field` = ? WHERE id= ?", array($value, $loguser['id']));
+			$sql->prepare_query("UPDATE `users` SET `$field` = ? WHERE id= ?", array($value, $loguser['id']));
 			$ret = 0;
 		}
 	}

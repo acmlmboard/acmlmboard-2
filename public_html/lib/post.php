@@ -2,7 +2,7 @@
 
 function userlink_by_name($name) {
 	global $sql, $config;
-	$u = $sql->fetchp("SELECT " . userfields() . ",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)", array($name, $name));
+	$u = $sql->prepare_query_fetch("SELECT " . userfields() . ",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)", array($name, $name));
 	if ($u)
 		return userlink($u, null, $config['userlinkminipic']);
 	else
@@ -349,7 +349,7 @@ function moodlist($mid = -1, $userid = 0) { // 2009-07 Sukasa: It occurred to me
 	
 	$moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$moodset");
 	$moodst = "";
-	while ($mood = $sql->fetch($moods))
+	while ($mood = $sql->fetch_assoc($moods))
 		$moodst.= "<option value=\"{$mood['id']}\"" . ($mood['id'] == $mid ? "selected=\"selected\"" : "") . ">" . stripslashes($mood['label']) . "</option>";
 	$moodst.= "</select>";
 	

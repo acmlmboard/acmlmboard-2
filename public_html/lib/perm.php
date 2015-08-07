@@ -3,7 +3,7 @@
 // [Mega-Mario] preload group data, makes things a lot easier afterwards
 $usergroups = array();
 $r = $sql->query("SELECT * FROM `group`");
-while ($g = $sql->fetch($r)) {
+while ($g = $sql->fetch_assoc($r)) {
 	$usergroups[$g['id']] = $g;
 }
 
@@ -34,34 +34,9 @@ function load_user_permset() {
 	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "done loading permset";
 }
 
-//Badge permset
-
-function permset_for_user($userid) {
-	global $sql;
-	$permset = array();
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user perm set<br>";
-	//load user specific permissions
-	$permset = perms_for_x('user', $userid);
-
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user secondary groups<br>";
-	$groups = secondary_groups_for_user($userid);
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "iterating through user secondary groups<br>";
-	foreach ($groups as $gid) {
-		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "Group $gid<br>";
-		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user secondary groups perm sets<br>";
-		$permset = apply_group_permissions($permset, $gid);
-	}
-
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "loading user primary group perm set<br>";
-	$permset = apply_group_permissions($permset, gid_for_user($userid));
-
-	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "done loading permset";
-	return $permset;
-}
-
 function is_root_gid($gid) {
 	global $sql;
-	$result = $sql->resultp("SELECT `default` FROM `group` WHERE id=?", array($gid));
+	$result = $sql->prepare_query_result("SELECT `default` FROM `group` WHERE id=?", array($gid));
 	if ($result < 0) {
 		return true;
 	}
@@ -70,20 +45,8 @@ function is_root_gid($gid) {
 
 function gid_for_user($userid) {
 	global $sql;
-	$row = $sql->fetchp("SELECT group_id FROM users WHERE id=?", array($userid));
+	$row = $sql->prepare_query_fetch("SELECT group_id FROM users WHERE id=?", array($userid));
 	return $row['group_id'];
-}
-
-function sex_for_user($userid) {
-	global $sql;
-	$row = $sql->fetchp("SELECT sex FROM users WHERE id=?", array($userid));
-	return $row['sex'];
-}
-
-function color_for_group($gid, $sex) {
-	global $sql;
-	$row = $sql->fetchp("SELECT nc$sex FROM `group` WHERE id=?", array($gid));
-	return $row["nc$sex"];
 }
 
 function load_guest_permset() {
@@ -116,7 +79,7 @@ function load_bot_permset() {
 
 function title_for_perm($permid) {
 	global $sql;
-	$row = $sql->fetchp("SELECT title FROM perm WHERE id=?", array($permid));
+	$row = $sql->prepare_query_fetch("SELECT title FROM perm WHERE id=?", array($permid));
 	return $row['title'];
 }
 
@@ -144,8 +107,8 @@ function secondary_groups_for_user($userid) {
 	$out = array();
 	$c = 0;
 	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "looking up secondary groups for user=$userid<br>";
-	$res = $sql->prepare("SELECT * FROM user_group WHERE user_id=? ORDER BY sortorder DESC", array($userid));
-	while ($row = $sql->fetch($res)) {
+	$res = $sql->prepare_query("SELECT * FROM user_group WHERE user_id=? ORDER BY sortorder DESC", array($userid));
+	while ($row = $sql->fetch_assoc($res)) {
 		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "got group=".$row['group_id']."<br>";
 		$out[$c++] = $row['group_id'];
 	}
@@ -255,7 +218,7 @@ function cats_with_view_perm() {
 		return $cache;
 	$cache = "(";
 	$r = $sql->query("SELECT id,private FROM categories");
-	while ($d = $sql->fetch($r)) {
+	while ($d = $sql->fetch_assoc($r)) {
 		if (can_view_cat($d))
 			$cache.="$d[id],";
 	}
@@ -270,68 +233,8 @@ function forums_with_view_perm() {
 		return $cache;
 	$cache = "(";
 	$r = $sql->query("SELECT f.id, f.private, f.cat, c.private cprivate FROM forums f LEFT JOIN categories c ON c.id=f.cat");
-	while ($d = $sql->fetch($r)) {
+	while ($d = $sql->fetch_assoc($r)) {
 		if (can_view_forum($d))
-			$cache.="$d[id],";
-	}
-	$cache.="NULL)";
-	return $cache;
-}
-
-function forums_with_edit_posts_perm() {
-	global $sql;
-	static $cache = "";
-	if ($cache != "")
-		return $cache;
-	$cache = "(";
-	$r = $sql->query("SELECT id FROM forums");
-	while ($d = $sql->fetch($r)) {
-		if (can_edit_forum_posts($d[id]))
-			$cache.="$d[id],";
-	}
-	$cache.="NULL)";
-	return $cache;
-}
-
-function forums_with_delete_posts_perm() {
-	global $sql;
-	static $cache = "";
-	if ($cache != "")
-		return $cache;
-	$cache = "(";
-	$r = $sql->query("SELECT id FROM forums");
-	while ($d = $sql->fetch($r)) {
-		if (can_delete_forum_posts($d[id]))
-			$cache.="$d[id],";
-	}
-	$cache.="NULL)";
-	return $cache;
-}
-
-function forums_with_edit_threads_perm() {
-	global $sql;
-	static $cache = "";
-	if ($cache != "")
-		return $cache;
-	$cache = "(";
-	$r = $sql->query("SELECT id FROM forums");
-	while ($d = $sql->fetch($r)) {
-		if (can_edit_forum_threads($d[id]))
-			$cache.="$d[id],";
-	}
-	$cache.="NULL)";
-	return $cache;
-}
-
-function forums_with_delete_threads_perm() {
-	global $sql;
-	static $cache = "";
-	if ($cache != "")
-		return $cache;
-	$cache = "(";
-	$r = $sql->query("SELECT id FROM forums");
-	while ($d = $sql->fetch($r)) {
-		if (can_delete_forum_threads($d[id]))
 			$cache.="$d[id],";
 	}
 	$cache.="NULL)";
@@ -379,18 +282,6 @@ function needs_login($head = 0) {
 	}
 }
 
-/* function no_perm() {
-  print
-  "<table cellspacing=\"0\" class=\"c1\">
-  ".      "  <tr class=\"n2\">
-  ".      "    <td class=\"b n1\" align=\"center\">
-  ".      "      You have no permissions to do this!<br> <a href=./>Back to main</a>
-  ".      "</table>
-  ";
-  pagefooter();
-  die();
-  } */
-
 function grouplink($usex, $gid) {
 	global $sql, $usergroups;
 
@@ -400,42 +291,6 @@ function grouplink($usex, $gid) {
 	else
 		return "";
 }
-
-/* function forum_not_found() {
-  print
-  "<table cellspacing=\"0\" class=\"c1\">
-  ".      "  <tr class=\"n2\">
-  ".      "    <td class=\"b n1\" align=\"center\">
-  ".      "      Forum does not exist. <br> <a href=./>Back to main</a>
-  ".      "</table>
-  ";
-  pagefooter();
-  die();
-  } */
-
-/* function pm_not_found() {
-  print
-  "<table cellspacing=\"0\" class=\"c1\">
-  ".      "  <tr class=\"n2\">
-  ".      "    <td class=\"b n1\" align=\"center\">
-  ".      "      Private message does not exist. <br> <a href=./>Back to main</a>
-  ".      "</table>
-  ";
-  pagefooter();
-  die();
-  } */
-
-/* function thread_not_found() {
-  print
-  "<table cellspacing=\"0\" class=\"c1\">
-  ".      "  <tr class=\"n2\">
-  ".      "    <td class=\"b n1\" align=\"center\">
-  ".      "      Thread does not exist. <br> <a href=./>Back to main</a>
-  ".      "</table>
-  ";
-  pagefooter();
-  die();
-  } */
 
 function can_create_forum_thread($forum) {
 
@@ -563,12 +418,14 @@ function can_delete_forum_threads($forumid) {
 
 function catid_of_forum($forumid) {
 	global $sql;
-	$row = $sql->fetchp("SELECT cat FROM forums WHERE id=?", array($forumid));
+	$row = $sql->prepare_query_fetch("SELECT cat FROM forums WHERE id=?", array($forumid));
 	return $row['cat'];
 }
 
 function has_perm($permid) {
 	global $logpermset;
+	//var_dump($logpermset);
+	//die();
 	foreach ($logpermset as $k => $v) {
 		if ($v['id'] == 'no-restrictions')
 			return true;
@@ -624,11 +481,11 @@ function parent_group_for_group($groupid) {
 function perms_for_x($xtype, $xid) {
 	global $sql;
 	//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "querying for perms where $xtype=$xid<br>";
-	$res = $sql->prepare("SELECT * FROM x_perm WHERE x_type=? AND x_id=?", array($xtype, $xid));
+	$res = $sql->prepare_query("SELECT * FROM x_perm WHERE x_type=? AND x_id=?", array($xtype, $xid));
 
 	$out = array();
 	$c = 0;
-	while ($row = $sql->fetch($res)) {
+	while ($row = $sql->fetch_assoc($res)) {
 		//HOSTILE DEBUGGING //HOSTILE DEBUGGING echo "got perm ".$row['perm_id']."<br>";
 		$out[$c++] = array(
 			'id' => $row['perm_id'],
@@ -644,7 +501,7 @@ function perms_for_x($xtype, $xid) {
 
 function forumlink_by_id($fid) {
 	global $sql;
-	$f = $sql->fetchp("SELECT id,title FROM forums WHERE id=? AND id IN " . forums_with_view_perm(), array($fid));
+	$f = $sql->prepare_query_fetch("SELECT id,title FROM forums WHERE id=? AND id IN " . forums_with_view_perm(), array($fid));
 	if ($f)
 		return "<a href=forum.php?id=$f[id]>$f[title]</a>";
 	else
@@ -653,7 +510,7 @@ function forumlink_by_id($fid) {
 
 function threadlink_by_id($tid) {
 	global $sql;
-	$thread = $sql->fetchp("SELECT id,title FROM threads WHERE id=? AND forum IN " . forums_with_view_perm(), array($tid));
+	$thread = $sql->prepare_query_fetch("SELECT id,title FROM threads WHERE id=? AND forum IN " . forums_with_view_perm(), array($tid));
 
 	if ($thread)
 		return "<a href=thread.php?id=$thread[id]>" . forcewrap(htmlval($thread[title])) . "</a>";
@@ -668,9 +525,9 @@ function perms_for_badges($userid) {
 	global $sql;
 	$badgepermset = array();
 
-	$res = $sql->prepare("SELECT effect, effect_variable FROM badges RIGHT JOIN user_badges ON badges.id = user_badges.badge_id WHERE user_badges.user_id='$userid' AND badges.effect != 'NULL'");
+	$res = $sql->prepare_query("SELECT effect, effect_variable FROM badges RIGHT JOIN user_badges ON badges.id = user_badges.badge_id WHERE user_badges.user_id='$userid' AND badges.effect != 'NULL'");
 
-	while ($row = $sql->fetch($res)) {
+	while ($row = $sql->fetch_assoc($res)) {
 		$badgepermset[$c++] = array(
 			'effect' => $row['effect'],
 			'effect_variable' => $row['effect_variable']

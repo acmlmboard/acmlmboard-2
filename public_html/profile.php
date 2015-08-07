@@ -33,19 +33,19 @@ if($uid < 0) {
 	error("Error", "You must specify a user ID!");
 }
 
-$user = $sql->fetchq("SELECT * FROM `users` WHERE `id` = '$uid'");
+$user = $sql->query_fetch("SELECT * FROM `users` WHERE `id` = '$uid'");
 if(!$user) {
 	error("Error", "This user does not exist!");
 }
 
-$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?", array($user['group_id']));
+$group = $sql->prepare_query_fetch("SELECT * FROM `group` WHERE id=?", array($user['group_id']));
 
 pageheader("Profile for " . ($user['displayname'] ? $user['displayname'] : $user['name']));
 
 $days = (ctime() - $user['regdate']) / 86400;
-$pfound = $sql->resultq("SELECT count(*) FROM `posts` WHERE `user`='$uid'");
+$pfound = $sql->query_result("SELECT count(*) FROM `posts` WHERE `user`='$uid'");
 $pavg = sprintf("%1.02f", $user['posts'] / $days);
-$tfound = $sql->resultq("SELECT count(*) FROM `threads` WHERE `user`='$uid'");
+$tfound = $sql->query_result("SELECT count(*) FROM `threads` WHERE `user`='$uid'");
 $tavg = sprintf('%1.02f', $user['threads'] / $days);
 
 if ($user['posts']) {
@@ -59,13 +59,13 @@ if ($user['posts']) {
 	$pexp = "None";
 
 
-$thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`private`
+$thread = $sql->query_fetch("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`private`
                             FROM `forums` `f`
                             LEFT JOIN `threads` `t` ON `t`.`forum`=`f`.`id`
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
                             WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `f`.`id` IN " . forums_with_view_perm());
 
-$threadhack = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `t`.`forum`, `t`.`announce`
+$threadhack = $sql->query_fetch("SELECT `p`.`id`, `t`.`title` `ttitle`, `t`.`forum`, `t`.`announce`
                             FROM `threads` `t`
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
                             WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `t`.`forum`='0'");
@@ -108,7 +108,7 @@ if ($pfound && $thread) {
 
 $themes = array();
 $result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0;");
-while($row = $sql->fetch($result)) {
+while($row = $sql->fetch_assoc($result)) {
 	$themes[] = $row;
 }
 
@@ -209,14 +209,14 @@ $shoplist = "
              <td class=\"b h\" colspan=\"2\">Equipped Items</td></tr>";
 
 $shops = $sql->query('SELECT * FROM itemcateg ORDER BY corder');
-$eq = $sql->fetchq("SELECT * FROM usersrpg WHERE id='$uid'");
+$eq = $sql->query_fetch("SELECT * FROM usersrpg WHERE id='$uid'");
 $eqitems = $sql->query("SELECT * FROM items WHERE `id`='$eq[eq1]' OR `id`='$eq[eq2]' OR `id`='$eq[eq3]' OR `id`='$eq[eq4]' OR `id`='$eq[eq5]' OR `id`='$eq[eq6]'");
 
-while ($item = $sql->fetch($eqitems)) {
+while ($item = $sql->fetch_assoc($eqitems)) {
 	$items[$item['id']] = $item;
 }
 
-while ($shop = $sql->fetch($shops)) {
+while ($shop = $sql->fetch_assoc($shops)) {
 	$shoplist.="
          <tr class=\"sfont\">
            <td class=\"b n1\" width=\"70\">$shop[name]</td>
@@ -233,14 +233,14 @@ if ($config['badgesystem']) {
                        RIGHT JOIN `user_badges` ON `badges`.`id` = `user_badges`.`badge_id`
                        WHERE `user_badges`.`user_id`='$uid' AND `badges`.`image`!= '' ORDER BY `priority` DESC LIMIT 9");
 
-	if (!$sql->numrows($q) == 0) {
+	if (!$sql->num_rows($q) == 0) {
 		$badgelist = "
            <table cellspacing=\"0\" class=\"c1\" width=\"100%\">
              <tr class=\"h\">
                <td class=\"b h\" colspan=\"3\">Badges</td></tr>";
 		$numbadges = 0;
 		$badgelist.="<tr>";
-		while ($badge = $sql->fetch($q)) {
+		while ($badge = $sql->fetch_assoc($q)) {
 			$badgelist.= "<td class=\"b n2\" align=\"center\"><img src=\"" . htmlval($badge['image']) . "\" alt=\"\" title=\"" . htmlval(str_replace("%%%VAL%%%", $badge['badge_var'], $badge['name'])) . "\" /></td>";
 			$numbadges++;
 			if ($numbadges % 3 == 0)
@@ -273,7 +273,7 @@ if (has_perm('assign-secondary-groups')) {
 	  else */$secondarygroups = "| <a href=\"assignsecondary.php?uid=" . $user['id'] . "\">Manage secondary groups</a>";
 }
 
-$bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+$bannedgroup = $sql->query_result("SELECT id FROM `group` WHERE `banned`=1");
 
 $banuser = "";
 if (has_perm('edit-permissions')) {
@@ -288,7 +288,7 @@ if (has_perm('edit-permissions')) {
 //[KAWA] Blocklayout ported from ABXD
 $qblock = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";
 $rblock = $sql->query($qblock);
-$isblocked = $sql->numrows($rblock);
+$isblocked = $sql->num_rows($rblock);
 $blocklayoutlink = '';
 
 if (has_perm("block-layout")) {
@@ -411,7 +411,7 @@ if ($config['extendedprofile']) {
 	$fieldReq = $sql->query("SELECT * FROM `profileext`
                        RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
                        WHERE `user_profileext`.`user_id`='$uid'");
-	while ($pfield = $sql->fetch($fieldReq)) {
+	while ($pfield = $sql->fetch_assoc($fieldReq)) {
 		print "                 <tr>
                    <td class=\"b n1\"><b>" . $pfield['title'] . "</b></td>";
 

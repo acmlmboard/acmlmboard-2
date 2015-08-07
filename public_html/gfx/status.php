@@ -7,7 +7,7 @@ $it = isset($_GET['it']) ? (int) $_GET['it'] : 0;
 $ct = isset($_GET['ct']) ? (int) $_GET['ct'] : 0;
 
 
-$user = $sql->fetchq("SELECT u.name, u.posts, u.regdate, r.* "
+$user = $sql->query_fetch("SELECT u.name, u.posts, u.regdate, r.* "
 		. "FROM users u "
 		. "LEFT JOIN usersrpg r ON r.id=u.id "
 		. "WHERE u.id='$u'");
@@ -15,7 +15,7 @@ $p = $user['posts'];
 $d = (ctime() - $user['regdate']) / 86400;
 
 $eqitems = $sql->query("SELECT * FROM items WHERE id=$user[eq1] OR id=$user[eq2] OR id=$user[eq3] OR id=$user[eq4] OR id=$user[eq5] OR id=$user[eq6] OR id=$it");
-while ($item = $sql->fetch($eqitems)) {
+while ($item = $sql->fetch_assoc($eqitems)) {
 	$items[$item['id']] = $item;
 }
 

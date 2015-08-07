@@ -33,21 +33,21 @@ foreach ($files as $file_name) {
 		$theme_base_name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $file_name); // theme without file extension
 		
 		if(!empty($theme_description)) {
-			$sql->prepare("INSERT INTO `themes` (`name`, `description`, `basename`, `filename`, `filehash`) VALUES (?, ?, ?, ?, ?)",
+			$sql->prepare_query("INSERT INTO `themes` (`name`, `description`, `basename`, `filename`, `filehash`) VALUES (?, ?, ?, ?, ?)",
 				array($theme_name, $theme_description, $theme_base_name, $file_name, $file_hash));
 		} else {
-			$sql->prepare("INSERT INTO `themes` (`name`, `basename`, `filename`, `filehash`) VALUES (?, ?, ?, ?)",
+			$sql->prepare_query("INSERT INTO `themes` (`name`, `basename`, `filename`, `filehash`) VALUES (?, ?, ?, ?)",
 				array($theme_name, $theme_base_name, $file_name, $file_hash));
 		}
 		printf("<li>Inserting `%s` into `themes`...</li>\n", htmlentities($theme_name));
-		if($sql->affectedrows() > 0) {
+		if($sql->affected_rows() > 0) {
 			$inserted_rows += 1;
 		}
 	}
 }
 print "</ul>\n";
 
-$theme_count = $sql->resultq("SELECT COUNT(*) FROM `themes`;");
+$theme_count = $sql->query_result("SELECT COUNT(*) FROM `themes`;");
 print "<p><strong>Currently installed themes: </strong>$theme_count</p>\n";
 
 print "</td>\n";

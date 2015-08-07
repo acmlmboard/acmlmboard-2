@@ -12,29 +12,29 @@ $caneditperms = has_perm('edit-permissions');
 
 if ($act == 'delete') {
 	$id = unpacksafenumeric($_GET['id']);
-	$group = $sql->fetchp("SELECT * FROM `group` WHERE `id`=?", array($id));
+	$group = $sql->prepare_query_fetch("SELECT * FROM `group` WHERE `id`=?", array($id));
 
 	if (!$group) {
 		$errmsg = 'Cannot delete group: invalid group ID';
 	} else {
 		if ($group['primary']) {
-			$usercount = $sql->resultp("SELECT COUNT(*) FROM `users` WHERE `group_id`=?", array($group['id']));
+			$usercount = $sql->prepare_query_result("SELECT COUNT(*) FROM `users` WHERE `group_id`=?", array($group['id']));
 			if ($usercount > 0)
 				$errmsg = 'This group cannot be deleted because it is primary and contains users';
 		}
 
 		if (!$errmsg && !$caneditperms) {
-			$permcount = $sql->resultp("SELECT COUNT(*) FROM `x_perm` WHERE `x_type`='group' AND `x_id`=?", array($group['id']));
+			$permcount = $sql->prepare_query_result("SELECT COUNT(*) FROM `x_perm` WHERE `x_type`='group' AND `x_id`=?", array($group['id']));
 			if ($permcount > 0)
 				$errmsg = 'This group cannot be deleted because it has permissions attached and you may not edit permissions.';
 		}
 
 		if (!$errmsg) {
-			$sql->prepare("INSERT INTO `deletedgroups` SELECT * FROM `group` WHERE `id`=?", array($group['id']));
-			$sql->prepare("DELETE FROM `group` WHERE `id`=?", array($group['id']));
-			$sql->prepare("DELETE FROM `user_group` WHERE `group_id`=?", array($group['id']));
-			$sql->prepare("DELETE FROM `x_perm` WHERE `x_type`='group' AND `x_id`=?", array($group['id']));
-			$sql->prepare("UPDATE `group` SET `inherit_group_id`=0 WHERE `inherit_group_id`=?", array($group['id']));
+			$sql->prepare_query("INSERT INTO `deletedgroups` SELECT * FROM `group` WHERE `id`=?", array($group['id']));
+			$sql->prepare_query("DELETE FROM `group` WHERE `id`=?", array($group['id']));
+			$sql->prepare_query("DELETE FROM `user_group` WHERE `group_id`=?", array($group['id']));
+			$sql->prepare_query("DELETE FROM `x_perm` WHERE `x_type`='group' AND `x_id`=?", array($group['id']));
+			$sql->prepare_query("UPDATE `group` SET `inherit_group_id`=0 WHERE `inherit_group_id`=?", array($group['id']));
 
 			die(header('Location: editgroups.php'));
 		}
@@ -43,7 +43,7 @@ if ($act == 'delete') {
 	$title = trim($_POST['title']);
 
 	$parentid = $_POST['inherit_group_id'];
-	if ($parentid < 0 || $parentid > $sql->resultq("SELECT MAX(id) FROM `group`"))
+	if ($parentid < 0 || $parentid > $sql->query_result("SELECT MAX(id) FROM `group`"))
 		$parentid = 0;
 
 	if ($act == 'edit') {
@@ -56,7 +56,7 @@ if ($act == 'delete') {
 			}
 
 			$recurcheck[] = $pid;
-			$pid = $sql->resultp("SELECT `inherit_group_id` FROM `group` WHERE `id`=?", array($pid));
+			$pid = $sql->prepare_query_result("SELECT `inherit_group_id` FROM `group` WHERE `id`=?", array($pid));
 		}
 	}
 
@@ -81,10 +81,10 @@ if ($act == 'delete') {
 				$primary, $_POST['description']);
 
 			if ($act == 'new')
-				$sql->prepare("INSERT INTO `group` VALUES (0,?,'',NULL,?,?,?,?,?,?,?,?,?,?)", $values);
+				$sql->prepare_query("INSERT INTO `group` VALUES (0,?,'',NULL,?,?,?,?,?,?,?,?,?,?)", $values);
 			else {
 				$values[] = $_GET['id'];
-				$sql->prepare("UPDATE `group` SET `title`=?,`nc0`=?,`nc1`=?,`nc2`=?,`inherit_group_id`=?,`default`=?,`banned`=?,
+				$sql->prepare_query("UPDATE `group` SET `title`=?,`nc0`=?,`nc1`=?,`nc2`=?,`inherit_group_id`=?,`default`=?,`banned`=?,
 					`sortorder`=?,`visible`=?,`primary`=?,`description`=? WHERE id=?", $values);
 			}
 
@@ -100,15 +100,15 @@ if (isset($_GET['deletedgroups'])) {
 
 	if ($act == 'undelete') {
 		$id = unpacksafenumeric($_GET['id']);
-		$deletedgroup = $sql->fetchp("SELECT * FROM `deletedgroups` WHERE `id`=?", array($id));
+		$deletedgroup = $sql->prepare_query_fetch("SELECT * FROM `deletedgroups` WHERE `id`=?", array($id));
 
 		if (!$deletedgroup)
 			$errmsg = 'Cannot undelete group: invalid group ID';
 		else {
 			if (!$errmsg) {
-				$sql->prepare("INSERT INTO `group` SELECT * FROM `deletedgroups` WHERE `id`=?", array($deletedgroup['id']));
-				$sql->prepare("DELETE FROM `deletedgroups` WHERE `id`=?", array($deletedgroup['id']));
-				$sql->prepare("UPDATE `deletedgroups` SET `inherit_group_id`=0 WHERE `inherit_group_id`=?", array($deletedgroup['id']));
+				$sql->prepare_query("INSERT INTO `group` SELECT * FROM `deletedgroups` WHERE `id`=?", array($deletedgroup['id']));
+				$sql->prepare_query("DELETE FROM `deletedgroups` WHERE `id`=?", array($deletedgroup['id']));
+				$sql->prepare_query("UPDATE `deletedgroups` SET `inherit_group_id`=0 WHERE `inherit_group_id`=?", array($deletedgroup['id']));
 			}
 		}
 	}
@@ -142,7 +142,7 @@ if (isset($_GET['deletedgroups'])) {
 	$deletedgroups = $sql->query("SELECT g.*, pg.title parenttitle FROM `deletedgroups` g LEFT JOIN `deletedgroups` pg ON pg.id=g.inherit_group_id ORDER BY sortorder");
 	$data = array();
 
-	while ($deletedgroup = $sql->fetch($deletedgroups)) {
+	while ($deletedgroup = $sql->fetch_assoc($deletedgroups)) {
 		$name = htmlspecialchars($deletedgroup['title']);
 		if ($deletedgroup['primary'])
 			$name = "<strong>{$name}</strong>";
@@ -200,7 +200,7 @@ elseif ($act == 'new' || $act == 'edit') {
 		$group = array('id' => 0, 'title' => '', 'nc0' => '', 'nc1' => '', 'nc2' => '', 'inherit_group_id' => 0, 'default' => 0, 'banned' => 0, 'sortorder' => 0, 'visible' => 0, 'primary' => 0, 'description' => '');
 		$pagebar['title'] = 'New group';
 	} else {
-		$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?", array($_GET['id']));
+		$group = $sql->prepare_query_fetch("SELECT * FROM `group` WHERE id=?", array($_GET['id']));
 		if (!$group) {
 			noticemsg("Error", "Invalid group ID.");
 			pagefooter();
@@ -211,8 +211,8 @@ elseif ($act == 'new' || $act == 'edit') {
 
 	if ($group) {
 		$grouplist = array(0 => '(none)');
-		$allgroups = $sql->prepare("SELECT id,title FROM `group` WHERE id!=? ORDER BY sortorder", array($group['id']));
-		while ($g = $sql->fetch($allgroups))
+		$allgroups = $sql->prepare_query("SELECT id,title FROM `group` WHERE id!=? ORDER BY sortorder", array($group['id']));
+		while ($g = $sql->fetch_assoc($allgroups))
 			$grouplist[$g['id']] = $g['title'];
 
 		$defaultlist = array(0 => '-', -1 => 'For first user', 1 => 'For all users');
@@ -285,7 +285,7 @@ elseif ($act == 'new' || $act == 'edit') {
 	$groups = $sql->query("SELECT g.*, pg.title parenttitle FROM `group` g LEFT JOIN `group` pg ON pg.id=g.inherit_group_id ORDER BY sortorder");
 	$data = array();
 
-	while ($group = $sql->fetch($groups)) {
+	while ($group = $sql->fetch_assoc($groups)) {
 		$name = htmlspecialchars($group['title']);
 		if ($group['primary'])
 			$name = "<strong>{$name}</strong>";

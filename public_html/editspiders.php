@@ -14,9 +14,9 @@ require("lib/common.php");
 
   if ($r['action'] == "del") {
     unset($r['action']);
-        $bot=$sql->fetchp('SELECT * FROM robots WHERE bot_name=?',array($id));
+        $bot=$sql->prepare_query_fetch('SELECT * FROM robots WHERE bot_name=?',array($id));
         if (!$bot) $pagebar['message'] = "Unable to delete spider: invalid spider name.";
-     else if ($sql->prepare('DELETE FROM robots WHERE bot_name=?',array($id))) {
+     else if ($sql->prepare_query('DELETE FROM robots WHERE bot_name=?',array($id))) {
       $pagebar['message'] = "Spider successfully deleted.";
  }
   }
@@ -38,7 +38,7 @@ $headers = array
 
 $data = array();
 $spReq = $sql->query("SELECT * FROM robots");
-while($sp = $sql->fetch($spReq))
+while($sp = $sql->fetch_assoc($spReq))
 {
 $actions = array(
   array('title' => 'Edit','href' => 
@@ -77,7 +77,7 @@ if (empty($s['bot_name']) || empty($s['bot_agent'])) {
 
 } else {
 
-if(      $sql->prepare('UPDATE robots SET 
+if(      $sql->prepare_query('UPDATE robots SET 
 bot_agent=?, bot_name=? WHERE bot_name=?;', array(
 $s['bot_agent'], $s['bot_name'],
 $id,
@@ -98,7 +98,7 @@ if (empty($s['bot_name']) || empty($s['bot_agent'])) {
       $pagebar['message'] = "The name and/or agent for this spider cannot be empty.";
 
 } else {
-if (      $sql->prepare('INSERT INTO robots SET
+if (      $sql->prepare_query('INSERT INTO robots SET
 bot_agent=?, bot_name=? ;', array(
 $s['bot_agent'], $s['bot_name'],
 )
@@ -118,7 +118,7 @@ $pagebar['breadcrumb'] = array(
 
 
 if ($id) {
-    $t=$sql->fetchp('SELECT * FROM robots WHERE bot_name=?',array($id));
+    $t=$sql->prepare_query_fetch('SELECT * FROM robots WHERE bot_name=?',array($id));
   if (!$t && !$_POST['bot_name']) { noticemsg("Notice", "Invalid spider name"); pagefooter(); die();
   } else {
 $pagebar['title'] = $t['bot_name'];

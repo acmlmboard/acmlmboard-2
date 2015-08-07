@@ -17,10 +17,10 @@ $id = isset($r['id']) ? $r['id'] : 0;
 
 if (isset($r['action']) && $r['action'] == "del") {
 	unset($r['action']);
-	$smiliey = $sql->fetchp('SELECT * FROM smilies WHERE text=?', array($id));
+	$smiliey = $sql->prepare_query_fetch('SELECT * FROM smilies WHERE text=?', array($id));
 	if (!$id)
 		$pagebar['message'] = "Unable to delete smiley: invalid smiley code.";
-	else if ($sql->prepare('DELETE FROM smilies WHERE text=?', array($id))) {
+	else if ($sql->prepare_query('DELETE FROM smilies WHERE text=?', array($id))) {
 		$pagebar['message'] = "Smiley successfully deleted.";
 	}
 }
@@ -44,7 +44,7 @@ if (empty($r['action'])) {
 
 	$data = array();
 	$smReq = $sql->query("SELECT * FROM smilies");
-	while ($sm = $sql->fetch($smReq)) {
+	while ($sm = $sql->fetch_assoc($smReq)) {
 		$pics = explode("|", $sm['url']);
 		$pic = $pics[0];
 		$actions = array(
@@ -80,7 +80,7 @@ if (empty($r['action'])) {
 				$pagebar['message'] = "The code and/or url for this smiley cannot be empty.";
 			} else {
 
-				if ($sql->prepare('UPDATE smilies SET 
+				if ($sql->prepare_query('UPDATE smilies SET 
 url=?, text=? WHERE text=?;', array(
 							$s['url'], $s['text'],
 							$id,
@@ -95,7 +95,7 @@ url=?, text=? WHERE text=?;', array(
 			if (empty($s['text']) || empty($s['url'])) {
 				$pagebar['message'] = "The code and/or url for this smiley cannot be empty.";
 			} else {
-				if ($sql->prepare('INSERT INTO smilies SET
+				if ($sql->prepare_query('INSERT INTO smilies SET
 url=?, text=? ;', array(
 							$s['url'], $s['text'],
 								)
@@ -114,7 +114,7 @@ url=?, text=? ;', array(
 
 
 	if ($id) {
-		$t = $sql->fetchp('SELECT * FROM smilies WHERE text=?', array($id));
+		$t = $sql->prepare_query_fetch('SELECT * FROM smilies WHERE text=?', array($id));
 		if (!$t && !$_POST['text']) {
 			noticemsg("Notice", "Invalid smiley code");
 			pagefooter();

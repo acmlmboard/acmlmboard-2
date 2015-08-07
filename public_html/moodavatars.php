@@ -12,7 +12,7 @@
 ".        "    <td class=\"b h\">Mood avatars</td>
 ";
 
-    for($i=1;$m=$sql->fetch($a);$i++){
+    for($i=1;$m=$sql->fetch_assoc($a);$i++){
       $tr = ($i % 2 ? 'n2' :'n3');
       print
           "<tr class=\"$tr\" align=\"center\">
@@ -21,7 +21,7 @@
 ".        "    <td class=\"b\">
 ";
       $b=$sql->query("SELECT * FROM mood WHERE user=$m[id]");
-      while($n=$sql->fetch($b)) echo "<a href=\"usermood.php?a=e&i=$n[id]&uid=$n[user]\"</a><img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'></a>";
+      while($n=$sql->fetch_assoc($b)) echo "<a href=\"usermood.php?a=e&i=$n[id]&uid=$n[user]\"</a><img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'></a>";
     }
     print "</table>
 ";

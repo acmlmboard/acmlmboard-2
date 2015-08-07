@@ -14,9 +14,9 @@ require("lib/common.php");
 
   if ($r['action'] == "del") {
     unset($r['action']);
-        $profileext=$sql->fetchp('SELECT * FROM profileext WHERE id=?',array($id));
+        $profileext=$sql->prepare_query_fetch('SELECT * FROM profileext WHERE id=?',array($id));
         if (!$id) $pagebar['message'] = "Unable to delete extended profile field: invalid extended profile field ID.";
-     else if ($sql->prepare('DELETE FROM profileext WHERE id=?',array($id))) {
+     else if ($sql->prepare_query('DELETE FROM profileext WHERE id=?',array($id))) {
       $pagebar['message'] = "Extended profile field successfully deleted.";
  }
   }
@@ -47,7 +47,7 @@ $headers = array
 
 $data = array();
 $exfReq = $sql->query("SELECT * FROM profileext");
-while($exf = $sql->fetch($exfReq))
+while($exf = $sql->fetch_assoc($exfReq))
 {
 $actions = array(
   array('title' => 'Edit','href' => 
@@ -96,7 +96,7 @@ if (empty($s['id']) || empty($s['title']) || empty($s['fmt']) || empty($s['descr
 
 } else {
 
-if(      $sql->prepare('UPDATE profileext SET 
+if(      $sql->prepare_query('UPDATE profileext SET 
 id=?, title=?, sortorder=?, fmt=?, description=?, icon=?, validation=?, example=?, extrafield=?, parser=? WHERE id=?;', array(
 $s['id'], $s['title'], $s['sortorder'], $s['fmt'], $s['description'], $s['icon'], $s['validation'], $s['example'], $s['extrafield'], $s['parser'],
 $id,
@@ -117,7 +117,7 @@ if (empty($s['id']) || empty($s['title']) || empty($s['fmt']) || empty($s['descr
       $pagebar['message'] = "The ID, title, sortorder, format, description, validation, example, and/or extra field for this extended profile field cannot be empty.";
 
 } else {
-if(      $sql->prepare('INSERT INTO profileext SET 
+if(      $sql->prepare_query('INSERT INTO profileext SET 
 id=?, title=?, sortorder=?, fmt=?, description=?, icon=?, validation=?, example=?, extrafield=?, parser=? ;', array(
 $s['id'], $s['title'], $s['sortorder'], $s['fmt'], $s['description'], $s['icon'], $s['validation'], $s['example'], $s['extrafield'], $s['parser'],
 )
@@ -137,7 +137,7 @@ $pagebar['breadcrumb'] = array(
 
 
 if ($id) {
-    $t=$sql->fetchp('SELECT * FROM profileext WHERE id=?',array($id));
+    $t=$sql->prepare_query_fetch('SELECT * FROM profileext WHERE id=?',array($id));
   if (!$t && !$_POST['id']) { noticemsg("Notice", "Invalid extended profile field ID"); pagefooter(); die();
   } else {
 $pagebar['title'] = $t['title'];

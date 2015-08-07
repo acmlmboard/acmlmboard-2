@@ -18,8 +18,9 @@ if ($config['sqlconfig']) {
 		$configsql[$cfg_key] = array('intval' => (int) $cfg_value, 'txtval' => $cfg_value);
 	}
 
-	if ($res = $sql->query("SELECT * from `misc`")) {
-		while ($row = $sql->fetch($res)) {
+	$res = $sql->query("SELECT * from `misc`");
+	if ($res) {
+		while ($row = $sql->fetch_assoc($res)) {
 			$configsql[$row['field']] = $row;
 		}
 		$res->free();
@@ -86,11 +87,11 @@ if (!$log) {
 	$loguser['blocksprites'] = 1;
 }
 
-$flocalmod = $sql->fetchq("SELECT `uid` FROM `forummods`");
+$flocalmod = $sql->query_fetch("SELECT `uid` FROM `forummods`");
 if ($loguser['id'] == $flocalmod['uid']) {
 	$loguser['modforums'] = array();
-	$modf = $sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");
-	while ($m = $sql->fetch($modf)) {
+	$modf = $sql->prepare_query("SELECT `fid` FROM `forummods` WHERE `uid` = ?;", $loguser['id']);
+	while ($m = $sql->fetch_assoc($modf)) {
 		$loguser['modforums'][$m['fid']] = 1;
 	}
 }
@@ -110,14 +111,14 @@ if ($loguser['tpp'] < 1) {
 require "lib/ipbans.php";
 
 //Unban users whose tempbans have expired. - SquidEmpress
-$defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default` = 1");
+$defaultgroup = $sql->query_result("SELECT id FROM `group` WHERE `default` = 1");
 $sql->query('UPDATE users SET group_id=' . $defaultgroup . ', title="", tempbanned="0" WHERE tempbanned<' . ctime() . ' AND tempbanned>0');
 
 $dateformat = "{$loguser['dateformat']} {$loguser['timeformat']}";
 
 $bots = array();
 $bota = $sql->query("SELECT `bot_agent` FROM `robots`");
-while ($robots = $sql->fetch($bota)) {
+while ($robots = $sql->fetch_assoc($bota)) {
 	$bots[] = $robots['bot_agent'];
 }
 $bot = 0;
@@ -149,15 +150,15 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
 				$v = "(snip)";
 			$postvars.="$k=$v ";
 		}
-		@$sql->query("INSERT DELAYED INTO `log` VALUES(UNIX_TIMESTAMP(),'$userip','$loguser[id]','" . addslashes($_SERVER['HTTP_USER_AGENT']) . " :: " . addslashes($url) . " :: $postvars')");
+		$sql->query("INSERT DELAYED INTO `log` VALUES(UNIX_TIMESTAMP(),'$userip','$loguser[id]','" . addslashes($_SERVER['HTTP_USER_AGENT']) . " :: " . addslashes($url) . " :: $postvars')");
 	}
 
 	if(!empty($_SERVER['HTTP_REFERER'])) {
 		$ref = $_SERVER['HTTP_REFERER'];
 		$ref2 = substr($ref, 0, 25);
 		if ($ref && !strpos($ref2, $config['address'])) {
-			$sql->query("INSERT INTO `ref` SET `time`='" . ctime() . "', `userid`='$loguser[id]', `urlfrom`='" . addslashes($ref) . "',
-											  `urlto`='" . addslashes($url) . "', `ipaddr`='" . $_SERVER['REMOTE_ADDR'] . "'");
+			$sql->prepare_query("INSERT INTO `ref` SET `time` = ?, `userid` = ?, `urlfrom` = ?, `urlto` = ?, `ipaddr`= ?);", 
+					time(), $loguser['id'], $ref, $url, $_SERVER['REMOTE_ADDR']);
 		}
 	}
 
@@ -167,8 +168,8 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
 		$sql->query('UPDATE `misc` SET `intval`=`intval`+1 WHERE `field`="botviews"');
 	}
 
-	$views = $sql->resultq("SELECT `intval` FROM `misc` WHERE `field`='views'");
-	$botviews = $sql->resultq("SELECT `intval` FROM `misc` WHERE `field`='botviews'");
+	$views = $sql->query_result("SELECT `intval` FROM `misc` WHERE `field`='views'");
+	$botviews = $sql->query_result("SELECT `intval` FROM `misc` WHERE `field`='botviews'");
 
 	if (($views + 100) % 1000000 <= 200) {
 		$sql->query("INSERT INTO `views` SET `view`=$views, `user`='$loguser[id]', `time`='" . ctime() . "'");
@@ -178,23 +179,23 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
 		}
 	}
 
-	$count = $sql->fetchq("	SELECT
+	$count = $sql->query_fetch("	SELECT
 								(SELECT COUNT(*) FROM users) u,
 								(SELECT COUNT(*) FROM threads) t,
 								(SELECT COUNT(*) FROM posts) p");
-	$date = date("m-d-y", ctime());
+	$date = date("m-d-y", time());
 	$sql->query("REPLACE INTO `dailystats` (`date`, `users`, `threads`, `posts`, `views`)
                  VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '$views')");
 
 	//2/21/2007 xkeeper - adding, uh, hourlyviews
 	$sql->query("INSERT INTO `hourlyviews` (`hour`, `views`)
-                 VALUES (" . floor(ctime() / 3600) . ",1)
+                 VALUES (" . floor(time() / 3600) . ",1)
                  ON DUPLICATE KEY UPDATE `views`=`views`+1");
 }
 
 $themelist = array();
 $result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0;");
-while($row = $sql->fetch($result)) {
+while($row = $sql->fetch_assoc($result)) {
 	$themelist[$row['basename']] = $row;
 }
 
@@ -292,7 +293,7 @@ function pageheader($pagetitle = "", $fid = 0) {
                        <tr class=\"h\">
                           <td class=\"b h\">$config[atnname] $ae</td>
                         <tr class=\"n2\" align=\"center\">
-                          <td class=\"b sfont\">" . ($t = $sql->resultq("SELECT `txtval` FROM `misc` WHERE `field`='attention'")) . "
+                          <td class=\"b sfont\">" . ($t = $sql->query_result("SELECT `txtval` FROM `misc` WHERE `field`='attention'")) . "
                           </td>
                      </table>";
 	if ($t == "")
@@ -379,14 +380,14 @@ function pageheader($pagetitle = "", $fid = 0) {
 
 	if ($log) {
 		//2/25/2007 xkeeper - framework laid out. Naturally, the SQL queries are a -mess-. --;
-		$pmsgs = $sql->fetchq("SELECT `p`.`id` `id`, `p`.`date` `date`, " . userfields('u', 'u') . "
+		$pmsgs = $sql->query_fetch("SELECT `p`.`id` `id`, `p`.`date` `date`, " . userfields('u', 'u') . "
                             FROM `pmsgs` `p`
                             LEFT JOIN `users` `u` ON `u`.`id`=`p`.`userfrom`
                             WHERE `p`.`userto`='$loguser[id]'
                             ORDER BY `date` DESC LIMIT 1");
 
-		$unreadpms = $sql->resultq("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `unread`=1 AND `del_to`='0'");
-		$totalpms = $sql->resultq("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `del_to`='0'");
+		$unreadpms = $sql->query_result("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `unread`=1 AND `del_to`='0'");
+		$totalpms = $sql->query_result("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `del_to`='0'");
 
 
 		if ($unreadpms) {
@@ -525,7 +526,7 @@ function pageheader($pagetitle = "", $fid = 0) {
                               ORDER BY `name`");
 		$onuserlist = "";
 		$onusercount = 0;
-		while ($user = $sql->fetch($onusers)) {
+		while ($user = $sql->fetch_assoc($onusers)) {
 			$user['showminipic'] = 1;
 			$onuserlog = ($user['lastpost'] <= $user['lastview']);
 			$offline1 = ($onuserlog ? "" : "[");
@@ -534,14 +535,14 @@ function pageheader($pagetitle = "", $fid = 0) {
 			$onusercount++;
 		}
 
-		$fname = $sql->resultq("SELECT `title` FROM `forums` WHERE `id`='$fid'");
+		$fname = $sql->query_result("SELECT `title` FROM `forums` WHERE `id`='$fid'");
 		$onuserlist = "$onusercount user" . ($onusercount != 1 ? "s" : "") . " currently in $fname" . ($onusercount > 0 ? ": " : "") . $onuserlist;
 
 		//[Scrydan] Changed from the commented code below to save a query.
 		$numbots = 0;
 		$numguests = 0;
 		if($result = $sql->query("SELECT COUNT(*) as guest_count, SUM(`bot`) as bot_count FROM `guests` WHERE `lastforum` = '$fid' AND `date` > '" . (ctime() - 300) . "'")) {
-			if($data = $sql->fetch($result)) {
+			if($data = $sql->fetch_assoc($result)) {
 				$numbots = $data['bot_count'];
 				$numguests = $data['guest_count'] - $numbots;
 			}
@@ -568,7 +569,7 @@ function pageheader($pagetitle = "", $fid = 0) {
                                  FROM `users`
                                  WHERE `birth` LIKE '" . date('m-d') . "%' AND `lastview` > " . (time() - $birthdaylimit) . " ORDER BY `name`");
 		$birthdays = array();
-		while ($user = $sql->fetch($rbirthdays)) {
+		while ($user = $sql->fetch_assoc($rbirthdays)) {
 			$b = explode('-', $user['birth']);
 			if ($b['2'] <= 0 && $b['2'] > -2)
 				$p = "";
@@ -595,9 +596,9 @@ function pageheader($pagetitle = "", $fid = 0) {
         Birthdays today: $birthdaystoday";
 		}
 
-		$count['d'] = $sql->resultq("SELECT COUNT(*) FROM `posts` WHERE `date` > '" . (ctime() - 86400) . "'");
-		$count['h'] = $sql->resultq("SELECT COUNT(*) FROM `posts` WHERE `date` > '" . (ctime() - 3600) . "'");
-		$lastuser = $sql->fetchq("SELECT " . userfields() . " FROM `users` ORDER BY `id` DESC LIMIT 1");
+		$count['d'] = $sql->query_result("SELECT COUNT(*) FROM `posts` WHERE `date` > '" . (ctime() - 86400) . "'");
+		$count['h'] = $sql->query_result("SELECT COUNT(*) FROM `posts` WHERE `date` > '" . (ctime() - 3600) . "'");
+		$lastuser = $sql->query_fetch("SELECT " . userfields() . " FROM `users` ORDER BY `id` DESC LIMIT 1");
 
 		$hiddencheck = "AND `hidden`='0' ";
 		if (has_perm('view-hidden-users')) {
@@ -608,7 +609,7 @@ function pageheader($pagetitle = "", $fid = 0) {
                            WHERE (`lastview` > " . (ctime() - 300) . " OR `lastpost` > " . (ctime() - 300) . ") $hiddencheck ORDER BY `name`");
 		$onuserlist = "";
 		$onusercount = 0;
-		while ($user = $sql->fetch($onusers)) {
+		while ($user = $sql->fetch_assoc($onusers)) {
 			$user['showminipic'] = 1;
 			$onuserlog = ($user['lastpost'] <= $user['lastview']);
 			$offline1 = ($onuserlog ? "" : "[");
@@ -617,9 +618,9 @@ function pageheader($pagetitle = "", $fid = 0) {
 			$onusercount++;
 		}
 
-		$maxpostsday = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="maxpostsday"');
-		$maxpostshour = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="maxpostshour"');
-		$maxusers = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="maxusers"');
+		$maxpostsday = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="maxpostsday"');
+		$maxpostshour = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="maxpostshour"');
+		$maxusers = $sql->query_result('SELECT `intval` FROM `misc` WHERE `field`="maxusers"');
 
 		if ($count['d'] > $maxpostsday) {
 			$sql->query("UPDATE `misc` SET `intval`='$count[d]' WHERE `field`='maxpostsday'");
@@ -640,7 +641,7 @@ function pageheader($pagetitle = "", $fid = 0) {
 		$numbots = 0;
 		$numguests = 0;
 		if($result = $sql->query("SELECT COUNT(*) as guest_count, SUM(`bot`) as bot_count FROM `guests` WHERE `lastforum` = '$fid' AND `date` > '" . (ctime() - 300) . "'")) {
-			if($data = $sql->fetch($result)) {
+			if($data = $sql->fetch_assoc($result)) {
 				$numbots = $data['bot_count'];
 				$numguests = $data['guest_count'] - $numbots;
 			}
@@ -662,8 +663,8 @@ function pageheader($pagetitle = "", $fid = 0) {
 		  $onuserlist.=" | $numbots bot".($numbots != 1 ? "s": "");
 		 */
 
-		$activeusers = $sql->resultq("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '" . (ctime() - 86400) . "'");
-		$activethreads = $sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '" . (ctime() - 86400) . "'");
+		$activeusers = $sql->query_result("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '" . (ctime() - 86400) . "'");
+		$activethreads = $sql->query_result("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '" . (ctime() - 86400) . "'");
 
 		print "
 	     <table cellspacing=\"0\" class=\"c1\">$birthdaybox
@@ -707,7 +708,7 @@ function pagestats() {
              <td class=\"b n1\">
                <center>
                  " . sprintf("Page rendered in %1.3f seconds. (%dKB of memory start, %dKB of memory used)", $time,  $start_memory_usage / 1024, memory_get_usage(false) / 1024) . "<br>
-                 MySQL - queries: $sql->queries, rows: $sql->rowsf/$sql->rowst, time: " . sprintf("%1.3f seconds.", $sql->time) . "<br>
+                 MySQL - queries: $sql->query_count, rows: $sql->rows_fetched/$sql->rowst, time: " . sprintf("%1.3f seconds.", $sql->time) . "<br>
                </center>
            </table>";
 	

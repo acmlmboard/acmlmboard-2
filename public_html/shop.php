@@ -46,7 +46,7 @@ if ($action == "save" && has_perm('manage-shop-items')) {
 		$names.="`name`, `desc`, `stype`, `coins`, `coins2`, `cat`, `hidden`";
 		$vals.="'$_POST[name]', '$_POST[desc]', '$stype', '$_POST[coins]', '$_POST[coins2]', '$_POST[cat]', " . ($_POST['hidden'] ? "1" : "0") . "";
 		$sql->query("INSERT INTO items ($names) VALUES ($vals)");
-		$id = $sql->insertid();
+		$id = $sql->insert_id();
 	}
 	header("location: shop.php?action=desc&id=$id");
 }
@@ -59,7 +59,7 @@ if (!has_perm('use-item-shop')) {
 } elseif (($action == 'edit' || $action == 'save' || $action == 'delete') && !has_perm('manage-shop-items')) { //Added (Sukasa)
 	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 } else {
-	$user = $sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
+	$user = $sql->query_fetch('SELECT u.name, u.posts, u.regdate, r.* '
 			. 'FROM users u '
 			. 'LEFT JOIN usersrpg r ON u.id=r.id '
 			. "WHERE u.id={$loguser['id']}");
@@ -77,7 +77,7 @@ if (!has_perm('use-item-shop')) {
 				}
 			}
 		case 'edit': //Added (Sukasa)
-			$item = $sql->fetchq("SELECT * FROM items WHERE id='$id' union select * from items where id='-1'");
+			$item = $sql->query_fetch("SELECT * FROM items WHERE id='$id' union select * from items where id='-1'");
 			pageheader('Item shop');
 			print "<style>
 " . "   .disabled {color:#888888}
@@ -89,7 +89,7 @@ if (!has_perm('use-item-shop')) {
 			$statlist = '';
 			$catlist = "<option value='99'>Not Listed</option>";
 			$shops = $sql->query('SELECT * FROM itemcateg ORDER BY corder');
-			while ($shop = $sql->fetch($shops)) {
+			while ($shop = $sql->fetch_assoc($shops)) {
 				$catlist.='<option value="' . $shop['id'] . "\"" . (($shop['id'] == $item['cat']) || ($item['cat'] == 99 && $cat > 0 && $shop['id'] == $cat) ?
 								"selected='selected'" : "") . ">" . $shop['name'] . "</option>";
 			}
@@ -142,7 +142,7 @@ if (!has_perm('use-item-shop')) {
 ";
 			break;
 		case 'desc':
-			$item = $sql->fetchq("SELECT * FROM items WHERE id='$id'");
+			$item = $sql->query_fetch("SELECT * FROM items WHERE id='$id'");
 			pageheader('Item shop');
 			print "<style>
 " . "   .disabled {color:#888888}
@@ -209,8 +209,8 @@ if (!has_perm('use-item-shop')) {
 			break;
 		case 'items':
 
-			$eq = $sql->fetchq("SELECT eq$cat AS e FROM usersrpg WHERE id=$loguser[id]");
-			$eqitem = $sql->fetchq("SELECT * FROM items WHERE id=$eq[e]");
+			$eq = $sql->query_fetch("SELECT eq$cat AS e FROM usersrpg WHERE id=$loguser[id]");
+			$eqitem = $sql->query_fetch("SELECT * FROM items WHERE id=$eq[e]");
 
 			$edit = "";
 			if (has_perm('manage-shop-items'))
@@ -269,7 +269,7 @@ if (!has_perm('use-item-shop')) {
 " . "    <td class=\"b h\" width=6%><img src=img/coin2.gif></td>
 ";
 
-			while ($item = $sql->fetch($items)) {
+			while ($item = $sql->fetch_assoc($items)) {
 				$buy = "<a href=shop.php?action=buy&id=$item[id]>Buy</a>";
 				$sell = "<a href=shop.php?action=sell&cat=$cat>Sell</a>";
 				$preview = "<a href=#status onclick=\"preview($loguser[id],$item[id],$cat,'" . addslashes($item['name']) . "')\">Preview</a>";
@@ -335,10 +335,10 @@ if (!has_perm('use-item-shop')) {
 			if (!strstr($ref, "shop.php?action=items&cat=") || ctime() - $loguser['lastview'] < 1)
 				die();
 			
-			$item = $sql->fetchq("SELECT * FROM items WHERE id=$id");
+			$item = $sql->query_fetch("SELECT * FROM items WHERE id=$id");
 
 			if ($item['coins'] <= $GP && $item['coins2'] <= 0 && $item['cat']) { //FIXME
-				$pitem = $sql->fetchq("SELECT coins FROM items WHERE id=" . $user['eq' . $item[cat]]);
+				$pitem = $sql->query_fetch("SELECT coins FROM items WHERE id=" . $user['eq' . $item[cat]]);
 				$pitem['coins'] = intval($pitem['coins']); //fixes the problem if no prior item had been equipped/$pitem[coins] is empty for whatever reason [blackhole89]
 				$sql->query("UPDATE usersrpg SET eq$item[cat]=$id, spent=spent-$pitem[coins]*0.6+$item[coins] WHERE id=$loguser[id]");
 
@@ -361,7 +361,7 @@ if (!has_perm('use-item-shop')) {
 			}
 			break;
 		case 'sell':
-			$pitem = $sql->fetchq("SELECT name, coins FROM items WHERE id=" . $user['eq' . $cat]);
+			$pitem = $sql->query_fetch("SELECT name, coins FROM items WHERE id=" . $user['eq' . $cat]);
 			if($pitem) {
 				$sql->query("UPDATE usersrpg SET eq$cat=0, spent=spent-{$pitem['coins']}*0.6 WHERE id={$loguser['id']}");
 			}
@@ -381,15 +381,15 @@ if (!has_perm('use-item-shop')) {
 			break;
 		default:
 			$shops = $sql->query('SELECT * FROM itemcateg ORDER BY corder');
-			$eq = $sql->fetchq("SELECT * FROM usersrpg WHERE id={$loguser['id']}");
+			$eq = $sql->query_fetch("SELECT * FROM usersrpg WHERE id={$loguser['id']}");
 			$eqitems = $sql->query('SELECT * FROM items');
 
-			while ($item = $sql->fetch($eqitems)) {
+			while ($item = $sql->fetch_assoc($eqitems)) {
 				$items[$item['id']] = $item;
 			}
 
 			$shoplist = '';
-			while ($shop = $sql->fetch($shops)) {
+			while ($shop = $sql->fetch_assoc($shops)) {
 				$shoplist.=
 						"  <tr>
 " . "    <td class=\"b n2\">

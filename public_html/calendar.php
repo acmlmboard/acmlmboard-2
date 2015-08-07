@@ -41,7 +41,7 @@
     //Fetch birthdays - uses the same crude but effective method as the old one
     $bdaytext = array();
     $bdayres = $sql->query("SELECT ".userfields().",birth FROM users WHERE birth != -1");
-    while ($bdayarr = $sql->fetch($bdayres)) {
+    while ($bdayarr = $sql->fetch_assoc($bdayres)) {
         $bdaydecode=explode('-',$bdayarr['birth']);
 
         if ($bdaydecode[0] == $month) {
@@ -68,7 +68,7 @@
     $eventtext = array();
     $eventres = $sql->query("SELECT * FROM events e LEFT JOIN users u ON u.id=e.user WHERE year = '$year' AND month = $month");
 
-    while ($eventarr = $sql->fetch($eventres)) {
+    while ($eventarr = $sql->fetch_assoc($eventres)) {
         $text = $eventarr['event_title']." - ".userlink($eventarr);
         $eventtext[$eventarr['day']] = $text;
     }

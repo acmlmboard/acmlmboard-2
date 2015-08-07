@@ -25,7 +25,7 @@ if ($act = $_POST['action']) {
 
 		$userid = checkuser($_POST['name'], $pass);
 		if ($userid) {
-			$user = $sql->fetchq("SELECT * FROM users WHERE id=$userid");
+			$user = $sql->query_fetch("SELECT * FROM users WHERE id=$userid");
 			$loguser = $user;
 			load_user_permset();
 		} else
@@ -56,7 +56,7 @@ if ($announce) {
 if ($announce && $fid == 0)
 	$forum = array('id' => 0, 'readonly' => 1);
 else
-	$forum = $sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN " . forums_with_view_perm());
+	$forum = $sql->query_fetch("SELECT * FROM forums WHERE id=$fid AND id IN " . forums_with_view_perm());
 
 if ($act != "Submit") {
 	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>";
@@ -70,7 +70,7 @@ if ($act != "Submit") {
 }
 $tagsin = "";
 $t = $sql->query("SELECT * FROM tags WHERE fid=$fid");
-while ($tt = $sql->fetch($t)) {
+while ($tt = $sql->fetch_assoc($t)) {
 	if ($tagsin == "")
 		$tagsin = "<tr>
 " . "  <td class=\"b n1\" align=\"center\">$typecap tags:</td>
@@ -125,7 +125,7 @@ $pollin = '';
 
 $i = 1;
 $icons = $sql->query('SELECT * FROM posticons ORDER BY id');
-while ($icon = $sql->fetch($icons))
+while ($icon = $sql->fetch_assoc($icons))
 	$iconlist.=
 			"      <input type=\"radio\" class=\"radio\" name=iconid value=$i> <img src=$icon[url]>&nbsp; &nbsp;" . (!($i++ % 10) ? '<br>' : '') . "
 ";
@@ -324,7 +324,7 @@ if ($err) {
 ";
 }elseif ($act == 'Submit') {
 	if (!($iconurl = $_POST['iconurl']))
-		$iconurl = $sql->resultq("SELECT url FROM posticons WHERE id=" . (int) $_POST['iconid']);
+		$iconurl = $sql->query_result("SELECT url FROM posticons WHERE id=" . (int) $_POST['iconid']);
 
 	checknumeric($_POST['nolayout']);
 	checknumeric($_POST['nosmilies']);
@@ -344,7 +344,7 @@ if ($err) {
 
 	$iconurl = addslashes($iconurl);
 
-	$user = $sql->fetchq("SELECT * FROM users WHERE id=$userid");
+	$user = $sql->query_fetch("SELECT * FROM users WHERE id=$userid");
 	$user['posts'] ++;
 
 	$tagsum = 0;
@@ -363,10 +363,10 @@ if ($err) {
 			. "WHERE id=$userid");
 	$sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky) "
 			. "VALUES ('$_POST[title]',$fid,$userid," . ctime() . ",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick)");
-	$tid = $sql->insertid();
+	$tid = $sql->insert_id();
 	$sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmilies,announce) "
 			. "VALUES ($userid,$tid," . ctime() . ",'$userip',$user[posts],$mid,'$_POST[nolayout]','$_POST[nosmilies]',$announce)");
-	$pid = $sql->insertid();
+	$pid = $sql->insert_id();
 	$sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
 	if (!$announce) {
 		$sql->query("UPDATE forums SET threads=threads+1,posts=posts+1,lastdate=" . ctime() . ",lastuser=$userid,lastid=$pid "
@@ -391,7 +391,7 @@ if ($err) {
 	if (!$announce)
 		$sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
 
-	$chan = $sql->resultp("SELECT chan FROM announcechans WHERE id=?", array($forum['announcechan_id']));
+	$chan = $sql->prepare_query_result("SELECT chan FROM announcechans WHERE id=?", array($forum['announcechan_id']));
 
 	if ($announce) {
 		$viewlink = "thread.php?announce=" . $forum['id'];

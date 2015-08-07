@@ -5,12 +5,12 @@ include('lib/diff/Diff/Renderer/inline.php');
 
 //Smilies List
 $smilieslist = $sql->query("SELECT * FROM `smilies`");
-$numsmilies = $sql->resultq("SELECT COUNT(*) FROM `smilies`");
+$numsmilies = $sql->query_result("SELECT COUNT(*) FROM `smilies`");
 $smiliewidth = ceil(sqrt($numsmilies));
 $smilietext = "<table>";
 
 $x = 0;
-while ($smily = $sql->fetch($smilieslist)) {
+while ($smily = $sql->fetch_assoc($smilieslist)) {
   if ($x == 0) {
     $smilietext .= "<tr>";
   }
@@ -30,7 +30,7 @@ $ncx = $sql->query("SELECT title, nc0, nc1, nc2 FROM `group` WHERE nc0 != '' ORD
 $nctable = "";
 $sexname = array('male','female','unspec.');
 
-while ($ncr = $sql->fetch($ncx)) {
+while ($ncr = $sql->fetch_assoc($ncx)) {
 
 	$nctable .= "<tr>";
 

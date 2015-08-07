@@ -407,7 +407,7 @@ function itemselect($field, $current, $cat) {
 	$text = "
 " . "<select name=$field>";
 
-	while ($item = $sql->fetch($items)) {
+	while ($item = $sql->fetch_assoc($items)) {
 		$text.="
 " . "      <option value=\"$item[id]\"";
 		if ($current == $item['id'])
@@ -423,13 +423,13 @@ function themelist() {
 
 	$themeuser = array();
 	$t = $sql->query("SELECT `theme`, COUNT(*) AS `count` FROM `users` GROUP BY `theme`");
-	while ($x = $sql->fetch($t)) {
+	while ($x = $sql->fetch_assoc($t)) {
 		$themeuser[$x['theme']] = intval($x['count']);
 	}
 	
 	$themelist = array();
 	$result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0;");
-	while($row = $sql->fetch($result)) {
+	while($row = $sql->fetch_assoc($result)) {
 		$themeusers = isset($themeuser[$row['basename']]) ? $themeuser[$row['basename']] : 0;
 		$themelist[$row['basename']] = $row['name'] . ($themeusers ? (" [$themeusers user" . ($themeusers == 1 ? "" : "s") . "]") : "");
 	}
@@ -440,7 +440,7 @@ function themelist() {
 function ranklist() {
 	global $sql, $loguser;
 	$r = $sql->query("SELECT * FROM ranksets ORDER BY id ASC");
-	while ($d = $sql->fetch($r)) {
+	while ($d = $sql->fetch_assoc($r)) {
 		$rlist[$d['id']] = $d['name'];
 	}
 	return $rlist;
@@ -451,12 +451,12 @@ function announcement_row($announcefid, $aleftspan, $arightspan) {
 
 	$announcement = array();
 
-	$ancs = $sql->fetchp("SELECT title,user,`lastdate` FROM threads 
+	$ancs = $sql->prepare_query_fetch("SELECT title,user,`lastdate` FROM threads 
     WHERE forum=?  AND announce=1 ORDER BY `lastdate` DESC LIMIT 1", array($announcefid));
 	if ($ancs) {
 		$announcement['title'] = $ancs['title'];
 		$announcement['date'] = $ancs['lastdate'];
-		$announcement['user'] = $sql->fetchp("SELECT " . userfields() . " FROM users WHERE id=?", array($ancs['user']));
+		$announcement['user'] = $sql->prepare_query_fetch("SELECT " . userfields() . " FROM users WHERE id=?", array($ancs['user']));
 	}
 
 	if (isset($announcement['title']) || can_create_forum_announcements($announcefid)) {
@@ -511,6 +511,7 @@ function tpl_display($file, $tpl_vars = array()) {
 	$path = sprintf('%s/templates/%s.html.php', dirname(__DIR__), $file);
 	if(!file_exists($path)) {
 		echo sprintf('<strong>Error: Template file `%s` is missing!</strong>', $file);
+		return FALSE;
 	}
 	
 	include_once($path);

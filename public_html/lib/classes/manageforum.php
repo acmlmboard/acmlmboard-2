@@ -7,21 +7,21 @@ class ManageForum {
 	}
 	
 	public function createCategory($title, $order = 0, $private = 0) {
-		$cid = $this->sql->resultq("SELECT MAX(id) FROM categories");
+		$cid = $this->sql->query_result("SELECT MAX(id) FROM categories");
 		if (!$cid) {
 			$cid = 0;
 		}
 		$cid++;
-		$this->sql->prepare("INSERT INTO categories (id, title, ord, private) VALUES (?, ?, ?, ?)", array($cid, $title, $order, $private));
+		$this->sql->prepare_query("INSERT INTO categories (id, title, ord, private) VALUES (?, ?, ?, ?)", array($cid, $title, $order, $private));
 	}
 	
 	public function createForum($category_id, $title, $description, $order = 0, $private = 0, $trash = 0, $readonly = 0, $announcechan_id = 0) {
-		$fid = $sql->resultq("SELECT MAX(id) FROM `forums`");
+		$fid = $sql->query_result("SELECT MAX(id) FROM `forums`");
 		if (!$fid) {
 			$fid = 0;
 		}
 		$fid++;
-		$this->sql->prepare("INSERT INTO forums (id, cat, title, descr, ord, private, trash, readonly, announcechan_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
+		$this->sql->prepare_query("INSERT INTO forums (id, cat, title, descr, ord, private, trash, readonly, announcechan_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", 
 				array($fid, $cat, $title, $descr, $ord, $private, $trash, $readonly, $announcechan_id));
 	}
 	
@@ -36,12 +36,12 @@ class ManageForum {
 	}
 	
 	public function updateChannel($channel_id, $channel_name) {
-		if (!$this->sql->resultp("SELECT COUNT(*) FROM announcechans WHERE id=?", array($channel_id))) {
+		if (!$this->sql->prepare_query_result("SELECT COUNT(*) FROM announcechans WHERE id=?", array($channel_id))) {
 			throw new Exception('Channel not found.');
 		}
 		
-		$this->sql->prepare("UPDATE announcechans SET chan=? WHERE id=?", array($channel_id, $channel_name));
-		if (!$this->sql->affectedrows()) {
+		$this->sql->prepare_query("UPDATE announcechans SET chan=? WHERE id=?", array($channel_id, $channel_name));
+		if (!$this->sql->affected_rows()) {
 			throw new Exception('There was a problem updating the channel.');
 		}
 
@@ -49,17 +49,17 @@ class ManageForum {
 	}
 	
 	public function deleteCategory($category_id) {
-		$sql->prepare("DELETE FROM categories WHERE id=?", array($category_id));
+		$sql->prepare_query("DELETE FROM categories WHERE id=?", array($category_id));
 	}
 	
 	public function deleteForum($forum_id) {
-		$this->sql->prepare("DELETE FROM forums WHERE id=?", array($forum_id));
-		$this->sql->prepare("DELETE FROM forummods WHERE fid=?", array($forum_id));
-		$this->sql->prepare("DELETE FROM tags WHERE fid=?", array($forum_id));
+		$this->sql->prepare_query("DELETE FROM forums WHERE id=?", array($forum_id));
+		$this->sql->prepare_query("DELETE FROM forummods WHERE fid=?", array($forum_id));
+		$this->sql->prepare_query("DELETE FROM tags WHERE fid=?", array($forum_id));
 	}
 	
 	public function deleteChannel($channel_id) {
-		$this->sql->prepare("UPDATE forums SET announcechan_id=? WHERE announcechan_id=?", array('0', $channel_id));
-		$this->sql->prepare("DELETE FROM announcechans WHERE id=?", array($channel_id));
+		$this->sql->prepare_query("UPDATE forums SET announcechan_id=? WHERE announcechan_id=?", array('0', $channel_id));
+		$this->sql->prepare_query("DELETE FROM announcechans WHERE id=?", array($channel_id));
 	}
 }

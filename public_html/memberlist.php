@@ -60,7 +60,7 @@ $users = $sql->query("SELECT *," . sqlexp() . " FROM users "
 		. "WHERE $where "
 		. "ORDER BY $order "
 		. "LIMIT " . ($page - 1) * $ppp . ",$ppp");
-$num = $sql->resultq("SELECT COUNT(*) FROM users "
+$num = $sql->query_result("SELECT COUNT(*) FROM users "
 		. "WHERE $where");
 
 if ($num <= $ppp)
@@ -81,7 +81,7 @@ $gc = 0;
 $unclass = '';
 if ($config['useshadownccss'])
 	$unclass = "class='needsshadow'";
-while ($group = $sql->fetch($activegroups)) {
+while ($group = $sql->fetch_assoc($activegroups)) {
 	if ($config['memberlistcolorlinks']) {
 		if ($sex == 'f')
 			$sexcolor = $group['nc1'];
@@ -193,7 +193,7 @@ $headers = array
 	"exp" => array("caption" => "EXP", "width" => "80px"),
 );
 $data = array();
-for ($i = ($page - 1) * $ppp + 1; $user = $sql->fetch($users); $i++) {
+for ($i = ($page - 1) * $ppp + 1; $user = $sql->fetch_assoc($users); $i++) {
 	$user['exp'] = floor($user['exp']);
 	$user['level'] = calclvl($user['exp']);
 	if ($mini == 1)

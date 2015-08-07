@@ -10,7 +10,7 @@ require "../lib/database.php";
 
 $themes = array();
 $result = $sql->query("SELECT * FROM `themes` WHERE `disabled` = 0 AND `filename` != 'totd.php';");
-while($row = $sql->fetch($result)) {
+while($row = $sql->fetch_assoc($result)) {
 	$themes[] = $row;
 }
 

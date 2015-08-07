@@ -4,7 +4,7 @@ require 'lib/common.php';
 pageheader();
 
 $eqitems = $sql->query('SELECT * FROM items');
-while ($item = $sql->fetch($eqitems)) {
+while ($item = $sql->fetch_assoc($eqitems)) {
 	$items[$item['id']] = $item;
 }
 
@@ -26,7 +26,7 @@ for ($i = 0; $i < 9; $i++) {
 			"    <td class=\"b h\" width=40>$stat[$i]</td>
 ";
 }
-for ($i = 1; $user = $sql->fetch($users); $i++) {
+for ($i = 1; $user = $sql->fetch_assoc($users); $i++) {
 	$p = $user['posts'];
 	$d = (ctime() - $user['regdate']) / 86400;
 	$st = getstats($user, $items);

@@ -19,10 +19,10 @@ $id = $r['id'];
 if ($r['action'] == "del") {
 	unset($r['action']);
 	if ($id > 0) {
-		$badge = $sql->fetchp('SELECT * FROM badges WHERE id=?', array($id));
+		$badge = $sql->prepare_query_fetch('SELECT * FROM badges WHERE id=?', array($id));
 		if (!$badge) {
 			$pagebar['message'] = "Unable to delete badge: invalid badge ID.";
-		} else if ($sql->prepare('DELETE FROM badges WHERE id=?', array($id))) {
+		} else if ($sql->prepare_query('DELETE FROM badges WHERE id=?', array($id))) {
 			$pagebar['message'] = "Badge successfully deleted.";
 		} else {
 			$pagebar['message'] = "Unable to delete badge.";
@@ -52,7 +52,7 @@ if (empty($r['action'])) {
 
 	$data = array();
 	$bdgReq = $sql->query("SELECT * FROM badges ORDER BY id ASC");
-	while ($bdg = $sql->fetch($bdgReq)) {
+	while ($bdg = $sql->fetch_assoc($bdgReq)) {
 		$pics = explode("|", $bdg['image']);
 		$pic = $pics[0];
 		$actions = array(
@@ -87,7 +87,7 @@ if (empty($r['action'])) {
 
 		if ($r['action'] == "edit" && $id > 0) {
 
-			if ($sql->prepare('UPDATE badges SET 
+			if ($sql->prepare_query('UPDATE badges SET 
 image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? WHERE id=?;', array(
 						$s['image'],
 						$s['priority'],
@@ -105,7 +105,7 @@ image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? WHE
 				$pagebar['message'] = "Unable to update Badge.";
 			}
 		} elseif ($r['action'] == "new") {
-			if ($sql->prepare('INSERT INTO badges SET
+			if ($sql->prepare_query('INSERT INTO badges SET
 image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? ;', array(
 						$s['image'],
 						$s['priority'],
@@ -117,7 +117,7 @@ image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? ;',
 						$s['effect'],
 							)
 					)) {
-				$id = $sql->insertid();
+				$id = $sql->insert_id();
 				$r['action'] = "edit";
 				$pagebar['message'] = "Badge successfully created.";
 			} else {
@@ -131,7 +131,7 @@ image=?,priority=?,type=?,name=?,description=?,inherit=?,posttext=?,effect=? ;',
 
 
 	if ($id > 0) {
-		$t = $sql->fetchp('SELECT * FROM badges WHERE id=?', array($id));
+		$t = $sql->prepare_query_fetch('SELECT * FROM badges WHERE id=?', array($id));
 		if (!$t) {
 			noticemsg("Error", "Invalid badge ID");
 			pagefooter();

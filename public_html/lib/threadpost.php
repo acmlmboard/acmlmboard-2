@@ -15,37 +15,43 @@ function LoadBlocklayouts() {
 
 function usegfxnums() {
 	global $config, $rpgimageset;
-	if ($rpgimageset == '')
+	
+	if (empty($rpgimageset) || !$config['userpgnum']) {
 		return false;
-	elseif (!$config['userpgnum'])
-		return false;
-	else
-		return true;
+	}
+
+	return true;
 }
 
-function threadpost($post, $type, $pthread = '') {
+function display_post($post, $type, $pthread = '') {
 	global $dateformat, $loguser, $sql, $blocklayouts, $syndromenable, $config, $signsep;
+
+	// These are just some default values for when a peice of code doesn't define them.
+	$default_values = array('id' => 0, 'num' => 0, 'deleted' => 0, 'revision' => 0, 'thread' => 0, 'user' => 0, 'maxrevision' => 0,
+			'text'=>'(null)');
+	// anything that's defined will overwrite the default.
+	$post = array_merge($default_values, $post);
+
 
 	$exp = calcexp($post['uposts'], (ctime() - $post['uregdate']) / 86400);
 
 	//$post['head'] = str_replace("<!--", "&lt;!--", $post['head']);
-	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']); 
+	$post['uhead'] = str_replace("<!--", "&lt;!--", $post['uhead']);
 
 	//$post['text'] = $post['head'] . $post['text'] . $signsep[$loguser['signsep']] . $post['sign'];
 	//$post['text'] = $post['text'] . $signsep[$loguser['signsep']]; // I could find 'head' or 'sign' anywhere, and they appear to be appended below.
-
 	//This allows config level enable or disable of syndromes.
 	if ($syndromenable == 1) {
-		$actsyn = $sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=" . $post['uid'] . " AND date>" . (ctime() - 86400)), 0, 0);
+		$actsyn = $sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=" . $post['uid'] . " AND date > " . (ctime() - 86400)), 0, 0);
 	} else {
 		$actsyn = 0;
 	}
 
 	$post['ranktext'] = getrank($post['urankset'], $post['uposts']);
 	$post['utitle'] = $post['ranktext']
-			. ((strlen($post['ranktext']) >= 1) ? "<br>" : "")
+			. ((strlen($post['ranktext']) >= 1) ? "<br />" : "")
 			. syndrome($actsyn)
-			. ((strlen(syndrome($actsyn))) ? "<br>" : "")
+			. ((strlen(syndrome($actsyn))) ? "<br />" : "")
 			. $post['utitle'];
 
 	//[KAWA] TODO: replace with token effect, or preferably just a profile switch
@@ -69,8 +75,8 @@ function threadpost($post, $type, $pthread = '') {
 	if ($post['deleted']) {
 		$postlinks = "";
 		if (can_edit_forum_posts(getforumbythread($post['thread']))) {
-			$postlinks.="<a href=\"thread.php?pid=$post[id]&amp;pin=$post[id]&rev=$post[revision]#$post[id]\">Peek</a> | ";
-			$postlinks.="<a href=\"editpost.php?pid=" . urlencode(packsafenumeric($post[id])) . "&amp;act=undelete\">Undelete</a>";
+			$postlinks.="<a href=\"thread.php?pid={$post['id']}&amp;pin={$post['id']}&rev={$post['revision']}#{$post['id']}\">Peek</a> | ";
+			$postlinks.="<a href=\"editpost.php?pid=" . urlencode(packsafenumeric($post['id'])) . "&amp;act=undelete\">Undelete</a>";
 		}
 
 		if ($post['id']) {
@@ -98,47 +104,51 @@ function threadpost($post, $type, $pthread = '') {
 			$postlinks = '';
 			$revisionstr = '';
 
-			if (is_array($pthread) && count($pthread) > 0) {
+			if (isset($pthread) && is_array($pthread) && count($pthread) > 0) {
 				$threadlink = ", in <a href=\"thread.php?id={$pthread['id']}\">" . htmlval($pthread['title']) . "</a>";
 			}
 
-			if (isset($post['id'])) {
+			if ($post['id']) {
 				$postlinks = "<a href=\"thread.php?pid={$post['id']}#{$post['id']}\">Link</a>"; // headlinks for posts
 			}
 
-			if ($post['revision'] >= 2)
+			if ($post['revision'] >= 2) {
 				$revisionstr = " (rev. {$post['revision']} of " . cdate($dateformat, $post['ptdate']) . " by " . userlink_by_id($post['ptuser']) . ")";
+			}
 
 			// I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
 			if (isset($post['isannounce']) && $post['isannounce']) {
-				$postheaderrow = "<tr class=\"h\">
-               <td class=\"b\" colspan=2>" . $post['ttitle'] . "</td>
-             </tr>
-            ";
+				$postheaderrow = "<tr class=\"h\"><td class=\"b\" colspan=2>" . $post['ttitle'] . "</td></tr>";
 			} else if ($post['thread'] && $loguser['id'] != 0) {
-				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"newreply.php?id=$post[thread]&amp;pid=$post[id]\">Reply</a>";
+				$postlinks .= ($postlinks ? ' | ' : '') . "<a href=\"newreply.php?id={$post['thread']}&amp;pid={$post['id']}\">Reply</a>";
 			}
 
 			// "Edit" link for admins or post owners, but not banned users
-			if (can_edit_post($post) && $post['id'])
-				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
+			if (can_edit_post($post) && $post['id']) {
+				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editpost.php?pid={$post['id']}\">Edit</a>";
+			}
 
-			if (can_edit_post($post) && $post['id'] && (isset($post['isannounce']) && $post['isannounce']))
+			if (can_edit_post($post) && $post['id'] && (isset($post['isannounce']) && $post['isannounce'])) {
 				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editannouncetitle.php?pid=$post[id]\">Edit Title</a>";
+			}
 
-			if ($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])))
+			if ($post['id'] && can_delete_forum_posts(getforumbythread($post['thread']))) {
 				$postlinks.=($postlinks ? ' | ' : '') . "<a href=\"editpost.php?pid=" . urlencode(packsafenumeric($post['id'])) . "&amp;act=delete\">Delete</a>";
+			}
 
-			if ($post['id'])
-				$postlinks.=" | ID: $post[id]";
+			if ($post['id']) {
+				$postlinks.=" | ID: {$post['id']}";
+			}
 
-			if (has_perm('view-post-ips'))
+			if (has_perm('view-post-ips')) {
 				$postlinks.=($postlinks ? ' | ' : '') . "IP: $post[ip]";
+			}
 
 			if (can_view_forum_post_history(getforumbythread($post['thread'])) && $post['maxrevision'] > 1) {
-				$revisionstr.=" | Go to revision: ";
-				for ($i = 1; $i <= $post['maxrevision']; ++$i)
-					$revisionstr.="<a href=\"thread.php?pid=$post[id]&amp;pin=$post[id]&amp;rev=$i#$post[id]\">$i</a> ";
+				$revisionstr .= " | Go to revision: ";
+				for ($i = 1; $i <= $post['maxrevision']; ++$i) {
+					$revisionstr .= "<a href=\"thread.php?pid=$post[id]&amp;pin=$post[id]&amp;rev=$i#$post[id]\">$i</a> ";
+				}
 			}
 
 			// if quote enabled then if $postlink2 then postlink2 .= | [quote]
@@ -149,7 +159,7 @@ function threadpost($post, $type, $pthread = '') {
 			$tbar2 = ($type == 0 && !$isBlocked) ? "topbar" . $post['uid'] . "_2" : "";
 			$sbar = ($type == 0 && !$isBlocked) ? "sidebar" . $post['uid'] : "";
 			$mbar = ($type == 0 && !$isBlocked) ? "mainbar" . $post['uid'] : "";
-			$text = "<table cellspacing=\"0\" class=\"c1\" id=" . $post['id'] . ">
+			$text = "<table cellspacing=\"0\" class=\"c1\" id=\"{$post['id']}\">
 " . "  $postheaderrow 
 " . "  <tr>
 " . "    <td class=\"b n1 $tbar1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
@@ -171,8 +181,8 @@ function threadpost($post, $type, $pthread = '') {
 
 				$picture = ($post['uusepic'] ? "<img src=\"gfx/userpic.php?id=" . $post['uid'] . "&r=" . $post['uusepic'] . "\">" : '');
 
-				if ($post['mood'] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
-					$mood = $sql->query_fetch("select `url`, `local`, 1 `existing` from `mood` where `user`=$post[uid] and `id`=$post[mood] union select '' `url`, 0 `local`, 0 `existing`");
+				if ($post['mood']) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
+					$mood = $sql->query_fetch("select `url`, `local`, 1 `existing` from `mood` where `user`= {$post['uid']} and `id`= {$post['mood']} union select '' `url`, 0 `local`, 0 `existing`");
 					if ($mood['existing']) {
 						$picture = (!$mood['local'] ? "<img src=\"" . htmlval($mood['url']) . "\">" : "<img src=\"gfx/userpic.php?id=" . $post['uid'] . "_" . $post['mood'] . "\">" );
 					}
@@ -195,7 +205,7 @@ function threadpost($post, $type, $pthread = '') {
 " . "      " . ((strlen($grouplink)) ? "<br>" : "") . "
 " . "      " . postfilter($post['utitle']);
 				/* This block is used when rendering AB1 style image RPG layouts */
-				if (usegfxnums() && $loguser['numbargfx'] != 1)
+				if (usegfxnums() && $loguser['numbargfx'] != 1) {
 					$text.= "
 " . "      <br>" . rpglabel2img("level", "Level:") . " " . rpgnum2img(calclvl($exp)) . "
 " . "      <br>" . drawrpglevelbar($exp) . "
@@ -210,6 +220,7 @@ function threadpost($post, $type, $pthread = '') {
 " . "      <br>Last post: $lastpost
 " . "      <br>Last view: " . timeunits(ctime() - $post['ulastview']) . "
 ";
+				}
 				/* Normal Rendering */
 				else
 					$text.= "      <br>Level: " . calclvl($exp) . "
@@ -225,9 +236,7 @@ function threadpost($post, $type, $pthread = '') {
 " . "      <br>Last post: $lastpost
 " . "      <br>Last view: " . timeunits(ctime() - $post['ulastview']);
 			} else {
-				$text.="
-" . "      Posts: $post[num]/$post[uposts]
-";
+				$text.="      Posts: $post[num]/$post[uposts]\n";
 			}
 			$text.=
 					"    </td>

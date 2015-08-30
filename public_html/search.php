@@ -163,7 +163,7 @@ if ($_GET['action'] == "Search") {
 				$pthread[title] = $post[ttitle];
 				$post[text] = preg_replace($boldify, "<b>\\0</b>", $post[text]);
 				print "<br>
-" . threadpost($post, 0, $pthread);
+" . display_post($post, 0, $pthread);
 			}
 		} else {
 			$searchquery = $_GET[q];

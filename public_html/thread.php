@@ -39,7 +39,7 @@ function timelink($time) {
 	if ($timeval == $time)
 		return " " . timeunits2($time) . " ";
 	else
-		return " <a href=thread.php?time=$time>" . timeunits2($time) . '</a> ';
+		return " <a href=\"thread.php?time=$time\">" . timeunits2($time) . '</a> ';
 }
 
 loadsmilies();
@@ -788,54 +788,21 @@ while ($post = $sql->fetch_assoc($posts)) {
 		$post['deleted'] = false;
 	}
 
-	if (isset($_REQUEST['pid']) && isset($_COOKIE['pstbon']) 
-			&& $post['id'] == $_REQUEST['pid'] && $_COOKIE['pstbon'] == "-1") {
+	if (isset($_REQUEST['pid']) && isset($_COOKIE['pstbon']) && $post['id'] == $_REQUEST['pid'] && $_COOKIE['pstbon'] == "-1") {
 		print $rdmsg;
 	}
 	
 	//var_dump($post);
 
-	print "<br />\n" . threadpost($post, 0, $pthread);
+	print "<br />\n" . display_post($post, 0, $pthread);
 }
 
 
 print "$pagelist$pagebr<br />";
 
 if (isset($thread['id']) && $thread['id'] && can_create_forum_post($faccess) && !$thread['closed']) {
-	echo "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>";
+	print "<script language=\"javascript\" type=\"text/javascript\" src=\"js/tools.js\"></script>\n";
 	$toolbar = posttoolbar();
-
-	//lol so hacky please organise this into the right place soon.
-
-	print "<script language=javascript>
-        function updatequickreplystatus(ishidden)
-        {
-          x = new XMLHttpRequest();
-          x.open('GET', 'userpref.php?field=hidequickreply&value='+ishidden);
-          x.send(null);
-        }
-        function togglequickreply()
-        {
-          var table = document.getElementById('quickreply');
-          var rows = table.getElementsByTagName('tr');
-          var ishidden = 0;
-          for(var i = 1; i < rows.length; i++)
-          {
-            if(rows[i].className == 'toolbar') continue;
-            if(rows[i].style['display'] == 'none') {
-              rows[i].style['display'] = '';
-              ishidden = 0;
-            }
-            else {
-              rows[i].style['display'] = 'none';
-              ishidden = 1;
-            }
-          }
-          updatequickreplystatus(ishidden);
-        }
-    </script>
-    ";
-
 
 	if ($loguser['hidequickreply']) {
 		$quickreplydisplay = " style='display: none' ";

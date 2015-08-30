@@ -165,7 +165,7 @@ if ($err) {
 " . "  <tr class=\"h\">
 " . "    <td class=\"b h\" colspan=2>Post preview
 " . "</table>
-" . threadpost($post, 0) . "
+" . display_post($post, 0) . "
 " . "<br>
 " . "<table cellspacing=\"0\" class=\"c1\">
 " . " <form action=editpost.php method=post>
@@ -302,7 +302,7 @@ if ($act != 'Submit' && $act != 'delete' && $act != 'undelete' && !$err && !$thr
 ";
 	while ($post = $sql->fetch_assoc($posts)) {
 		$exp = calcexp($post['uposts'], ctime() - $post['uregdate']);
-		print threadpost($post, 1);
+		print display_post($post, 1);
 	}
 
 	if ($thread['replies'] >= $loguser['ppp']) {

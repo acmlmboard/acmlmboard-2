@@ -183,7 +183,7 @@ if ($err) {
 " . "  <tr class=\"h\">
 " . "    <td class=\"b h\" colspan=2>Post preview
 " . "</table>
-" . threadpost($post, 0) . "
+" . display_post($post, 0) . "
 " . "<br>
 ";
 	} else {
@@ -312,7 +312,7 @@ if ($act != 'Submit' && !$err && can_view_forum($thread)) {
 ";
 	while ($post = $sql->fetch_assoc($posts)) {
 		$exp = calcexp($post['uposts'], ctime() - $post['uregdate']);
-		print threadpost($post, 1);
+		print display_post($post, 1);
 	}
 
 	if ($thread['replies'] >= $loguser['ppp']) {

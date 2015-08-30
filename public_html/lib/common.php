@@ -7,7 +7,7 @@ header("Content-type: text/html; charset=utf-8");
 
 //[Scrydan] Added these three variables to make editing quicker.
 $boardprog = "Acmlm, Emuz, <a href=\"credits.php\">et al</a>.";
-$abdate = "8/2/2015";
+$abdate = "8/7/2015";
 $abversion = "2.6.0 <span style=\"color: #EE4444; font-style: italic;\">Experimental</span>";
 
 if ($config['sqlconfig']) {
@@ -179,17 +179,15 @@ if (substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php") {
 		}
 	}
 
-	$count = $sql->query_fetch("	SELECT
-								(SELECT COUNT(*) FROM users) u,
-								(SELECT COUNT(*) FROM threads) t,
-								(SELECT COUNT(*) FROM posts) p");
+	$count = $sql->query_fetch("SELECT (SELECT COUNT(*) FROM users) u, (SELECT COUNT(*) FROM threads) t, (SELECT COUNT(*) FROM posts) p");
+
 	$date = date("m-d-y", time());
 	$sql->query("REPLACE INTO `dailystats` (`date`, `users`, `threads`, `posts`, `views`)
                  VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '$views')");
 
 	//2/21/2007 xkeeper - adding, uh, hourlyviews
 	$sql->query("INSERT INTO `hourlyviews` (`hour`, `views`)
-                 VALUES (" . floor(time() / 3600) . ",1)
+                 VALUES (" . floor(time() / 3600) . ", 1)
                  ON DUPLICATE KEY UPDATE `views`=`views`+1");
 }
 
@@ -332,18 +330,18 @@ function pageheader($pagetitle = "", $fid = 0) {
 	}
 
 	print "<!DOCTYPE html>
-      <html>
-      <head>
-      <title>$pagetitle$boardtitle</title>
-      $config[meta]
-      <link rel=\"icon\" type=\"image/png\" href=\"$favicon\">
-      <link rel=\"stylesheet\" type=\"text/css\" href=\"css/base.css\" />
-      <link rel=\"stylesheet\" type=\"text/css\" href=\"css/$themefile\" />
-      <link href=\"lib/prettify/sunburst.css\" type=\"text/css\" rel=\"stylesheet\" />
-      <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
-	  <script type=\"text/javascript\" src=\"//code.jquery.com/jquery-1.11.3.min.js\"></script>
-      </head>
-      <body style=\"font-size: {$loguser['fontsize']}%\" onload=\"prettyPrint()\">";
+		<html>
+		<head>
+			<title>$pagetitle$boardtitle</title>
+			{$config['meta']}
+			<link rel=\"icon\" type=\"image/png\" href=\"$favicon\">
+			<link rel=\"stylesheet\" type=\"text/css\" href=\"css/base.css\" />
+			<link rel=\"stylesheet\" type=\"text/css\" href=\"css/$themefile\" />
+			<link href=\"lib/prettify/sunburst.css\" type=\"text/css\" rel=\"stylesheet\" />
+			<script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
+			<script type=\"text/javascript\" src=\"//code.jquery.com/jquery-1.11.3.min.js\"></script>
+		</head>
+		<body style=\"font-size: {$loguser['fontsize']}%\" onload=\"prettyPrint()\">";
 	
 	print "$dongs\n";
 	
@@ -596,8 +594,9 @@ function pageheader($pagetitle = "", $fid = 0) {
         Birthdays today: $birthdaystoday";
 		}
 
-		$count['d'] = $sql->query_result("SELECT COUNT(*) FROM `posts` WHERE `date` > '" . (ctime() - 86400) . "'");
-		$count['h'] = $sql->query_result("SELECT COUNT(*) FROM `posts` WHERE `date` > '" . (ctime() - 3600) . "'");
+		$count['d'] = $sql->query_result("SELECT COUNT(*) FROM `posts` WHERE `date` > " . (time() - 86400));
+		$count['h'] = $sql->query_result("SELECT COUNT(*) FROM `posts` WHERE `date` > " . (time() - 3600));
+		
 		$lastuser = $sql->query_fetch("SELECT " . userfields() . " FROM `users` ORDER BY `id` DESC LIMIT 1");
 
 		$hiddencheck = "AND `hidden`='0' ";
@@ -665,6 +664,7 @@ function pageheader($pagetitle = "", $fid = 0) {
 
 		$activeusers = $sql->query_result("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '" . (ctime() - 86400) . "'");
 		$activethreads = $sql->query_result("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '" . (ctime() - 86400) . "'");
+		
 
 		print "
 	     <table cellspacing=\"0\" class=\"c1\">$birthdaybox
@@ -674,9 +674,9 @@ function pageheader($pagetitle = "", $fid = 0) {
                  <tr>
                    <td class=\"nb\" width=\"250\"></td>
                    <td class=\"nb\" align=\"center\">
-                     <span class=\"white-space:nowrap\"> <!--This was <nobr>, note: find class instead of this-->
-                       $count[t] threads and $count[p] posts total | 
-                       $count[d] new posts today, $count[h] last hour.<br>
+                     <span style=\"white-space:nowrap\">
+                      {$count['t']} threads and {$count['p']} posts total | 
+					  {$count['d']} new posts today, {$count['h']} last hour.<br>
                        $activeusers active users and $activethreads active threads during the last day.<br> 
                      </span>
                    </td>

@@ -278,7 +278,7 @@ if ($err) {
 " . "  <tr class=\"h\">
 " . "    <td class=\"b h\" colspan=2>Post preview
 " . "</table>
-" . threadpost($post, 0) . "
+" . display_post($post, 0) . "
 " . "<br>
 " . "<form action=newthread.php?ispoll=$ispoll method=post>
 " . " <table cellspacing=\"0\" class=\"c1\">

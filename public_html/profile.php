@@ -479,7 +479,7 @@ print "<table cellspacing=\"0\" class=\"c1\">
                <td class=\"b h\">Sample post</td>
              <tr>
            </table>
-           " . threadpost($post, 0) . "
+           " . display_post($post, 0) . "
            <br>
            <table cellspacing=\"0\" class=\"c1\">
              <tr class=\"h\">

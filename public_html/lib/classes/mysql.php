@@ -111,7 +111,7 @@ class mysql {
 
 	public function result($result, $row = 0, $col = 0) {
 		$start = usectime();
-		$res = null;
+		$res = FALSE;
 		if ($result) {
 			$result->data_seek($row);
 			$fetched_row = $result->fetch_array(MYSQLI_NUM);
@@ -155,10 +155,7 @@ class mysql {
 	public function query_result($query, $row = 0, $col = 0) {
 		$result = $this->query($query);
 		if ($result) {
-			$value = $this->result($result, $row, $col);
-			if ($value) {
-				return $value;
-			}
+			return $this->result($result, $row, $col);
 		}
 		return FALSE;
 	}

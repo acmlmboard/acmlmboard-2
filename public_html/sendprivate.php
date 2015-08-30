@@ -103,7 +103,7 @@ print     "  <tr>
 ".        "  <tr class=\"h\">
 ".        "    <td class=\"b h\" colspan=2>Message preview
 ".        "</table>
-".         threadpost($post,0)."
+".         display_post($post,0)."
 ".        "<br>
 ".        "<table cellspacing=\"0\" class=\"c1\">
 ".        " <form action=sendprivate.php method=post>

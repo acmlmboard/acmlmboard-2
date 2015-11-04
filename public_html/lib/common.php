@@ -6,7 +6,7 @@ require "lib/function.php";
 header("Content-type: text/html; charset=utf-8");
 
 //[Scrydan] Added these three variables to make editing quicker.
-$boardprog = "Acmlm, Emuz, <a href=\"credits.php\">et al</a>.";
+$boardprog = "Acmlm, Emuz, Xeon, <a href=\"credits.php\">et al</a>.";
 $abdate = "8/7/2015";
 $abversion = "2.6.0 <span style=\"color: #EE4444; font-style: italic;\">Experimental</span>";
 
@@ -33,6 +33,8 @@ if ($config['sqlconfig']) {
 
 	$avatardimx = $configsql['avatardimx']['intval'];
 	$avatardimy = $configsql['avatardimy']['intval'];
+	
+	$config['board_title'] = $configsql['boardtitle']['txtval'];
 
 	$config['topposts'] = $configsql['topposts']['intval'];
 	$config['topthreads'] = $configsql['topthreads']['intval'];
@@ -90,7 +92,7 @@ if (!$log) {
 $flocalmod = $sql->query_fetch("SELECT `uid` FROM `forummods`");
 if ($loguser['id'] == $flocalmod['uid']) {
 	$loguser['modforums'] = array();
-	$modf = $sql->prepare_query("SELECT `fid` FROM `forummods` WHERE `uid` = ?;", $loguser['id']);
+	$modf = $sql->prepare_query("SELECT `fid` FROM `forummods` WHERE `uid` = ?;", array($loguser['id']));
 	while ($m = $sql->fetch_assoc($modf)) {
 		$loguser['modforums'][$m['fid']] = 1;
 	}
@@ -247,6 +249,37 @@ if (is_file("theme/" . $theme . "/status/new.png"))
 //}
 
 $feedicons = "";
+
+/*
+ * Twig Support
+ */
+Twig_Autoloader::register();
+
+$loader = new Twig_Loader_Filesystem(dirname(__DIR__).'/templates');
+
+$twig = new Twig_Environment($loader, array(
+    'cache' => dirname(__DIR__).'/cache',
+	'debug' => true
+));
+
+$twig->addFunction(new Twig_SimpleFunction('render_users_online', function () {
+    // ...
+	return '&nbsp;';
+}));
+
+$twig->addFunction(new Twig_SimpleFunction('render_user_birthday_list', function () {
+    // ...
+	return '&nbsp;';
+}));
+
+$twig->addGlobal('board', array(
+	'version'	=> $abversion, 
+	'credits'	=> $boardprog, 
+	'date'		=> $abdate, 
+	'config'	=> $config, 
+	'user'		=> $loguser,
+	'theme'		=> array('theme_file' => $themefile, 'logo' => $logofile)
+));
 
 /*
   Salvaged from "Xkeeper's Nifty Page-o-Hacks". Why? I don't really know, however it's a nice bit of code

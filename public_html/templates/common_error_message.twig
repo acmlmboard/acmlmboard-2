@@ -1,0 +1,17 @@
+{% extends "layout.twig" %}
+{% block head_title %}Error{% endblock %}
+{% block content %}
+<table cellspacing="0" class="c1">
+	<tr class="h">
+		<td class="b h" align="center">{{ error_title|default('Error') }}</td>
+	</tr>
+	<tr>
+		<td class="b n1" align="center">
+			{{ error_message }}
+			{% if message_link %}
+				<br /><a href="{{ message_link }}">{{ message_link_label|default('Click here to continue') }}</a>
+			{% endif %}
+		</td>
+	</tr>
+</table>
+{% endblock %}

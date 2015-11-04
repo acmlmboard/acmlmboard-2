@@ -1,0 +1,24 @@
+<div id="index-stats">
+	{% if board_stats.birthday_count > 0 %}
+	<div id="index-stats-birthdays">
+		<p>Birthdays today: {{ render_user_birthday_list()|raw }}></p>
+	</div>
+	{% endif %}
+	<div id="index-stats-recent-activity">
+		<p>{{ board_stats.thread_count }} threads and {{ board_stats.post_count }} posts total | {{ board_stats.posts_today }} new posts today, {{ board_stats.posts_last_hour }} last hour.</p>
+		<p>{{ board_stats.active_users }} active users and {{ board_stats.active_threads }} active threads during the last day.</p>
+	</div>
+	<div id="index-stats-last-registered">
+		<p>{{ board_stats.registered_count }} registered users</p>
+		<p>Newest: {{ board_stats.last_registered }}</p>
+	</div>
+	<div id="index-stats-online">
+		<p>
+			{% if board_stats.online_count > 0 %}
+				{{ board_stats.online_count }} user(s) online: {{ render_users_online()|raw }}
+			{% else %}No users online.{% endif %}
+			{% if board_stats.guest_count > 0 %} | {{ board_stats.guest_count }} guest(s){% endif %}
+			{% if board_stats.bot_count > 0 %} | {{ board_stats.bot_count }} bots(s){% endif %}
+		</p>
+	</div>
+</div>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{% block head %}
+			<title>{% block head_title %}{% endblock %} - {{ board.config.board_title }}</title>
+			<link rel="icon" type="image/png" href="theme/fav.png" />
+			<link rel="stylesheet" type="text/css" href="css/base.css" />
+			<link rel="stylesheet" type="text/css" href="css/{{ board.theme.theme_file|default('0.css') }}" />
+			{% if load_prettify %}
+			<link rel="stylesheet" type="text/css" href="lib/prettify/sunburst.css" />
+			<script type="text/javascript" src="lib/prettify/prettify.js"></script>
+			{% endif %}
+			<script type="text/javascript" src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+		{% endblock %}
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				{% block header %}
+				<p><a href="{{ board.config.homepage_url }}"><img src="{{ board.theme.logo|default('theme/abII.png') }}" /></a></p>
+				{% if navigation %}
+					<ul id="navigation">
+					{% for href, caption in navigation %}
+						<li><a href="{{ href }}">{{ caption }}</a>{% if not loop.last %} | {% endif %}</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+				{% endblock %}
+			</div>
+			<div id="content">
+				{% block content %}
+					<p>This is the content placeholder</p>
+				{% endblock %}
+			</div>
+			<div id="footer">
+				{% block footer %}
+					<p><a href="https://bitbucket.org/acmlmboard/acmlmboard-2" title="Acmlmboard 2"><img src="img/poweredbyacmlm.PNG" /></a><br />
+						Acmlmboard v{{ board.version|raw }} ({{ board.date|raw }})<br />
+						&copy; 2005-2015 {{ board.credits|raw }}</p>
+				{% endblock %}
+			</div>
+		</div>
+	</body>
+</html>

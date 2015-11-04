@@ -4,6 +4,7 @@ require 'lib/classes/request.php';
 require 'lib/classes/forum.php';
 require 'lib/classes/actionrouter.php';
 
+require 'lib/Twig/Autoloader.php';
 require 'lib/helpers.php';
 require 'lib/layout.php';
 require 'lib/config.php';

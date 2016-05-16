@@ -148,6 +148,8 @@ if ($act == 'Edit profile') {
 		if (!is_numeric($_POST['birthM']) || !is_numeric($_POST['birthD'])) //Reject if not numeric.
 			$birthday = -1;
 	}
+	if ($_POST['birthM'] > 12 || $_POST['birthD'] > 31) // fixes a small bug where if the fields are above a certain value, the profile fails to load
+		$birthday = -1;
 	$year = $_POST['birthY'];
 	if (!$_POST['birthY'] || !is_numeric($_POST['birthY']))
 		$year = -1;

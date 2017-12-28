@@ -1,6 +1,5 @@
-########################
-Acmlmboard II
-########################
+
+# Acmlmboard II
 In this repository you will find the code for Acmlmboard II. This is the version that was forked off for use with the web board that powers Kafuka.
 
 Tags
@@ -13,9 +12,7 @@ v2.5.3 - Point Release #3; Includes all fixes that were in the kafuka branch tha
 
 Note: This board is not guaranteed to work out of the box. Not much support remains these days. You will need to get your hands dirty.
 Please feel free to fork this and improve on it!
-########################
-Installing Acmlmboard II
-########################
+# Installing Acmlmboard II
 This document will guide you in the process to installed ABII.
 
 Requirements

@@ -186,26 +186,12 @@ function can_edit_post($post) {
   return false;
 }
 
-function can_edit_group_assets($gid) {
-  global $sql,$loguser;
-  if (has_perm('edit-all-group')) return true;
-  else if (has_perm_with_bindvalue('can-edit-group', $gid)) return true;
-  return false;
-}
-
-function can_edit_user_assets($gid) {
-  global $sql,$loguser;
-  if (has_perm('edit-all-group-member')) return true;
-  else if (has_perm_with_bindvalue('can-edit-group-member', $gid)) return true;
-  return false;
-}
-
 function can_edit_user($uid) {
   global $sql,$loguser;
 
   $gid = gid_for_user($uid);
   if (is_root_gid($gid) && !has_perm('no-restrictions')) return false;
-  if ((!can_edit_user_assets($gid) && $uid!=$loguser['id']) && !has_perm('no-restrictions')) return false;
+  if ((!has_perm_with_bindvalue('can-edit-group', $gid) && $uid!=$loguser['id']) && !has_perm('no-restrictions')) return false;
 
   if ($uid == $loguser['id'] && has_perm('update-own-profile')) return true;
   else if (has_perm('update-profiles')) return true;
@@ -327,12 +313,13 @@ function needs_login($head=0) {
 	if (!$log) { 
 		if ($head) pageheader('Login required');
 		$err = "You need to be logged in to do that!<br><a href=login.php>Please login here.</a>";	
-	        print
-        "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"n2\">
-".      "    <td class=\"b n1\" align=\"center\">
+	  global $L;
+      print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
 ".      "     $err
-".      "</table>
+".      "$L[TBLend]
 ";
       pagefooter();
       die();
@@ -341,12 +328,13 @@ function needs_login($head=0) {
 
 
 /*function no_perm() {
-	        print
-        "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"n2\">
-".      "    <td class=\"b n1\" align=\"center\">
+	  global $L;
+      print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
 ".      "      You have no permissions to do this!<br> <a href=./>Back to main</a> 
-".      "</table>
+".      "$L[TBLend]
 ";
       pagefooter();
       die();
@@ -362,36 +350,39 @@ function grouplink($usex, $gid) {
 }
 
 /*function forum_not_found() {
-	        print
-        "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"n2\">
-".      "    <td class=\"b n1\" align=\"center\">
+	  global $L;
+      print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
 ".      "      Forum does not exist. <br> <a href=./>Back to main</a> 
-".      "</table>
+".      "$L[TBLend]
 ";
       pagefooter();
       die();
 }*/
 
 /*function pm_not_found() {
-	        print
-        "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"n2\">
-".      "    <td class=\"b n1\" align=\"center\">
+	  global $L;
+      print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
 ".      "      Private message does not exist. <br> <a href=./>Back to main</a> 
-".      "</table>
+".      "$L[TBLend]
 ";
       pagefooter();
       die();
 }*/
 
 /*function thread_not_found() {
-	        print
-        "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"n2\">
-".      "    <td class=\"b n1\" align=\"center\">
+	  global $L;
+      print
+        "$L[TBL1]>
+".      "  $L[TR2]>
+".      "    $L[TD1c]>
 ".      "      Thread does not exist. <br> <a href=./>Back to main</a> 
-".      "</table>
+".      "$L[TBLend]
 ";
       pagefooter();
       die();
@@ -400,7 +391,6 @@ function grouplink($usex, $gid) {
 
 function can_create_forum_thread($forum) {
 
-       global $log; 
 	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
@@ -408,7 +398,6 @@ function can_create_forum_thread($forum) {
 	//can create public threads
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
 	if (!has_perm('create-public-thread')) return false;
-       if (!has_perm('post-offline') && !$log) return false;
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';
@@ -423,7 +412,6 @@ function can_create_forum_thread($forum) {
 
 function can_create_forum_post($forum) {
 
-       global $log; 
 	if ($forum['readonly'] && !has_perm('override-readonly-forums')) return false;
 
 	//must fulfill the following criteria
@@ -431,7 +419,6 @@ function can_create_forum_post($forum) {
 	//can create public threads
 	//HOSTILE DEBUGGING echo 'checking for public forum<br>';
 	if (!has_perm('create-public-post')) return false;
-       if (!has_perm('post-offline') && !$log) return false;
 
 	//and if the forum is private
 	//HOSTILE DEBUGGING echo 'checking private of forum<br>';

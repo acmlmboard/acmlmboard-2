@@ -1,61 +1,58 @@
 <?php
+  include('lib/common.php');
 
-include('lib/common.php');
+  if(!has_perm('edit-attentions-box')) {
+    pageheader('Nothing here.');
+    noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+  } else {
 
-$action = isset($_POST['action']) ? $_POST['action'] : '';
-$attndata = '';
-$mockboardlogo = '';
+    if($_POST[action]=="Submit") {
+      $sql->query("UPDATE misc SET txtval='".$_POST[txtval]."' WHERE field='attention'");
+    }
 
-if (!has_perm('edit-attentions-box')) {
-	pageheader('Nothing here.');
-	noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
-} else {
+    if($_POST[action]=="Preview") {
+      $attndata = stripslashes($_POST[txtval]);
 
-	if ($action == "Submit") {
-		$sql->query("UPDATE misc SET txtval='" . $_POST['txtval'] . "' WHERE field='attention'");
-	}
-
-	if ($action == "Preview") {
-		$attndata = stripslashes($_POST['txtval']);
-
-		$previewattn = "
-                 <table cellspacing=\"0\" class=\"c1\" width=\"100%\" align=\"center\">
-                   <tr class=\"h\">
-                      <td class=\"b h\"><font color='red'><i>Preview </i></font>$config[atnname] $ae</td>
-                    <tr class=\"n2\" align=\"center\">
-                      <td class=\"b sfont\">" . $attndata . "
+      $previewattn = "
+                 $L[TBL1] width=\"100%\" align=\"center\">
+                   $L[TRh]>
+                      $L[TDh]><font color='red'><i>Preview </i></font>$config[atnname] $ae</td>
+                    $L[TR2] align=\"center\">
+                      $L[TDs]>".$attndata."
                       </td>
-                 </table>";
-		$mockboardlogo = "
-       <table cellspacing=\"0\" width=100%>
-         <tr align=\"center\">
-           <td class=\"b\" style=\"border:none!important\" valign=\"center\"></td>
-           <td class=\"b\" style=\"border:none!important\" valign=\"center\" width=\"300\">
+                 $L[TBLend]";
+     $mockboardlogo = "
+       $L[TBL] width=100%>
+         $L[TRc]>
+           $L[TD] style=\"border:none!important\" valign=\"center\"></td>
+           $L[TD] style=\"border:none!important\" valign=\"center\" width=\"300\">
              $previewattn
            </td>
-       </table><br/>";
-	} else
-		$attndata = $sql->resultq("SELECT txtval FROM misc WHERE field='attention'");
+       $L[TBLend]<br/>";
+    }
+    else $attndata = $sql->resultq("SELECT txtval FROM misc WHERE field='attention'");
 
-	$pageheadtxt = "Edit " . $config['atnname'];
-	pageheader($pageheadtxt);
-	//print $previewattn."<br />";
-	print $mockboardlogo;
+    $pageheadtxt = "Edit ".$config[atnname];
+    pageheader($pageheadtxt);
+    //print $previewattn."<br />";
+    print $mockboardlogo;
 
-	print "<form action=\"editattn.php\" method=\"post\">
-" . "<table cellspacing=\"0\" class=\"c1\">
-" . "  <tr class=\"h\">
-" . "    <td class=\"b h\">
-" . "      Edit $config[atnname]
-" . "  <tr class=\"n1\">
-" . "    <td class=\"b\">
-" . "      <textarea wrap=\"virtual\" name='txtval' rows=8 cols=120>" . $attndata . "</textarea>
-" . "  <tr class=\"n1\">
-" . "    <td class=\"b n1\" align=\"center\">
-" . "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
-" . "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-" . "</table> </form>";
-}
+    print "<form action=editattn.php method=post>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh]>
+".        "      Edit $config[atnname]
+".        "  $L[TR1]>
+".        "    $L[TD]>
+".        "      $L[TXTa]='txtval' rows=8 cols=120>".$attndata."</textarea>
+".        "  $L[TR1]>
+".        "    $L[TD1c]>
+".        "      $L[INPs]=action value=Preview>
+".        "      $L[INPs]=action value=Submit>
+".        "$L[TBLend] </form>";
 
-pagefooter();
+  }
+
+  pagefooter();
+
 ?>

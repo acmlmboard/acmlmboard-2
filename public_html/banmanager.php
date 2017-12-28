@@ -21,7 +21,7 @@ $uid = $loguser['id'];
    $id = (int)$_GET['id'];
 
     $tuser = $sql->fetchp("SELECT `group_id` FROM users WHERE id=?",array($id));
-	if ((is_root_gid($tuser[$u.'group_id']) || (!can_edit_user_assets($tuser[$u.'group_id']) && $id!=$loguser['id'])) && !has_perm('no-restrictions')) 
+	if ((is_root_gid($tuser[$u.'group_id']) || (!has_perm_with_bindvalue('can-edit-group', $tuser[$u.'group_id']) && $id!=$loguser['id'])) && !has_perm('no-restrictions')) 
 	{
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	} 
@@ -66,11 +66,11 @@ if($_POST[banuser]=="Ban User") {
 $loguser['blocksprites']=1;
 pageheader('Ban User');
 print "<form action='banmanager.php?id=$uid' method='post'>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
+".        "$L[TBL1]>
+".        "  $L[TD1c]>
 ".        "    User has been banned.<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the user')."
-".        "</table>
+".        "$L[TBLend]
 ";
                 } else { //Modern redirect*/
                   redirect("profile.php?id=$user[id]",-1);
@@ -91,11 +91,11 @@ error("Error", "This user is not a Banned User.<br> <a href=./>Back to main</a> 
 $loguser['blocksprites']=1;
 pageheader('Unban User');
 print "<form action='banmanager.php?id=$uid' method='post'>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
+".        "$L[TBL1]>
+".        "  $L[TD1c]>
 ".        "    User has been unbanned.<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the user')."
-".        "</table>
+".        "$L[TBLend]
 ";
              } else { //Modern redirect*/
                   redirect("profile.php?id=$user[id]",-2);
@@ -137,28 +137,28 @@ RenderPageBar($pagebar);
 if (isset($_GET['unban']))
 {
 print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
-".    "<table cellspacing=\"0\" class=\"c1\">
-".    "  <tr class=\"h\"><td class=\"b\">Unban User
-".    "  <tr><td class=\"b n1\" align=\"center\">
+".    "$L[TBL1]>
+".    "  $L[TRh]>$L[TD]>Unban User
+".    "  $L[TR]>$L[TD1c]>
 ".    "    <br>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b n1\" align=\"center\">
-".        "      <input type=\"submit\" class=\"submit\" name=\"unbanuser\" value=\"Unban User\">
-".    "</table>
+".        "  $L[TR1]>
+".        "    $L[TD1c]>
+".        "      $L[INPs]=\"unbanuser\" value=\"Unban User\">
+".    "$L[TBLend]
 ";
 }
 else
 {
 print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/form-data'> 
-".    "<table cellspacing=\"0\" class=\"c1\">
+".    "$L[TBL1]>
 ".
         catheader('Ban User')."
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Reason:</td>
-".        "      <td class=\"b n2\"><input type=\"text\" name='title' class='right'></td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Expires?</td>
-".        "      <td class=\"b n2\">".fieldselect("tempbanned",0,array("600"=>"10 minutes",
+".        "  $L[TR]>
+".        "    $L[TD1c]>Reason:</td>
+".        "      $L[TD2]>$L[INPt]='title' class='right'></td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>Expires?</td>
+".        "      $L[TD2]>".fieldselect("tempbanned",0,array("600"=>"10 minutes",
 						      "3600"=>"1 hour",
 						      "10800"=>"3 hours",
 						      "86400"=>"1 day",
@@ -169,11 +169,11 @@ print "<form action='banmanager.php?id=$uid' method='post' enctype='multipart/fo
 						      "2419200"=>"1 month",
 						      "4838400"=>"2 months",
 						      "0"=>"never"))."</td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"submit\" class=\"submit\" name=\"banuser\" value=\"Ban User\">
-".    "</table>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPs]=\"banuser\" value=\"Ban User\">
+".    "$L[TBLend]
 ";
 }
 

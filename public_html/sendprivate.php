@@ -21,10 +21,10 @@
   if($err){
     print "$top - Error
 ".        "<br><br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
+".        "$L[TBL1]>
+".        "  $L[TD1c]>
 ".        "$err
-".        "</table>
+".        "$L[TBLend]
 ";
   }elseif(!$act=$_POST[action]){
     if($pid=$_GET[pid]){
@@ -50,36 +50,35 @@
   pageheader('Send private message');
     print "$top
 ".        "<br><br>
-".        "<table cellspacing=\"0\" class=\"c1\">
+".        "$L[TBL1]>
 ".        " <form action=sendprivate.php method=post>
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Send message</td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Send to:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=userto size=25 maxlength=25 value=\"".htmlval($userto)."\"></td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Title:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=title size=80 maxlength=255 value=\"".htmlval($title)."\"></td>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Send message</td>
+".        "  $L[TR]>
+".        "    $L[TD1c] width=120>Send to:</td>
+".        "    $L[TD2]>$L[INPt]=userto size=25 maxlength=25 value=\"".htmlval($userto)."\"></td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>Title:</td>
+".        "    $L[TD2]>$L[INPt]=title size=80 maxlength=255 value=\"".htmlval($title)."\"></td>
 ";
      if($loguser[posttoolbar]!=1)  
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Message:</td>
-".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=20 cols=80>".htmlval($quotetext)."</textarea></td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
-".        "      <select name=mid>".moodlist()."
-".        "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($_POST[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+print     "  $L[TR]>
+".        "    $L[TD1c]>Message:</td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>".htmlval($quotetext)."</textarea></td>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPs]=action value=Submit>
+".        "      $L[INPs]=action value=Preview>
+".        "      $L[INPl]=mid>".moodlist()."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
 ".        " </form>
-".        "</table>
+".        "$L[TBLend]
 ";
   }elseif($act=='Preview'){
     $_POST[title]=stripslashes($_POST[title]);
@@ -91,7 +90,6 @@ print     "  <tr>
     $post[text]=$_POST[message];
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
-    $post[nosmilies]=$_POST[nosmilies];
     foreach($loguser as $field=>$val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
@@ -99,42 +97,41 @@ print     "  <tr>
   pageheader('Send private message');
     print "$top - Preview
 ".        "<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Message preview
-".        "</table>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Message preview
+".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
+".        "$L[TBL1]>
 ".        " <form action=sendprivate.php method=post>
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Send message</td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Send to:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=userto size=25 maxlength=25 value=\"".htmlval($_POST[userto])."\"></td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Title:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=title size=80 maxlength=255 value=\"".htmlval($_POST[title])."\"></td>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Send message</td>
+".        "  $L[TR]>
+".        "    $L[TD1c] width=120>Send to:</td>
+".        "    $L[TD2]>$L[INPt]=userto size=25 maxlength=25 value=\"".htmlval($_POST[userto])."\"></td>
+".        "  $L[TR]>
+".        "    $L[TD1c] width=120>Title:</td>
+".        "    $L[TD2]>$L[INPt]=title size=80 maxlength=255 value=\"".htmlval($_POST[title])."\"></td>
 ";
      if($loguser[posttoolbar]!=1)  
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Message:</td>
-".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
-".        "      <select name=mid>".moodlist($post[mood])." 
-".        "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Message:</td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPs]=action value=Submit>
+".        "      $L[INPs]=action value=Preview>
+".        "      $L[INPl]=mid>".moodlist($post[mood])." 
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ".        "    </td>
 ".        " </form>
-".        "</table>
+".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
     $userto=$sql->resultq("SELECT id FROM users WHERE name LIKE '$_POST[userto]' OR displayname LIKE '$_POST[userto]'");
@@ -152,10 +149,9 @@ print     "  <tr>
 ".           "Go back or <a href=sendprivate.php>try again</a>";
       } else {
           checknumeric($_POST[nolayout]);
-          checknumeric($_POST[nosmilies]);
           checknumeric($_POST[mid]);   
-        $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout,nosmilies) "
-                   ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout],$_POST[nosmilies])");
+        $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout) "
+                   ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout])");
         $pid=$sql->insertid();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
 

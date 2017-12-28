@@ -41,7 +41,8 @@
                       .'FROM posts p '
                       .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN forums f ON f.id=t.forum '
-                      ."WHERE p.id=$pid AND (t.forum IN ".forums_with_view_perm()." OR (t.forum IN (0, NULL) AND t.announce>=1))");
+                      ."WHERE p.id=$pid AND t.forum IN ".forums_with_view_perm());
+
 
   if (!$thread) $pid = 0;
 if($act!="Submit"){ //Classical Redirect
@@ -69,8 +70,8 @@ if($act!="Submit"){ //Classical Redirect
   }
 
   $top='<a href=./>Main</a> '
-    .($thread[announce] && $thread[forum]==0 ? "- <a href=thread.php?announce=0>Announcements</a> " : "- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> ")
-    .($thread[announce] && $thread[forum]==0 ? "- ".htmlval($thread[title])." " : "- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> ')
+    ."- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> "
+    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> '
     .'- Edit post';
 
   $res=$sql->query  ("SELECT u.id, p.user, p.mood, p.nolayout, pt.text "
@@ -101,41 +102,40 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
   pageheader('Edit post',$thread[forum]);
     print "$top
 ".        "<br><br>
-".        "<table cellspacing=\"0\" class=\"c1\">
+".        "$L[TBL1]>
 ".        " <form action=editpost.php method=post>
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Edit Post</td>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Edit Post</td>
 ";
-    print "  <input type=\"hidden\" name=name value=\"".htmlval($loguser[name])."\">
-".        "  <input type=\"hidden\" name=passenc value=\"$pass\">
+    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
+".        "  $L[INPh]=passenc value=\"$pass\">
 ";
     if($loguser[posttoolbar]!=1)
-    print "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
+    print "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Post:</td>
-".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=20 cols=80>$quotetext</textarea></td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"hidden\" name=pid value=$pid>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
-".        "      <select name=mid>".moodlist($post[mood], $post[user])."
-".        "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Post:</td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPh]=pid value=$pid>
+".        "      $L[INPs]=action value=Submit>
+".        "      $L[INPs]=action value=Preview>
+".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
-    print "     ".(!$thread[closed] ? "<input type=\"checkbox\" name=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
-                 ".(!$thread[sticky] ? "<input type=\"checkbox\" name=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
-                 ".($thread[closed] ? "<input type=\"checkbox\" name=open id=open value=1 ".($_POST[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
-                 ".($thread[sticky] ? "<input type=\"checkbox\" name=unstick id=unstick value=1 ".($_POST[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($_POST[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($_POST[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
-".        "</table>
+".        "$L[TBLend]
 ";
   }elseif($act=='Preview'){
     $_POST[message]=stripslashes($_POST[message]);
@@ -145,7 +145,6 @@ print     "  <tr>
     $post[num]=++$euser[posts];
     $post[mood]=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
-    $post[nosmilies]=$_POST[nosmilies];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     $post[open]=$_POST[open];
@@ -158,46 +157,45 @@ print     "  <tr>
   pageheader('Edit post',$thread[forum]);
     print "$top - Preview
 ".        "<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Post preview
-".        "</table>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Post preview
+".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
+".        "$L[TBL1]>
 ".        " <form action=editpost.php method=post>
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Post</td>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Post</td>
 ";
      if($loguser[posttoolbar]!=1)
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Post:</td>
-".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"hidden\" name=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      <input type=\"hidden\" name=passenc value=\"$pass\">
-".        "      <input type=\"hidden\" name=pid value=$pid>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
-".        "      <select name=mid>".moodlist($post[mood], $post[user])."
-".        "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Post:</td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
+".        "      $L[INPh]=passenc value=\"$pass\">
+".        "      $L[INPh]=pid value=$pid>
+".        "      $L[INPs]=action value=Submit>
+".        "      $L[INPs]=action value=Preview>
+".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
-    print "     ".(!$thread[closed] ? "<input type=\"checkbox\" name=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
-                 ".(!$thread[sticky] ? "<input type=\"checkbox\" name=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
-                 ".($thread[closed] ? "<input type=\"checkbox\" name=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
-                 ".($thread[sticky] ? "<input type=\"checkbox\" name=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
-".        "</table>
+".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
     $message = $_POST['message'];
@@ -207,8 +205,7 @@ print     "  <tr>
     $rev=$rev[m];
     $mid=(isset($_POST[mid])?(int)$_POST[mid]:-1);
     checknumeric($mid);
-    checknumeric($_POST[nolayout]);
-    checknumeric($_POST[nosmilies]);
+    checknumeric($nolayout);
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
@@ -221,7 +218,7 @@ print     "  <tr>
     }
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
-    $sql->query("UPDATE posts SET mood='$mid',nolayout='$_POST[nolayout]',nosmilies='$_POST[nosmilies]' WHERE id='$pid'");
+    $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
     $sql->query("UPDATE threads SET lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id='$thread[id]'");
     $sql->query("UPDATE forums SET lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
     
@@ -246,11 +243,11 @@ print     "  <tr>
   pageheader('Edit post',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
+".        "$L[TBL1]>
+".        "  $L[TD1c]>
 ".        "    Post edited!<br>
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".        "</table>
+".        "$L[TBLend]
 ";
 } else { //Modern redirect*/
   redirect("thread.php?pid=$pid#edit","-1");
@@ -266,11 +263,11 @@ print     "  <tr>
   pageheader('Edit post',$thread[forum]);
       print "$top - ".($act=='delete'?'Delete':'Undelete')." Post
 ".          "<br><br>
-".          "<table cellspacing=\"0\" class=\"c1\">
-".          "  <td class=\"b n1\" align=\"center\">
+".          "$L[TBL1]>
+".          "  $L[TD1c]>
 ".          "    Post ".$act."d!<br>
 ".          "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".          "</table>
+".          "$L[TBLend]
 ";*/
   redirect("thread.php?pid=$pid#edit",-1);
     }
@@ -288,10 +285,10 @@ print     "  <tr>
                       .'ORDER BY p.id DESC '
                       ."LIMIT $loguser[ppp]");
     print "<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Thread preview
-".        "</table>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Thread preview
+".        "$L[TBLend]
 ";
     while($post=$sql->fetch($posts)){
       $exp=calcexp($post[uposts],ctime()-$post[uregdate]);
@@ -300,10 +297,10 @@ print     "  <tr>
 
     if($thread[replies]>=$loguser[ppp]){
     print "<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <tr>
-".        "    <td class=\"b n1\">The full thread can be viewed <a href=thread.php?id=$thread[id]>here</a>.
-".        "</table>
+".        "$L[TBL1]>
+".        "  $L[TR]>
+".        "    $L[TD1]>The full thread can be viewed <a href=thread.php?id=$thread[id]>here</a>.
+".        "$L[TBLend]
 ";
     }
 }

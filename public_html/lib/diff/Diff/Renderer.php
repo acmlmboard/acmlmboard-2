@@ -30,7 +30,7 @@ class Text_Diff_Renderer {
     /**
      * Constructor.
      */
-    function __construct($params = array())
+    function Text_Diff_Renderer($params = array())
     {
         foreach ($params as $param => $value) {
             $v = '_' . $param;
@@ -85,7 +85,7 @@ class Text_Diff_Renderer {
                     } else {
                         if ($ntrail) {
                             $context = array_slice($edit->orig, 0, $ntrail);
-                            $block[] = new Text_Diff_Op_copy($context);
+                            $block[] = &new Text_Diff_Op_copy($context);
                         }
                         $output .= $this->_block($x0, $ntrail + $xi - $x0,
                                                  $y0, $ntrail + $yi - $y0,
@@ -101,7 +101,7 @@ class Text_Diff_Renderer {
                     $y0 = $yi - count($context);
                     $block = array();
                     if ($context) {
-                        $block[] = new Text_Diff_Op_copy($context);
+                        $block[] = &new Text_Diff_Op_copy($context);
                     }
                 }
                 $block[] = $edit;

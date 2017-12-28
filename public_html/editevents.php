@@ -24,9 +24,7 @@ require("lib/common.php");
   if ($r['action'] == "del") {
     unset($r['action']);
     if ($id > 0) {
-        $event=$sql->fetchp('SELECT * FROM events WHERE id=?',array($id));
-        if (!$event) $pagebar['message'] = "Unable to delete event: invalid event ID.";
-     else if ($sql->prepare('DELETE FROM events WHERE id=?',array($id))) {
+      if ($sql->prepare('DELETE FROM events WHERE id=?',array($id))) {
       $pagebar['message'] = "Event successfully deleted.";
  }
 else {
@@ -145,8 +143,6 @@ $pagebar['breadcrumb'] = array(
 
 if ($id > 0) {
     $t=$sql->fetchp('SELECT * FROM events WHERE id=?',array($id));
-  if (!$t) { noticemsg("Error", "Invalid event ID"); pagefooter(); die();
-  } else {
 $pagebar['title'] = $t['event_title'];
 $pagebar['actions'] = array(
     array('title' => 'Delete Event','href' => 
@@ -155,7 +151,6 @@ $pagebar['actions'] = array(
 => 
 true),
 );
-  }
 
 }
 else {

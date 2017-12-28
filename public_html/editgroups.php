@@ -88,7 +88,7 @@
 				$primary, $_POST['description']);
 				
 			if ($act == 'new')
-				$sql->prepare("INSERT INTO `group` VALUES (0,?,'',NULL,?,?,?,?,?,?,?,?,?,?)", $values);
+				$sql->prepare("INSERT INTO `group` VALUES (0,?,?,?,?,?,?,?,?,?,?,?)", $values);
 			else
 			{
 				$values[] = $_GET['id'];
@@ -216,9 +216,6 @@
 	else
 	{
 		$group = $sql->fetchp("SELECT * FROM `group` WHERE id=?",array($_GET['id']));
-              if (!$group) {
-              noticemsg("Error", "Invalid group ID."); pagefooter(); die();
-        }
 		$pagebar['title'] = 'Edit group';
 	}
 		

@@ -16,9 +16,7 @@ require("lib/common.php");
   if ($r['action'] == "del") {
     unset($r['action']);
     if ($id > 0) {
-        $badge=$sql->fetchp('SELECT * FROM badges WHERE id=?',array($id));
-        if (!$badge) $pagebar['message'] = "Unable to delete badge: invalid badge ID.";
-     else if ($sql->prepare('DELETE FROM badges WHERE id=?',array($id))) {
+      if ($sql->prepare('DELETE FROM badges WHERE id=?',array($id))) {
       $pagebar['message'] = "Badge successfully deleted.";
  }
 else {
@@ -140,8 +138,6 @@ $pagebar['breadcrumb'] = array(
 
 if ($id > 0) {
     $t=$sql->fetchp('SELECT * FROM badges WHERE id=?',array($id));
-  if (!$t) { noticemsg("Error", "Invalid badge ID"); pagefooter(); die();
-  } else {
 $pagebar['title'] = $t['name'];
 $pagebar['actions'] = array(
     array('title' => 'Delete Badge','href' => 
@@ -150,7 +146,6 @@ $pagebar['actions'] = array(
 => 
 true),
 );
-  }
 
 }
 else {

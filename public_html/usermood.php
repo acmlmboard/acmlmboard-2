@@ -137,16 +137,16 @@
 
 
   print "<form id=\"f\" action=\"usermood.php$targetgeta\" enctype=\"multipart/form-data\" method=\"post\">
-".      "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"h\">
-".      "    <td class=\"b h\" width=250>
+".      "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh] width=250>
 ".      "      ". ($target ? $targetname."'s" : "Your") ." current mood avatars ($numavatars)
 ".      "    </td>
-".      "  <td class=\"b h\" align=\"center\" colspan='2'><nobr>
+".      "  $L[TDhc] colspan='2'><nobr>
 ".      "    Add/change a mood avatar
 ".      "  </td>
-".      "  <tr>
-".      "    <td class=\"b n1\" style=\"vertical-align: top\" rowspan='4'>";
+".      "  $L[TR]>
+".      "    $L[TD1] style=\"vertical-align: top\" rowspan='4'>";
 
   while ($row=$sql->fetch($avatars))
     print "<a href=\"?a=e&i=$row[id]$targetget\">".stripslashes($row[label])."</a><br>";
@@ -155,25 +155,25 @@
     print "          <a href=\"usermood.php$targetgeta\">(Add New)</a>";
 
   print "        </td>
-".      "        <td class=\"b n2\"><nobr>
+".      "        $L[TD2]><nobr>
 ".      "          <input type=\"text\" style=\"width: 100%\" name=\"label\" value=\"".stripslashes($activeavatar[label])."\">
-".      "        <td class=\"b n2\">
+".      "        $L[TD2]>
 ".      "          <input type=\"submit\" name='a' value=\"Save\">
 ".($id>0?"           
-":"").  "     <tr>
-".      "       <td class=\"b n3\">
+":"").  "     $L[TR]>
+".      "       $L[TD3]>
 ".      "          <input type=\"text\" style=\"width: 100%\" name=\"url\" value=\"".stripslashes($activeavatar[url])."\">
-".      "       <td class=\"b n3\" width='1'><nobr><input id=\"islocal\" name=\"islocal\" type=\"checkbox\"".(!$activeavatar[local]?'checked="checked"':'')."
+".      "       $L[TD3] width='1'><nobr><input id=\"islocal\" name=\"islocal\" type=\"checkbox\"".(!$activeavatar[local]?'checked="checked"':'')."
 ".      "          <label for=\"islocal\">Use URL instead of uploaded file</label>
-".      "     <tr>
-".      "        <td class=\"b n2\">
+".      "     $L[TR]>
+".      "        $L[TD2]>
 ".      "          <input type=\"file\" name=\"picture\"><input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\">
 ".($id>0?"           <input type=\"submit\" name='a' value=\"Delete\">
 ":"").  "<input type=\"hidden\" name=\"aid\" id=\"aid\" value=\"$activeavatar[id]\"></td>
-".      "        <td class=\"b n2\"><small>Limits: 180x180px, 60KB</small></td>
-".      "     <tr>
-".      "        <td class=\"b n2\" colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"".stripslashes($activeavatar[label])."\">" : "&nbsp;") ."
-".      "</table></form>
+".      "        $L[TD2]><small>Limits: 180x180px, 60KB</small></td>
+".      "     $L[TR]>
+".      "        $L[TD2] colspan='2'> ". ($activeavatar[id] > 0 ? "<img src='gfx/userpic.php?id=".$targetuserid."_".$activeavatar[id]."' title=\"".stripslashes($activeavatar[label])."\">" : "&nbsp;") ."
+".      "$L[TBLend]</form>
 ".      "<br>";
 
   pagefooter();

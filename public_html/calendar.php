@@ -30,8 +30,6 @@
     } else {
         $day = 0;
     }
-
-    if($year < -1000000000000000000 || $year > 1000000000000000000) error("Error", "Invalid year");
         
     
     $mtstamp = mktime(0,0,0,$month,1,$year);
@@ -74,31 +72,31 @@
     }
 
     pageheader('Calendar');
-    print "<table cellspacing=\"0\" class=\"c1\" width=\"100%\">
-".        "    <tr>
-".        "        <td class=\"b n1\" align=\"center\" colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
+    print "$L[TBL1] width=\"100%\">
+".        "    $L[TR]>
+".        "        $L[TD1c] colspan=7 style=\"font-size:200%\">$monthnames[$month] $year</td>
 ".        "    </tr>
-".        "    <tr class=\"h\">
+".        "    $L[TRh]>
 ";
 
     for ($w = 0; $w < 7; $w++) {//days of the week
-        print "        <td class=\"b h\" width=\"14%\">$daynames[$w]</td>\n";
+        print "        $L[TDh] width=\"14%\">$daynames[$w]</td>\n";
     }
     
     print "    </tr>
-".        "    <tr style=\"height: 80px;\">\n";
+".        "    $L[TR] style=\"height: 80px;\">\n";
 
     if ($wday > 0) {//unused cells in the first week
-        print "<td class=\"b n2\" colspan=\"".$wday."\"></td>";
+        print "$L[TD2] colspan=\"".$wday."\"></td>";
     }
 
     for ($mday = 1; $mday <= $mdays; $mday++, $wday++) {//main day cells
         if ($wday > 6) {  //week wrap around
             $wday = 0;
-            print "</tr><tr style=\"height: 80px\">\n";
+            print "</tr>$L[TR] style=\"height: 80px\">\n";
         }
-        $l = ($mday == $day) ? "b n3" : (($wday == 0 || $wday == 6) ? "b n2" : "b n1");
-        print "<td class=\"$l\" align=\"left\" width=\"14%\" valign=\"top\">$mday";
+        $l = ($mday == $day) ? $L['TD3l'] : (($wday==0 || $wday==6) ? $L['TD2l'] : $L['TD1l']);
+        print "$l width=\"14%\" valign=\"top\">$mday";
         $dnum=str_pad($mday,2,"0",STR_PAD_LEFT);
         if (isset($bdaytext[$dnum])) {
             print "<br/>$bdaytext[$dnum]";
@@ -111,12 +109,12 @@
     }
     
     if ($wday < 6) { //unused cells in the last week
-        print "<td class=\"b n2\" colspan=\"".(7-$wday)."\"></td>";
+        print "$L[TD2] colspan=\"".(7-$wday)."\"></td>";
     }
     
     print "    </tr>
-".        "    <tr>
-".        "        <td class=\"b n1\" align=\"center\" colspan=7> Month:";
+".        "    $L[TR]>
+".        "        $L[TD1c] colspan=7> Month:";
     
     for ($i = 1; $i <= 12; $i++) {//month links
         if ($i == $month) {
@@ -131,8 +129,6 @@
     for ($i = $year-2; $i <= $year+2; $i++) {//year links
         if ($i == $year) {
             print " $i\n";
-        } else if ($i < -1000000000000000000 || $i > 1000000000000000000) {
-            print " \n";
         } else {
             print " <a href=\"calendar.php?m=$month&amp;y=$i\">$i</a>\n";
         }
@@ -140,7 +136,7 @@
     
     print "        </td>
 ".        "    </tr>
-".         "</table>";
+".         $L['TBLend'];
     
         
 

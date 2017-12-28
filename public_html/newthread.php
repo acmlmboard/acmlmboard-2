@@ -6,6 +6,7 @@
     $announce=$_REQUEST[announce];
     checknumeric($announce);
 
+	// [Mega-Mario] This is currently useless. TODO: fix or nuke.
   if($act=$_POST[action])
   {
     $fid=$_POST[fid];
@@ -20,21 +21,15 @@
 	}
 	else
 	{
-      if($_POST['passenc'])
-         $pass=$_POST['passenc'];
-      else
-         $pass=md5($pwdsalt2.$_POST['pass'].$pwdsalt);
+      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
 
-    $userid=checkuser($_POST['name'],$pass);
-    if($userid) {
+    if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
-      $loguser=$user;
-       load_user_permset();
-    }
     else
       $err="    Invalid username or password!<br>
 ".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
 
+		$pass = md5($pwdsalt2.$pass.$pwdsalt);
 	}
   }
   else
@@ -43,6 +38,8 @@
     $fid=$_GET[id];
   }
   checknumeric($fid);
+
+  needs_login(1);
 
   if ($announce) {
     $type = "announcement";
@@ -80,9 +77,9 @@ if($act!="Submit"){
   $t=$sql->query("SELECT * FROM tags WHERE fid=$fid");
   while($tt=$sql->fetch($t)) {
     if($tagsin=="") $tagsin=
-          "<tr>
-".        "  <td class=\"b n1\" align=\"center\">$typecap tags:</td>
-".        "  <td class=\"b n2\">
+          "$L[TR]>
+".        "  $L[TD1c]>$typecap tags:</td>
+".        "  $L[TD2]>
 ";
     $tagsin.="<input type='checkbox' name='tag$tt[bit]' id='tag$tt[bit]' value='1' ".($_POST["tag$tt[bit]"]?"checked":"")."><label for='tag$tt[bit]'>$tt[name]</label> ";
   }
@@ -104,10 +101,6 @@ if($act!="Submit"){
 
   else if($user[lastpost]>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))
       $err="    Don't post threads so fast, wait a little longer.<br>
-".         "    $forumlink";
-
-  else if($user[lastpost]>ctime()-$config[secafterpost] && $act=='Submit' && has_perm('ignore-thread-time-limit'))
-      $err="    You must wait $config[secafterpost] seconds before posting a thread.<br>
 ".         "    $forumlink";
 
   //2007-02-19 //blackhole89 - table breach protection
@@ -137,11 +130,11 @@ if($act!="Submit"){
   $icons=$sql->query('SELECT * FROM posticons ORDER BY id');
   while($icon=$sql->fetch($icons))
     $iconlist.=
-          "      <input type=\"radio\" class=\"radio\" name=iconid value=$i> <img src=$icon[url]>&nbsp; &nbsp;".(!($i++%10)?'<br>':'')."
+          "      $L[INPr]=iconid value=$i> <img src=$icon[url]>&nbsp; &nbsp;".(!($i++%10)?'<br>':'')."
 ";
   $iconlist.=
-          "      <input type=\"radio\" class=\"radio\" name=iconid value=0 checked> None&nbsp; &nbsp;
-".        "      Custom: <input type=\"text\" name=iconurl size=40 maxlength=100>
+          "      $L[INPr]=iconid value=0 checked> None&nbsp; &nbsp;
+".        "      Custom: $L[INPt]=iconurl size=40 maxlength=100>
 ";
 
   if($err){
@@ -151,81 +144,77 @@ if($act!="Submit"){
   }elseif(!$act){
     if($ispoll){
       $pollin=
-          "<tr>
-".        "  <td class=\"b n1\" align=\"center\">Poll question:</td>
-".        "  <td class=\"b n2\"><input type=\"text\" name=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
-".        "<tr>
-".        "  <td class=\"b n1\" align=\"center\">Poll choices:</td>
-".        "  <td class=\"b n2\"><div id=\"polloptions\">
+          "$L[TR]>
+".        "  $L[TD1c]>Poll question:</td>
+".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
+".        "$L[TR]>
+".        "  $L[TD1c]>Poll choices:</td>
+".        "  $L[TD2]><div id=\"polloptions\">
 ".        "    ".sprintf($optfield, '', rand(0,255), rand(0,255), rand(0,255))."
 ".        "    ".sprintf($optfield, '', rand(0,255), rand(0,255), rand(0,255))."
 ".        "  </div>
-".        "  <button type=\"button\" class=\"submit\" id=addopt onclick=\"addOption();return false;\">Add choice</button></td>
-".        "<tr>
-".             "  <td class=\"b n1\" align=\"center\">Options:</td>
-".             "  <td class=\"b n2\"><input type=\"checkbox\" name=multivote value=1 id=mv><label for=mv>Allow multiple voting</label> | <input type=\"checkbox\" name=changeable checked value=1 id=ch><label for=ch>Allow changing one's vote</label>
+".        "  $L[BTTn]=addopt onclick=\"addOption();return false;\">Add choice</button></td>
+".        "$L[TR]>
+".             "  $L[TD1c]>Options:</td>
+".             "  $L[TD2]>$L[INPc]=multivote value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable checked value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
     }
  pageheader("New $type",$forum[id]);
     print "$top
 ".        "<br><br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
-".        " <table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>$typecap</td>
+".        " $L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>$typecap</td>
 ";
     if(!$log)
-    print "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Username:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=name size=25 maxlength=25></td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">Password:</td>
-".        "    <td class=\"b n2\"><input type=\"password\" name=pass size=13 maxlength=32></td>
+    print "  $L[TR]>
+".        "    $L[TD1c]>Username:</td>
+".        "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>Password:</td>
+".        "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
 ";
     else
-    print "  <input type=\"hidden\" name=name value=\"".htmlval($loguser[name])."\">
-".        "  <input type=\"hidden\" name=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
+    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
+".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
-    print "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">$typecap title:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=title size=100 maxlength=100></td>
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">$typecap icon:</td>
-".        "    <td class=\"b n2\">
+    print "  $L[TR]>
+".        "    $L[TD1c]>$typecap title:</td>
+".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100></td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>$typecap icon:</td>
+".        "    $L[TD2]>
 ".        "$iconlist
 ".        "    </td>
 ".$tagsin."
 ".$pollin."
 ";
      if($loguser[posttoolbar]!=1)
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Post:</td>
-".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=20 cols=80></textarea></td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"hidden\" name=fid value=$fid>
-".        "      <input type=\"hidden\" name=announce value=$announce>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
-";
-     if($log)
-print   // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
-          "      <select name=mid>".moodlist()."
-";
-print   "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".      "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($_POST[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Post:</td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80></textarea></td>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPh]=fid value=$fid>
+".        "      $L[INPh]=announce value=$announce>
+".        "      $L[INPs]=action value=Submit>
+".        "      $L[INPs]=action value=Preview>
+".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
+          "      $L[INPl]=mid>".moodlist()."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
-    print "     <input type=\"checkbox\" name=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      <input type=\"checkbox\" name=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
 ";
     print "    </td>
-".        " </table>
+".        " $L[TBLend]
 ".        "</form>
 ";
   }elseif($act=='Preview'){
@@ -238,7 +227,6 @@ print   "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($_P
     $post[text]=$_POST[message];
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     $post[nolayout]=$_POST[nolayout];
-    $post[nosmilies]=$_POST[nosmilies];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     foreach($user as $field => $val)
@@ -249,17 +237,17 @@ print   "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($_P
       $_POST[question]=stripslashes($_POST[question]);
       $numopts=$_POST[numopts];
       checknumeric($numopts);
-      $pollprev="<br><table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b n1\" colspan=2>".htmlval($_POST[question])."
+      $pollprev="<br>$L[TBL1]>
+".        "  $L[TR1]>
+".        "    $L[TD1] colspan=2>".htmlval($_POST[question])."
 ";
       $pollin=
-          "<tr>
-".        "  <td class=\"b n1\" align=\"center\">Poll question:</td>
-".        "  <td class=\"b n2\"><input type=\"text\" name=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
-".        "<tr>
-".        "  <td class=\"b n1\" align=\"center\">Poll choices:</td>
-".        "  <td class=\"b n2\"><div id=\"polloptions\">
+          "$L[TR]>
+".        "  $L[TD1c]>Poll question:</td>
+".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
+".        "$L[TR]>
+".        "  $L[TD1c]>Poll choices:</td>
+".        "  $L[TD2]><div id=\"polloptions\">
 ";
 
       if (isset($_POST['opt']))
@@ -272,82 +260,80 @@ print   "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($_P
 			list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 			
 			$pollin .= "    ".sprintf($optfield, $text, $r, $g, $b)."\n";
-			$pollprev .= "<tr class=\"n2\"><td class=\"b n2\">{$text} $h<td class=\"b n3\"><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
+			$pollprev .= "$L[TR2]>$L[TD2]>{$text} $h$L[TD3]><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
 
 		  }
 	  }
 	  
       $pollin.="  </div>
-".             "  <button type=\"button\" class=\"submit\" id=addopt onclick=\"addOption();return false;\">Add choice</button></td>
-".             "<tr>
-".             "  <td class=\"b n1\" align=\"center\">Options:</td>
-".             "  <td class=\"b n2\"><input type=\"checkbox\" name=multivote ".($_POST[multivote]?"checked":"")." value=1 id=mv><label for=mv>Allow multiple voting</label> | <input type=\"checkbox\" name=changeable ".($_POST[changeable]?"checked":"")." value=1 id=ch><label for=ch>Allow changing one's vote</label>
+".             "  $L[BTTn]=addopt onclick=\"addOption();return false;\">Add choice</button></td>
+".             "$L[TR]>
+".             "  $L[TD1c]>Options:</td>
+".             "  $L[TD2]>$L[INPc]=multivote ".($_POST[multivote]?"checked":"")." value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable ".($_POST[changeable]?"checked":"")." value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
-$pollprev.="</table>";
+$pollprev.="$L[TBLend]";
     }
 
  pageheader("New $type",$forum[id]);
     print "$top - Preview
 ".        "$pollprev<br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>Post preview
-".        "</table>
+".        "$L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>Post preview
+".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
-".        " <table cellspacing=\"0\" class=\"c1\">
-".        "  <tr class=\"h\">
-".        "    <td class=\"b h\" colspan=2>$typecap</td>
-".        "      <input type=\"hidden\" name=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      <input type=\"hidden\" name=passenc value=\"$pass\">
-".        "  <tr>
-".        "    <td class=\"b n1\" align=\"center\">$typecap title:</td>
-".        "    <td class=\"b n2\"><input type=\"text\" name=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
+".        " $L[TBL1]>
+".        "  $L[TRh]>
+".        "    $L[TDh] colspan=2>$typecap</td>
+".        "  $L[TR]>
+".        "    $L[TD1c]>$typecap title:</td>
+".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
 ".$tagsin."
 ".$pollin."
 ";
      if($loguser[posttoolbar]!=1)
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Format:</td>
-".        "    <td class=\"b n2\"><table cellspacing=\"0\"><tr>$toolbar</table>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Format:</td>
+".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
-print     "  <tr>
-".        "    <td class=\"b n1\" align=\"center\" width=120>Post:</td>
-".        "    <td class=\"b n2\"><textarea wrap=\"virtual\" name=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
-".        "  <tr class=\"n1\">
-".        "    <td class=\"b\">&nbsp;</td>
-".        "    <td class=\"b\">
-".        "      <input type=\"hidden\" name=fid value=$fid>
-".        "      <input type=\"hidden\" name=iconid value=$_POST[iconid]>
-".        "      <input type=\"hidden\" name=iconurl value=$_POST[iconurl]>
-".        "      <input type=\"hidden\" name=announce value=$announce>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Submit>
-".        "      <input type=\"submit\" class=\"submit\" name=action value=Preview>
+print     "  $L[TR]>
+".        "    $L[TD1c] width=120>Post:</td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "  $L[TR1]>
+".        "    $L[TD]>&nbsp;</td>
+".        "    $L[TD]>
+".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
+".        "      $L[INPh]=passenc value=\"$pass\">
+".        "      $L[INPh]=fid value=$fid>
+".        "      $L[INPh]=iconid value=$_POST[iconid]>
+".        "      $L[INPh]=iconurl value=$_POST[iconurl]>
+".        "      $L[INPh]=announce value=$announce>
+".        "      $L[INPs]=action value=Submit>
+".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
-          "      <select name=mid>".moodlist($_POST[mid], $userid)."
-".        "      <input type=\"checkbox\" name=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      <input type=\"checkbox\" name=nosmilies id=nosmilies value=1 ".($post[nosmilies]?"checked":"")."><label for=nosmilies>Disable smilies</label>
+          "      $L[INPl]=mid>".moodlist($_POST[mid])."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
-    print "     <input type=\"checkbox\" name=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      <input type=\"checkbox\" name=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
 ";
     print "    </td>
-".        " </table>
+".        " $L[TBLend]
 ".        "</form>
 ";
   }elseif($act=='Submit'){
     if(!($iconurl=$_POST[iconurl]))
       $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
 
-    checknumeric($_POST[nolayout]);
-    checknumeric($_POST[nosmilies]);
+    checknumeric($nolayout);
     if(can_edit_forum_threads($fid)){
-        checknumeric($_POST['close']);
-        checknumeric($_POST['stick']);
-   	if($_POST['close']) $modclose="1";
-   	if($_POST['stick']) $modstick="1";
+    	checknumeric($_POST['close']);
+    	checknumeric($_POST['stick']);
+        if($_POST['close']) $modclose="1";
+        if($_POST['stick']) $modstick="1";
     }
 
     if(!$_POST['close']) $modclose="0";
@@ -371,8 +357,8 @@ print     "  <tr>
     $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky) "
                ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick)");
     $tid=$sql->insertid();
-    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmilies,announce) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,'$_POST[nolayout]','$_POST[nosmilies]',$announce)");
+    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
+               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");
     $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
 if (!$announce)   {
@@ -430,11 +416,11 @@ else {
     pageheader("New $type",$forum[id]);
     print "$top - Submit
 ".        "<br><br>
-".        "<table cellspacing=\"0\" class=\"c1\">
-".        "  <td class=\"b n1\" align=\"center\">
+".        "$L[TBL1]>
+".        "  $L[TD1c]>
 ".        "  $bonus
 ".        "    ".redirect($viewlink,"the $type")."
-".        "</table>
+".        "$L[TBLend]
 ";
 } else { //Modern*/
   redirect($viewlink,$c);

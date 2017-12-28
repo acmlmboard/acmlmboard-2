@@ -14,33 +14,33 @@
                     .'ORDER BY exp DESC');
 
   print "Currently active users in the battle arena:
-".      "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"h\">
-".      "    <td class=\"b h\">Name</td>
-".      "    <td class=\"b h\" width=30>Level</td>
+".      "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh]>Name</td>
+".      "    $L[TDh] width=30>Level</td>
 ";
   for($i=0;$i<9;$i++)
     print
-        "    <td class=\"b h\" width=40>$stat[$i]</td>
+        "    $L[TDh] width=40>$stat[$i]</td>
 ";
   for($i=1;$user=$sql->fetch($users);$i++){
-    $p=$user['posts'];
-    $d=(ctime()-$user['regdate'])/86400;
+    $p=$user[posts];
+    $d=(ctime()-$user[regdate])/86400;
     $st=getstats($user,$items);
 
 
-    $tr=($i%2?'n2':'n3');
-    print "<tr class=\"$tr\" align=\"center\">
-".        "    <td class=\"b\" align=\"left\">".userlink($user)."</td>
-".        "    <td class=\"b n1\">$st[lvl]</td>
+    $tr=($i%2?'TR2':'TR3').'c';
+    print "  $L[$tr]>
+".        "    $L[TDl]>".userlink($user)."</td>
+".        "    $L[TD1]>$st[lvl]</td>
 ";
     for($k=0;$k<9;$k++)
       print
-          "    <td class=\"b\">".$st[$stat[$k]]."</td>
+          "    $L[TD]>".$st[$stat[$k]]."</td>
 ";
   }
 
-  print "</table>
+  print "$L[TBLend]
 ";
 
   pagefooter();

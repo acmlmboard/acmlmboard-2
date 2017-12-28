@@ -37,7 +37,7 @@ if ($_POST['savecat'])
 	// save new/existing category
 	
 	$cid = $_GET['cid'];
-	$title = stripslashes($_POST['title']);
+	$title = autodeslash($_POST['title']);
 	$ord = (int)$_POST['ord'];
 	$private = $_POST['private'] ? 1:0;
 	
@@ -83,8 +83,8 @@ else if ($_POST['saveforum'])
 
 	$fid = $_GET['fid'];
 	$cat = (int)$_POST['cat'];
-	$title = stripslashes($_POST['title']);
-	$descr = stripslashes($_POST['descr']);
+	$title = autodeslash($_POST['title']);
+	$descr = autodeslash($_POST['descr']);
 	$ord = (int)$_POST['ord'];
 	$private = $_POST['private'] ? 1:0;
 	$trash = $_POST['trash'] ? 1:0;
@@ -184,47 +184,6 @@ else if ($_POST['delforum'])
 	deleteperms('forums', $fid);
 	die(header('Location: manageforums.php'));
 }
-else if ($_POST['savechan'])
-{
-	// save new/existing channel
-	
-	$chanid = $_GET['chanid'];
-	$channame = stripslashes($_POST['channame']);
-	
-	if (!trim($channame))
-		$error = 'Please enter a name for the channel.';
-	else
-	{
-		if ($chanid == 'new')
-		{
-			$chanid = $sql->resultq("SELECT MAX(id) FROM announcechans");
-			if (!$chanid) $chanid = 0;
-			$chanid++;
-			
-			$sql->prepare("INSERT INTO announcechans (id,chan) VALUES (?,?)", array($chanid, $channame));
-		}
-		else
-		{
-			$chanid = (int)$chanid;
-			if (!$sql->resultp("SELECT COUNT(*) FROM announcechans WHERE id=?",array($chanid)))
-				die(header('Location: manageforums.php'));
-			
-			$sql->prepare("UPDATE announcechans SET chan=? WHERE id=?", array($channame, $chanid));
-		}
-		
-		die(header('Location: manageforums.php?chanid='.$chanid));
-	}
-}
-else if ($_POST['delchan'])
-{
-	// delete channel
-	
-	$chanid = (int)$_GET['chanid'];
-        $sql->prepare("UPDATE forums SET announcechan_id=? WHERE announcechan_id=?", array('0', $chanid));
-	$sql->prepare("DELETE FROM announcechans WHERE id=?",array($chanid));
-	
-	die(header('Location: manageforums.php'));
-}
 
 
 pageheader('Forum management');
@@ -255,30 +214,30 @@ if ($cid = $_GET['cid'])
 	}
 	
 	print 	"<form action=\"\" method=\"POST\">
-".			"	<table cellspacing=\"0\" class=\"c1\">
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>".($cid=='new' ? 'Create':'Edit')." category</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Title:</td>
-".			"			<td class=\"b n2\"><input type=\"text\" name=\"title\" value=\"".htmlspecialchars($cat['title'])."\" size=50 maxlength=500></td>
+".			"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>".($cid=='new' ? 'Create':'Edit')." category</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Title:</td>
+".			"			$L[TD2]>$L[INPt]=\"title\" value=\"".htmlspecialchars($cat['title'])."\" size=50 maxlength=500></td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Display order:</td>
-".			"			<td class=\"b n2\"><input type=\"text\" name=\"ord\" value=\"{$cat['ord']}\" size=4 maxlength=10></td>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Display order:</td>
+".			"			$L[TD2]>$L[INPt]=\"ord\" value=\"{$cat['ord']}\" size=4 maxlength=10></td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">&nbsp;</td>
-".			"			<td class=\"b n2\"><label><input type=\"checkbox\" name=\"private\" value=1".($cat['private'] ? ' checked="checked"':'')."> Private category</label></td>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]><label>$L[INPc]=\"private\" value=1".($cat['private'] ? ' checked="checked"':'')."> Private category</label></td>
 ".			"		</tr>
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>&nbsp;</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">&nbsp;</td>
-".			"			<td class=\"b n2\">
-".			"				<input type=\"submit\" class=\"submit\" name=\"savecat\" value=\"Save category\"> ".($cid=='new' ? '':"
-".			"				<input type=\"submit\" class=\"submit\" name=\"delcat\" value=\"Delete category\" onclick=\"if (!confirm('Really delete this category?')) return false;\"> ")."
-".			"				<button type=\"button\" class=\"submit\" id=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]>
+".			"				$L[INPs]=\"savecat\" value=\"Save category\"> ".($cid=='new' ? '':"
+".			"				$L[INPs]=\"delcat\" value=\"Delete category\" onclick=\"if (!confirm('Really delete this category?')) return false;\"> ")."
+".			"				$L[BTTn]=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
 ".			"			</td>
 ".			"		</tr>
-".			"	</table>
+".			"	$L[TBLend]
 ".			"	<br>
 ";
 	
@@ -314,46 +273,46 @@ else if ($fid = $_GET['fid'])
 	$chanlist = fieldselect('announcechan_id', $forum['announcechan_id'], $chans);
 	
 	print 	"<form action=\"\" method=\"POST\">
-".			"	<table cellspacing=\"0\" class=\"c1\">
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>".($fid=='new' ? 'Create':'Edit')." forum</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Title:</td>
-".			"			<td class=\"b n2\"><input type=\"text\" name=\"title\" value=\"".htmlspecialchars($forum['title'])."\" size=50 maxlength=500></td>
+".			"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>".($fid=='new' ? 'Create':'Edit')." forum</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Title:</td>
+".			"			$L[TD2]>$L[INPt]=\"title\" value=\"".htmlspecialchars($forum['title'])."\" size=50 maxlength=500></td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Description:<br><small>HTML allowed.</small></td>
-".			"			<td class=\"b n2\"><textarea wrap=\"virtual\" name=\"descr\" rows=3 cols=50>".htmlspecialchars($forum['descr'])."</textarea></td>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Description:<br><small>HTML allowed.</small></td>
+".			"			$L[TD2]>$L[TXTa]=\"descr\" rows=3 cols=50>".htmlspecialchars($forum['descr'])."</textarea></td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Category:</td>
-".			"			<td class=\"b n2\">{$catlist}</td>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Category:</td>
+".			"			$L[TD2]>{$catlist}</td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Display order:</td>
-".			"			<td class=\"b n2\"><input type=\"text\" name=\"ord\" value=\"{$forum['ord']}\" size=4 maxlength=10></td>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Display order:</td>
+".			"			$L[TD2]>$L[INPt]=\"ord\" value=\"{$forum['ord']}\" size=4 maxlength=10></td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Report to IRC channel:<br><small>Leave this to default if you don't use IRC reporting.</small></td>
-".			"			<td class=\"b n2\">{$chanlist}</td>
+".			"		$L[TR]>
+".			"			$L[TD1c]>Report to IRC channel:<br><small>Leave this to default if you don't use IRC reporting.</small></td>
+".			"			$L[TD2]>{$chanlist}</td>
 ".			"		</tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">&nbsp;</td>
-".			"			<td class=\"b n2\">
-".			"				<label><input type=\"checkbox\" name=\"private\" value=1".($forum['private'] ? ' checked="checked"':'')."> Private forum</label>
-".			"				<label><input type=\"checkbox\" name=\"readonly\" value=1".($forum['readonly'] ? ' checked="checked"':'')."> Read-only</label>
-".			"				<label><input type=\"checkbox\" name=\"trash\" value=1".($forum['trash'] ? ' checked="checked"':'')."> Trash forum</label>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]>
+".			"				<label>$L[INPc]=\"private\" value=1".($forum['private'] ? ' checked="checked"':'')."> Private forum</label>
+".			"				<label>$L[INPc]=\"readonly\" value=1".($forum['readonly'] ? ' checked="checked"':'')."> Read-only</label>
+".			"				<label>$L[INPc]=\"trash\" value=1".($forum['trash'] ? ' checked="checked"':'')."> Trash forum</label>
 ".			"			</td>
 ".			"		</tr>
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>&nbsp;</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">&nbsp;</td>
-".			"			<td class=\"b n2\">
-".			"				<input type=\"submit\" class=\"submit\" name=\"saveforum\" value=\"Save forum\"> ".($fid=='new' ? '':"
-".			"				<input type=\"submit\" class=\"submit\" name=\"delforum\" value=\"Delete forum\" onclick=\"if (!confirm('Really delete this forum?')) return false;\"> ")."
-".			"				<button type=\"button\" class=\"submit\" id=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD1c]>&nbsp;</td>
+".			"			$L[TD2]>
+".			"				$L[INPs]=\"saveforum\" value=\"Save forum\"> ".($fid=='new' ? '':"
+".			"				$L[INPs]=\"delforum\" value=\"Delete forum\" onclick=\"if (!confirm('Really delete this forum?')) return false;\"> ")."
+".			"				$L[BTTn]=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
 ".			"			</td>
 ".			"		</tr>
-".			"	</table>
+".			"	$L[TBLend]
 ".			"	<br>
 ";
 	
@@ -362,15 +321,15 @@ else if ($fid = $_GET['fid'])
 	// localmods
 	
 	print 	"	<br>
-".			"	<table cellspacing=\"0\" class=\"c1\">
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>Moderators</td></tr>
-".			"		<tr class=\"c\"><td class=\"b c\">Add a moderator</td><td class=\"b c\">Current moderators</td></tr>
-".			"		<tr class=\"n2\">
-".			"			<td class=\"b\" style=\"width:50%; vertical-align:top;\">
-".			"				<input type=\"text\" name=\"addmod_name\" id=\"addmod_name\" size=20 maxlength=32 onkeyup=\"localmodSearch(this);\"> <button type=\"button\" class=\"submit\" id=\"addmod\" onclick=\"addLocalmod();\">Add</button><br>
-".			"				<select name=\"addmod_list\" id=\"addmod_list\" style=\"width:200px;\" size=5 onchange=\"chooseLocalmod(this);\"></select>
+".			"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>Moderators</td></tr>
+".			"		$L[TRg]>$L[TDg]>Add a moderator</td>$L[TDg]>Current moderators</td></tr>
+".			"		$L[TR2]>
+".			"			$L[TD] style=\"width:50%; vertical-align:top;\">
+".			"				$L[INPt]=\"addmod_name\" id=\"addmod_name\" size=20 maxlength=32 onkeyup=\"localmodSearch(this);\"> $L[BTTn]=\"addmod\" onclick=\"addLocalmod();\">Add</button><br>
+".			"				$L[SEL]=\"addmod_list\" id=\"addmod_list\" style=\"width:200px;\" size=5 onchange=\"chooseLocalmod(this);\"></select>
 ".			"			</td>
-".			"			<td class=\"b\" id=\"modlist\" style=\"vertical-align:top;\">
+".			"			$L[TD] id=\"modlist\" style=\"vertical-align:top;\">
 ";
 	
 	$qmods = $sql->prepare("SELECT ".userfields('u')." FROM forummods f LEFT JOIN users u ON u.id=f.uid WHERE f.fid=?",array($fid));
@@ -379,29 +338,29 @@ else if ($fid = $_GET['fid'])
 		
 	print 	"			</td>
 ".			"		</tr>
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>&nbsp;</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n2\" align=\"center\" colspan=2>
-".			"				<input type=\"submit\" class=\"submit\" name=\"saveforum\" value=\"Save forum\">
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD2c] colspan=2>
+".			"				$L[INPs]=\"saveforum\" value=\"Save forum\">
 ".			"			</td>
 ".			"		</tr>
-".			"	</table>
+".			"	$L[TBLend]
 ".			"	<br>
 ";
 	
 	// tags
 
-	print 	"	<table cellspacing=\"0\" class=\"c1\">
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>Thread tags</td></tr>
-".			"		<tr class=\"c\"><td class=\"b c\">Add a tag</td><td class=\"b c\">Current tags</td></tr>
-".			"		<tr class=\"n2\">
-".			"			<td class=\"b\" style=\"width:50%; vertical-align:top;\">
-".			"				Name: <input type=\"text\" name=\"tag_name\" id=\"tag_name\" size=20 maxlength=64><br>
-".			"				Tag text: <input type=\"text\" name=\"tag_tag\" id=\"tag_tag\" size=10 maxlength=20><br>
+	print 	"	$L[TBL1]>
+".			"		$L[TRh]>$L[TDh] colspan=2>Thread tags</td></tr>
+".			"		$L[TRg]>$L[TDg]>Add a tag</td>$L[TDg]>Current tags</td></tr>
+".			"		$L[TR2]>
+".			"			$L[TD] style=\"width:50%; vertical-align:top;\">
+".			"				Name: $L[INPt]=\"tag_name\" id=\"tag_name\" size=20 maxlength=64><br>
+".			"				Tag text: $L[INPt]=\"tag_tag\" id=\"tag_tag\" size=10 maxlength=20><br>
 ".			"				Color: <input class=\"color {pickerFaceColor:'black',pickerBorder:0,pickerInsetColor:'black'}\" value=\"808080\" name=\"tag_color\" id=\"tag_color\" size=6 maxlength=6><br>
-".			"				<button type=\"button\" class=\"submit\" id=\"newtag\" onclick=\"newTag();\">New tag</button> <button type=\"button\" class=\"submit\" id=\"savetag\" onclick=\"saveTag('{$fid}');\">Save tag</button>
+".			"				$L[BTTn]=\"newtag\" onclick=\"newTag();\">New tag</button> $L[BTTn]=\"savetag\" onclick=\"saveTag('{$fid}');\">Save tag</button>
 ".			"			</td>
-".			"			<td class=\"b\" id=\"taglist\" style=\"vertical-align:top;\">
+".			"			$L[TD] id=\"taglist\" style=\"vertical-align:top;\">
 ";
 
 	$qtags = $sql->prepare("SELECT * FROM tags WHERE fid=?",array($fid));
@@ -410,50 +369,16 @@ else if ($fid = $_GET['fid'])
 	
 	print 	"			</td>
 ".			"		</tr>
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>&nbsp;</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n2\" align=\"center\" colspan=2>
-".			"				<input type=\"submit\" class=\"submit\" name=\"saveforum\" value=\"Save forum\">
+".			"		$L[TRh]>$L[TDh] colspan=2>&nbsp;</td></tr>
+".			"		$L[TR]>
+".			"			$L[TD2c] colspan=2>
+".			"				$L[INPs]=\"saveforum\" value=\"Save forum\">
 ".			"			</td>
 ".			"		</tr>
-".			"	</table>
+".			"	$L[TBLend]
 ";
 	
 	print 	"</form>
-";
-}
-else if ($chanid = $_GET['chanid'])
-{
-	// channel editor
-	
-	if ($chanid == 'new')
-	{
-		$chan = array('id' => 0, 'chan' => '');
-	}
-	else
-	{
-		$chanid = (int)$chanid;
-		$chan = $sql->fetchp("SELECT * FROM announcechans WHERE id=?",array($chanid));
-	}
-	
-	print 	"<form action=\"\" method=\"POST\">
-".			"	<table cellspacing=\"0\" class=\"c1\">
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>".($chanid=='new' ? 'Create':'Edit')." channel</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">Name:</td>
-".			"			<td class=\"b n2\"><input type=\"text\" name=\"channame\" value=\"".htmlspecialchars($chan['chan'])."\" size=50 maxlength=500></td>
-".			"		</tr>
-".			"		<tr class=\"h\"><td class=\"b h\" colspan=2>&nbsp;</td></tr>
-".			"		<tr>
-".			"			<td class=\"b n1\" align=\"center\">&nbsp;</td>
-".			"			<td class=\"b n2\">
-".			"				<input type=\"submit\" class=\"submit\" name=\"savechan\" value=\"Save channel\"> ".($chanid=='new' ? '':"
-".			"				<input type=\"submit\" class=\"submit\" name=\"delchan\" value=\"Delete channel\" onclick=\"if (!confirm('Really delete this channel?')) return false;\"> ")."
-".			"				<button type=\"button\" class=\"submit\" id=\"back\" onclick=\"window.location='manageforums.php';\">Back</button>
-".			"			</td>
-".			"		</tr>
-".			"	</table>
-".                      "</form>
 ";
 }
 else
@@ -469,17 +394,13 @@ else
 	$forums = array();
 	while ($forum = $sql->fetch($qforums))
 		$forums[$forum['id']] = $forum;
-
-	$qchans = $sql->query("SELECT id,chan FROM announcechans ORDER BY id");
-	$chans = array();
-	while ($chan = $sql->fetch($qchans))
-		$chans[$chan['id']] = $chan;
 	
 	$catlist = ''; $c = 1;
 	foreach ($cats as $cat)
 	{
-		$catlist .= "<tr><td class=\"b n$c\"><a href=\"?cid={$cat['id']}\">{$cat['title']}</a></td></tr>";
-		$c = ($c == 1) ? 2 : 1;
+		$catlist .= "$L[TR]>{$L['TD'.$c]}><a href=\"?cid={$cat['id']}\">{$cat['title']}</a></td></tr>
+";
+		$c = ($c==1) ? 2:1;
 	}
 	
 	$forumlist = ''; $c = 1; $lc = -1;
@@ -488,45 +409,33 @@ else
 		if ($forum['cat'] != $lc)
 		{
 			$lc = $forum['cat'];
-			$forumlist .= "<tr class=\"c\"><td class=\"b c\">{$cats[$forum['cat']]['title']}</td></tr>";
+			$forumlist .= "$L[TRg]>$L[TDg]>{$cats[$forum['cat']]['title']}</td></tr>
+";
 		}
-		$forumlist .= "<tr><td class=\"b n$c\"><a href=\"?fid={$forum['id']}\">{$forum['title']}</a></td></tr>";
-		$c = ($c==1) ? 2:1;
-	}
-
-	$chanlist = ''; $c = 1;
-	foreach ($chans as $chan)
-	{
-		$chanlist .= "<tr><td class=\"b n$c\"><a href=\"?chanid={$chan['id']}\">{$chan['chan']}</a></td></tr>";
+		
+		$forumlist .= "$L[TR]>{$L['TD'.$c]}><a href=\"?fid={$forum['id']}\">{$forum['title']}</a></td></tr>
+";
 		$c = ($c==1) ? 2:1;
 	}
 	
-	print 	"<table cellspacing=\"0\" style=\"width:100%;\"><tr>
-".			"	<td class=\"b\" style=\"width:33.33%; vertical-align:top; padding-right:0.5em;\">
-".			"		<table cellspacing=\"0\" class=\"c1\">
-".			"			<tr class=\"h\"><td class=\"b h\">Categories</td></tr>
+	print 	"$L[TBL] style=\"width:100%;\">$L[TR]>
+".			"	$L[TD] style=\"width:50%; vertical-align:top; padding-right:0.5em;\">
+".			"		$L[TBL1]>
+".			"			$L[TRh]>$L[TDh]>Categories</td></tr>
 ".			"			$catlist
-".			"			<tr class=\"h\"><td class=\"b h\">&nbsp;</td></tr>
-".			"			<tr><td class=\"b n1\"><a href=\"?cid=new\">New category</a></td></tr>
-".			"		</table>
+".			"			$L[TRh]>$L[TDh]>&nbsp;</td></tr>
+".			"			$L[TR]>$L[TD1]><a href=\"?cid=new\">New category</a></td></tr>
+".			"		$L[TBLend]
 ".			"	</td>
-".			"	<td class=\"b\" style=\"width:33.33%; vertical-align:top; padding-left:0.5em; padding-right:0.5em;\">
-".			"		<table cellspacing=\"0\" class=\"c1\">
-".			"			<tr class=\"h\"><td class=\"b h\">Forums</td></tr>
+".			"	$L[TD] style=\"width:50%; vertical-align:top; padding-left:0.5em;\">
+".			"		$L[TBL1]>
+".			"			$L[TRh]>$L[TDh]>Forums</td></tr>
 ".			"			$forumlist
-".			"			<tr class=\"h\"><td class=\"b h\">&nbsp;</td></tr>
-".			"			<tr><td class=\"b n1\"><a href=\"?fid=new\">New forum</a></td></tr>
-".			"		</table>
+".			"			$L[TRh]>$L[TDh]>&nbsp;</td></tr>
+".			"			$L[TR]>$L[TD1]><a href=\"?fid=new\">New forum</a></td></tr>
+".			"		$L[TBLend]
 ".			"	</td>
-".			"	<td class=\"b\" style=\"width:33.33%; vertical-align:top; padding-left:0.5em;\">
-".			"		<table cellspacing=\"0\" class=\"c1\">
-".			"			<tr class=\"h\"><td class=\"b h\">Channels</td></tr>
-".			"			$chanlist
-".			"			<tr class=\"h\"><td class=\"b h\">&nbsp;</td></tr>
-".			"			<tr><td class=\"b n1\"><a href=\"?chanid=new\">New channel</a></td></tr>
-".			"		</table>
-".			"	</td>
-".			"</tr></table>
+".			"</tr>$L[TBLend]
 ";
 }
 
@@ -561,7 +470,7 @@ function grouplist()
 
 function permtable($bind, $id)
 {
-	global $sql;
+	global $sql, $L;
 	
 	$qperms = $sql->prepare("SELECT id,title FROM perm WHERE permbind_id=?",array($bind));
 	$perms = array(); 
@@ -576,8 +485,8 @@ function permtable($bind, $id)
 	while ($perm = $sql->fetch($qpermdata))
 		$permdata[$perm['x_id']][$perm['perm_id']] = !$perm['revoke'];
 		
-	print 	"<table cellspacing=\"0\" class=\"c1\">
-".			"	<tr class=\"h\"><td class=\"b h\">Group</td><td class=\"b h\" colspan=2>Permissions</td></tr>
+	print 	"$L[TBL1]>
+".			"	$L[TRh]>$L[TDh]>Group</td>$L[TDh] colspan=2>Permissions</td></tr>
 ";
 	
 	$c = 1;
@@ -599,7 +508,7 @@ function permtable($bind, $id)
 			$doinherit = !isset($permdata[$gid]) || empty($permdata[$gid]);
 			
 			$check = $doinherit ? ' checked="checked"':'';
-			$inherit = "<label><input type=\"checkbox\" name=\"inherit[{$gid}]\" value=1 onclick=\"toggleAll('perm_{$gid}',!this.checked);\"{$check}> Inherit from parent</label>&nbsp;";
+			$inherit = "<label>$L[INPc]=\"inherit[{$gid}]\" value=1 onclick=\"toggleAll('perm_{$gid}',!this.checked);\"{$check}> Inherit from parent</label>&nbsp;";
 		}
 		
 		$permlist = '';
@@ -608,16 +517,16 @@ function permtable($bind, $id)
 			if ($doinherit) $check = ' disabled="disabled"';
 			else $check = $permdata[$gid][$pid] ? ' checked="checked"':'';
 			
-			$permlist .= "<label><input type=\"checkbox\" name=\"perm[{$gid}][{$pid}]\" value=1 class=\"perm_{$gid}\"{$check}> {$ptitle}</label> ";
+			$permlist .= "<label>$L[INPc]=\"perm[{$gid}][{$pid}]\" value=1 class=\"perm_{$gid}\"{$check}> {$ptitle}</label> ";
 		}
 		
 		print 	"	{$L['TR'.$c]}>
-".				"		<td class=\"b\" style=\"width:200px;\"><span style=\"white-space:nowrap;\">".str_repeat('&nbsp; &nbsp; ', $group['indent']).$gtitle."</span></td>
-".				"		<td class=\"b\" style=\"width:100px;\">{$inherit}</td>
-".				"		<td class=\"b\">{$permlist}</td>
+".				"		$L[TD] style=\"width:200px;\"><span style=\"white-space:nowrap;\">".str_repeat('&nbsp; &nbsp; ', $group['indent']).$gtitle."</span></td>
+".				"		$L[TD] style=\"width:100px;\">{$inherit}</td>
+".				"		$L[TD]>{$permlist}</td>
 ".				"	</tr>
-".				"	<tr>
-".				"		<td class=\"b n3\" colspan=3 style=\"height:4px;\"></td>
+".				"	$L[TR]>
+".				"		$L[TD3] colspan=3 style=\"height:4px;\"></td>
 ".				"	</tr>
 ";
 		
@@ -625,12 +534,12 @@ function permtable($bind, $id)
 	}
 	
 	print 	"	{$L['TR'.$c]}>
-".			"		<td class=\"b\">&nbsp;</td>
-".			"		<td class=\"b\" colspan=2>
-".			"			<input type=\"submit\" class=\"submit\" name=\"save".($bind=='forums' ? 'forum':'cat')."\" value=\"Save ".($bind=='forums' ? 'forum':'category')."\">
+".			"		$L[TD]>&nbsp;</td>
+".			"		$L[TD] colspan=2>
+".			"			$L[INPs]=\"save".($bind=='forums' ? 'forum':'cat')."\" value=\"Save ".($bind=='forums' ? 'forum':'category')."\">
 ".			"		</td>
 ".			"	</tr>
-".			"</table>
+".			"$L[TBLend]
 ";
 }
 

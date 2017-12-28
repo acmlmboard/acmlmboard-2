@@ -11,16 +11,8 @@ if (has_perm("edit-forums"))
   $mlinks[] = array('url' => "manageforums.php", 'title' => 'Manage forums');
 if (has_perm("edit-ip-bans")) 
   $mlinks[] = array('url' => "ipbans.php", 'title' => 'Manage IP bans');
-if (has_perm("edit-spiders")) 
-  $mlinks[] = array('url' => "editspiders.php", 'title' => 'Manage spiders');
 if (has_perm("edit-calendar-events")) 
   $mlinks[] = array('url' => "editevents.php", 'title' => 'Manage events');
-if (has_perm('edit-smilies'))
-  $mlinks[] = array('url' => "editsmilies.php", 'title' => 'Manage smilies');
-if (has_perm("edit-post-icons")) 
-  $mlinks[] = array('url' => "editposticons.php", 'title' => 'Manage post icons');
-if (has_perm('edit-profileext'))
-  $mlinks[] = array('url' => "editprofileext.php", 'title' => 'Manage extended profile fields');
 if (has_perm("edit-sprites")) 
   $mlinks[] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
 if (has_perm("edit-sprites")) 
@@ -35,15 +27,15 @@ if (has_perm("admin-tools-access"))
 //Inspired by Tierage's dashboard.php in Blargboard Plus. - SquidEmpress
 $mlinkstext = '';
 foreach ($mlinks as $l)
-	$mlinkstext .= ($mlinkstext?' ':'')."<a href=\"{$l['url']}\"</a><input type=\"submit\" class=\"submit\" name=action value='{$l['title']}'></a>";
+	$mlinkstext .= ($mlinkstext?' ':'')."<a href=\"{$l['url']}\"</a>$L[INPs]=action value='{$l['title']}'></a>";
 
-print "<table cellspacing=\"0\" class=\"c1\">
-".    "  <tr class=\"h\"><td class=\"b\">Board management tools
-".    "  <tr><td class=\"b n1\" align=\"center\">
+print "$L[TBL1]>
+".    "  $L[TRh]>$L[TD]>Board management tools
+".    "  $L[TR]>$L[TD1c]>
 ".    "    <br>
 ".    "    $mlinkstext<br>
 ".    "    <br>
-".    "</table>
+".    "$L[TBLend]
 ";
 
 pagefooter();

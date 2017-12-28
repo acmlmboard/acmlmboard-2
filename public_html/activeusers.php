@@ -17,41 +17,41 @@
   print 'Active users during the last '.timeunits2($time).":
 ".      "<br>
 ".       timelink(3600).'|'.timelink(86400).'|'.timelink(604800).'|'.timelink(2592000)."
-".      "<table cellspacing=\"0\" class=\"c1\">
-".      "  <tr class=\"h\">
-".      "    <td class=\"b h\" width=30>#</td>
-".      "    <td class=\"b h\">Username</td>
-".      "    <td class=\"b h\" width=150>Registered on</td>
-".      "    <td class=\"b h\" width=50>Posts</td>
-".      "    <td class=\"b h\" width=50>Total</td>
+".      "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh] width=30>#</td>
+".      "    $L[TDh]>Username</td>
+".      "    $L[TDh] width=150>Registered on</td>
+".      "    $L[TDh] width=50>Posts</td>
+".      "    $L[TDh] width=50>Total</td>
 ";
   $post_total = 0;
   $post_overall = 0;
   $j=0;
-  $tr = 'n3';
+  $tr = 'TR3c';
   for($i=1;$user=$sql->fetch($users);$i++){
     $post_total+=$user['num'];
     $post_overall+=$user['posts'];
-    $tr=($i % 2 ? 'n2': 'n3');
+    $tr=($i%2?'TR2':'TR3').'c';
     print
-        "<tr class=\"$tr\" align=\"center\">
-".      "    <td class=\"b\">$i.</td>
-".      "    <td class=\"b\" align=\"left\">".userlink($user)."</td>
-".      "    <td class=\"b\">".cdate($dateformat,$user[regdate])."</td>
-".      "    <td class=\"b\"><b>$user[num]</b></td>
-".      "    <td class=\"b\">$user[posts]</b></td>
+        "  $L[$tr]>
+".      "    $L[TD]>$i.</td>
+".      "    $L[TDl]>".userlink($user)."</td>
+".      "    $L[TD]>".cdate($dateformat,$user[regdate])."</td>
+".      "    $L[TD]><b>$user[num]</b></td>
+".      "    $L[TD]>$user[posts]</b></td>
 ";
   $j++;
   }
-  print "<tr class=\"h\"><td class=\"b h\" colspan=5>Totals</td></tr>
-".        "<tr class=\"$tr\" align=\"center\">
-".      "    <td class=\"b\"><b>$j.</b></td>
-".      "    <td class=\"b\" align=\"left\"></td>
-".      "    <td class=\"b\"></td>
-".      "    <td class=\"b\"><b>$post_total</b></td>
-".      "    <td class=\"b\"><b>$post_overall</b></td>
+  print "$L[TRh]>$L[TDh] colspan=5>Totals</td></tr>
+".        "  {$L[$tr]}>
+".      "    $L[TD]><b>$j.</b></td>
+".      "    $L[TDl]></td>
+".      "    $L[TD]></td>
+".      "    $L[TD]><b>$post_total</b></td>
+".      "    $L[TD]><b>$post_overall</b></td>
 ";
-  print "</table>
+  print "$L[TBLend]
 ";
 
   pagefooter();

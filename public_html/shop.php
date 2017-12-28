@@ -11,13 +11,13 @@
 	}
 </script>
 	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "<table cellspacing=\"0\" class=\"c1\" width=\"100%\" id=\"edit\"><tr class=\"h\"><td class=\"b h\">";
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
 if($_COOKIE['pstbon']==-1){
 	$rdmsg.="Item Sold<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr><td class=\"b n1\" align=\"left\">The $pitem[name] has been unequipped and sold.</td></tr></table></div>";
+".	"<tr>$L[TD1l]>The $pitem[name] has been unequipped and sold.</td></tr></table></div>";
 } elseif($_COOKIE['pstbon']==-2){
 	$rdmsg.="Item Bought<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr><td class=\"b n1\" align=\"left\">The $item[name] has been bought and equipped!</td></tr></table></div>"; }
+".	"<tr>$L[TD1l]>The $item[name] has been bought and equipped!</td></tr></table></div>"; }
 }
 
   $action=$_GET[action];
@@ -59,8 +59,10 @@ fwrite($f,"[".date("m-d-y H:i:s")."] ".$ref."\n");
 fclose($f);
 
   if(!has_perm('use-item-shop')){
+  pageheader('Item shop');
      error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!has_perm('manage-shop-items')) { //Added (Sukasa)
+  pageheader('Item shop');
      error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }else {
     $user=$sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
@@ -90,24 +92,24 @@ fclose($f);
 
         while($shop=$sql->fetch($shops))
           $shoplist.=
-              "  <tr>
-".            "    <td class=\"b n2\">
+              "  $L[TR]>
+".            "    $L[TD2]>
 ".            "      <a href=shop.php?action=items&cat=$shop[id]#status>$shop[name]</a>
 ".            "      <br><font class=sfont>$shop[description]</font>
 ".            "    </td>
-".            "    <td class=\"b n1\" align=\"center\"><a href=shop.php?action=desc&id=".$eq["eq$shop[id]"].">".$items[$eq["eq$shop[id]"]][name]."</a></td>
+".            "    $L[TD1c]><a href=shop.php?action=desc&id=".$eq["eq$shop[id]"].">".$items[$eq["eq$shop[id]"]][name]."</a></td>
 ";
   pageheader('Item shop');
         print "<img src=gfx/status.php?u=$loguser[id]>
 ";
     if($_COOKIE['pstbon']){ print $rdmsg;}
 print       "<br>
-".            "<table cellspacing=\"0\" class=\"c1\">
-".            "  <tr class=\"h\">
-".            "    <td class=\"b h\">Shop</td>
-".            "    <td class=\"b h\">Item equipped</td>
+".            "$L[TBL1]>
+".            "  $L[TRh]>
+".            "    $L[TDh]>Shop</td>
+".            "    $L[TDh]>Item equipped</td>
 ".            "$shoplist
-".            "</table>
+".            "$L[TBLend]
 ";
       break;
       case 'edit': //Added (Sukasa)
@@ -122,10 +124,10 @@ print       "<br>
 ".            "</style>
 ";
         $statlist='';
-        $catlist="<option value='99'>Not Listed</option>";
+        $catlist=$L[OPT]."='99'>Not Listed</option>";
         $shops=$sql->query ('SELECT * FROM itemcateg ORDER BY corder');
         while($shop=$sql->fetch($shops)) {
-          $catlist.='<option value="'.$shop[id]."\"".(($shop[id]==$item[cat])||($item[cat]==99&&isset($_GET[cat])&&$shop[id]==$_GET[cat])?
+          $catlist.=$L[OPT].'="'.$shop[id]."\"".(($shop[id]==$item[cat])||($item[cat]==99&&isset($_GET[cat])&&$shop[id]==$_GET[cat])?
             "selected='selected'":"").">".$shop[name]."</option>";
         }
         for($i=0;$i<9;$i++){
@@ -145,31 +147,31 @@ print       "<br>
             $cl='';
 
           $statlist.= "
-".                    "    <td class=\"b n2 align=\"center\"'><input type=\"text\" name='$stat[$i]' size='4' value='$st'></td>";
+".                    "    $L[TD2oc]'>$L[INPt]='$stat[$i]' size='4' value='$st'></td>";
           $stathdr.=  "
-".                    "    <td class=\"b n1\" align=\"center\" width=6%>$stat[$i]</td>
+".                    "    $L[TD1c] width=6%>$stat[$i]</td>
 ";
         }
-        print "<form action='shop.php?action=save&id=$item[id]' method='post'><table cellspacing=\"0\" class=\"c1\">
-".            "  <td class=\"b n1\" align=\"center\"><a href=shop.php>Return to shop list</a>
-".            "</table> <br>
+        print "<form action='shop.php?action=save&id=$item[id]' method='post'>$L[TBL1]>
+".            "  $L[TD1c]><a href=shop.php>Return to shop list</a>
+".            "$L[TBLend] <br>
 ".            "<img src=gfx/status.php?u=$loguser[id]><br>
 ".            "<br>
-".            "<table cellspacing=\"0\" class=\"c1\" style=width:300px>
-".            "  <tr class=\"h\" align=left>
-".            "    <td class=\"b h\" colspan=9><input type=\"text\" name='name' size='40' value=\"".str_replace("\"","&quot;",$item[name])."\"> <img src='img/coin.gif'> 
-".            "      <input type=\"text\" name='coins' size='7' value=\"".str_replace("\"","&quot;",$item[coins])."\"> <img src='img/coin2.gif'> 
-".            "      <input type=\"text\" name='coins2' size='7' value=\"".str_replace("\"","&quot;",$item[coins2])."\"><input type=\"checkbox\" name='hidden' id='hidden' ".($item[hidden]?"checked":"")."><label for='hidden'>Hidden Item</label></td>
-".            "  <tr>
+".            "$L[TBL1] style=width:300px>
+".            "  $L[TRh] align=left>
+".            "    $L[TDh] colspan=9>$L[INPt]='name' size='40' value=\"".str_replace("\"","&quot;",$item[name])."\"> <img src='img/coin.gif'> 
+".            "      $L[INPt]='coins' size='7' value=\"".str_replace("\"","&quot;",$item[coins])."\"> <img src='img/coin2.gif'> 
+".            "      $L[INPt]='coins2' size='7' value=\"".str_replace("\"","&quot;",$item[coins2])."\">$L[INPc]='hidden' id='hidden' ".($item[hidden]?"checked":"")."><label for='hidden'>Hidden Item</label></td>
+".            "  $L[TR]>
 ".            "    $stathdr
-".            "  <tr>
+".            "  $L[TR]>
 ".            "    $statlist
-".            "  <tr>
-".            "    <td class=\"b n2\" colspan=8><input type=\"text\" name='desc' size='40' value=\"".str_replace("\"","&quot;",$item[desc])."\">  
-".            "      <select name='cat' style='width: 115px'>$catlist</select>
-".            "      <td class=\"b n2\"><input type=\"submit\" class=\"submit\" name='Save' value='Save'> 
+".            "  $L[TR]>
+".            "    $L[TD2] colspan=8>$L[INPt]='desc' size='40' value=\"".str_replace("\"","&quot;",$item[desc])."\">  
+".            "      $L[INPl]='cat' style='width: 115px'>$catlist</select>
+".            "      $L[TD2]>$L[INPs]='Save' value='Save'> 
 ".            "    </td>
-".            "</table></form>
+".            "$L[TBLend]</form>
 ";
       break;
       case 'desc':
@@ -206,26 +208,26 @@ print       "<br>
             $cl='';
 
           $statlist.= "
-".                    "    <td class=\"b n2 align=\"center\" $cl'>$st</td>";
+".                    "    $L[TD2oc] $cl'>$st</td>";
           $stathdr.=  "
-".                    "    <td class=\"b n1\" align=\"center\" width=6%>$stat[$i]</td>
+".                    "    $L[TD1c] width=6%>$stat[$i]</td>
 ";
         }
-        print "<table cellspacing=\"0\" class=\"c1\">
-".            "  <td class=\"b n1\" align=\"center\"><a href=shop.php>Return to shop list</a>
-".            "</table> <br>
+        print "$L[TBL1]>
+".            "  $L[TD1c]><a href=shop.php>Return to shop list</a>
+".            "$L[TBLend] <br>
 ".            "<img src=gfx/status.php?u=$loguser[id]><br>
 ".            "<br>
-".            "<table cellspacing=\"0\" class=\"c1\" style=width:300px>
-".            "  <tr class=\"h\" align=left>
-".            "    <td class=\"b h\" colspan=9>$item[name]$edit</td>
-".            "  <tr>
+".            "$L[TBL1] style=width:300px>
+".            "  $L[TRh] align=left>
+".            "    $L[TDh] colspan=9>$item[name]$edit</td>
+".            "  $L[TR]>
 ".            "    $stathdr
-".            "  <tr>
+".            "  $L[TR]>
 ".            "    $statlist
-".            "  <tr>
-".            "    <td class=\"b n2\" colspan=9><font class=sfont>$item[desc]</font></td>
-".            "</table>
+".            "  $L[TR]>
+".            "    $L[TD2] colspan=9><font class=sfont>$item[desc]</font></td>
+".            "$L[TBLend]
 ";
       break;
       case 'items':
@@ -251,25 +253,25 @@ print       "<br>
 ".            "   .lower    {color:#ca8765}
 ".            "</style>
 ".            "
-".            "<table cellspacing=\"0\" class=\"c1\">
-".            "  <td class=\"b n1\" align=\"center\"><a href=shop.php>Return to shop list</a> $edit
-".            "</table>
+".            "$L[TBL1]>
+".            "  $L[TD1c]><a href=shop.php>Return to shop list</a> $edit
+".            "$L[TBLend]
 ".            "<br>
-".            "<table cellspacing=\"0\" id=status>
-".            "  <td class=\"nb\" width=256><img src=gfx/status.php?u=$loguser[id]></td>
-".            "  <td class=\"nb\" align=\"center\" width=150>
+".            "$L[TBL] id=status>
+".            "  $L[TDn] width=256><img src=gfx/status.php?u=$loguser[id]></td>
+".            "  $L[TDnc] width=150>
 ".            "    <font class=fonts>
 ".            "      <div id=pr></div>
 ".            "    </font>
 ".            "  </td>
-".            "  <td class=\"nb\">
+".            "  $L[TDn]>
 ".            "    <img src=img/_.png id=prev>
-".            "</table>
+".            "$L[TBLend]
 ".            "<br>
 ";
         $atrlist='';
         for($i=0;$i<9;$i++)
-          $atrlist.="    <td class=\"b h\" width=6%>$stat[$i]</td>
+          $atrlist.="    $L[TDh] width=6%>$stat[$i]</td>
 ";
 
         $seehidden = 0;
@@ -280,14 +282,14 @@ print       "<br>
                           ."WHERE (cat=$cat OR cat=0) AND `hidden` <= $seehidden "
                           .'ORDER BY type,coins');
 
-        print "<table cellspacing=\"0\" class=\"c1\">
-".            "  <tr class=\"h\">
-".            "    <td class=\"b h\" width=100>Commands</td>
-".            "    <td class=\"b n2\" width=1 rowspan=10000>&nbsp;</td>
-".            "    <td class=\"b h\">Item</td>
+        print "$L[TBL1]>
+".            "  $L[TRh]>
+".            "    $L[TDh] width=100>Commands</td>
+".            "    $L[TD2] width=1 rowspan=10000>&nbsp;</td>
+".            "    $L[TDh]>Item</td>
 ".            "$atrlist
-".            "    <td class=\"b h\" width=6%><img src=img/coin.gif></td>
-".            "    <td class=\"b h\" width=6%><img src=img/coin2.gif></td>
+".            "    $L[TDh] width=6%><img src=img/coin.gif></td>
+".            "    $L[TDh] width=6%><img src=img/coin2.gif></td>
 ";
 
         while($item=$sql->fetch($items)){
@@ -324,19 +326,19 @@ print       "<br>
               $cl='';
 
             $atrlist.= "
-".            "    <td class=\"b n2 align=\"center\" $cl'>$st</td>";
+".            "    $L[TD2oc] $cl'>$st</td>";
           }
 
           print
-              "  <tr$color>
-".            "    <td class=\"b n2\" align=\"center\">$comm</td>
-".            "    <td class=\"b n1\"><b><a href=shop.php?action=desc&id=$item[id]>$item[name]</a></b></td>
+              "  $L[TR]$color>
+".            "    $L[TD2c]>$comm</td>
+".            "    $L[TD1]><b><a href=shop.php?action=desc&id=$item[id]>$item[name]</a></b></td>
 ".            "$atrlist
-".            "    <td class=\"b n1\" align=\"right\">$item[coins]</td>
-".            "    <td class=\"b n1\" align=\"right\">$item[coins2]</td>
+".            "    $L[TD1r]>$item[coins]</td>
+".            "    $L[TD1r]>$item[coins2]</td>
 ";
         }
-        print "</table>
+        print "$L[TBLend]
 ";
       break;
       case 'buy':
@@ -358,11 +360,11 @@ print       "<br>
   $loguser['blocksprites']=1;
   pageheader('Item shop');
           print
-              "<table cellspacing=\"0\" class=\"c1\">
-".            "  <td class=\"b n1\" align=\"center\">
+              "$L[TBL1]>
+".            "  $L[TD1c]>
 ".            "    The $item[name] has been bought and equipped!<br>
 ".            "    ".redirect('shop.php','the shop')."
-".            "</table>
+".            "$L[TBLend]
 ";
              } else { //Modern redirect*/
                   redirect("shop.php",-2);
@@ -379,11 +381,11 @@ print       "<br>
               /*if($loguser[redirtype]==0){ //Classical Redirect
   $loguser['blocksprites']=1;
   pageheader('Item shop');
-        print "<table cellspacing=\"0\" class=\"c1\">
-".            "  <td class=\"b n1\" align=\"center\">
+        print "$L[TBL1]>
+".            "  $L[TD1c]>
 ".            "    The $pitem[name] has been unequipped and sold.<br>
 ".            "    ".redirect('shop.php','the shop')."
-".            "</table>
+".            "$L[TBLend]
 ";
              } else { //Modern redirect*/
                   redirect("shop.php",-1);

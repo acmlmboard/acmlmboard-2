@@ -38,12 +38,12 @@
     pageheader($pmsgs[title]);
 
     $topbot=
-          "<table cellspacing=\"0\" width=100%>
-".        "  <td class=\"nb\"><a href=./>Main</a> - <a href=private.php".(!$tologuser?"?id=$pmsgs[userto]":'').">Private messages</a> - ". htmlval($pmsgs[title]) ."</td>
-".        "  <td class=\"nb\" align=\"right\">
+          "$L[TBL] width=100%>
+".        "  $L[TDn]><a href=./>Main</a> - <a href=private.php".(!$tologuser?"?id=$pmsgs[userto]":'').">Private messages</a> - ". htmlval($pmsgs[title]) ."</td>
+".        "  $L[TDnr]>
 ".        "    <a href=sendprivate.php?pid=$pid>Reply</a>
 ".        "  </td>
-".        "</table>
+".        "$L[TBLend]
 ";
 
 // dumb hackery: should make another field specifically to say "this is a PM!" and make it display "Reply" instead of the crummy way I do it now

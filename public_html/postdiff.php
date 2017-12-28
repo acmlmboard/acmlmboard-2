@@ -10,7 +10,7 @@ $r2=(int)$_GET['n'];
 $t = $sql->resultq("SELECT thread FROM posts WHERE id=$pid");
 if(!$t) { error("Error", "This post does not exist.<br> <a href=./>Back to main</a>"); }
 $f = $sql->resultq("SELECT forum FROM threads WHERE id=$t");
-if(!can_view_forum_post_history($f)) { error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
+if(!can_view_forum_post_history($f) || !can_view_forum($f)) { error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); }
 
 pageheader("Post revision differences");
 
@@ -19,7 +19,7 @@ if(!$r1||!$r2) $r1=$r2=1;
 $d1=$sql->fetchq("SELECT text FROM poststext WHERE id=$pid AND revision=$r1");
 $d2=$sql->fetchq("SELECT text FROM poststext WHERE id=$pid AND revision=$r2");
 
-echo "<table cellspacing=\"0\" class=\"c1\" width=100% height=100><tr class=\"n1\"><td class=\"b n2\"><font face='courier new'>";
+echo "$L[TBL1] width=100% height=100>$L[TR1]>$L[TD2]><font face='courier new'>";
 
 $diff = &new Text_Diff("native",array(explode("\n",$d1[text]),explode("\n",$d2[text])));
 
@@ -55,7 +55,7 @@ $renderer = &new Text_Diff_Renderer_inline();
 } else*/ echo str_replace("\n","<br>",$renderer->render($diff));
 
 //echo diff(str_replace("\n","<br>\n",$d1[text])."\n",str_replace("\n","<br>\n",$d2[text])."\n");
-echo "</table>";
+echo "$L[TBLend]";
 
 pagefooter();
 

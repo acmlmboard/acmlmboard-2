@@ -13,6 +13,14 @@ function LoadBlocklayouts()
 
 }
 
+function usegfxnums()
+{
+  global $config, $rpgimageset;
+  if ($rpgimageset == '') return false;
+  elseif(!$config['userpgnum']) return false;
+  else return true;
+}
+
   function threadpost($post,$type,$pthread=''){
     global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config;
     $exp=calcexp($post[uposts],(ctime()-$post[uregdate])/86400);
@@ -99,9 +107,11 @@ function LoadBlocklayouts()
       }
 
       // "Edit" link for admins or post owners, but not banned users
-/*      if($post[thread] && ((has_perm('update-own-post') && $post[user] == $loguser[id]) || ismod(getforumbythread($post[thread]))))*/
 	  if (can_edit_post($post) && $post[id])
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=$post[id]\">Edit</a>";
+        
+      if (can_edit_post($post) && $post[id] && $post[isannounce])
+        $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid=$post[id]\">Edit Title</a>";
 
       if($post[id] && can_delete_forum_posts(getforumbythread($post[thread])))
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=".urlencode(packsafenumeric($post[id]))."&amp;act=delete\">Delete</a>";
@@ -150,7 +160,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
         $location=($post[ulocation]?'<br>From: '.postfilter($post[ulocation]):'');
         $lastpost=($post[ulastpost]?timeunits(ctime()-$post[ulastpost]):'none');
 
-        $picture=($post[uusepic]?"<img src=\"gfx/userpic.php?id=$post[uid]\">":'');
+        $picture=($post[uusepic]?"<img src=\"gfx/userpic.php?id=".$post[uid]."&r=".$post[uusepic]."\">":'');
 
         if($post[mood] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
           $mood = $sql->fetchq("select `url`, `local`, 1 `existing` from `mood` where `user`=$post[uid] and `id`=$post[mood] union select '' `url`, 0 `local`, 0 `existing`");
@@ -174,8 +184,25 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
         $text.=
 		 $grouplink."
 ".        "      ".((strlen($grouplink))?"<br>":"")."
-".        "      ".postfilter($post[utitle])."
-".        "      <br>Level: ".calclvl($exp)."
+".        "      ".postfilter($post[utitle]);
+/* This block is used when rendering AB1 style image RPG layouts */
+if(usegfxnums() && $loguser['numbargfx']!=1) $text.= "
+".        "      <br>".rpglabel2img("level", "Level:")." ".rpgnum2img(calclvl($exp))."
+".        "      <br>".drawrpglevelbar($exp)."
+".        "      <br>$picture
+".        "      <br>".rpglabel2img("posts","Posts:")." ".rpgnum2img(($post[num]?"$post[num]/":'')).rpgnum2img($post[uposts])."
+".        "      <br>".rpglabel2img("exp","EXP:")." ".rpgnum2img($exp)."
+".        "      <br>".rpglabel2img("fornext","For Next:")." ".rpgnum2img(calcexpleft($exp))."
+".        "      <br>
+".        "      <br>Since: ".cdate('m-d-y',$post[uregdate])."
+".        "      $location
+".        "      <br>
+".        "      <br>Last post: $lastpost
+".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview])."
+";
+/*Normal Rendering */
+else $text.=      "      <br>Level: ".calclvl($exp)."
+".        "      ".($config['alwaysshowlvlbar'] && $loguser['showlevelbar']!=1 ? "<br>".drawrpglevelbar($exp):"")."
 ".        "      <br>$picture
 ".        "      <br>Posts: ".($post[num]?"$post[num]/":'')."$post[uposts]
 ".        "      <br>EXP: $exp
@@ -185,8 +212,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
 ".        "      $location
 ".        "      <br>
 ".        "      <br>Last post: $lastpost
-".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview])."
-";
+".        "      <br>Last view: ".timeunits(ctime()-$post[ulastview]);
       }else{
    $text.="
 ".        "      Posts: $post[num]/$post[uposts]

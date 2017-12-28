@@ -5,7 +5,7 @@
  *
  * Based on the dodongo thing, this is supposed to be some kind of collect and discover bullshit
  * where you sometimes randomly get some videogame beastie on the page. Clicking that beastie for
- * the first time would then get it registered in your own Pokédex rip off, and getting a specific
+ * the first time would then get it registered in your own PokÃ©dex rip off, and getting a specific
  * amount yields bonus features such as bigger avatars or the ability to see <!-- comments -->.
  *
  * $chance is the % chance a beastie will appear in the first place.
@@ -27,19 +27,16 @@
  * Common = 0 | Uncommon = 20 | 40 = Slightly Rare | Rare = 60 | Very Rare = 80 | Mew Rare = 99
  */
 
- function generate_sprite_hash($userid, $spriteid)
-  {
-   global $spritesalt;
-   return md5($spritesalt.$userid.$spriteid.$spritesalt);
-  }
-  
+require_once 'lib/spritelib.php';
+
 $chance = 5 + (rand(0, 6464) % 5);
 
 //$chance = 100;
 //$roll = 300;
 
 //Always fail to roll if disabled, effectively never appearing at all.
-if($loguser['blocksprites'])
+//Sprites will not show up on the login page. Code by Gywall.
+if(strstr($_SERVER['PHP_SELF'],"login.php") || $loguser['blocksprites'] || !$config['spritesystem']) //Sprites will not display at all if the sprite system has been shut off. - SquidEmpress
 	$chance = 0;
 
 /*Version 2 method

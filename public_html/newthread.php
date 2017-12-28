@@ -14,14 +14,14 @@
 	{
 		$userid = $loguser['id'];
 		$user = $loguser;
-		if ($_POST['passenc'] !== md5($loguser['pass'].$pwdsalt))
+		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
 			$err = 'Invalid token.';
 			
 		$pass = $_POST['passenc'];
 	}
 	else
 	{
-      $pass=md5($_POST[pass].$pwdsalt);
+      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
 
     if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
@@ -29,7 +29,7 @@
       $err="    Invalid username or password!<br>
 ".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
 
-		$pass = md5($pass.$pwdsalt);
+		$pass = md5($pwdsalt2.$pass.$pwdsalt);
 	}
   }
   else
@@ -62,8 +62,7 @@
   else
     $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
 	
-if($act!="Submit" || $loguser[redirtype]==0){
-  pageheader("New $type",$forum[id]);
+if($act!="Submit"){
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbar();
 	 
@@ -88,22 +87,16 @@ if($act!="Submit" || $loguser[redirtype]==0){
 
   $forumlink="<a href=forum.php?id=$fid>Back to forum</a>";
 
-  if(!$forum)
-    forum_not_found();
+  if(!$forum) {
+	error("Error", "Forum does not exist. <br> <a href=./>Back to main</a>");
+  }
 
     else if ($announce && !can_create_forum_announcements($fid))
     $err = "    You have no permissions to create announcements in this forum!<br>$forumLink";
 
-//  else if($forum[minpowerthread]>$user[power]){
      else if (!can_create_forum_thread($forum)){
 
   $err="    You have no permissions to create threads in this forum!<br>$forumlink";
-//    if(isbanned())
-/*      $err="    You can't post when you are banned!<br>
-".         "    $forumlink";
-    else
-      $err="    You can't post in this restricted forum!<br>
-".         "    $forumlink";*/
   }
 
   else if($user[lastpost]>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))
@@ -145,14 +138,9 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ";
 
   if($err){
-    if($loguser[redirtype]==1) pageheader("New $type",$forum[id]);
-    print "$top - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
+    pageheader("New $type",$forum[id]);
+    print "$top - Error";
+    noticemsg("Error", $err);
   }elseif(!$act){
     if($ispoll){
       $pollin=
@@ -171,6 +159,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".             "  $L[TD2]>$L[INPc]=multivote value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable checked value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
     }
+ pageheader("New $type",$forum[id]);
     print "$top
 ".        "<br><br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
@@ -188,7 +177,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ";
     else
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
+".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
@@ -200,10 +189,13 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        "    </td>
 ".$tagsin."
 ".$pollin."
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80></textarea></td>
 ".        "  $L[TR1]>
@@ -216,7 +208,12 @@ if($act!="Submit" || $loguser[redirtype]==0){
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($fid) && !$announce)
+    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " $L[TBLend]
 ".        "</form>
 ";
@@ -230,6 +227,8 @@ if($act!="Submit" || $loguser[redirtype]==0){
     $post[text]=$_POST[message];
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     $post[nolayout]=$_POST[nolayout];
+    $post[close]=$_POST[close];
+    $post[stick]=$_POST[stick];
     foreach($user as $field => $val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
@@ -275,6 +274,7 @@ if($act!="Submit" || $loguser[redirtype]==0){
 $pollprev.="$L[TBLend]";
     }
 
+ pageheader("New $type",$forum[id]);
     print "$top - Preview
 ".        "$pollprev<br>
 ".        "$L[TBL1]>
@@ -292,10 +292,13 @@ $pollprev.="$L[TBLend]";
 ".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
 ".$tagsin."
 ".$pollin."
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
 ".        "  $L[TR1]>
@@ -310,9 +313,14 @@ $pollprev.="$L[TBLend]";
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()."
+          "      $L[INPl]=mid>".moodlist($_POST[mid])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($fid) && !$announce)
+    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+";
+    print "    </td>
 ".        " $L[TBLend]
 ".        "</form>
 ";
@@ -321,6 +329,15 @@ $pollprev.="$L[TBLend]";
       $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
 
     checknumeric($nolayout);
+    if(can_edit_forum_threads($fid)){
+    	checknumeric($_POST['close']);
+    	checknumeric($_POST['stick']);
+        if($_POST['close']) $modclose="1";
+        if($_POST['stick']) $modstick="1";
+    }
+
+    if(!$_POST['close']) $modclose="0";
+    if(!$_POST['stick']) $modstick="0";
 
     $iconurl=addslashes($iconurl);
 
@@ -331,11 +348,14 @@ $pollprev.="$L[TBLend]";
     for($i=0;$i<32;++$i) if($_POST["tag$i"]) $tagsum|=(1<<$i);
     
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
+    if($announce) {
+    $modclose=$announce;
+    }
 
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");
-    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed) "
-               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$announce)");
+    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky) "
+               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick)");
     $tid=$sql->insertid();
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");
@@ -391,7 +411,9 @@ else {
 }
 
 
-if($loguser[redirtype]==0){ //Classic
+/*if($loguser[redirtype]==0){ //Classic
+    $loguser['blocksprites']=1;
+    pageheader("New $type",$forum[id]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -400,9 +422,9 @@ if($loguser[redirtype]==0){ //Classic
 ".        "    ".redirect($viewlink,"the $type")."
 ".        "$L[TBLend]
 ";
-} else { //Modern
-  redir2($viewlink,$c);
-}
+} else { //Modern*/
+  redirect($viewlink,$c);
+//}
   }
 
   pagefooter();

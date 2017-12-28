@@ -1,26 +1,23 @@
 <?php
 
 	$rankcache = array();
-	
+
+	$userbirthdays = array();
+function dobirthdays(){ //Function for calling after we get the timezone for the user set [Gywall]
+    global $sql, $userbirthdays;
 	// [Mega-Mario] Check for birthdays globally.
 	// Makes stuff like checking for rainbow usernames a lot easier.
 	$rbirthdays = $sql->query("SELECT `id` FROM `users` WHERE `birth` LIKE '".date('m-d')."%'");
-	$userbirthdays = array();
 	while ($bd = $sql->fetch($rbirthdays))
 		$userbirthdays[$bd['id']] = true;
+	return;
+}
 
   function checkuser($name,$pass){
     global $sql;
     $id=$sql->resultq("SELECT id FROM users WHERE (name='$name' OR displayname='$name') AND pass='$pass'");
     if(!$id) $id=0;
     return $id;
-  }
-
-  function forumbanned($uid,$fid) { //2009/07 Sukasa: Forum Bans
-    global $sql;
-    checknumeric($uid);
-    checknumeric($fid);
-    return $sql->resultq("select count(`uid`) > 0 from `forumbans` where `forum`=$fid and `uid`=$uid");
   }
 
   function checkuid($userid,$pass){
@@ -30,16 +27,126 @@
     return $user;
   }
 
-  function checkctitle(){
-    global $loguser;
+  function checkctitle($uid){
+    global $sql,$loguser;
+    
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+    
     if(!$loguser[id]) return false;
     if (has_perm_revoked('edit-title')) return false;
-    if (has_perm('edit-title')) return true;
-    if($loguser[posts]>=100) return true; //1200
-    if($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true; //800, 200
+    if ($uid == $loguser['id'] && has_perm('edit-title')) { 
+       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+       if ($loguser[posts]>=100) return true;
+       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       return false;
+    }
+
+    if (has_perm('edit-titles')) return true;
+    if (has_perm_with_bindvalue('edit-user-title',$uid)) return true;
     
     return false;
   }
+
+  function checkcusercolor($uid){
+    global $loguser,$config;
+    
+    if (!$config["perusercolor"]) return false;
+
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('has-customusercolor')) return false;
+    if ($uid == $loguser['id'] && has_perm('has-customusercolor')) return true;
+    
+    /* Allow a custom user color after a specific postcount/time. *DISABLED*
+    if($loguser[posts]>=4000) return true;
+    if($loguser[posts]>3500 && $loguser[regdate]<(time()-3600*24*183)) return true;
+    */
+    
+    if (has_perm('edit-customusercolors')) return true;
+    if (has_perm_with_bindvalue('edit-user-customnickcolor',$uid)) return true;
+
+    return false;
+  }
+
+  function checkcdisplayname($uid){
+    global $sql,$loguser,$config;
+    
+    $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+    
+    if (!$config["displayname"]) return false;
+
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('has-displayname')) return false;
+    if ($uid == $loguser['id'] && has_perm('has-displayname')) { 
+       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+      //Allow a custom displayname after a specific postcount/time.
+       //if ($loguser[posts]>=100) return true;
+       //if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       return false;
+    }
+  
+    if (has_perm('edit-displaynames')) return true;
+    if (has_perm_with_bindvalue('edit-user-displayname',$uid)) return true;
+    
+    return false;
+  }
+  
+  function checkcextendedprofile($uid){
+    global $loguser,$config;
+    
+    if (!$config["extendedprofile"]) return false;
+
+    if(!$loguser[id]) return false;
+    if (has_perm_revoked('update-own-extended-profile')) return false;
+    if ($uid == $loguser['id'] && has_perm('update-own-extended-profile')) return true;
+    
+    if (has_perm('update-extended-profiles')) return true;
+    if (has_perm_with_bindvalue('update-user-extended-profile',$uid)) return true;
+
+    return false;
+  } 
+//This block was borrowed from Blargboard. It is a proxy and stop forum spam detection routine and it's required defined function for url pulling.
+function queryURL($url)
+{
+  if (function_exists('curl_init'))
+  {
+    $page = curl_init($url);
+    if ($page === FALSE)
+    return FALSE;
+
+    curl_setopt($page, CURLOPT_TIMEOUT, 10);
+    curl_setopt($page, CURLOPT_CONNECTTIMEOUT, 10);
+    curl_setopt($page, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($page, CURLOPT_USERAGENT, 'Acmlmboard/'.BLARG_VERSION); //Changed to say Acmlmboard/ but keeping the BLARG_VERSION for 'reasons' -Emuz
+
+   $result = curl_exec($page);
+    curl_close($page);
+    return $result;
+  }
+
+  else if (ini_get('allow_url_fopen'))
+  {
+  return file_get_contents($url);
+  }
+
+    else
+      return FALSE;
+}
+
+function isProxy()
+{
+  if ($_SERVER['HTTP_X_FORWARDED_FOR'] && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR'])
+    return true;
+
+  $result = queryURL('http://www.stopforumspam.com/api?ip='.urlencode($_SERVER['REMOTE_ADDR']));
+  
+  if (!$result)
+    return false;
+  if (stripos($result, '<appears>yes</appears>') !== FALSE)
+    return true;
+
+  return false;
+}
+//BLARG!
 
 function renderdotrank($posts=0){
       //This function takes the number of posts a user has ($posts), and returns the html to be printed out. 
@@ -163,7 +270,7 @@ function renderdotrank($posts=0){
   
 function userfields($tbl='', $pf='')
 {
-	$fields = array('id','name','displayname','sex','group_id');
+	$fields = array('id','name','displayname','sex','group_id','nick_color','enablecolor');
 	
 	$ret = '';
 	foreach ($fields as $f)
@@ -195,29 +302,66 @@ function userfields($tbl='', $pf='')
   }
 
   function userdisp($user,$u='',$usemini=''){
-    global $sql, $usergroups, $userbirthdays;
+    global $sql, $config, $usergroups, $userbirthdays, $usercnc;
 
-    //$usemini = true;
-    if($usemini) $user['showminipic'] = true;
+   if($usemini) $user['showminipic'] = true;
+//Enable per theme nick colors & light theme nick shadows
+  $unclass ='';
+  $unspanend ='';
+  $nccss = '';
+  if($config['useshadownccss'])
+    {
+      $unclass="<span class='needsshadow'>";
+      $unspanend="</span>";
+    }
 
-	if (isset($userbirthdays[$user[$u.'id']]))
-		$nc = randnickcolor();
-	else
+  if($config['nickcolorcss']) $nccss="class='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
+//Over-ride for custom colours [Gywall]
+  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config[perusercolor])
+  { 
+    $nc = $user[$u.'nick_color'];
+    $nccss = "";
+	}
+  else
 	{
 		$group = $usergroups[$user[$u.'group_id']];
 		$nc = $group['nc'.$user[$u.'sex']];
 	}
+  //Random Nick Color on Birthday
+  if (isset($userbirthdays[$user[$u.'id']]))
+    $nc = randnickcolor();
 	
-	$n = $user[$u.'name'];
-	if($user[$u.'displayname'])
+  $n = $user[$u.'name'];
+	if($user[$u.'displayname'] && $config['displayname'])
 		$n = $user[$u.'displayname'];
 		
 	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
 	else $minipic="";
-   
-	return "$minipic<span style='color:#$nc;'>"
-		.str_replace(" ","&nbsp;",htmlval($n))
-		.'</span>';
+
+  //Badge username manipulation
+  if($config['badgesystem'] && $config['usernamebadgeeffects'])
+      {
+        $cssstyle = "color:#$nc;";
+
+        $result = has_badge_perm("change_username_style", $user[$u.'id']);
+        if($result)
+         {
+            $cssstyle .=has_badge_perm("change_username_style", $user[$u.'id']);
+         }
+
+        $userdisname = "$minipic$unclass<span $nccss style='$cssstyle'>"
+        .str_replace(" ","&nbsp;",htmlval($n))
+        .'</span>'.$unspanend;
+
+      }
+
+   else 
+    {
+      $userdisname = "$minipic$unclass<span $nccss style='color:#$nc;'>"
+        .str_replace(" ","&nbsp;",htmlval($n))
+        .'</span>'.$unspanend;
+    }
+	return $userdisname;
 }
 
 

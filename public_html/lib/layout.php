@@ -12,6 +12,7 @@
   $L['TD2'] = "<td class=\"b n2\"";
   $L['TD3'] = "<td class=\"b n3\"";
   $L['TDn'] = "<td class=\"nb\"";
+  $L['TRT2'] = "<tr class=\"nt n2\"";
 
   foreach($L as $key => $val)
    {

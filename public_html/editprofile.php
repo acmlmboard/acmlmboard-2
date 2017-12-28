@@ -9,6 +9,7 @@
     $temp = $_GET['id'];
     if (checknumeric($temp))
       $targetuserid = $temp;
+    if($config['rootuseremail']) $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$targetuserid'");
   }
 
   if (!can_edit_user($targetuserid))
@@ -18,8 +19,16 @@
 
   if ($targetuserid == 0) 
    {
-     pageheader('No permission');
-     no_perm();
+     if($config['rootuseremail']) {
+     if((has_perm('edit-users') || has_perm('update-user-profile') || has_perm('update-profiles')) && $user['email']!="") {
+     $email="<br>".userlink($user)."'s email: ".$user[email]."<br>";
+     } else {
+     $email="";
+     }
+     error("Error", "You have no permissions to do this!<br> ".$email."<a href=./>Back to main</a>");
+     } else {
+     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+     }
    }
 
        $blockroot = " AND `default` >= 0 ";
@@ -37,16 +46,14 @@
         $listgroup[$group['id']] = $group['title'];
       }
 
-  $token = md5($loguser['pass'].$pwdsalt);
+  $token = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
   if($_POST[action]=='Edit profile')
   {
 	if ($_POST['token'] !== $token) die('No.');
 	
 	if ($_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
-		setcookie('pass',packlcookie(md5($_POST[pass].$pwdsalt)),2147483647);
+		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt)),2147483647);
   }
-
-  pageheader('Edit profile');
 
 
   global $user, $userrpg;
@@ -108,7 +115,7 @@
     if($fname['size']>0){
       $ava_out=img_upload($fname,"userpic/$user[id]",$avatardimx,$avatardimy,$avatarsize);
       if($ava_out!="OK!"){ $error.=$ava_out; }
-	  else $usepic = 1;
+	  else $usepic = "usepic+1";
     }
     if($_POST['picturedel']) $usepic=0;
 
@@ -135,14 +142,18 @@
     if(!strlen($_POST[pass2])) $pass="";
     $tztotal=$_POST[tzoffH]*3600+$_POST[tzoffM]*60*($_POST[tzoffH]<0?-1:1);
     //Validate birthday values.
-    if(!$_POST[birthM] || !$_POST[birthD] || !$_POST[birthY]) //Reject if any are missing.
+    if(!$_POST[birthM] || !$_POST[birthD]) //Reject if any are missing.
       $birthday=-1;
     else {
-      if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD]) || !is_numeric($_POST[birthY])) //Reject if not numeric.
+      if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD])) //Reject if not numeric.
         $birthday=-1;
     }
-    if($birthday!=-1 && checkdate($_POST[birthM],$_POST[birthD],$_POST[birthY]))
-      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$_POST[birthY];
+    if ($_POST['birthM'] > 12 || $_POST['birthD'] > 31) // fixes a small bug where if the fields are above a certain value, the profile fails to load
+    $birthday = -1;
+    $year=$_POST[birthY];
+    if(!$_POST[birthY] || !is_numeric($_POST[birthY])) $year=-1;
+    if($birthday!=-1 && $_POST[birthM]!="" && $_POST[birthD]!="")
+      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$year;
     else
       $birthday=-1;
 
@@ -156,15 +167,63 @@
       checknumeric($targetgroup);
       if (!isset($listgroup[$targetgroup])) $targetgroup = 0;
 
-//      $targetpower = min($targetpower, $loguser[power]);
+      if (!has_perm_with_bindvalue('can-edit-group', $targetgroup) && $targetgroup!=$loguser['group_id']) {
+        $error.="- You do not have the permissions to assign this group.<br />";
+      }
       $targetname = $_POST['name'];
 
       if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetname' OR `displayname` = '$targetname') AND `id` != $user[id]")) {
         $error.="- Name already in use.<br />";
       }
-	  
+    }
+     if(checkcdisplayname($targetuserid)) 
+      {
+      //Checks Displayname to name and other displaynames
+      $targetdname = $_POST['displayname'];
+
+      if (checkcdisplayname($targetuserid) && $targetdname != "")
+      {
+        if ($sql->resultq("SELECT COUNT(`name`) FROM `users` WHERE (`name` = '$targetdname' OR `displayname` = '$targetdname') AND `id` != $user[id]")) {
+          $error.="- Displayname already in use.<br />";
+        }
+      }
+     }
+
+     if(checkcusercolor($targetuserid)) 
+      {
+      //Validate Custom username color is a 6 digit hex RGB color
+      $custom_usercolor = $_POST['nick_color'];
+
+      if ($custom_usercolor != "")
+      {
+        if ( ! preg_match('/^([A-Fa-f0-9]{6})$/',$custom_usercolor))
+        {
+          $error.="- Custom usercolor is not a valid RGB hex color.<br />";
+        }
+      }
+     }
+
+      if(checkcextendedprofile($targetuserid)) 
+      {
+          $qallfields = $sql->query("SELECT * FROM `profileext`");
+          $count = false;
+
+          while ($allfieldsgquery = $sql->fetch($qallfields))
+          {
+
+              $pdata = addslashes($_POST[$allfieldsgquery['id']]);
+              
+              if($pdata)
+              {
+                if (!preg_match("/".$allfieldsgquery['validation']."/", $pdata)) $error.=$allfieldsgquery['title']." doesn't match.";
+              }
+
+          }
+      }
+
 	  if (!$error)
 	  {
+          if (has_perm("edit-users")) {
 		  $spent = ($userrpg['GP'] + $userrpgdata['spent']) - $_POST['GP'];
 		  $sql->query("UPDATE usersrpg SET "
 				   . setfield('eq1').","
@@ -183,22 +242,44 @@
 					 . "`name` = '$targetname'"
 					 . " WHERE `id`=$user[id]"
 					 );
-	  }
+          }
+      if(checkcextendedprofile($targetuserid)) 
+      {
+          $qallfields = $sql->query("SELECT * FROM `profileext`");
+          $count = false;
+          if ($sql->prepare('DELETE FROM `user_profileext` WHERE user_id=?',array($targetuserid))) {} //Until multiples of each filed are enabled, wipe the slate.
+          while ($allfieldsgquery = $sql->fetch($qallfields))
+          {
+              if (substr(setfield($allfieldsgquery['id']), -3) != "=''")//Should be replated with a better method.
+              {
+                $pdata = addslashes($_POST[$allfieldsgquery['id']]);
+                if (      $sql->prepare('INSERT INTO `user_profileext` SET
+                user_id=?,field_id=?,data=? ;', array(
+                $targetuserid,
+                $allfieldsgquery['id'],
+                $pdata,
+                )
+                )) {}
+              }
 
+          }
+      }
     }
 
 	if (!$error)
 	{
 		$sql->query('UPDATE users SET '
-               . ($pass?'pass="'.md5($pass.$pwdsalt).'",':'')
-               . (has_perm("has-displayname")?(setfield('displayname')   .','):'')
+               . ($pass?'pass="'.md5($pwdsalt2.$pass.$pwdsalt).'",':'')
+               . (checkcdisplayname($targetuserid)?(setfield('displayname')   .','):'')
+               . (checkcusercolor($targetuserid)?(setfield('nick_color')   .','):'')
+               . (checkcusercolor($targetuserid)?(setfield('enablecolor')     .','):'')
                . setfield('sex')     .','
                . setfield('ppp')     .','
                . setfield('tpp')     .','
                . setfield('signsep').','
                . setfield('longpages').','
                . setfield('rankset') .','
-               . (checkctitle()?(setfield('title')   .','):'')
+               . (checkctitle($targetuserid)?(setfield('title')   .','):'')
                . setfield('realname').','
                . setfield('location').','
                . setfield('email')   .','
@@ -210,9 +291,12 @@
                . setfield('fontsize').','
                . setfield('theme')   .','
                . setfield('blocklayouts')   .','
-               . setfield('blocksprites')   .','
-               . setfield('hidden') .','
-               . setfield('redirtype') .','
+               . ($config['spritesystem']?(setfield('blocksprites')  .','):'')
+               . setfield('emailhide') .','
+               . setfield('numbargfx')   .','
+               . ($config['alwaysshowlvlbar']?(setfield('showlevelbar')  .','):'')
+               . setfield('posttoolbar')   .','
+               . (has_perm("show-online") || has_perm("edit-user-show-online")?(setfield('hidden')  .','):'')
                . setfield('timezone') .','
                . "tzoff=$tztotal,"
                . "birth='$birthday',"
@@ -223,26 +307,25 @@
                . "WHERE `id`=$user[id]"
                );
   
+               /*if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Edit profile');
 		print "$L[TBL1]>
 ".        "  $L[TD1c]>
 ".        "    Profile changes saved!<br>
 ".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
 ".        "$L[TBLend]
 ";
+                } else { //Modern redirect*/
+                  redirect("profile.php?id=$user[id]","Profile was edited successfully.");
+                //}
+    if($config['log'] >= '1') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("user edit ".$targetuserid)."')");
+
 		die(pagefooter());
 	}
 	else
 	{
-		print "$L[TBL1]>
-".        " $L[TRh]>
-".        "  $L[TDhc]>Error
-".        " $L[TR]>
-".        "  $L[TD1c]>
-".        "    Couldn't save the profile changes. The following errors occured:<br><br>
-".        "    $error
-".        "$L[TBLend]
-".        "<br>
-";
+                noticemsg("Error", "Couldn't save the profile changes. The following errors occured:<br><br>".$error);
 
 		$act = '';
 		foreach ($_POST as $k=>$v)
@@ -250,6 +333,25 @@
 		$user['birth'] = $birthday;
 	}
   }
+
+  if($act=='Preview theme')
+  {
+  /*if($loguser[redirtype]==0){ //Classical Redirect
+  $loguser['blocksprites']=1;
+  pageheader('Edit profile');
+  print "$L[TBL1]>
+".        "  $L[TD1c]>
+".        "    The theme will be previewed<br>
+".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
+".        "$L[TBLend]
+";
+   } else { //Modern redirect*/
+   redirect("/?theme=$_POST[theme]",0);
+   //}
+  die(pagefooter());
+  }
+
+  pageheader('Edit profile');
 
   if(!$act){
     
@@ -263,8 +365,6 @@
         $listtimezones[$tz['name']] = $tz['name'];
       }
 
-    $listpm=array('allow','disallow');
-    $listrename=array('disallow','allow');
 
     if($user[birth]!=-1){
       $birthday=explode('-',$user[birth]);
@@ -291,13 +391,18 @@
 ".        "      $L[INPt]=tzoffH size=3 maxlength=3 value=".(int)($user[tzoff]/3600)."> :
 ".        "      $L[INPt]=tzoffM size=2 maxlength=2 value=".floor(abs($user[tzoff]/60)%60).">
 ".        "    ";
+    //http://jscolor.com/try.php
+    $colorinput="
+<script type=text/javascript src=jscolor/jscolor.js></script>
+".        "      $L[INPt]=nick_color class=color value=".$user['nick_color']."><input type=checkbox name=enablecolor value=1 id=enablecolor ".($user[enablecolor]?"checked":"")."><label for=enablecolor>Enable Color</label>
+".        "    ";
 
     print "<form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
 ".        " $L[TBL1]>
 ".
            catheader('Login information')."
 ".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
-".(has_perm("has-displayname") ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
+".(checkcdisplayname($targetuserid) ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";
 
@@ -310,9 +415,10 @@ if (has_perm("edit-users"))
   print
            catheader('Appearance')."
 ".           fieldrow('Rankset'   ,fieldselect('rankset', $user['rankset'], ranklist()))."
-".           ((checkctitle()) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
+".           ((checkctitle($targetuserid)) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 80KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
 ".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
+".           (checkcusercolor($targetuserid) ? fieldrow('Custom username color',$colorinput) : "" )."
 ";
 
 if (has_perm("edit-users"))
@@ -343,7 +449,28 @@ if (has_perm("edit-users"))
            catheader('Contact information')."
 ".           fieldrow('Email address'   ,fieldinput(40, 60,'email'     ))."
 ".           fieldrow('Homepage URL'    ,fieldinput(40,200,'homeurl'   ))."
-".           fieldrow('Homepage name'   ,fieldinput(40, 60,'homename'  ))."
+".           fieldrow('Homepage name'   ,fieldinput(40, 60,'homename'  ));
+if(checkcextendedprofile($targetuserid))
+{
+  $fieldReq = $sql->query("SELECT * FROM `profileext`
+                         RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
+                         WHERE `user_profileext`.`user_id`='$targetuserid'");
+  $userprof = array();
+  while($pfield = $sql->fetch($fieldReq))
+  {
+    $userprof[$pfield['field_id']] = $pfield['data'];
+  }
+
+  $qallfields = $sql->query("SELECT * FROM `profileext`");
+  while ($allfieldsgquery = $sql->fetch($qallfields))
+  { 
+    print fieldrow($allfieldsgquery['title']."<br /><small>".$allfieldsgquery['description']." (IE: <b>".$allfieldsgquery['example']."</b>)</small>"    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
+
+  }
+
+}
+ //Implemented the show-online perm. - SquidEmpress
+ print"
 ".
            catheader('Options')."
 ".           fieldrow('Theme'           ,fieldselect('theme', $user['theme'], themelist()))."
@@ -355,14 +482,33 @@ if (has_perm("edit-users"))
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
 ".           fieldrow('Post layouts', fieldoption('blocklayouts',$user['blocklayouts'],array('Show everything in general', 'Block everything')))."
+";
+if ($config['spritesystem'])
+  print"
 ".           fieldrow('Sprites', fieldoption('blocksprites',$user['blocksprites'],array('Show them', 'Disable sprite layer')))."
+";
+  print"
+".           fieldrow('Hide Email', fieldoption('emailhide',$user['emailhide'],array('Show my email', 'Hide my email')))."
+";
+ if (has_perm("show-online") || has_perm("edit-user-show-online"))
+ print"
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
-".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Display redirect page', 'Instant redirect')))."
+";
+ print"
+".           fieldrow('AB1.x Number and Bar Graphics', fieldoption('numbargfx',$user['numbargfx'],array('Show them in AB1.x themes', 'Never show them in AB1.x themes')))."
+";
+if ($config['alwaysshowlvlbar'])
+  print"
+".           fieldrow('EXP level bars', fieldoption('showlevelbar',$user['showlevelbar'],array('Show EXP bars', 'Disable EXP bars')))."
+";
+ print"
+".           fieldrow('Posting Toolbar', fieldoption('posttoolbar',$user['posttoolbar'],array('Show Toolbar', 'Hide Toolbar')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>$L[INPs]=action value='Edit profile'></td>
+".        "    $L[TD]>$L[INPs]=action value='Edit profile'>
+".        "    $L[INPs]=action value='Preview theme'></td>
 ".        " $L[TBLend]
 ".        " $L[INPh]=token value='$token'>
 ".        "</form>

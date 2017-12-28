@@ -119,6 +119,14 @@ del{
   color: #FF4000;
 }
 
+/*Custom Colors. You will need to add one for each new group you add if you this this theme to show it differently.
+This also applies if you restructure your groups. 
+ncXY X = gender (0=M, 1=F, 2=N) and Y=group id # */
+#nc02{color:#90E090 !important; text-decoration: none;}
+#nc12{color:#FC7676 !important; text-decoration: none;}
+#nc22{color:#5BBCD4 !important; text-decoration: none;}
+
+
 .nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
 .nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
 .nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}

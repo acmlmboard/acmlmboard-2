@@ -1,8 +1,5 @@
 <?php
   require 'lib/common.php';
-//  if(!ismod()) {
-//    pageheader('Nothing here.');
-//  } else {
     pageheader('Mood avatars');
 
     $a=$sql->query("SELECT users.* FROM mood,users WHERE users.id=mood.user GROUP BY users.id ORDER BY users.id ASC");
@@ -24,7 +21,7 @@
 ".        "    $L[TD]>
 ";
       $b=$sql->query("SELECT * FROM mood WHERE user=$m[id]");
-      while($n=$sql->fetch($b)) echo isadmin() ? "<a href='usermood.php?a=e&i=$n[id]&uid=$n[user]'><img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'></a>" : "<img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'>";
+      while($n=$sql->fetch($b)) echo "<a href=\"usermood.php?a=e&i=$n[id]&uid=$n[user]\"</a><img src='gfx/userpic.php?id=$n[user]_$n[id]' title='$n[label]'></a>";
     }
     print "$L[TBLend]
 ";

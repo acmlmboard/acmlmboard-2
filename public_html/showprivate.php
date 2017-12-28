@@ -5,13 +5,12 @@
   needs_login(1);
 
   if (!has_perm('view-own-pms')) {
-    pageheader('Access Denied');
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
 
   loadsmilies();
 
-  $fieldlist=''; $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','group_id','rankset','title','usepic','head','sign');
+  $fieldlist=''; $ufields=array('posts','regdate','lastpost','lastview','location','rankset','title','usepic','head','sign');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
@@ -21,11 +20,10 @@
 //  if ($pid) 
 
     if (!$pid) {
-      pageheader('Error');
-      pm_not_found();
+      error("Error", "Private message does not exist. <br> <a href=./>Back to main</a>");
     }
 
-    $pmsgs=$sql->fetchq("SELECT $fieldlist p.*, pt.* "
+    $pmsgs=$sql->fetchq("SELECT ".userfields('u','u').",$fieldlist p.*, pt.* "
                        ."FROM pmsgs p "
                        ."LEFT JOIN users u ON u.id=p.userfrom "
                        ."LEFT JOIN pmsgstext pt ON p.id=pt.id "
@@ -33,8 +31,7 @@
     $tologuser=($pmsgs[userto]==$loguser[id]);
 
     if(((!$tologuser && $pmsgs[userfrom]!=$loguser[id]) && !has_perm('view-user-pms'))) {
-      pageheader('Error');
-      pm_not_found();
+      error("Error", "Private message does not exist. <br> <a href=./>Back to main</a>");
     }elseif($tologuser && $pmsgs[unread])
       $sql->query("UPDATE pmsgs SET unread=0 WHERE id=$pid");
 

@@ -19,14 +19,14 @@
 	{
 		$userid = $loguser['id'];
 		$user = $loguser;
-		if ($_POST['passenc'] !== md5($loguser['pass'].$pwdsalt))
+		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
 			$err = 'Invalid token.';
 			
 		$pass = $_POST['passenc'];
 	}
 	else
 	{
-      $pass=md5($_POST[pass].$pwdsalt);
+      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
 
     if($userid=checkuser($_POST[name],$pass))
       $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
@@ -34,7 +34,7 @@
       $err="    Invalid username or password!<br>
 ".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
 
-		$pass = md5($pass.$pwdsalt);
+		$pass = md5($pwdsalt2.$pass.$pwdsalt);
 	}
   }else{
     $user=$loguser;
@@ -46,12 +46,7 @@
 
 
   if($act!='Submit'){
-    $fieldlist='';
-    $ufields=array('id','name','displayname','posts','sex','group_id');
-    foreach($ufields as $field)
-      $fieldlist.="u.$field u$field,";
-
-    $posts=$sql->query("SELECT $fieldlist p.*, pt1.text, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
                       .'FROM posts p '
 					  .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN poststext pt1 ON p.id=pt1.id '
@@ -68,8 +63,7 @@
                       .'LEFT JOIN forums f ON f.id=t.forum '
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
-  if($act!="Submit" || $loguser[redirtype]==0){ //We don't render the header for a "Modern" redirect.
-    pageheader('New reply',$thread[forum]);
+  if($act!="Submit"){
     echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
@@ -77,7 +71,7 @@
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
   if(!$thread) {
-    thread_not_found();
+	error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
 
 
@@ -85,17 +79,17 @@
 
        $err="    You have no permissions to create posts in this forum!<br>$forumlink";
     }
-  elseif($thread[closed]){
+  elseif($thread[closed] && !can_create_locked_posts($thread['forum'], $thread['id'])){
       $err="    You can't post in closed threads!<br>
 ".         "    $threadlink";
-  }
+  }//needs function to test for perm based on $faccess /*!has_perm('create-closed-forum-post')*/
 
   if($act=='Submit'){
     $message = $_POST[message];
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !has_perm('consecutive-posts'))  // admins can double post all they want
+    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-$config[secafterpost]) && has_perm('consecutive-posts'))  // Protection against double-submit
+    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-$config[secafterpost]) && can_post_consecutively($thread['forum']))  // Protection against double-submit
       $err="    You must wait $config[secafterpost] seconds before posting consecutively.<br>
 ".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
@@ -130,65 +124,15 @@
   //does the user have reading access to the quoted post?
   if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
-  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".htmlval($post[text])."[/quote]";
-  }
-
-  //spambot logging [blackhole89]
-  if($act=='Submit' && $_SERVER['HTTP_USER_AGENT'] == "Opera/9.0 (Windows NT 5.1; U; en)") {
-    $sql->query("INSERT INTO ipbans (ipmask,expire) VALUES ('$userip',0)");
-    $sql->query("INSERT INTO spambotlog VALUES ('$userip','$name','$_POST[pass]','$title','$message')");
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".str_replace("&","&amp",$post[text])."[/quote]";
   }
 
   if($err){
-    if($loguser[redirtype]==1) pageheader('New reply',$thread[forum]);
-    //print "$top - Error
-    print "<a href=./>Main</a> - Error
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "$err
-".        "$L[TBLend]
-";
-  }elseif(!$act){
-    print "$top
-".        "<br><br>
-".        "$L[TBL1]>
-".        " <form action=newreply.php method=post>
-".        "  $L[TRh]>
-".        "    $L[TDh] colspan=2>Reply</td>
-";
-    if(!$log)
-    print "  $L[TR]>
-".        "    $L[TD1c]>Username:</td>
-".        "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".        "  $L[TR]>
-".        "    $L[TD1c]>Password:</td>
-".        "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-";
-    else
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
-";
-    print "  $L[TR]>
-".        "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
-".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=20 cols=80>$quotetext</textarea></td>
-".        "  $L[TR1]>
-".        "    $L[TD]>&nbsp;</td>
-".        "    $L[TD]>
-".        "      $L[INPh]=tid value=$tid>
-".        "      $L[INPs]=action value=Submit>
-".        "      $L[INPs]=action value=Preview>
-".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()." 
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
-".        " </form>
-".        "$L[TBLend]
-";
-  }elseif($act=='Preview'){
+    pageheader('New reply',$thread[forum]);
+    print "$top - Error";
+    noticemsg("Error", $err);
+  }elseif($act=='Preview' || !$act){
+    if($act=='Preview'){
     $_POST[message]=stripslashes($_POST[message]);
 
     $postfix=""; $prefix=""; $valid="";
@@ -200,18 +144,30 @@
       for($i=0;$i<$a;++$i) $prefix.="<table>";
       $valid="$L[TR]> $L[TD1c] width=120>Table depth: $L[TD2]><font color=red><b>-x</b></font> (You are opening fewer table tags than you are closing.)";
     }
+      }
 
 
     $post[date]=ctime();
     $post[ip]=$userip;
     $post[num]=++$user[posts];
-    $post[text]=$prefix.$_POST[message].$postfix;
+    if($act=='Preview') $post[text]=$prefix.$_POST[message].$postfix;
+    else $post[text]=$quotetext;
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
+    if($act=='Preview') $post[moodlist]=moodlist($_POST[mid]);
+    else $post[moodlist]=moodlist();
+    if($act=='Preview') $pass=$_POST[passenc];
+    else $pass=md5($pwdsalt2.$loguser[pass].$pwdsalt);
     $post[nolayout]=$_POST[nolayout];
+    $post[close]=$_POST[close];
+    $post[stick]=$_POST[stick];
+    $post[open]=$_POST[open];
+    $post[unstick]=$_POST[unstick];
     foreach($user as $field => $val)
       $post[u.$field]=$val;
     $post[ulastpost]=ctime();
 
+ if($act=='Preview') {
+    pageheader('New reply',$thread[forum]);
     print "$top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -220,17 +176,27 @@
 ".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
-".        "$L[TBL1]>
+"; 
+} else {
+    pageheader('New reply',$thread[forum]);
+    print "$top 
+".        "<br><br> 
+"; }
+print 
+        "$L[TBL1]> 
 ".        " <form action=newreply.php method=post>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Reply</td>
 ".           $valid."
-".        "  $L[TR]>
+";
+     if($loguser[posttoolbar]!=1)
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
-".        "  $L[TR]>
+";
+print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($post[text])."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -240,23 +206,42 @@
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist()." 
+          "      $L[INPl]=mid>".$post[moodlist]." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($thread[forum]))
+    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+";
+    print "    </td>
 ".        " </form>
 ".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
     checknumeric($_POST[nolayout]);
+//Make sure these controls are only usable by those with moderation rights!
+    if(can_edit_forum_threads($thread['forum'])){
+    	checknumeric($_POST['close']);
+	checknumeric($_POST['stick']);
+     	checknumeric($_POST['open']);
+     	checknumeric($_POST['unstick']);
+     	if($_POST['close']) $modext=",closed=1";
+ 	if($_POST['stick']) $modext.=",sticky=1";
+     	if($_POST['open']) $modext=",closed=0";
+ 	if($_POST['unstick']) $modext.=",sticky=0";
+    }
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user[posts]++;
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
+
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
     $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
-    $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$tid");
+    $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id=$tid");
     $sql->query("UPDATE forums SET posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
 
     //2007-02-21 //blackhole89 - nuke entries of this thread in the "threadsread" table
@@ -271,7 +256,9 @@
 
 sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
-if($loguser[redirtype]==0){ //Classical Redirect
+/*if($loguser[redirtype]==0){ //Classical Redirect
+    $loguser['blocksprites']=1;
+    pageheader('New reply',$thread[forum]);
     print "$top - Submit
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -280,13 +267,13 @@ if($loguser[redirtype]==0){ //Classical Redirect
 ".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
 ".        "$L[TBLend]
 ";
-} else { //Modern redirect
-  redir2("thread.php?pid=$pid#$pid",$c);
-}
+} else { //Modern redirect*/
+  redirect("thread.php?pid=$pid#$pid",$c);
+//}
 
   }
 
-  if($act!='Submit' && !$err && $thread[minpower]<=$loguser[power]){
+  if($act!='Submit' && !$err && can_view_forum($thread)){
     print "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>

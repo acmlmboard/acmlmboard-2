@@ -42,18 +42,34 @@ if($_COOKIE['pstbon']>=1){
 
   loadsmilies();
 
+   if(has_perm('track-deleted-posts')){
+     $deletedposts=
+     "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
+".   "       Your Deleted Posts</a> | <a href=thread.php?alldeletedposts>General Deleted Posts</a></div>";
+     $alldeletedposts=
+     "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
+".   "       <a href=thread.php?deletedposts>Your Deleted Posts</a> | General Deleted Posts</a></div>";
+     }else{
+     $deletedposts="";
+     $deletedposts="";
+     }
+ 
   $page = $_REQUEST['page'];
 
   if(!$page)
     $page=1;
 
   $fieldlist='';
-  $ufields=array('id','name','displayname','posts','regdate','lastpost','lastview','location','sex','group_id','rankset','title','usepic','head','sign','signsep', 'minipic');
+  $ufields=array('posts','regdate','lastpost','lastview','location','rankset','title','usepic','head','sign','signsep', 'minipic');
   foreach($ufields as $field)
     $fieldlist.="u.$field u$field,";
 
 //  [DJ Bouche] What the fuck?
 //  if($tid=($_POST[id]?$_POST[id]:$_GET[id])) {
+  if ($ppp=$_REQUEST['ppp']) {
+  checknumeric($ppp);
+  }
+  else $ppp = $loguser['ppp'];
 
   if ($tid=$_REQUEST['id']) {
     checknumeric($tid);
@@ -72,36 +88,45 @@ if($_COOKIE['pstbon']>=1){
     checknumeric($announcefid);
     $viewmode = "announce";
   }
+  elseif(isset($_GET[deletedposts])) {
+    $viewmode = "deletedposts";
+  }
+  elseif(isset($_GET[alldeletedposts])) {
+    $viewmode = "alldeletedposts";
+  }
   // "link" support (i.e., thread.php?pid=999whatever)
   elseif($pid=$_GET[pid]){
     checknumeric($pid);
+        $numpid =$sql->fetchq("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
+        if (!$numpid) {
+      error("Error", "Thread post does not exist. <br> <a href=./>Back to main</a>");
+    }
     $isannounce = $sql->resultq("SELECT announce FROM posts WHERE id=$pid");
     if ($isannounce) {
       $pinf =$sql->fetchq("SELECT t.forum fid, t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
       $announcefid = $pinf['fid'];
       $atid = $pinf['tid'];
 
-      $page=floor($sql->resultq("SELECT COUNT(*) FROM threads WHERE announce=1 AND forum=$announcefid AND id>$atid")/$loguser[ppp])+1;
+      $page=floor($sql->resultq("SELECT COUNT(*) FROM threads WHERE announce=1 AND forum=$announcefid AND id>$atid")/$ppp)+1;
       $viewmode = "announce";      
     }
     else {
       $tid =$sql->resultq("SELECT thread FROM posts WHERE id=$pid");
-      $page=floor($sql->resultq("SELECT COUNT(*) FROM posts WHERE thread=$tid AND id<$pid")/$loguser[ppp])+1;
+      $page=floor($sql->resultq("SELECT COUNT(*) FROM posts WHERE thread=$tid AND id<$pid")/$ppp)+1;
       $viewmode = "thread";      
     }
   }
   else
   {
-	pageheader('Thread not found',0);
-	thread_not_found();
+	error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
   }
-  
+
   if ($viewmode == "thread") 
     $threadcreator=$sql->resultq("SELECT user FROM threads WHERE id=$tid");
   else $threadcreator=0;
   $action='';
   //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
-  if($tid && $_POST[c]==md5($loguser[pass].$pwdsalt) && (can_edit_forum_threads(getforumbythread($tid)) ||
+  if($tid && $_POST[c]==md5($pwdsalt2.$loguser[pass].$pwdsalt) && (can_edit_forum_threads(getforumbythread($tid)) ||
      ($loguser[id] == $threadcreator && $_POST[action] == "rename" && has_perm('rename-own-thread')))) {
     $act=$_POST[action];
     if($act=='stick'  ) $action=',sticky=1';
@@ -117,7 +142,7 @@ if($_COOKIE['pstbon']>=1){
     if($act=='tag'    )
       $action=',tags=tags^'.(1<<$_POST[arg]);
 
-    $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'$REMOTE_ADDR','$loguser[id]','ACTION: ".addslashes($act." ".$tid." ".$_POST[arg])."')");
+    if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes($act." ".$tid." ".$_POST[arg])."')");
   }
 
   checknumeric($_GET[pin]);
@@ -141,10 +166,34 @@ if($_COOKIE['pstbon']>=1){
 
     if(!isset($thread[id]))
     {
-      pageheader("Thread not found",0);
-      thread_not_found();
+      error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
+    if($config['threadprevnext'])
+    {
+      //AB1 style next/prev thread. Based off of AB1's code
+      if($tnext=$sql->resultq("SELECT min(t.lastdate), t.forum fid FROM threads t LEFT JOIN forums f ON f.id=t.forum WHERE f.id=$thread[fid] AND t.lastdate>$thread[lastdate]"))
+      {
+        $tnext=$sql->resultq("SELECT id FROM threads WHERE lastdate=$tnext");
+      }
 
+      if($tprev=$sql->resultq("SELECT max(t.lastdate), t.forum fid FROM threads t LEFT JOIN forums f ON f.id=t.forum WHERE f.id=$thread[fid] AND t.lastdate<$thread[lastdate]"))
+      {
+        $tprev=$sql->resultq("SELECT id FROM threads WHERE lastdate=$tprev");
+      }
+      if($tnext) $nextnewer="<a href=thread.php?id=$tnext>Next newer thread</a>";
+      if($tprev) $nextolder="<a href=thread.php?id=$tprev>Next older thread</a>";
+      if($nextnewer and $nextolder) $nextnewer.=" | ";
+      $nextoldnew = "$nextnewer $nextolder";
+      $userbar .= "<div style='text-align: right;'>".$nextoldnew."</div>";
+    }
+      
+    else
+    {
+       $nextnewer="";
+       $nextolder="";
+    }
+      
+    
 
 	if($thread[ispoll])
     {
@@ -202,7 +251,7 @@ if($_COOKIE['pstbon']>=1){
     }
 
     //select top revision // 2007-03-08 blackhole89
-    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').", ".$fieldlist." p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.forum tforum "
                       ."FROM posts p "
 					  ."LEFT JOIN threads t ON t.id=p.thread "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
@@ -214,7 +263,7 @@ if($_COOKIE['pstbon']>=1){
                       ."WHERE p.thread=$tid AND ISNULL(pt2.id) "
 		      ."GROUP BY p.id "
                       ."ORDER BY p.id "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
     //load tags
     $tags=array();
@@ -227,7 +276,7 @@ if($_COOKIE['pstbon']>=1){
                       ."WHERE id=$uid ");
     //title
     pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
 //		      ."JOIN ("
@@ -239,10 +288,8 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE p.user=$uid AND ISNULL(pt2.id) "
-//                      .  "AND f.minpower<=$loguser[power] "
-//                      .  "AND c.minpower<=$loguser[power] "
                       ."ORDER BY p.id "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
     $thread[replies]=$sql->resultq("SELECT count(*) "
                                   ."FROM posts p "
@@ -250,8 +297,6 @@ if($_COOKIE['pstbon']>=1){
                                   ."LEFT JOIN forums f ON f.id=t.forum "
                                   ."LEFT JOIN categories c ON c.id=f.cat "
                                   ."WHERE p.user=$uid ");
-//                                  .  "AND f.minpower<=$loguser[power] "
-//                                  .  "AND c.minpower<=$loguser[power]");
   }
   elseif($viewmode == "announce") {
     $announceftitle = $sql->resultp("SELECT title FROM forums WHERE id=?",array($announcefid));
@@ -262,7 +307,7 @@ if($_COOKIE['pstbon']>=1){
       pageheader('Announcements');
     }
 
-    $posts=$sql->query("SELECT $fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
                       ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr " //SQL barrel roll
@@ -272,7 +317,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE t.forum=$announcefid AND p.announce=1 AND t.announce=1 AND ISNULL(pt2.id) GROUP BY pt.id "
                       ."ORDER BY p.id DESC "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
 
 
@@ -291,7 +336,7 @@ if($_COOKIE['pstbon']>=1){
     pageheader('Latest posts');
 
 
-    $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
@@ -301,7 +346,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE p.date>$mintime AND ISNULL(pt2.id) "
                       ."ORDER BY p.date DESC "
-                      ."LIMIT ".(($page-1)*$loguser[ppp]).",".$loguser[ppp]);
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
     $thread[replies]=$sql->resultq("SELECT count(*) "
                                   ."FROM posts p "
@@ -311,7 +356,50 @@ if($_COOKIE['pstbon']>=1){
                                   ."WHERE p.date>$mintime "
                       );
   }
-
+  elseif(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log){
+ 
+    pageheader("Deleted Posts Tracker");
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
+                      ."FROM posts p "
+                      ."LEFT JOIN poststext pt ON p.id=pt.id "
+		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
+                      ."LEFT JOIN users u ON p.user=u.id "
+                      ."LEFT JOIN threads t ON p.thread=t.id "
+                      ."LEFT JOIN forums f ON f.id=t.forum "
+                      ."LEFT JOIN categories c ON c.id=f.cat "
+                      ."WHERE p.user=$loguser[id] AND p.deleted=1 AND ISNULL(pt2.id) "
+                      ."ORDER BY p.id "
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
+ 
+    $thread[replies]=$sql->resultq("SELECT count(*) "
+                                  ."FROM posts p "
+                                  ."LEFT JOIN threads t ON p.thread=t.id "
+                                  ."LEFT JOIN forums f ON f.id=t.forum "
+                                  ."LEFT JOIN categories c ON c.id=f.cat "
+                                  ."WHERE p.user=$loguser[id] AND p.deleted=1 ");
+  }
+  elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log){
+ 
+    pageheader("Deleted Posts Tracker");
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
+                      ."FROM posts p "
+                      ."LEFT JOIN poststext pt ON p.id=pt.id "
+		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
+                      ."LEFT JOIN users u ON p.user=u.id "
+                      ."LEFT JOIN threads t ON p.thread=t.id "
+                      ."LEFT JOIN forums f ON f.id=t.forum "
+                      ."LEFT JOIN categories c ON c.id=f.cat "
+                      ."WHERE p.deleted=1 AND ISNULL(pt2.id) "
+                      ."ORDER BY p.id "
+                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
+ 
+    $thread[replies]=$sql->resultq("SELECT count(*) "
+                                  ."FROM posts p "
+                                  ."LEFT JOIN threads t ON p.thread=t.id "
+                                  ."LEFT JOIN forums f ON f.id=t.forum "
+                                  ."LEFT JOIN categories c ON c.id=f.cat "
+                                  ."WHERE p.deleted=1 ");
+  }
 
 
 
@@ -319,11 +407,11 @@ if($_COOKIE['pstbon']>=1){
   else
     pageheader();
 
-  if($thread[replies]<$loguser[ppp]){
+  if($thread[replies]<$ppp){
     $pagelist=''; $pagebr='';
   }else{
     $pagelist='<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">Pages:';
-    for($p=1;$p<=1+floor($thread[replies]/$loguser[ppp]);$p++)
+    for($p=1;$p<=1+floor($thread[replies]/$ppp);$p++)
       if($p==$page)
         $pagelist.=" $p";
       elseif($viewmode == "thread")
@@ -334,6 +422,10 @@ if($_COOKIE['pstbon']>=1){
         $pagelist.=" <a href=thread.php?time=$timeval&page=$p>$p</a>";
       elseif($viewmode == "announce")
         $pagelist.=" <a href=thread.php?announce=$announcefid&page=$p>$p</a>";
+      elseif($viewmode == "deletedposts")
+        $pagelist.=" <a href=thread.php?deletedposts&page=$p>$p</a>";
+      elseif($viewmode == "alldeletedposts")
+        $pagelist.=" <a href=thread.php?alldeletedposts&page=$p>$p</a>";
     $pagebr='<br>';
     $pagelist.='</div>';
   }
@@ -342,7 +434,9 @@ if($_COOKIE['pstbon']>=1){
 
 	$faccess = $sql->fetch($sql->query("SELECT id,private,readonly FROM forums WHERE id=".(int)$thread['forum']));
     if (can_create_forum_post($faccess)) {
-    if($thread[closed])
+    if(can_create_locked_posts($thread['forum'], $thread['id']) && $thread[closed])
+      $newreply="<b><i>Thread closed</i></b> | <a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>"; //needs function to test for perm based on $faccess
+    elseif($thread[closed])
       $newreply="Thread closed";
     else
       $newreply="<a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>";
@@ -372,13 +466,13 @@ if($_COOKIE['pstbon']>=1){
 //[KAWA] Thread +1
 if(isset($_GET['thumbsup']))
 {
-  if (!has_perm('rate-thread')) no_perm();
+  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("INSERT IGNORE INTO threadthumbs VALUES (".$loguser['id'].", ".$tid.")");
 	$isThumbed = true;
 }
 else if(isset($_GET['thumbsdown']))
 {
-  if (!has_perm('rate-thread')) no_perm();
+  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("DELETE FROM threadthumbs WHERE uid = ".$loguser['id']." AND tid = ".$tid);
 	$isThumbed = false;
 }
@@ -402,10 +496,11 @@ if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
           "$L[TBL] width=100%>$L[TR]>
 ".        "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread[title])." $thumbsUp</td>
 ".        "  $L[TDnr]>
-".        "    $newreply
+".        "  $newreply
 ".        "  </td>
 ".        "$L[TBLend]
 ";
+
   }elseif($viewmode=="user"){
     $topbot=
           "$L[TBL] width=100%>
@@ -436,6 +531,27 @@ elseif($viewmode=="time"){
 ".        "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
 ".        "$L[TBLend]
 ";
+  }
+elseif(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log){
+    $topbot=
+          "$L[TBL] width=100%>
+".        "  $L[TDn]><a href=./>Main</a> - Deleted Posts Tracker</td>
+".        "$L[TDnr]>$deletedposts
+".        "$L[TBLend]
+";
+  }
+elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log){
+    $topbot=
+          "$L[TBL] width=100%>
+".        "  $L[TDn]><a href=./>Main</a> - Deleted Posts Tracker</td>
+".        "$L[TDnr]>$alldeletedposts
+".        "$L[TBLend]
+";
+  }else
+  {
+	noticemsg("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
+        pagefooter();
+        die();
   }
   
   
@@ -556,15 +672,22 @@ elseif($viewmode=="time"){
 ".        "    <input type=hidden name=arg value=''>
 ".        "    <input type=hidden name=id value=$tid>
 ".        "    <input type=hidden name=action value=''>
-".        "    <input type=hidden name=c value=".md5($loguser[pass].$pwdsalt).">
+".        "    <input type=hidden name=c value=".md5($pwdsalt2.$loguser[pass].$pwdsalt).">
 ".        "  </td>
 ".        "  </form>
 ".        "$L[TBLend]
 ";
   }
 
-  print   "$topbot";
-
+  print   "$topbot$userbar";
+         if(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log && $thread['replies']==0) {
+         print "<br><br><br>"; 
+         noticemsg("Notice", "You have no deleted posts.");
+         }
+         if(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log && $thread['replies']==0) {
+         print "<br><br><br>";  
+         noticemsg("Notice", "There are no deleted posts on the board.");
+         }
 
   if($timeval) {
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
@@ -594,7 +717,7 @@ print "$modlinks
     } else {
       $post[maxrevision]=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
     }
-    if(can_edit_forum_posts($pthread[forum]) && $post[id]==$_GET[pin]) $post[deleted]=false;
+    if(can_edit_forum_posts($post[fid]) && $post[id]==$_GET[pin]) $post[deleted]=false;
 if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 
     print "<br>
@@ -657,7 +780,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
 ";
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($loguser[pass].$pwdsalt)."\">
+".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
@@ -674,14 +797,19 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
-".        "    </td>
+";
+    if(can_edit_forum_threads($thread[forum]))
+    print "     $L[INPc]=close id=close value=1 ><label for=close>Close thread</label>
+                ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1><label for=stick>Stick thread</label>" : "")."
+                ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
+";
+    print "    </td>
 ".        " </form>
 ".        "$L[TBLend]<br>
 ";
   }
 
-
-print        "$topbot";
+print        "$userbar$topbot";
 
   pagefooter();
 ?>

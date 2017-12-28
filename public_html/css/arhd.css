@@ -149,6 +149,19 @@ a[class~="newthread"] {
   content: url('../theme/arhd/newthread.png'); 
 }
 
+a[class~="newpoll"] { 
+  display: -moz-inline-box;
+  display: inline-block;
+  text-indent: -3000px;
+  font: 0/0 Arial;
+  overflow: hidden;
+  color: rgba(255,255,255,0);
+  width: 59px;
+  height: 16px;
+  background: url('../theme/arhd/newpoll.png');
+  content: url('../theme/arhd/newpoll.png'); 
+}
+
 .nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
 .nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
 .nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}

@@ -2,8 +2,7 @@
     require 'lib/common.php';
     
     if (!has_perm('view-acs-calendar')) {
-        pageheader('Access Denied');
-        no_perm();
+        error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
     }
 //Various variables.
   $past=$_GET[past];
@@ -74,8 +73,8 @@
         print "$l width=\"14%\" valign=\"top\"><a href=\"frank.php?d=$mday&m=$month&y=$year\">$mday</a>";
 //Query by-day here.
   $dstr=strtotime($mday.' '.$monthnames[$month].' '.$year);
-  $query='SELECT id,posts,regdate,name,sex,group_id,SUM(num) num FROM ('
-          .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.group_id,CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
+  $query='SELECT posts,regdate,'.userfields().',SUM(num) num FROM ('
+          .'SELECT u.posts,regdate,'.userfields('u').',CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
           .'LEFT JOIN threads t ON t.id=p.thread '
@@ -138,8 +137,8 @@
   //The old calendar ends here. Write the report!.
   //And the same query here for the selected date.
   $dstr=strtotime($day.' '.$monthnames[$month].' '.$year);
-  $query='SELECT id,posts,regdate,name,sex,group_id,SUM(num) num FROM ('
-          .'SELECT u.id,u.posts,regdate,u.name,u.sex,u.group_id,CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
+  $query='SELECT posts,regdate,'.userfields().',SUM(num) num FROM ('
+          .'SELECT u.posts,regdate,'.userfields('u').',CASE WHEN COUNT(*)>'.$kcscap.' THEN '.$kcscap.' ELSE COUNT(*) END num '
           .'FROM users u '
           .'LEFT JOIN posts p ON p.user=u.id '
           .'LEFT JOIN threads t ON t.id=p.thread '

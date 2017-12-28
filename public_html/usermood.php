@@ -23,8 +23,9 @@
   if (!can_edit_user_moods($targetuserid)) $targetuserid = 0;
 
   if ($targetuserid == 0) {
-     pageheader('No permission');
-     no_perm();
+     noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); 
+     pagefooter(); 
+     die();
   }
 
 
@@ -120,7 +121,7 @@
         //and give it focus
         $id = $avatarid;
       }else
-        print $error;
+        noticemsg("Error", $error);
     }
  }  
 
@@ -180,7 +181,7 @@
   
   function CanAlterAll() { //TODO replace with token support when that feature is complete
     global $loguser;
-    return ($loguser[power] >= 3);
+    return (has_perm('edit-moods'));
   }
 
   ?>

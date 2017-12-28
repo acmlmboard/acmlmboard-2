@@ -10,7 +10,9 @@
   }
 
   if(!has_perm('edit-ip-bans')) {
-    no_perm();
+    noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); 
+    pagefooter(); 
+    die();
   } else {
     if($action=="del")
     {

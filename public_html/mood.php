@@ -11,8 +11,7 @@
   }
   $edid = (int)$edid;
   if(!can_edit_user_moods($edid)){
-    pageheader('No permission');
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
 //Editing functionality
@@ -23,7 +22,7 @@
         if($_POST['id']!=-1){
           $ava_out=img_upload($fname,"userpic/".$edid."_".$_POST['id'],$avatardimx,$avatardimy,$avatarsize);
         } else {//Default Avatar
-          $sql->query("UPDATE `users` SET `usepic`=1 WHERE `id`=".$edid);
+          $sql->query("UPDATE `users` SET `usepic`=`usepic`+1 WHERE `id`=".$edid);
           $ava_out=img_upload($fname,"userpic/".$edid,$avatardimx,$avatardimy,$avatarsize);
         }
         if($ava_out=="OK!"){
@@ -62,12 +61,7 @@
   pageheader('Mood Avatar Editor 0.a');
 //Various magic
   if(isset($err)){
-    print "$L[TBL1]>
-  $L[TRh]>
-    $L[TDh]>Notice</td>
-  $L[TR]>
-    $L[TD1]>$err
-  </tr></table>";
+    noticemsg("Notice", $err);
   }
   print "<script language=\"javascript\">
 	function edit(av_id, av_lab, av_url)
@@ -108,7 +102,7 @@
 </script>";
 //Default Avatar.
   $u=$sql->fetch($sql->query("SELECT `usepic` FROM `users` WHERE `id`=".$edid));
-  if($u['usepic']==1){ $aurl="gfx/userpic.php?id=".$edid; }
+  if($u['usepic']>=1){ $aurl="gfx/userpic.php?id=".$edid."&r=".$u['usepic']; }
   print "<div style=\"margin: 4px; float: left; display:inline-block;\">$L[TBL1]>
   $L[TRh]>
     $L[TDh]>Default</td>

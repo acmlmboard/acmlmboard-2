@@ -2,8 +2,7 @@
     require 'lib/common.php';
     
     if (!has_perm('view-calendar')) {
-        pageheader('Access Denied');
-        no_perm();
+        error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
     }
 
     $daynames = array('Sunday','Monday','Tuesday','Wednesday',
@@ -46,8 +45,10 @@
         if ($bdaydecode[0] == $month) {
             $age = $year - $bdaydecode[2];
             $t = userlink($bdayarr);
-            if ($age > 0) {
+            if ($age > 0 && !$bdaydecode['2'] <= 0) {
                 $t .= " turns $age";
+            } else if ($bdaydecode['2'] <= 0) {
+                $t .= "'s birthday";
             } else if ($age < 0) {
                 $t .= " is born in ".(-$age)." year".(($age!=-1)?'s':'');
             } else {
@@ -60,7 +61,16 @@
             }
         }
     }
-    
+ 
+     //Fetch events - yet again, uses the same crude but effective method as the old one
+    $eventtext = array();
+    $eventres = $sql->query("SELECT * FROM events e LEFT JOIN users u ON u.id=e.user WHERE year = '$year' AND month = $month");
+
+    while ($eventarr = $sql->fetch($eventres)) {
+        $text = $eventarr['event_title']." - ".userlink($eventarr);
+        $eventtext[$eventarr['day']] = $text;
+    }
+
     pageheader('Calendar');
     print "$L[TBL1] width=\"100%\">
 ".        "    $L[TR]>
@@ -90,6 +100,9 @@
         $dnum=str_pad($mday,2,"0",STR_PAD_LEFT);
         if (isset($bdaytext[$dnum])) {
             print "<br/>$bdaytext[$dnum]";
+        }
+        if (isset($eventtext[$dnum])) {
+            print "<br/>$eventtext[$dnum]";
         }
         print "</td>\n";
         

@@ -1,4 +1,4 @@
-﻿<?PHP
+<?PHP
   require 'lib/common.php';  
   if(isset($_GET['a'])) {
     $name=addslashes($_GET['a']); 

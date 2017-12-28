@@ -1,6 +1,29 @@
 <?php
     require "lib/common.php";
     require "lib/threadpost.php";
+
+  $rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+if($_COOKIE['pstbon']==-1){
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>User has been banned.</td></tr></table></div>";
+} elseif($_COOKIE['pstbon']<-1){
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>User has been unbanned.</td></tr></table></div>";
+} else {
+	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Profile was edited successfully.</td></tr></table></div>"; }
+}
+
 	loadsmilies();
 
     $uid = $_GET['id'];
@@ -9,17 +32,14 @@
       $user = $sql->fetchq("SELECT * FROM `users` WHERE `id`='$uid'");
     }
 
-   if(!$user['id'])
-    {
-     //use error($message, 0) function later!
-     pageheader("Profile");
-     print "<a href=\"./\">Main</a> - Profile<br><br>
-            $L[TBL1]>
-              $L[TD1c]>
-            This user does not exist!
-            $L[TBLend]";
-     pagefooter();
-     die();
+   if($uid = $_GET['id']) {
+     checknumeric($uid);
+     $numid = $sql->fetchq("SELECT `id` FROM `users` WHERE `id`='$uid'");
+     if(!$numid) {
+     error("Error", "This user does not exist!");
+    }
+   } else {
+     error("Error", "You must specify a user ID!");
     }
 
     $group = $sql->fetchp("SELECT * FROM `group` WHERE id=?", array($user['group_id']));
@@ -31,12 +51,38 @@
     $pavg   = sprintf("%1.02f", $user['posts'] / $days);
     $tfound = $sql->resultq("SELECT count(*) FROM `threads` WHERE `user`='$uid'");
     $tavg   = sprintf('%1.02f',$user['threads'] / $days);
-  
-    $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`minpower`
+
+    if($user[posts])
+      {
+        $exp       = calcexp($user['posts'],(ctime()-$user['regdate'])/86400);
+        $lvl       = calclvl($exp);
+        $expleft   = calcexpleft($exp);
+        $expstatus = "Level: $lvl<br>EXP: $exp (for next level: $expleft)";
+
+        $pexp      = "$expstatus<br>Gain: ".calcexpgainpost($user['posts'],(ctime()-$user['regdate'])/86400)." EXP per post, ".calcexpgaintime($user['posts'],(ctime()-$user['regdate'])/86400)." seconds to gain 1 EXP when idle";
+      }
+      else $pexp = "None";
+
+
+    $thread = $sql->fetchq("SELECT `p`.`id`, `t`.`title` `ttitle`, `f`.`title` `ftitle`, `t`.`forum`, `f`.`private`
                             FROM `forums` `f`
                             LEFT JOIN `threads` `t` ON `t`.`forum`=`f`.`id`
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
                             WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `f`.`id` IN ".forums_with_view_perm());
+
+  if(!$config[topposts]) $topposts=5000;
+  else $topposts = $config[topposts];
+  if(!$config[topthreads]) $topthreads=200;
+  else $topthreads = $config[topthreads];
+
+  if($user['posts']) $pprojdate=ctime()+(ctime()-$user['regdate'])*($topposts-$user['posts'])/($user['posts']);
+  if(!$user['posts'] or $user['posts']>=$topposts or $pprojdate>2000000000 or $pprojdate<ctime()) $pprojdate="";
+  else $pprojdate=" -- Projected date for $topposts posts: ".date("m-d-y h:i A",$pprojdate);
+
+  
+  if($user['threads']) $tprojdate=ctime()+(ctime()-$user['regdate'])*($topthreads-$user['threads'])/($user['threads']);
+  if(!$user['threads'] or $user['threads']>=$topthreads or $tprojdate>2000000000 or $tprojdate<ctime()) $tprojdate="";
+  else $tprojdate=" -- Projected date for $topthreads threads: ".date("m-d-y h:i A",$tprojdate);
 
    if($pfound && $thread)
     {
@@ -67,17 +113,25 @@
    if($user['birth'] != -1)
     {
      //Crudely done code.
+     //You're Goddamn right. :P - SquidEmpress
+     $monthnames = array(1=>'January',  'February','March',   'April',
+                       'May',      'June',   'July',    'August',
+                       'September','October','November','December');
      $bdec     = explode("-", $user['birth']);
      $bstr     = $bdec[2]."-".$bdec[0]."-".$bdec[1];
-	 $birthday = date("l, F j, Y", strtotime($bstr));
+     $mn=intval($bdec[0]);
+         if ($bdec['2'] <= 0 && $bdec['2'] > -2) $birthday = $monthnames[$mn]." ".$bdec[1];
+	 else $birthday = date("l, F j, Y", strtotime($bstr));
 	 
 	 $age = '<!-- This feature requires PHP 5.3.0 or higher -->';
 	 if (class_exists('DateTime') && method_exists('DateTime', 'diff'))
 	 {
 		$bd1      = new DateTime($bstr);
 		$bd2      = new DateTime(date("Y-m-d"));
-		if ($bd2 < $bd1)
+		if ($bd2 < $bd1 && !$bdec['2'] <= 0)
 			$age = '(not born yet)';
+	       else if ($bdec['2'] <= 0 && $bdec['2'] > -2)
+		       $age = ''; 
 		else
 		{
 			$bd3      = $bd1->diff($bd2);
@@ -90,15 +144,16 @@
      $birthday = "";
      $age      = "";
     }
-
-   if($user['email'])
+    
+   //This code was done by Gywall 
+   if($user['email'] && !$user['emailhide'])
     {
-     $email = htmlval($email);
-     $email = str_replace("@", "<b>&#64;</b>", $user['email']);
-     $email = str_replace(".", "<b>&#46;</b>", $email);
-    }
+     $email=EmailObscurer($user['email']);
+    } 
    else
-     $email = "";
+    {
+     $email=""; 
+    }
 
    if($user['homeurl'] && $user['homename'])
      $homepage = "<a href=\"".htmlval($user['homeurl'])."\">".htmlval($user['homename'])."</a> - ".htmlval($user['homeurl']);
@@ -124,7 +179,7 @@ How about some code:
 [code]<?php
 if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Scrydan was here.... 
 {
-print \"Sample code.\"; #oops you just missed him!
+   print \"Sample code.\"; #oops you just missed him!
 }
 ?>[/code]
 [i]Sample[/i] message.";
@@ -183,7 +238,7 @@ print \"Sample code.\"; #oops you just missed him!
       $badgelist.="$L[TR]>";
      while($badge = $sql -> fetch($q))
       {
-       $badgelist.= "$L[TD2c]><img src=\"".htmlval($badge['image'])."\" alt=\"\" title=\"".htmlval($badge['name'])."\" /></td>";
+       $badgelist.= "$L[TD2c]><img src=\"".htmlval($badge['image'])."\" alt=\"\" title=\"".htmlval(str_replace("%%%VAL%%%", $badge['badge_var'], $badge['name']))."\" /></td>";
        $numbadges++;
        if ($numbadges % 3 == 0)
          $badgelist .= "</tr>$L[TR]>";
@@ -195,11 +250,37 @@ print \"Sample code.\"; #oops you just missed him!
       if ($numbadges % 3 == 0)
         $badgelist .= "</tr>$L[TR]>";
       }
+       $badgelist.="            $L[TRh]>
+               $L[TD1c] colspan=\"3\"><a href=\"badges.php?uid=".$uid."\">(more)</a></td></tr>";
       $badgelist .= "</table>    <br>";
      }
     }
     //END badge list
+    //More indepth test to not show the link if you can't edit your own perms
+    $editpermissions ="";
+    if(has_perm('edit-permissions'))
+    {
+      if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $editpermissions ="";
+      else $editpermissions="| <a href=\"editperms.php?uid=".$user['id']."\">Edit user permissions</a>";
+    }
 
+    $secondarygroups ="";
+    if(has_perm('assign-secondary-groups'))
+    {
+      /*if(!has_perm('edit-own-permissions') && $loguser['id'] == $uid) $secondarygroups =""; //Not really needed in normal context. I commented it out in case someone may want this -Emuz
+      else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage secondary groups</a>";
+    }
+    
+    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
+
+    $banuser ="";
+    if(has_perm('edit-permissions'))
+    {
+      if(!has_perm('ban-users')) $banuser ="";
+      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?id=".$user['id']."\">Ban user</a>";
+      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?unban&id=".$user['id']."\">Unban user</a>";
+    }
+    
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";
     $rblock    = $sql->query($qblock);
@@ -250,24 +331,43 @@ print \"Sample code.\"; #oops you just missed him!
     $logtzoff  = $logtz->getOffset($now);
 
     $user['showminipic'] = 1;
+
+    //User color override - Should be moved to a function.
+    $group = $usergroups[$user[$u.'group_id']];
+    $realnc = $group['nc'.$user[$u.'sex']];
+
+    //Toggles class define for spans where appropriate
+    $unclass ='';
+    if($config['useshadownccss']) $unclass="class='needsshadow'";
+    //If user has a a displayname, a custom username color, or both, we need to show the realname field.
+    if($config['perusercolor'] && $user['enablecolor']) $usercnickcolor = $user['nick_color'];
+    if($config['displayname'] && $user['displayname']) $userdisplayname = true;
+    if($userdisplayname || $usercnickcolor){
+      $showrealnick = true;
+    }
     
     print "<a href=\"./\">Main</a> - Profile for ".userdisp($user)."
            <br><br>
-           $L[TBL] width=\"100%\">
+";
+    if($_COOKIE['pstbon']){ print $rdmsg;}
+print "    $L[TBL] width=\"100%\">
              $L[TDn] valign=\"top\">
                $L[TBL1]>
                  $L[TRh]>
                    $L[TDh] colspan=\"2\">General information</td>
-                   ".($user['displayname'] ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]>".htmlval($user['name']) : "")."
+                   ".($showrealnick ? "$L[TR]>$L[TD1] width=\"110\"><b>Real handle</b></td>$L[TD2]><span $unclass style='color:#".$realnc.";'><b>".htmlval($user['name'])."</b></span>" : "")."
                  $L[TR]>
                    $L[TD1] width=\"110\"><b>Group</b></td>
                    $L[TD2]>$group[title]
                  $L[TR]>
                    $L[TD1] width=\"110\"><b>Total posts</b></td>
-                   $L[TD2]>$user[posts] ($pfound found, $pavg per day)
+                   $L[TD2]>$user[posts] ($pfound found, $pavg per day)$pprojdate
                  $L[TR]>
                    $L[TD1]><b>Total threads</b></td>
-                   $L[TD2]>$user[threads] ($tfound found, $tavg per day)
+                   $L[TD2]>$user[threads] ($tfound found, $tavg per day)$tprojdate
+                 $L[TR]>
+                   $L[TD1]><b>EXP status</b></td>
+                   $L[TD2]>$pexp
                  $L[TR]>
                    $L[TD1]><b>Registered on</b></td>
                    $L[TD2]>".cdate($dateformat, $user['regdate'])." (".timeunits($days * 86400)." ago)
@@ -292,10 +392,31 @@ print \"Sample code.\"; #oops you just missed him!
                    $L[TD2]>$email
                  $L[TR]>
                    $L[TD1]><b>Homepage</b></td>
-                   $L[TD2]>$homepage
-               $L[TBLend]
-               <br>
-               $L[TBL1]>
+                   $L[TD2]>$homepage";
+
+if($config['extendedprofile'])
+{
+$fieldReq = $sql->query("SELECT * FROM `profileext`
+                       RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
+                       WHERE `user_profileext`.`user_id`='$uid'");
+  while($pfield = $sql->fetch($fieldReq))
+  {
+  print "                 $L[TR]>
+                   $L[TD1]><b>".$pfield['title']."</b></td>";
+
+  if($pfield['parser'] == "email") 
+  {
+      $fieldvalue = EmailObscurer($pfield['data']);
+  }
+  else $fieldvalue = preg_replace("/$pfield[validation]/", $pfield['fmt'], $pfield['data']);
+
+  print "                 $L[TD2]>".$fieldvalue;
+  }
+}
+   print "               $L[TBLend]
+                   <br>";
+
+               print "$L[TBL1]>
                  $L[TRh]>
                    $L[TDh] colspan=\"2\">User settings</td>
                  $L[TR]>
@@ -355,12 +476,15 @@ print \"Sample code.\"; #oops you just missed him!
                $L[TD2]><a href=\"forum.php?user=$user[id]\">View threads</a>
                        | <a href=\"thread.php?user=$user[id]\">Show posts</a>
                        | <a href=\"postsbyuser.php?id=$user[id]\">List posts</a>
+                       | <a href=\"postsbyuser.php?postsbytime&id=$user[id]\">Posts by time of day</a>
+                       | <a href=\"postsbyuser.php?postsbyforum&id=$user[id]\">Posts by forum</a>
+                       | <a href=\"postsbyuser.php?postsbythread&id=$user[id]\">Posts by thread</a>
                        $blocklayoutlink
-                       ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send Private Message</a>":"") ."
-                       ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View Private Messages</a>":"") ."
-                       ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit Mood Avatars</a>":"") ."
-                       ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit User</a>":"") ."
-                       ". (has_perm('edit-permissions') ? "| <a href=\"editperms.php?uid=".$user['id']."\">Edit User Permissions</a>":"") ."
+                       ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send private message</a>":"") ."
+                       ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View private messages</a>":"") ."
+                       ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit mood avatars</a>":"") ."
+                       ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit user</a>":"") ."
+                       ". $banuser." ". $editpermissions." ".$secondarygroups."
            $L[TBLend]";
            pagefooter();
            

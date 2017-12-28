@@ -1,9 +1,43 @@
 <?php
-  require 'lib/common.php';
+  require 'lib/common.php'; 
+
+$rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+if($_COOKIE['pstbon']==-1){
+	$rdmsg.="You are now registered!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>Please login.</td></tr></table></div>"; }
+}
 
   $act=$_POST[action];
-  if(!$act){
-    $print=" <form action=login.php method=post>
+  if($act=='Login'){
+    if($userid=checkuser($_POST[name],md5($pwdsalt2.$_POST[pass].$pwdsalt))){
+      setcookie('user',$userid,2147483647);
+      setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
+      die(header("Location: ./"));
+    }else{
+       $err="Invalid username or password, cannot log in.";
+    }
+    $print="  $L[TD1c]>$print</td>";
+  }elseif($act=='logout'){
+    setcookie('user',0);
+    setcookie('pass','');
+    die(header("Location: ./"));
+  }
+
+  pageheader('Login');
+  if($_COOKIE['pstbon']){ print $rdmsg;}
+ if($err) noticemsg("Error", $err);
+  print "$L[TBL1]>
+<form action=login.php method=post>
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Login</td>
 ".         "  $L[TR]>
@@ -16,30 +50,6 @@
 ".         "    $L[TD]>&nbsp;</td>
 ".         "    $L[TD]>$L[INPs]=action value=Login></td>
 ".         " </form>
-";
-  }elseif($act=='Login'){
-    if($userid=checkuser($_POST[name],md5($_POST[pass].$pwdsalt))){
-      setcookie('user',$userid,2147483647);
-      setcookie('pass',packlcookie(md5($_POST[pass].$pwdsalt),implode(".",array_slice(explode(".",$_SERVER['REMOTE_ADDR']),0,2)).".*"),2147483647);
-      $print="  You are now logged in.<br>
-".           "  ".redirect('./','main');
-    }else{
-      $print="  Invalid username or password, cannot log in.<br>
-".           "  <a href=./>Back to main</a> or <a href=login.php>try again</a>";
-    }
-    $print="  $L[TD1c]>$print</td>";
-  }elseif($act=='logout'){
-    setcookie('user',0);
-    setcookie('pass','');
-    $print="  $L[TD1c]>
-".         "    You are now logged out.<br>
-".         "    ".redirect('./','main')
- .         "  </td>";
-  }
-
-  pageheader('Login');
-  print "$L[TBL1]>
-".      "$print
 ".      "$L[TBLend]
 ";
   pagefooter();

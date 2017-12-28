@@ -10,10 +10,6 @@
   if(!$page)
     $page=1;
 
-  $fieldlist='';
-  $ufields=array('id','name','displayname','sex','group_id', 'minipic');
-  foreach($ufields as $field)
-    $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 
   if($fid=$_GET[id]){
     checknumeric($fid);
@@ -29,8 +25,7 @@
 
 
     if (!isset($forum['id'])) {
-      pageheader("Forum not found",0);
-      forum_not_found();      
+      error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");      
     }
 
     //load tags
@@ -89,7 +84,7 @@ if($loguser['id']!=0){
 $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"unignoreforum\">Unignore forum</a> "
              : "<a href=\"forum.php?id=$fid&amp;ignore\" class=\"ignoreforum\">Ignore forum</a> ";
 }
-    $threads=$sql->query("SELECT $fieldlist t.*, 
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, 
 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
@@ -114,7 +109,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
     pageheader("Threads by ".($user[displayname] ? $user[displayname] : $user[name]));
 
-    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle, 
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, f.id fid, f.title ftitle, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
 
@@ -149,7 +144,7 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 
     pageheader('Latest posts');
 
-    $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, 
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, f.id fid, 
     (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
 
 
@@ -184,13 +179,71 @@ $ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"u
 ".      "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
 ".      "$L[TBLend]
 ";
+  }elseif(isset($_GET[fav]) && has_perm('view-favorites')){
+
+    pageheader("Favorite Threads");
+
+
+    $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, f.id fid, f.title ftitle, 
+    (SELECT COUNT(*) FROM threadthumbs WHERE tid=t.id) AS thumbcount,
+
+
+    (NOT ISNULL(p.id)) ispoll".($log?", (NOT (r.time<t.lastdate OR isnull(r.time)) OR t.lastdate<fr.time) isread":'').' '
+                        ."FROM threads t "
+                        ."LEFT JOIN users u1 ON u1.id=t.user "
+                        ."LEFT JOIN users u2 ON u2.id=t.lastuser "
+                        ."LEFT JOIN polls p ON p.id=t.id "
+                        ."LEFT JOIN forums f ON f.id=t.forum "
+                        ."LEFT JOIN threadthumbs th ON th.tid=t.id "
+                  .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id]) "
+            ."LEFT JOIN forumsread fr ON (fr.fid=f.id AND fr.uid=$loguser[id]) ":'')
+                        ."LEFT JOIN categories c ON f.cat=c.id "
+                        ."WHERE th.uid=$loguser[id] "
+                        .  "AND f.id IN ".forums_with_view_perm()." "
+                        ."ORDER BY t.sticky DESC, t.lastdate DESC "
+                        ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
+
+    $forum[threads]=$sql->resultq("SELECT count(*) "
+                                 ."FROM threads t "
+                                 ."LEFT JOIN forums f ON f.id=t.forum "
+                                 ."LEFT JOIN categories c ON f.cat=c.id "
+                                 ."LEFT JOIN threadthumbs th ON th.tid=t.id "
+                                 ."WHERE th.uid=$loguser[id] "
+                                 .  "AND f.id IN ".forums_with_view_perm()." ");
+    $topbot=
+        "$L[TBL] width=100%>
+".      "  $L[TDn]><a href=./>Main</a> - Favorite Threads</td>
+".      "$L[TBLend]
+";
   }else
   {
-    pageheader('Forum not found',0);
-	forum_not_found();
+    error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");
   }
 
   $showforum=$uid||$time;
+
+  //Forum Jump - SquidEmpress
+  if(!$uid && !$time && !(isset($_GET[fav]))) {
+  $r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
+		$forumjumplinks="<table><td>$fonttag Forum jump: </td>
+        <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
+		$c = -1;
+		while($d=$sql->fetch($r))
+		{
+			if (!can_view_forum($d)) continue;
+			
+			if ($d['cat'] != $c)
+			{
+				if ($c != -1) $forumjumplinks .= '</optgroup>';
+				$c = $d['cat'];
+                $forumjumplinks.= "<optgroup label=\"".$d['ctitle']."\">";
+			}
+            //Based off of the forum name code in 1.92.08. - SquidEmpress
+            $forumjumplinks.="<option value=forum.php?id=$d[id]".($forum[id]==$d[id]?' selected':'').">$d[title]";
+		}
+		$forumjumplinks.="</optgroup></select></table></form>";
+		$forumjumplinks=($forumjumplinks);
+  }
 
   if($forum[threads]<=$loguser[tpp]){
     $fpagelist='<br>';
@@ -265,12 +318,12 @@ echo announcement_row($fid,3,4);
       if($thread[lastdate]>(ctime()-3600)){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
 
     if($status)
-      $status="<img src=\"gfx/new.php?type=$status\" alt=\"$statalt\">";
+      $status=rendernewstatus($status);
     else
       $status='&nbsp;';
 
     if(!$thread[title])
-      $thread[title]=' ';
+      $thread[title]='ï¿½';
 
     if($thread[icon])
       $icon="<img src='$thread[icon]' height=15>";
@@ -318,7 +371,7 @@ echo announcement_row($fid,3,4);
 ";
   }
   print "$L[TBLend]
-".      "$fpagelist$fpagebr
+".      "$forumjumplinks$fpagelist$fpagebr
 ".      "$topbot
 ";
   pagefooter();

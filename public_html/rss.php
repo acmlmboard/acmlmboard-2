@@ -10,8 +10,8 @@
 ".      "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
 ".      "  <channel>
 ".      "    <title>$boardtitle</title>
-".      "    <copyright>Posts are owned by the poster. Acmlmboard 2.5.1 software Copyright 2005-2012 Acmlm, blackhole89, Xkeeper, Sukasa, Kawa, Bouche, Emuz, et al.</copyright>
-".      "    <generator>Acmlmboard 2.5</generator>
+".      "    <copyright>Posts are owned by the poster. Acmlmboard $abversion software Copyright 2005-2015 $boardprog</copyright>
+".      "    <generator>Acmlmboard $abversion ($abdate)</generator>
 ".      "    <ttl>5</ttl>
 ".      "    <atom:link href=\"$config[base]$url\" rel=\"self\" type=\"application/rss+xml\" />
 ".      "    <language>en</language>
@@ -19,7 +19,7 @@
 ";
 
   $fieldlist='';
-  $ufields=array('id','name','sex','power');
+  $ufields=array('id','name','sex','group_id');
   foreach($ufields as $field)
     $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 
@@ -36,7 +36,7 @@
                       ."LEFT JOIN users u2 ON u2.id=p.user "
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."WHERE p.thread=$_GET[thread] "
-                      .  "AND f.minpower<=$loguser[power] "
+                      .  "AND f.id IN ".forums_with_view_perm()." "
                       .  "AND ISNULL(pt2.id) "
                       ."ORDER BY p.id DESC "
                       ."LIMIT 20");
@@ -44,8 +44,8 @@
     print "    <link>$config[base]$config[path]</link>
 ".        "    <description>Latest posts in \"$p[ttitle]\"</description>
 ".        "    <image>
-".        "      <url>$config[base]$config[path]img/board2_banner_generic3_green.png</url>
-".        "      <title>Board 2</title>
+".        "      <url>$config[base]$config[path]theme/abII.png</url>
+".        "      <title>$boardtitle</title>
 ".        "      <link>$config[base]$config[path]</link>
 ".        "    </image>
 ".        "    <lastBuildDate>".date("r",$p[lastdate])."</lastBuildDate>
@@ -77,15 +77,15 @@
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
                         ."LEFT JOIN forums f ON f.id=t.forum "
                         ."WHERE t.forum=$_GET[forum] "
-                        .  "AND f.minpower<=$loguser[power] "
+                        .  "AND f.id IN ".forums_with_view_perm()." "
                         ."ORDER BY t.lastdate DESC "
                         ."LIMIT 20");
     $t=$sql->fetch($threads);
     print "    <link>$config[base]$config[path]</link>
 ".        "    <description>The latest active threads of $t[ftitle]</description>
 ".        "    <image>
-".        "      <url>$config[base]$config[path]img/board2_banner_generic3_green.png</url>
-".        "      <title>Board 2</title>
+".        "      <url>$config[base]$config[path]theme/abII.png</url>
+".        "      <title>$boardtitle</title>
 ".        "      <link>$config[base]$config[path]</link>
 ".        "    </image>
 ".        "    <lastBuildDate>".date("r",$t[lastdate])."</lastBuildDate>
@@ -110,8 +110,8 @@
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
                         ."LEFT JOIN forums f ON f.id=t.forum "
                         ."LEFT JOIN categories c ON f.cat=c.id "
-                        ."WHERE f.minpower<=$loguser[power] "
-                        .  "AND c.minpower<=$loguser[power] "
+                        ."WHERE f.id IN ".forums_with_view_perm()." "
+                        .  "AND c.id IN ".cats_with_view_perm()." "
                         .  "AND t.lastdate>$mintime "
                         ."ORDER BY t.lastdate DESC "
                         ."LIMIT 20");
@@ -119,8 +119,8 @@
     print "    <link>$config[base]$config[path]</link>
 ".        "    <description>The latest active threads of $boardtitle</description>
 ".        "    <image>
-".        "      <url>$config[base]$config[path]img/board2_banner_generic3_green.png</url>
-".        "      <title>Board 2</title>
+".        "      <url>$config[base]$config[path]theme/abII.png</url>
+".        "      <title>$boardtitle</title>
 ".        "      <link>$config[base]$config[path]</link>
 ".        "    </image>
 ".        "    <lastBuildDate>".date("r",$t[lastdate])."</lastBuildDate>

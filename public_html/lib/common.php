@@ -1,12 +1,12 @@
-<?php
+ï»¿<?php
   require "lib/function.php";
 
   header("Content-type: text/html; charset=utf-8");
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "01/02/2014";
-  $abversion = "2.5.2";
+  $abdate    = "12/28/2017";
+  $abversion = "2.5.3";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -16,14 +16,12 @@
 
   require "lib/login.php";
 
-  $a = $sql->fetchq("SELECT `intval` FROM `misc` WHERE `field`='lockdown'");
+  $a = $sql->fetchq("SELECT `intval`,`txtval` FROM `misc` WHERE `field`='lockdown'");
   
   if($a['intval'])
    {
     //lock down
-    //Altered to test for user power level. -Emuz
-    //If the user is either an Administrator or Root Administrator you just get h1 with "Lockdown"
-   if ($loguser['power'] == 3 || $loguser['power'] == 4 )
+    if(has_perm('bypass-lockdown'))
     print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
    else //Everyone else gets the wonderful lockdown page.
     {
@@ -36,7 +34,7 @@
    {
     $loguser               = array();
     $loguser['id']         = 0;	
-    $loguser['power']      = 0;
+    $loguser['group_id']   = 1;
     $loguser['tzoff']      = 0;
     $loguser['timezone']   = "UTC";
     $loguser['fontsize']   = $defaultfontsize;    //2/22/2007 xkeeper - guests have "normal" by default, like everyone else
@@ -48,8 +46,9 @@
      $loguser['theme'] = "minerslament";
     $loguser['blocksprites']=1;
    }
-   
-  if($loguser['power']==1)
+  
+  $flocalmod=$sql->fetchq("SELECT `uid` FROM `forummods`");
+  if($loguser['id'] == $flocalmod['uid'])
    {
     $loguser['modforums']=array();
     $modf=$sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");
@@ -60,6 +59,7 @@
    }
 
   require "lib/timezone.php";
+  dobirthdays(); //Called here to account for timezone bugs.
 
   if($loguser['ppp'] < 1)
    $loguser['ppp'] = 20;
@@ -68,6 +68,10 @@
 
   //2007-02-19 blackhole89 - needs to be here because it requires loguser data
   require "lib/ipbans.php";
+  
+  //Unban users whose tempbans have expired. - SquidEmpress
+  $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
+  $sql->query('UPDATE users SET group_id='.$defaultgroup.', title="", tempbanned="0" WHERE tempbanned<'.ctime().' AND tempbanned>0');
 
   $dateformat = "$loguser[dateformat] $loguser[timeformat]";
 
@@ -87,7 +91,7 @@
    }
   if(substr($url, 0, strlen("$config[path]rss.php")) != "$config[path]rss.php")
    {
-    $sql->query("DELETE FROM `guests` WHERE `ip`='$userip' OR `date`<".(ctime()-300));
+    $sql->query("DELETE FROM `guests` WHERE `ip`='$userip' OR `date`<".(ctime()-$config['oldguest']));
    if($log)
     {
     //AB-SPECIFIC
@@ -104,7 +108,7 @@
     }
     
     //[blackhole89]
-   if($config['log'])
+   if($config['log'] >= '5')
     {
     $postvars="";
     foreach($_POST as $k=>$v)
@@ -164,9 +168,13 @@
    $themelist = unserialize(file_get_contents("themes_serial.txt"));
 
    //Config definable theme override
-   if($config[override_theme]) 
+   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
     {
       $theme = $config[override_theme];
+    }
+   elseif (isset($_GET['theme']))
+    {
+      $theme = $_GET['theme'];
     }
    else 
     {
@@ -189,12 +197,30 @@
     $themefile = $theme.".css";
    }
    
-  if($config[override_logo]) //Config override for the logo file
+  if($config['override_logo'] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
     $logofile = $config[override_logo];
   elseif(is_file("theme/".$theme."/logo.png"))
    $logofile = "theme/".$theme."/logo.png";
   else
    $logofile = $defaultlogo;
+  
+  $rpgimageset = '';
+
+  if($config['userpgnumdefault']) $rpgimageset = "gfx/rpg/";
+
+  $statusimageset = '';
+
+  if($config['userpgnum'] || $config['alwaysshowlvlbar'])
+  {
+    if(is_file("theme/".$theme."/rpg/0.png")) $rpgimageset="theme/".$theme."/rpg/";
+  }
+
+ $statusimageset = '';
+
+  /*if($config['userpgnum'] || $config['alwaysshowlvlbar'])
+  {*/
+    if(is_file("theme/".$theme."/status/new.png")) $statusimageset="theme/".$theme."/status/";
+  //}
 
   $feedicons="";
 
@@ -272,6 +298,10 @@
     {
      $ssllnk = "<img src=\"img/sslon.gif\" title=\"SSL enabled\">";
     }
+   else if(!$config['showssl'])
+   {
+    $ssllnk = "";
+   }
    else
     {
      $ssllnk = "<a href=\"$config[sslbase]$url\" title=\"View in SSL mode\"><img border=\"0\" src=\"img/ssloff.gif\"></a>";
@@ -316,7 +346,7 @@
       </head>
       <body style=\"font-size:$loguser[fontsize]%\" onload=\"prettyPrint()\">$dongs
       $L[TBL1]>
-        $L[TR2c]>
+        $L[TRT2c]>
         $L[TD1c] colspan=\"3\">$boardlogo</td>
         </tr>
         $L[TR2c]>
@@ -354,9 +384,10 @@
      $unreadpms = $sql->resultq("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `unread`=1 AND `del_to`='0'");
      $totalpms  = $sql->resultq("SELECT COUNT(*) FROM `pmsgs` WHERE `userto`='$loguser[id]' AND `del_to`='0'");
 
-    if($unreadpms)
+ 
+  if($unreadpms)
      {
-      $status    = "<img src=\"img/status/new.png\">";
+      $status    = rendernewstatus("n");
       $unreadpms = " ($unreadpms new)";
      }
     else
@@ -364,8 +395,30 @@
       $status    = "";
       $unreadpms = "";
      }
+   //Starts code for the classic PM box.
+    if ($config['classicpms'] && has_perm('view-own-pms'))
+    {
+    if($totalpms>0)
+      $lastmsg="<br>
+".      "      <font class=sfont><a href=showprivate.php?id=$pmsgs[id]>Last message</a> from ".userlink($pmsgs,'u').' on '.cdate($dateformat,$pmsgs[date]).'.</font>';
+    else
+      $lastmsg='';
+
+    $oldpmsgbox=
+        "$L[TBL1]>
+".      "  $L[TRh]>
+".      "    $L[TDh] colspan=2>Private Messages</td>
+".      "  $L[TR]>
+".      "    $L[TD1] width=17>$status</td>
+".      "    $L[TD2]>
+".      "      <a href=private.php>Private messages</a> -- You have $totalpms private message".($totalpms!=1?'s':'')."$unreadpms.$lastmsg
+".      "  $L[TBLend]
+".      "  <br>
+";
+  }
+  else $oldpmsgbox ='';
       
-    if (has_perm('view-own-pms'))
+    if (!$config['disablemodernpms'] && has_perm('view-own-pms'))
      {
      if ($unreadpms)
       {
@@ -411,8 +464,12 @@
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
     if (has_perm("post-radar")) 
       $userlinks[$ul++] = array('url' => "postradar.php", 'title' => 'Post radar');
+    if (has_perm("view-favorites")) 
+      $userlinks[$ul++] = array('url' => "forum.php?fav", 'title' => 'Favorite threads');
     if (has_perm("view-own-sprites")) 
       $userlinks[$ul++] = array('url' => "sprites.php", 'title' => 'My sprites');
+    if (has_perm("deleted-posts-tracker"))
+      $userlinks[$ul++] = array('url' => "thread.php?deletedposts", 'title'=> 'Deleted posts tracker');
     if (has_perm("update-own-moods")) 
       $userlinks[$ul++] = array('url' => "mood.php", 'title' => 'Edit mood avatars');
     if (has_perm("use-item-shop")) 
@@ -440,7 +497,7 @@
                </td>
                <form action=\"login.php\" method=\"post\" name=\"logout\">
                  $L[INPh]=\"action\" value=\"logout\">
-                 $L[INPh]=\"p\" value=".md5($loguser['pass'].$pwdsalt).">
+                 $L[INPh]=\"p\" value=".md5($pwdsalt2.$loguser['pass'].$pwdsalt).">
                </form>";
     
     if ($radar)
@@ -475,9 +532,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog   = ($user['lastpost'] <= $user['lastview']);
-       $«           = ($onuserlog ? "":"(");
-       $»           = ($onuserlog ? "":")");
-       $onuserlist .= ($onusercount ? ", ":"").$«.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$»;
+       $ï¿½           = ($onuserlog ? "":"(");
+       $ï¿½           = ($onuserlog ? "":")");
+       $onuserlist .= ($onusercount ? ", ":"").$ï¿½.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$ï¿½;
        $onusercount++;
       }
       
@@ -526,8 +583,14 @@
      while($user = $sql->fetch($rbirthdays))
       {
        $b = explode('-',$user['birth']);
-       $y = date("Y") - $b[2];
-       $birthdays[] = userlink($user)." (".$y.")";
+       if($b['2'] <= 0 && $b['2'] > -2) $p = "";
+       else $p = "(";
+       //Patch to fix 2 digit birthdays. Needs retooled to a modern datetime system. -Emuz
+       if($b['2'] <= 99 && $b['2'] > 15) $y = date("Y") - ($b['2'] + 1900).")";
+       else if($b['2'] <= 14 && $b['2'] > 0) $y = date("Y") - ($b['2'] + 2000).")";
+       else if($b['2'] <= 0 && $b['2'] > -2) $y = "";
+       else $y = date("Y") - $b[2].")";
+       $birthdays[] = userlink($user)." ".$p."".$y;
       }
       
      if(count($birthdays))
@@ -557,9 +620,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog = ($user['lastpost'] <= $user['lastview']);
-       $«=($onuserlog ? "" : "(");
-       $»=($onuserlog ? "" : ")");
-       $onuserlist.=($onusercount? ", ": "").$«.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$»;
+       $ï¿½=($onuserlog ? "" : "(");
+       $ï¿½=($onuserlog ? "" : ")");
+       $onuserlist.=($onusercount? ", ": "").$ï¿½.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$ï¿½;
        $onusercount++;
       }
 
@@ -601,11 +664,11 @@
        }
       }
       
-     if ($numguests)
+     if (isset($numguests))
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if ($numbots)
+     if (isset($numbots))
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }
@@ -648,7 +711,8 @@
 			 </td>
 		   </tr>
 		 $L[TBLend]
-		 <br>";
+		 <br>
+          $oldpmsgbox";
      }
    }
 
@@ -673,14 +737,25 @@
     print "<br>$L[TBL2]>$L[TRc]>$L[TD2l]><center><img src=\"img/poweredbyacmlm.PNG\">$L[TBLend]";
    }
    
-  function error($message, $type=0)
+  function noticemsg($name, $msg)
    {
-    global $L, $abversion, $abdate, $boardprog;
-    //[Scrydan] Work on this! Type 0 will kill the script and 1 may possibly redirect and have the form saved still?
-    print "
-         $L[TBL1]>
-         $message
-         $L[TBLend]";
+  		print "<table cellspacing=\"0\" class=\"c1\">
+".        " <tr class=\"h\">
+".        "  <td class=\"b h\" align=\"center\">$name
+".        " <tr>
+".        "  <td class=\"b n1\" align=\"center\">
+".        "    $msg
+".        "</table>
+".        "<br>
+";
+   }
+
+  function error($name, $msg)
+   {
+    global $abversion, $abdate, $boardprog;
+    pageheader('Error');
+    print "<br>";
+    noticemsg($name,$msg);
     pagefooter();
     die();
    }
@@ -694,7 +769,7 @@
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>
-             &copy; 2005-2014 $boardprog
+             &copy; 2005-".date("Y")." $boardprog
            $L[TBLend]";
     pagestats();
     //miscbar(); disabled until needed. -Emuz

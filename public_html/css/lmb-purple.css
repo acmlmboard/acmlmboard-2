@@ -67,6 +67,11 @@ td.h{
   border-right: 0;
   padding: 1px;
 }
+
+td.n3{ 
+  background: black; color: white; 
+}
+
 /*
 tr.n1,td.n1{
   background: url(../theme/lmb-purple/lmbpurple4.png) #030030;

@@ -8,16 +8,21 @@
   $ppp = $_REQUEST['ppp'];
   $page = $_REQUEST['page'];
   $mini = $_REQUEST['mini'];
-
+  $orderby = $_REQUEST['orderby'];
+  $customnc = $_REQUEST['customnc'];
+  $displayn = $_REQUEST['displayn'];
 
 
   if($ppp<1) $ppp=50;
   if($page<1) $page=1;
 
-  $order='posts DESC';
-  if($sort=='exp' ) $order='exp DESC';
-  if($sort=='name') $order='name';
-  if($sort=='reg' ) $order='regdate DESC';
+  if($orderby=='a') $sortby= " ASC";
+  else $sortby= " DESC";
+
+  $order='posts'.$sortby;
+  if($sort=='exp' ) $order='exp'.$sortby;
+  if($sort=='name') $order='name'.$sortby;
+  if($sort=='reg' ) $order='regdate'.$sortby;
 
   $where='1';
   if($sex=='m') $where='sex=0';
@@ -28,6 +33,11 @@
     if ($pow=='-1') $where.=" AND `group_id` =  ANY (SELECT `x_id` FROM `x_perm` WHERE `x_id`= ANY (SELECT `id` FROM `group` WHERE `perm_id` = \"show-as-staff\") AND`x_type` =\"group\")";
     else $where.=" AND group_id=$pow";
   }
+  if(!$config['perusercolor']) $customnc='0';
+  if($customnc=='1') $where.=" AND `nick_color` !=''";
+
+  if(!$config['displayname']) $displayn='0';
+  if($displayn=='1') $where.=" AND `displayname` !=''";
 
   $users=$sql->query("SELECT *,".sqlexp()." FROM users "
                     ."WHERE $where "
@@ -44,16 +54,42 @@
       if($p==$page)
         $pagelist.=" $p";
       else
-        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini)."$p</a>";
+        $pagelist.=' '.mlink($sort,$sex,$pow,$ppp,$p,$mini,$orderby,$customnc,$displayn)."$p</a>";
   }
 
   $activegroups = $sql->query("SELECT * FROM `group` WHERE id IN (SELECT `group_id` FROM users GROUP BY `group_id`) ORDER BY `sortorder` ASC ");
 
   $groups = array();
   $gc = 0;
+  $unclass ='';
+  if($config['useshadownccss']) $unclass="class='needsshadow'";
   while ($group = $sql->fetch($activegroups)) {
-    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini).$group['title']."</a>";
+    if($config['memberlistcolorlinks'])
+    {
+      if($sex=='f') $sexcolor = $group['nc1'];
+      elseif($sex=='n')$sexcolor = $group['nc2'];
+      else $sexcolor = $group['nc0'];
+      $grouptitle = "<span $unclass style='color:#".$sexcolor.";'>".$group['title']."</span>";
+    }
+    else $grouptitle = $group['title'];
+    $groups[$gc++] = mlink($sort,$sex,$group['id'],$ppp,$page,$mini,$orderby,$customnc,$displayn).$grouptitle."</a>";
   }
+
+//If colornames are enabled.. 
+if($config['memberlistcolorlinks'])
+{
+  $malecolor ="<span $unclass style='color:#97ACEF;'>";
+  $femalecolor ="<span $unclass style='color:#F185C9;'>";
+  $nacolor ="<span $unclass style='color:#7C60B0;'>";
+  $spancolor ="</span>";
+}
+else
+{
+  $malecolor ="";
+  $femalecolor ="";
+  $nacolor ="";
+  $spancolor ="";
+}
 
   print "$L[TBL1]>
 ".      "  $L[TRh]>
@@ -61,23 +97,48 @@
 ".      "  $L[TR]>
 ".      "    $L[TD1] width=60>Sort by:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini)."Posts</a> |
-".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini)."EXP</a> |
-".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini)."Username</a> |
-".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini)."Registration date</a>
+".      "      ".mlink(''    ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Posts</a> |
+".      "      ".mlink('exp' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."EXP</a> |
+".      "      ".mlink('name',$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Username</a> |
+".      "      ".mlink('reg' ,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."Registration date</a>
+".      "  $L[TR]>
+".      "    $L[TD1] width=60>Order by:</td>
+".      "    $L[TD2c]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'d',$customnc,$displayn)."Descending</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,'a',$customnc,$displayn)."Ascending</a>
 ".      "  $L[TR]>
 ".      "    $L[TD1]>Sex:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini)."Male</a> |
-".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini)."Female</a> |
-".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini)."N/A</a> |
-".      "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini)."All</a>
-".      "  $L[TR]>
+".      "      ".mlink($sort,'m',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$malecolor."Male".$spancolor."</a> |
+".      "      ".mlink($sort,'f',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$femalecolor."Female".$spancolor."</a> |
+".      "      ".mlink($sort,'n',$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn).$nacolor."N/A".$spancolor."</a> |
+";
+
+if($config['perusercolor'])
+{
+  if($customnc == '1') print   "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,'0',$displayn)."Regular</a> |
+  ";
+  else  print   "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,'1',$displayn)."Custom</a> |
+  ";
+} 
+
+print   "      ".mlink($sort,'' ,$pow,$ppp,$page,$mini,$orderby,$customnc,$displayn)."All</a>";
+
+//Added the sort by displayname feature - SquidEmpress
+if($config['displayname'])
+print      "  $L[TR]>
+".      "    $L[TD1]>Displayname:</td>
+".      "    $L[TD2c]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,'0')."Regular</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,$mini,$orderby,$customnc,'1')."Displayname</a>";
+
+print      "  $L[TR]>
 ".      "    $L[TD1]>Image:</td>
 ".      "    $L[TD2c]>
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0')."Avatars</a> |
-".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1')."Minipics</a>
-".      "  $L[TR]>
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'0',$orderby,$customnc,$displayn)."Avatars</a> |
+".      "      ".mlink($sort,$sex,$pow,$ppp,$page,'1',$orderby,$customnc,$displayn)."Minipics</a>";
+
+print      "  $L[TR]>
 ".      "    $L[TD1]>Group:</td>
 ".      "    $L[TD2c]>";
 $c = 0;
@@ -87,8 +148,8 @@ foreach ($groups as $k => $v) {
   //if ($c < $gc) 
   echo " | ";
 }
-echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini)."All Staff</a>
-"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini)."All</a>
+echo      "      ".mlink($sort,$sex,  '-1',$ppp,$page,$mini,$orderby,$customnc,$displayn)."All Staff</a>
+"." |       ".mlink($sort,$sex,  '',$ppp,$page,$mini,$orderby,$customnc,$displayn)."All</a>
 ".      "      
 ".      "$L[TBLend]
 ".      "<br>";
@@ -144,7 +205,7 @@ RenderTable($data, $headers);
 ";
   pagefooter();
 
-  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini){
+  function mlink($sort,$sex,$pow,$ppp,$page=1,$mini,$orderby,$customnc,$displayn){
     return '<a href=memberlist.php?'
            .($sort   ?"sort=$sort":'')
            .($sex    ?"&sex=$sex":'')
@@ -152,6 +213,9 @@ RenderTable($data, $headers);
            .($ppp!=50?"&ppp=$ppp":'')
            .($page!=1?"&page=$page":'')
            .($mini!=0?"&mini=$mini":'')
+           .($orderby!=''?"&orderby=$orderby":'')
+           .($customnc!=''?"&customnc=$customnc":'')
+           .($displayn!=''?"&displayn=$displayn":'')
            .'>';
   }
 ?>

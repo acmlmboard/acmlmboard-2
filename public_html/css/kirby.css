@@ -33,6 +33,9 @@ td.n1, tr.n1 td {
 td.n2, tr.n2 td {
 	background: #570F11 url(../theme/kirby/kirbybg2b.png);
 }
+td.n3, tr.n3 td {
+	background: #570F11 url(../theme/kirby/kirbybg2b.png);
+}
 td.h, tr.h td {
 	background: #D6AA73 url(../theme/kirby/kirbybgtop.png);
 	color: #570D27;
@@ -70,4 +73,30 @@ input.radio {
 	background: none;
 	color: #E9E9E9;
 	font: 10pt arial;
+}
+
+a[class~="newreply"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 77px;
+	height: 24px;
+	background: url('../theme/kirby/newreply.png');
+	content: url('../theme/kirby/newreply.png'); 
+}
+
+a[class~="newthread"] { 
+	display: -moz-inline-box;
+	display: inline-block;
+	text-indent: -3000px;
+	font: 0/0 Arial;
+	overflow: hidden;
+	color: rgba(255,255,255,0);
+	width: 77px;
+	height: 24px;
+	background: url('../theme/kirby/newthread.png');
+	content: url('../theme/kirby/newthread.png'); 
 }

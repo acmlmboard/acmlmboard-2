@@ -1,16 +1,27 @@
 <?php
   require 'lib/common.php';
 
+  $rdmsg="";
+  if($_COOKIE['pstbon']){
+	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
+ $rdmsg="<script language=\"javascript\">
+	function dismiss()
+	{
+		document.getElementById(\"postmes\").style['display'] = \"none\";
+	}
+</script>
+	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
+".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
+if($_COOKIE['pstbon']==-1){
+	$rdmsg.="Sent!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
+".	"<tr>$L[TD1l]>The private message has been sent successfully.</td></tr></table></div>"; }
+}
 
   needs_login(1);
   $page=$_GET['page'];
   if(!$page)
     $page=1;
 
-  $fieldlist='';
-  $ufields=array('id','name','displayname','sex','group_id');
-  foreach($ufields as $field)
-    $fieldlist.="u.$field u$field, ";
 
   if($_GET[view]=='sent'){
     $tablehead='To';
@@ -29,8 +40,7 @@
   checknumeric($id);
 
   if(!has_perm('view-own-pms') && $id == 0) {
-    pageheader("Access Denied");
-    no_perm();
+    error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
 
   $showdel=$_GET[showdel];
@@ -41,15 +51,7 @@
     if(has_perm('delete-user-pms') || ($owner==$loguser[id] && has_perm('delete-own-pms')) ) {
       $sql->query($q="UPDATE pmsgs SET del_$fieldn2=".((int)!$showdel)." WHERE id=$id");
     } else {
-      pageheader('Error');
-      print "$L[TBL1]>
-".          "  $L[TD1c]>
-".          "    You are not allowed to (un)delete that message.<br>
-".          "    <a href=login.php>Login</a>
-".          "$L[TBLend]
-";
-      pagefooter();
-      die();
+      error("Error", "You are not allowed to (un)delete that message.<br> <a href=./>Back to main</a>");
     }
     $id=0;
   }
@@ -66,7 +68,7 @@
   }
 
   $pmsgc=$sql->resultq("SELECT COUNT(*) FROM pmsgs WHERE user$fieldn2=$id AND del_$fieldn2=$showdel");
-  $pmsgs=$sql->query("SELECT $fieldlist p.* "
+  $pmsgs=$sql->query("SELECT ".userfields('u','u').", p.* "
                     ."FROM pmsgs p "
                     ."LEFT JOIN users u ON u.id=p.user$fieldn "
                     ."WHERE p.user$fieldn2=$id "
@@ -75,12 +77,12 @@
                     ."LIMIT ".(($page-1)*$loguser[tpp]).", ".$loguser[tpp]);
 
   if($sent)
-    $link='?'.($id!=$loguser[id]?"?id=$id&":'')."showdel=$_GET[showdel]>View received";
+    $link='?'.($id!=$loguser[id]?"id=$id&":'')."showdel=$_GET[showdel]>View received";
   else
     $link='?'.($id!=$loguser[id]?"id=$id&":'')."showdel=$_GET[showdel]&view=sent>View sent";
 
   if($showdel)
-    $link2='?'.($id!=$loguser[id]?"?id=$id&":'')."view=$_GET[view]>View normal";
+    $link2='?'.($id!=$loguser[id]?"id=$id&":'')."view=$_GET[view]>View normal";
   else
     $link2='?'.($id!=$loguser[id]?"id=$id&":'')."view=$_GET[view]&showdel=1>View deleted";
 
@@ -108,7 +110,9 @@
 
   print "$topbot
 ".      "<br>
-".      "$L[TBL1]>
+";
+    if($_COOKIE['pstbon']){ print $rdmsg;}
+print   "$L[TBL1]>
 ".      "  $L[TRh]>
 ".      "    $L[TDh] width=17>&nbsp;</td>
 ".      "    $L[TDh] width=17>&nbsp;</td>
@@ -120,7 +124,7 @@
   for($i=1;$pmsg=$sql->fetch($pmsgs);$i++){
     $status='&nbsp;';
     if($pmsg[unread])
-      $status='<img src=img/status/new.png>';
+      $status=rendernewstatus("n");
     if(!$pmsg[title])
       $pmsg[title]='(untitled)';
 

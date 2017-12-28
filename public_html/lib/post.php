@@ -2,9 +2,9 @@
 
 
   function userlink_by_name($name) {
-    global $sql;
+    global $sql, $config;
     $u = $sql->fetchp("SELECT ".userfields().",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
-    if ($u) return userlink($u);
+    if ($u) return userlink($u,null,$config[userlinkminipic]);
     else return 0;
   }
 
@@ -42,6 +42,7 @@
     $msg=str_ireplace("expression","ex<z>pression",$msg);
     $msg=preg_replace("'filter:'si",'filter&#58;>',$msg);
     $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
+    $msg=preg_replace("'transform:'si",'transform&#58;>',$msg);
 	
 	return $msg;
   }
@@ -121,7 +122,6 @@
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
-	$msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
 	// security filtering needs to be done before [svg] is parsed because [svg]
 	// uses tags that are otherwise blacklisted
@@ -134,12 +134,15 @@
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace($smilies[$i][text],'«'.$smilies[$i][text].'»',$msg);
+        $msg=str_replace($smilies[$i][text],'ï¿½'.$smilies[$i][text].'ï¿½',$msg);
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace('«'.$smilies[$i][text].'»','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
+        $msg=str_replace('ï¿½'.$smilies[$i][text].'ï¿½','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
+
+    //Relocated here due to conflicts with specific smilies.
+    $msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
-    $msg=preg_replace("'lemonparty'si",'ffff',$msg);
+    //$msg=preg_replace("'lemonparty'si",'ffff',$msg); Lemonparty Filter
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
     $msg=str_replace('[spoiler]','<span class="spoiler1"><span class="spoiler2">',$msg);
@@ -168,24 +171,27 @@
     $msg=str_replace('[/black]','</span>',$msg);
     $msg=preg_replace("'\[color=([a-f0-9]{6})\](.*?)\[/color\]'si",'<span style="color: #\\1">\\2</span>',$msg);
 
-    $msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg);
+    $msg=preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si',"get_username_link",$msg);
 //    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
+    //$msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg); //For Reference. Original no quote @username
 
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
     $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);
     $msg=preg_replace_callback("'\[thread=([0-9]+)\]'si","get_threadlink",$msg);
+    $msg=preg_replace_callback("'\[username=([[A-Za-z0-9 _\-%]+)\]'si","get_username_link",$msg);
+
 
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);
 
-    $msg=preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small><hr>',$msg);
-    $msg=preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small><hr>',$msg);
-    $msg=preg_replace("'\[quote=(.*?)\]'si",'<blockquote><i>Posted by \\1</i><hr>',$msg);
+    $msg=preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><span class="quotedby"><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small></span><hr>',$msg);
+    $msg=preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><span class="quotedby"><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small></span><hr>',$msg);
+    $msg=preg_replace("'\[quote=(.*?)\]'si",'<blockquote><span class="quotedby"><i>Posted by \\1</i></span><hr>',$msg);
     $msg=preg_replace("'>>([0-9]+)'si",'>><a href=thread.php?pid=\\1#\\1>\\1</a>',$msg);
     //dynamically convert SSL and non-SSL links
     if(isssl()) $msg=str_replace($config[base],$config[sslbase],$msg);
     else $msg=str_replace($config[sslbase],$config[base],$msg);
 
-    $msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg);
+    //$msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg); //Reggie? Image file not present in tree
 
 	// [Mega-Mario] this can cause security issues, and who uses [swf] anyway?
     //$msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
@@ -221,6 +227,8 @@
     $s=str_replace("&exppct2&",sprintf("%d",$eleft*100/lvlexp($lvl)),$s);
     $s=str_replace("&rank&",$post['ranktext'],$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",$post['ranktext']),$s);
+    $s=str_replace("&lvlbar&",drawrpglevelbar($exp, '166'),$s);
+    $s=str_replace("&mood&",$post['mood'],$s);
     $s=str_replace("&postrank&",$sql->result($sql->query("SELECT count(*) FROM users WHERE posts>".$post['uposts']),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
     $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post['num'].', 0)', $s);
@@ -291,37 +299,45 @@
     return $text2;
   }
 
-  function posttoolbutton($e,$name,$leadin,$leadout,$names=""){
+  function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\">$name</a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name' tabindex=\"-1\"></font></a></td>";
   }
   
   function posttoolbar()
   {
 	global $L;
-	return posttoolbutton("message","B","[b]","[/b]")
-           .posttoolbutton("message","I","[i]","[/i]")
-           .posttoolbutton("message","U","[u]","[/u]")
-           .posttoolbutton("message","S","[s]","[/s]")
+	return posttoolbutton("message","B","Bold","[b]","[/b]")
+           .posttoolbutton("message","I","Italic","[i]","[/i]")
+           .posttoolbutton("message","U","Underline","[u]","[/u]")
+           .posttoolbutton("message","S","Strikethrough","[s]","[/s]")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","!","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","[code]","[/code]","cd")
+           .posttoolbutton("message","_","IRC","[irc]","[/irc]")
+           .posttoolbutton("message","/","URL","[url]","[/url]")
+           .posttoolbutton("message","!","Spoiler","[spoiler]","[/spoiler]","sp")
+           .posttoolbutton("message","&#133;","Quote","[quote]","[/quote]","qt")
+           .posttoolbutton("message",";","Code","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","%","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-		   .posttoolbutton("message","YT","[youtube]","[/youtube]","yt");
+           .posttoolbutton("message","[]","IMG","[img]","[/img]")
+           .posttoolbutton("message","%","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
+		   .posttoolbutton("message","YT","YouTube","[youtube]","[/youtube]","yt");
   }
   
-  function moodlist() { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
+  function moodlist($mid, $userid='') { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked
                         // it was owned by root.
 						// 2013-06 Mega-Mario: wish granted :)
     global $sql, $loguser;
-    $mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
-    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$loguser[id]");
+    //Attempting to fix what is displayed when editing someone else's post
+    is_numeric($userid);
+    if($userid > 0) $moodset = $userid;
+    else $moodset = $loguser['id'];
+
+    //$mid = (isset($_POST[mid]) ? $_POST[mid] : -1);
+    $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$moodset");
     $moodst="";
     while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">$mood[label]</option>";
+      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">".stripslashes($mood[label])."</option>";
     $moodst.= "</select>";
     return $moodst;
   }

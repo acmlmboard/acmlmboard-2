@@ -5,15 +5,17 @@
 //	die("Anonymous does not succeed.");
 require 'lib/common.php';
 
-$regdis = $sql->fetchq("SELECT intval FROM misc WHERE field='regdisable'");
-if ($regdis[intval] == 1)
+$regdis = $sql->fetchq("SELECT intval, txtval FROM misc WHERE field='regdisable'");
+if ($regdis['intval'] == 1)
 {
   pageheader('Register');
+  if($regdis['txtval'] != "") $reason = $regdis['txtval'];
+  else $reason = "Registration is currently disabled.";
   print "$L[TBL1]>$L[TD1c]>
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Registration is disabled</td>
 ".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Registration is currently disabled. For more information please read the board annoucments or visit us on <a href=irc.php>IRC</a><br/>
+".         "    $L[TD1c] width=120>$reason For more information please read the board announcements or visit us on <a href=irc.php>IRC</a><br/>
 ".           "  <a href=./>Back to main</a></td></td>
 ".      "$L[TBLend]
 ";
@@ -21,22 +23,26 @@ if ($regdis[intval] == 1)
   die();
 }
 
-  	//[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
-  	$puzzleAnswer = 42;
-  	//$puzzleAnswer = 9001;
-  	$puzzleVariations = array(
-  		"What is twenty four times two minus 6?",
-  		"What is two times twenty four minus 6?",
-  		"What is eighty-four divided by two?",
-  		"What is twenty one plus twenty one?",
-  		"What is six times seven?",
-  		"What is seven times six?",
-  		"What is fourteen times three?",
-  		"What is three times fourteen?",
-  		"What is a hundred and twenty six divided by three?",
-  	);
-  	$puzzle = $puzzleVariations[array_rand($puzzleVariations)];
 
+$boardemailaddress=$sql->resultq("SELECT `emailaddress` FROM `misc` WHERE `field`='boardemail'");
+if (isProxy())
+{
+  pageheader('Register');
+  if($regdis['txtval'] != "") $reason = $regdis['txtval'];
+  else $reason = "Security Check Failure";
+  print "$L[TBL1]>$L[TD1c]>
+".         "  $L[TRh]>
+".         "    $L[TDh] colspan=2>Registration is denied</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins at ".($boardemailaddress).".</a></td></td>
+".      "$L[TBLend]
+";
+  pagefooter();
+  die();
+}
+
+  //[KAWA] Replacing the CAPTCHA with a simple plain-English mathematics puzzle, as discussed with Emuz.
+  //Moved to config.php for easy edit. -Emuz
 
   function randstr($l)
   {
@@ -47,45 +53,7 @@ if ($regdis[intval] == 1)
   }
 
   $act=$_POST[action];
-  if(!$act){
-
-      $listsex=array('Male','Female','N/A');
-      $alltz = $sql->query("SELECT name FROM `timezones`"); 
-
-      $listtimezones = array();
-      while ($tz = $sql->fetch($alltz)) {
-        $listtimezones[$tz['name']] = $tz['name'];
-      }
-
-
-
-    $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
-    $print=" <form action=register.php method=post>
-".         "  $L[TRh]>
-".         "    $L[TDh] colspan=2>Register</td>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>&nbsp;</td>
-".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Username:</td>
-".         "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password:</td>
-".         "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-".         "  $L[TR]>
-".         "    $L[TD1c]>Password (again):</td>
-".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
-".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
-".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
-".         "  $L[TR]>
-".         "    $L[TD1c] width=120>$puzzle</td>
-".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
-".         "  $L[TR1]>
-".         "    $L[TD]>&nbsp;</td>
-".         "    $L[TD]>$L[INPs]=action value=Register></td>
-".         " </form>
-";
-  }elseif($act=='Register'){
+  if($act=='Register'){
     $name=trim(stripslashes($_POST[name]));
 
     $cname=str_replace(array(' ',"\xC2\xA0"),'',$name);
@@ -108,18 +76,14 @@ if ($regdis[intval] == 1)
       $err='Your password must be at least 4 characters long.';
     elseif($_POST[pass]!=$_POST[pass2])
       $err="The two passwords you entered don't match.";
-    elseif($_POST[puzzle]!=$puzzleAnswer)
+    elseif($config['registrationpuzzle'] && $_POST[puzzle]!=$puzzleAnswer)
       $err="You are either a bot or very bad at simple mathematics.";
 
-    if($err){
-      $print="  $err<br>
-".           "  <a href=./>Back to main</a> or <a href=register.php>try again</a>
-";
-    }else{
+    if(!$err){
 	  $name = $sql->escape($name);
 	  
       $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone,fontsize,theme) VALUES "
-                 ."('{$name}','".md5($_POST[pass].$pwdsalt)."',"
+                 ."('{$name}','".md5($pwdsalt2.$_POST[pass].$pwdsalt)."',"
                  .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}',{$defaultfontsize},'{$defaulttheme}')");
 	  if ($res)
 	  {
@@ -153,7 +117,7 @@ if ($regdis[intval] == 1)
 
 		  /* count matches for IP and hash */
 		  //hash
-		  $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($_POST[pass].$pwdsalt)."'");
+		  $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($pwdsalt2.$_POST[pass].$pwdsalt)."'");
 		  $m_hash=$a[c]-1;
 		  //split the IP
 		  $ipparts=explode(".",$userip);
@@ -175,18 +139,54 @@ if ($regdis[intval] == 1)
 		  sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id");
 		  sendirc("{irccolor-base}New user: \x0309".stripslashes($_POST[name])."{irccolor-base} - {irccolor-url}{boardurl}?u=$id{irccolor-base} - [".$userip." - \x033matches {irccolor-base}(\x033#{irccolor-base},\x033/32{irccolor-base},\x033/24{irccolor-base},\x033/16{irccolor-base}){irccolor-url}: {irccolor-base}($m_hash{irccolor-base},$m_ip32{irccolor-base},$m_ip24{irccolor-base},$m_ip16{irccolor-base})]",$config[staffchan]);
 
-		  $print="  You are now registered!<br>
-".           	 "  ".redirect('login.php','login');
+                  redirect('login.php',-1);
 	  }
 	  else
-		$print="Registration failed: ".$sql->error();
+		$err="Registration failed: ".$sql->error();
     }
-    $print="  $L[TD1c]>$print</td>";
   }
 
   pageheader('Register');
+     $listsex=array('Male','Female','N/A');
+      $alltz = $sql->query("SELECT name FROM `timezones`"); 
+
+      $listtimezones = array();
+      while ($tz = $sql->fetch($alltz)) {
+        $listtimezones[$tz['name']] = $tz['name'];
+      }
+
+    $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
+ if($err) noticemsg("Error", $err);
   print "$L[TBL1]>
-".      "$print
+".         " <form action=register.php method=post>
+".         "  $L[TRh]>
+".         "    $L[TDh] colspan=2>Register</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>&nbsp;</td>
+".         "    $L[TD2]><font class='sfont'>Please take a moment to read the <a href='faq.php'>FAQ</a> before registering.</font>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>Username:</td>
+".         "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
+".         "  $L[TR]>
+".         "    $L[TD1c]>Password:</td>
+".         "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
+".         "  $L[TR]>
+".         "    $L[TD1c]>Password (again):</td>
+".         "    $L[TD2]>$L[INPp]=pass2 size=13 maxlength=32></td>
+".           fieldrow('Sex'             ,fieldoption('sex',2,$listsex))."
+".           fieldrow('Timezone'      ,fieldselect('timezone','UTC',$listtimezones))."
+";
+    if($config['registrationpuzzle'])
+    print     
+           "  $L[TR]>
+".         "    $L[TD1c] width=120>$puzzle</td>
+".         "    $L[TD2]>$L[INPt]=puzzle size=13 maxlength=6></td>
+";
+    print
+           "  $L[TR1]>
+".         "    $L[TD]>&nbsp;</td>
+".         "    $L[TD]>$L[INPs]=action value=Register></td>
+".         " </form>
 ".      "$L[TBLend]
 ";
   pagefooter();

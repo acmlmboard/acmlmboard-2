@@ -4,10 +4,12 @@
    
     $getrankset = $_GET['rankset']; // Changed to allow the Kirby Rank to show.
     if (!is_numeric($getrankset)) $getrankset = 1; //Double checking.. 
-    if ($getrankset < 1 || $getrankset > 3) $getrankset = 1; //Should be made dynamic based on rank sets.
+    $totalranks = $sql->resultq("SELECT count(*) FROM `ranksets` WHERE id > '0';");
+
+    if ($getrankset < 1 || $getrankset > $totalranks) $getrankset = 1; //Should be made dynamic based on rank sets.
 
     $linkuser = array();
-    $allusers = $sql->query("SELECT `id`, `name`, `displayname`, `posts`, `minipic`, `lastview` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
+    $allusers = $sql->query("SELECT ".userfields().", `posts`, `minipic`, `lastview` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
    //$linkuser = $sql->fetchq($allusers);
     /*while ($user2 = $sql->fetchq($allusers))
      {;
@@ -121,7 +123,9 @@
     if($_GET['showinactive'] || $user['lastview']>(time()-(86400 * $inactivedays))){
       if ($usersonthisrank)
         $usersonthisrank .= ", ";
-       $usersonthisrank .= "<img style='vertical-align:text-bottom' src='".$user['minipic']."'/> ".userlink_by_id($user['id']).$climbingagain;
+        if($user['minipic']) $minpic = "<img style='vertical-align:text-bottom' src='".$user['minipic']."'/> ";
+        else $minpic = "";
+       $usersonthisrank .= $minpic.userlink_by_id($user['id']).$climbingagain;
     } else $idlecount++;
        $usercount++;
       }

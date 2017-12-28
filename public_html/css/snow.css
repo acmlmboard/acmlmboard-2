@@ -14,7 +14,7 @@ A:link,A:visited,A:active,A:hover{
 }
 
 body{
-  background: url('../css/snow_2.jpg') #1b1b1b;
+  background: url('../theme/desolation/snow_2.jpg') #1b1b1b;
   background-attachment: fixed; 
   background-position: top left;
   background-repeat: repeat-y;

@@ -1,0 +1,129 @@
+/* META
+Terminale Stracarico (SquidEmpress)
+
+*/
+a:link		{color: red }
+a:visited	{color: deepskyblue }
+a:active	{color: #FFFFFF}
+a:hover		{color: #FFFFFF}
+
+a:link, a:visited, a:active, a:hover {
+	text-decoration: none;
+	font-weight: bold;
+}
+body {
+	background-color: #000000;
+	font-family: Consolas, Arial, sans-serif;
+}
+body, table {
+	color: #28DF10;
+	font-size: 11px;
+}
+table.c1, table.c2 {
+  width: 100%;
+  border-collapse: collapse;
+}
+td.b {
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+	padding: 4px;
+}
+td.n1, tr.n1 td {
+	background: #000000;
+	color: #28DF10;
+	padding: 4px;
+}
+td.n2, tr.n2 td {
+	background: #000000;
+	color: #28DF10;
+	padding: 4px;
+}
+td.h, tr.h td {
+	background: #000000;
+	color: #28DF10;
+	font-weight: bold;
+	padding: 4px;
+}
+tr.c td {
+	background: #000000;
+	color: #28DF10;
+}
+tr.h td, tr.c td {
+	text-align: left;
+}
+td.nb {
+	color: #28DF10;
+}
+
+
+.sfont {
+	font-size: 11px;
+	font-family: Consolas, Arial, sans-serif;
+}
+
+a[class~="newreply"] { 
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+    	padding: 3px;
+    	padding-left: 6px;
+    	padding-right: 6px;
+}
+
+a[class~="editforum"] { 
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+    	padding: 3px;
+    	padding-left: 6px;
+    	padding-right: 6px;
+}
+
+a[class~="newthread"] { 
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+    	padding: 3px;
+    	padding-left: 6px;
+    	padding-right: 6px;
+}
+
+a[class~="newpoll"] { 
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+        padding: 3px;
+    	padding-left: 6px;
+    	padding-right: 6px;
+}
+
+a[class~="ignoreforum"] { 
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+        padding: 3px;
+    	padding-left: 6px;
+    	padding-right: 6px;
+}
+
+.nc0x{color:#888888} .nc1x{color:#888888} .nc2x{color:#888888}
+.nc00{color:#97ACEF} .nc10{color:#F185C9} .nc20{color:#7C60B0}
+.nc01{color:#D8E8FE} .nc11{color:#FFB3F3} .nc21{color:#EEB9BA}
+.nc02{color:#AFFABE} .nc12{color:#C762F2} .nc22{color:#47B53C}
+.nc03{color:#FFEA95} .nc13{color:#C53A9E} .nc23{color:#F0C413}
+textarea, input, select, button {
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+	color: #28DF10;
+	font-family: Consolas, Arial, sans-serif;
+	font-size: 8pt;
+}
+.submit {
+	border: #28DF10 solid 2px;
+	background-color: #000000;
+}
+input.radio {
+	border:	none;
+	background: none;
+	color: #28DF10;
+	font: 8pt Consolas, Arial, sans-serif;
+}
+
+span.needsshadow {
+ 	text-shadow: -1px -1px black, 0px -1px black, 1px -1px black, 2px 2px 1px black, 1px 1px 1px black, 2px 1px 1px black, -1px 1px black, -1px 0px black, 2px 0px 1px black;
+}

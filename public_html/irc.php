@@ -23,14 +23,14 @@
 //	if ($_GET['jul']) $channel	= "#x";
 
 
-	print	"$L[TBL1]>
-".			"  $L[TRh]>
-".			"    $L[TDh]>Java IRC Chat - $channel on NoLimitNET</td>
-".			"  $L[TR]>
-".			"    $L[TD1c]>Servers: $serverlist</td>
+	print	"<table cellspacing=\"0\" class=\"c1\">
+".			"  <tr class=\"h\">
+".			"    <td class=\"b h\">Java IRC Chat - $channel on NoLimitNET</td>
+".			"  <tr>
+".			"    <td class=\"b n1\" align=\"center\">Servers: $serverlist</td>
 ".			"  </tr>     
-".			"  $L[TR]>
-".			"    $L[TD2c]>";
+".			"  <tr>
+".			"    <td class=\"b n2\" align=\"center\">";
 	if ($server) {
 
 		$badchars = array("~", "&", "@", "?", "!", ".", ",", "=", "+", "%", "*");
@@ -84,13 +84,13 @@
 	}
 
 
-	print	"  $L[TBLend]
+	print	"  </table>
 ".			"  <br>
-".			"$L[TBL1]>
-".			"  $L[TRh]>
-".			"    $L[TDh]>Quick Help - Commands</td>
-".			"  $L[TR]>
-".			"    $L[TD1]>		
+".			"<table cellspacing=\"0\" class=\"c1\">
+".			"  <tr class=\"h\">
+".			"    <td class=\"b h\">Quick Help - Commands</td>
+".			"  <tr>
+".			"    <td class=\"b n1\">		
 ".			"      <tt>/nick [name]</tt> - changes your name
 ".			"      <br><tt>/me [action]</tt> - does an action (try it)
 ".			"      <br><tt>/msg [name] [message]</tt> - send a private message to another user
@@ -98,7 +98,7 @@
 ".			"      <br><tt>/part [#channel]</tt> - leaves a channel
 ".			"      <br><tt>/quit [message]</tt> - disconnects from the server
 ".			"  </tr>     
-".			"  $L[TBLend]";
+".			"  </table>";
 
 	pagefooter();
 ?>

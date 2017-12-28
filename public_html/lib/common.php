@@ -5,8 +5,8 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "4/08/2015";
-  $abversion = "2.5.3<i>pre</i> <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
+  $abdate    = "12/28/2017";
+  $abversion = "2.5.3";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -769,7 +769,7 @@
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>
-             &copy; 2005-2015 $boardprog
+             &copy; 2005-".date("Y")." $boardprog
            $L[TBLend]";
     pagestats();
     //miscbar(); disabled until needed. -Emuz

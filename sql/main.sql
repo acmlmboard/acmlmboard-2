@@ -461,6 +461,33 @@ LOCK TABLES `ignoredforums` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `ip2c`
+--
+
+DROP TABLE IF EXISTS `ip2c`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ip2c` (
+  `ip_from` bigint(12) NOT NULL,
+  `ip_to` bigint(12) NOT NULL,
+  `registrar` varchar(50) NOT NULL,
+  `assigned` int(12) NOT NULL,
+  `cc2` varchar(2) NOT NULL,
+  `cc3` varchar(3) NOT NULL,
+  `cname` varchar(50) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ip2c`
+--
+
+LOCK TABLES `ip2c` WRITE;
+/*!40000 ALTER TABLE `ip2c` DISABLE KEYS */;
+/*!40000 ALTER TABLE `ip2c` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `ipbans`
 --
 
@@ -1128,6 +1155,28 @@ INSERT INTO `rights` VALUES ('edit-sprites','Edit Sprites','Can edit sprites and
 UNLOCK TABLES;
 
 --
+-- Table structure for table `robots`
+--
+
+DROP TABLE IF EXISTS `robots`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `robots` (
+  `bot_name` varchar(100) COLLATE latin1_general_ci NOT NULL,
+  `bot_agent` varchar(100) COLLATE latin1_general_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `robots`
+--
+
+LOCK TABLES `robots` WRITE;
+/*!40000 ALTER TABLE `robots` DISABLE KEYS */;
+/*!40000 ALTER TABLE `robots` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `rpgchat`
 --
 
@@ -1778,4 +1827,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-12-28 13:38:30
+-- Dump completed on 2017-12-28 14:30:14

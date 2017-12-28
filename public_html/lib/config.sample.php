@@ -17,7 +17,7 @@
   $sqldb  ='sqldatabase';
 
 
-  $config['sqlconfig'] = true; //Configure settings through Administrator Tools and the misc table.
+  $config['sqlconfig'] = false; //Configure settings through Administrator Tools and the misc table. **FEATURE NOT STABLE**
 
   $trashid=2; // Designates the id for your trash forum. 
 

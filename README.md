@@ -2,13 +2,27 @@
 # Acmlmboard II
 In this repository you will find the code for Acmlmboard II. This is the version that was forked off for use with the web board that powers Kafuka.
 
+This software is as-is and has no gurentees.
+
+Branches
+-------
+**develop** - This is the main branch. It is the most up to date and usually stable. Since this is also the development branch it is recommended you test before using on live.
+
+**stable** - This is the branch is a snapshot of develop where most things are working and should install and run without any major issues.
+
+**experimental** - This branch was started be xenons and includes the start of fundamental improvements for the board. If you fork the board I would recommend starting here and building on it.
+
 Tags
 -------
-v2.1 - Raw code that ran on board2 in August 2011.
-v2.5 - The initial code for Kafuka
-v2.5.1 - Point Release #1
-v2.5.2 - Point Release #2
-v2.5.3 - Point Release #3; Includes all fixes that were in the kafuka branch that did not make it to public. Newly genned main.sql.
+**v2.1** - Raw code that ran on board2 in August 2011.
+
+**v2.5** - The initial code for Kafuka
+
+**v2.5.1** - Point Release #1
+
+**v2.5.2** - Point Release #2
+
+**v2.5.3** - Point Release #3; Includes all fixes that were in the kafuka branch that did not make it to public. Newly genned main.sql.
 
 Note: This board is not guaranteed to work out of the box. Not much support remains these days. You will need to get your hands dirty.
 Please feel free to fork this and improve on it!

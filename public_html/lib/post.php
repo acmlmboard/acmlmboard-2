@@ -145,7 +145,7 @@
     //$msg=preg_replace("'lemonparty'si",'ffff',$msg); Lemonparty Filter
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
-    $msg=str_replace('[spoiler]','<span class="spoiler1"><span class="spoiler2">',$msg);
+    $msg=str_replace('[spoiler]','<span class="spoiler1" onclick=""><span class="spoiler2">',$msg);
     $msg=str_replace('[/spoiler]','</span></span>',$msg);
     $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    

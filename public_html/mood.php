@@ -17,10 +17,15 @@
 //Editing functionality
   if(isset($_POST['id']) && $_POST['a']=="Save"){
     if(is_numeric($_POST['id'])){
+      $usrmoodz=@$sql->result($sql->query("SELECT count(*) FROM `mood` WHERE `user`=".$edid." AND `id`!=".$_POST['id']),0,0); //Collect count of user moods.
       $fname=$_FILES['picture'];
       if($fname['size']>0){
         if($_POST['id']!=-1){
-          $ava_out=img_upload($fname,"userpic/".$edid."_".$_POST['id'],$avatardimx,$avatardimy,$avatarsize);
+          if($usrmoodz<$avatarmoods){
+            $ava_out=img_upload($fname,"userpic/".$edid."_".$_POST['id'],$avatardimx,$avatardimy,$avatarsize);
+          } else {
+            $err.="Too many mood avatars.";
+	  }
         } else {//Default Avatar
           $sql->query("UPDATE `users` SET `usepic`=`usepic`+1 WHERE `id`=".$edid);
           $ava_out=img_upload($fname,"userpic/".$edid,$avatardimx,$avatardimy,$avatarsize);
@@ -50,8 +55,14 @@
         echo "Default avatar set to blank.";
       } else {
         //Delete mood avatar
-        $sql->query("DELETE FROM `mood` WHERE `id`=".$_POST['id']." AND `user`=".$edid);
-        echo "Deleted.";
+	if(unlink("userpic/".$edid."_".$_POST['id'])){
+          $sql->query("DELETE FROM `mood` WHERE `id`=".$_POST['id']." AND `user`=".$edid);
+          //Update posts which use this deleted avatar to use the user's default instead.
+          $sql->query("UPDATE `posts` SET `mood`=-1 WHERE `mood`=".$_POST['id']." AND `user`=".$edid);
+          echo "Deleted.";
+        } else {
+          echo "Error deleting avatar.";
+        }
       }
     } else {
       echo "Bad id.";
@@ -138,8 +149,8 @@
 </table></div>";
 }
 if($fid==0){ $fid=$lid+1; } //If no free ID.
-if($fid<=64){
-  print "<div style=\"margin: 4px; float: left; display:inline-block;\" id=\"mood64\">$L[TBL1]>
+if($fid<=$avatarmoods){
+  print "<div style=\"margin: 4px; float: left; display:inline-block;\" id=\"mood".$avatarmoods."\">$L[TBL1]>
   $L[TRh]>
     $L[TDh] style=\"width:180px;\">&nbsp</td>
   </tr>

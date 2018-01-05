@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 /*** Acmlmboard 2 - Configuration ***
   Please look through the file and will in the apropriate information.
@@ -65,6 +65,7 @@
   $avatardimxs=60;// Avatar X Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatardimys=60;// Avatar Y Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatarsize=2*30720;// The Avatar size in bytes. The default is to 60kb.
+  $avatarmoods=64; //Limit to uploaded mood avatars
 
   // The following settings allow you to enable minipics in various parts of the board. Currently they are specific but they may be simplifed in the future.
   $config['showminipic'] = false; // Show minipics in many generic places that don't need to be specifically controlled.

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
   require "lib/function.php";
 
   header("Content-type: text/html; charset=utf-8");
@@ -532,9 +532,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog   = ($user['lastpost'] <= $user['lastview']);
-       $�           = ($onuserlog ? "":"(");
-       $�           = ($onuserlog ? "":")");
-       $onuserlist .= ($onusercount ? ", ":"").$�.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$�;
+       $offline1          = ($onuserlog ? "":"(");
+       $offline2          = ($onuserlog ? "":")");
+       $onuserlist .= ($onusercount ? ", " : "") . $offline1 . ($user['hidden'] ? "(" . userlink($user) . ")" : userlink($user)) . $offline2;
        $onusercount++;
       }
       
@@ -774,7 +774,5 @@
     pagestats();
     //miscbar(); disabled until needed. -Emuz
   }
-
-
 
 ?>

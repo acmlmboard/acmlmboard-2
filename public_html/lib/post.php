@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 
   function userlink_by_name($name) {
@@ -40,9 +40,9 @@
 
     $msg=preg_replace("'-moz-binding'si",' -mo<z>z-binding',$msg);
     $msg=str_ireplace("expression","ex<z>pression",$msg);
-    $msg=preg_replace("'filter:'si",'filter&#58;>',$msg);
-    $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
-    $msg=preg_replace("'transform:'si",'transform&#58;>',$msg);
+    $msg=preg_replace("'filter\s:'si",'filter&#58;>',$msg);
+    $msg=preg_replace("'javascript\s:'si",'javascript&#58;>',$msg);
+    $msg=preg_replace("'transform\s:'si",'transform&#58;>',$msg);
 	
 	return $msg;
   }
@@ -108,7 +108,7 @@
 	// remove newlines.
 	// this will prevent them being replaced with <br> tags and breaking the CSS
 	$style = str_replace("\n", '', $style);
-	
+	$style=preg_replace("'@keyframes'si",'noanimation4u',$style);
 	return $match[1].$style.$match[3];
   }
 

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 
   function userlink_by_name($name) {

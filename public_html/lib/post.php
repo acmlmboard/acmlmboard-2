@@ -46,23 +46,31 @@
 	
 	return $msg;
   }
+  function nofilterchar($match)
+  {
+	$code = htmlspecialchars($match[1]);
+	$list = array("\r\n","[",":",")","_","@","-");
+	$list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+	return str_replace($list,$list2,$code);
   
+  }
+  function filterurl($match)
+  {
+	global $L;
+	$list = array("_","-");
+	$list2 = array("%5F","%2D");
+	return $match[1].str_replace($list,$list2,$match[3]);
+  }
   function makecode($match)
   {
 	global $L;
-	$code = htmlspecialchars($match[1]);
-	$list = array("\r\n","[",":",")","_","@","-");
-    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".nofilterchar($match)."</code></table>";
   }
  
   function makeirc($match)
   {
     global $L;
-	$code = htmlspecialchars($match[1]);
-    $list = array("\r\n","[",":",")","_","@","-");
-    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
+    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".nofilterchar($match)."</code></table>";
   } 
   function makesvg($match)
   {
@@ -109,6 +117,7 @@
 	// this will prevent them being replaced with <br> tags and breaking the CSS
 	$style = str_replace("\n", '', $style);
 	$style=preg_replace("'@keyframes'si",'noanimation4u',$style);
+	$style=preg_replace("'@-webkit-keyframe'si",'noanimation4u',$style);
 	return $match[1].$style.$match[3];
   }
 
@@ -117,9 +126,10 @@
 
     //[blackhole89] - [code] tag
     $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
-
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
+    //Anti-code/smile in urls. Experimental.
+    $msg=preg_replace_callback("@(<a.*?)(.*?)(.*?>)@si",'filterurl',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 	
@@ -134,9 +144,7 @@
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace($smilies[$i][text],'�'.$smilies[$i][text].'�',$msg);
-      for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace('�'.$smilies[$i][text].'�','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
+        $msg=str_replace($smilies[$i][text],'<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 
     //Relocated here due to conflicts with specific smilies.

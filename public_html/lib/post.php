@@ -59,7 +59,7 @@
 	global $L;
 	$list = array("_","-");
 	$list2 = array("%5F","%2D");
-	return $match[1].str_replace($list,$list2,$match[3]);
+	return "href=\"".str_replace($list,$list2,$match[1])."\"";
   }
   function makecode($match)
   {
@@ -128,8 +128,8 @@
     $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
-    //Anti-code/smile in urls. Experimental.
-    $msg=preg_replace_callback("@(<a.*?)(.*?)(.*?>)@si",'filterurl',$msg);
+    //Anti-code/smile in urls. Experimental version 2.
+    $msg=preg_replace_callback('/href=["\']?([^"\'>]+)["\']?/','filterurl',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 	

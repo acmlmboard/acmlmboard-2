@@ -5,6 +5,7 @@
  $u=$_GET[u];
  if(!$n=$_GET[n]) $n=50;
  if(!$s=$_GET[s]) $s=1;
+ if(!is_numeric($u) || !is_numeric($s) || !is_numeric($n)) die("Invalid");
 
  $val='posts';
  if($t=='lv')  $val='pow('.sqlexpval().',2/7)*100';

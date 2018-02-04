@@ -86,6 +86,9 @@
 
   if($act=='Submit'){
     $message = $_POST[message];
+    if(strlen($message)>60000)  // Protection against huge posts getting cut off
+      $err="    This post is too long. Maximum length: 60000 characters. <br>
+".         "    $threadlink";
     if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";

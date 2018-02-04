@@ -63,6 +63,10 @@ if($act!="Submit"){ //Classical Redirect
   }
 
   if($act=='Submit'){
+    $message = $_POST[message];
+    if(strlen($message)>60000)  // Protection against huge posts getting cut off
+      $err="    This post is too long. Maximum length: 60000 characters. <br>
+".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
     if(($tdepth=tvalidate($message))!=0)
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>

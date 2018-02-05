@@ -70,7 +70,7 @@ $headers = array
 		"align" => "center",
 		"color" => 1
 	),
-	"img" => array("caption"=>"Image", "width"=>"32px", "color"=>2),
+	"img" => array("caption"=>"Image", "width"=>"400px", "color"=>2),
 	"name" => array("caption"=>"Name", "align"=>"center", "color"=>1),
 	"franchiseid" => array("caption"=>"Franchise", "align"=>"center", "color"=>2),
 	"flavor" => array("caption"=>"Description", "color"=>1),
@@ -90,7 +90,7 @@ while($mon = $sql->fetch($monReq))
 		$data[] = array
 		(
 			"id" => $mon['id'],
-			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
+			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" / style=\"max-width: 400px;\">",
 			"name" => $mon['name'],
 			"franchiseid" => $spritecateg[$mon['franchiseid']],
 			"flavor" => $mon['flavor'],

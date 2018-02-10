@@ -5,7 +5,7 @@
  *
  * Based on the dodongo thing, this is supposed to be some kind of collect and discover bullshit
  * where you sometimes randomly get some videogame beastie on the page. Clicking that beastie for
- * the first time would then get it registered in your own Pokédex rip off, and getting a specific
+ * the first time would then get it registered in your own Pokedex rip off, and getting a specific
  * amount yields bonus features such as bigger avatars or the ability to see <!-- comments -->.
  *
  * $chance is the % chance a beastie will appear in the first place.
@@ -75,9 +75,21 @@ $pic = $pics[array_rand($pics)];
 $x = "top: ".rand(0, 900)."px";
 $y = "left: ".rand(0, 600)."px";
 */
+  $img_data=getimagesize("img/sprites/".$pic);
+  $sprx=$img_data[0];
+  $spry=$img_data[1];
+
 //Relative adjusting way
-$x = rand(0, 100);
-$y = rand(0, 100);
+  $x = rand(0, 100);
+  $y = rand(0, 100);
+//Limit the range for large sprites which may float off-screen occasionally.
+if($sprx>1000 || $spry >540){ 
+  $x = (rand(0,1) == 1) ? rand(5, 35) : rand(65,95);
+  $y = (rand(0,1) == 1) ? rand(5, 35) : rand(65,95);
+}
+//Force super-sized sprites to display in a fixed position
+if($sprx>=1920 || $spry>=1080){ $x=0; $y=0; }
+
 $x = ($x < 50) ? "top: ".$x."%" : "bottom: ".(100-$x)."%";
 $y = ($y < 50) ? "left: ".$y."%" : "right: ".(100-$y)."%";
 
@@ -106,7 +118,8 @@ switch($monData['anchor'])
 		break;
 }
 
-$monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999\" src=\"img/sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
+$monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999; max-width: 100%;\" src=\"img/sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
+
 
 $spritehash = generate_sprite_hash($loguser['id'], $monData['id']);
 
@@ -124,8 +137,7 @@ $monScript = "<script language=\"javascript\">
 					alert(x.responseText);
 			}
 		};
-		x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."', 
-true);
+		x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."', true);
 		x.send(null);
 	}
 </script>";

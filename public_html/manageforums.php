@@ -591,6 +591,9 @@ function renderTag($TagText, $ForumID, $TagBit, $TintColour)
 	$TagTextImage = RenderText($TagText);
 	$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
 
+	$TagLen=$TagTextImage->Size[0] + 11;
+	$Tag->RendTag($TagLen,$TintColour);
+/* Legacy method
 	$LeftImage = Image::LoadPNG("./gfx/tagleft.png");
 	$RightImage = Image::LoadPNG("./gfx/tagright.png");
 	$Tag->DrawImageDirect($LeftImage, 0, 0);
@@ -600,7 +603,7 @@ function renderTag($TagText, $ForumID, $TagBit, $TintColour)
 
 	$Tag->DrawImageDirect($RightImage, $Tag->Size[0] - 8, 0);
 	$Tag->Colourize(hexdec(substr($TintColour, 0, 2)), hexdec(substr($TintColour, 2, 2)), hexdec(substr($TintColour, 4, 2)), 0xFF);
-
+*/
 	$Tag->DrawImageDirect($TagTextImage, 8, 2);
 	
 	if ($ForumID === null)
@@ -608,8 +611,8 @@ function renderTag($TagText, $ForumID, $TagBit, $TintColour)
 	else
 		$Tag->SavePNG("./gfx/tags/tag$ForumID-$TagBit.png");
 
-	$LeftImage->Dispose();
-	$RightImage->Dispose();
+	/*$LeftImage->Dispose();
+	$RightImage->Dispose();*/
 	$Tag->Dispose();
 	$TagTextImage->Dispose();
 }

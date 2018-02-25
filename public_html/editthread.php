@@ -56,22 +56,31 @@ pageheader("Edit Thread");
   $title = $sql->escape($_POST['title']);
   $iconurl=addslashes($iconurl);
   $sql->query("UPDATE threads SET `title`='{$title}',`icon`='$iconurl' WHERE `id`=$tid");
-  $n=1;
   if(isset($ispoll)){
-      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
-      foreach ($_POST['opt'] as $id => $_text)
+     $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
+     $oid=$sql->query("SELECT id FROM `polloptions` WHERE `poll`=$tid");
+$n=1;
+foreach($oid as $i){
+  $idz[$n]=$i['id'];
+  $n++;
+}
+     foreach ($_POST['opt'] as $id => $_text)
 	  {
 	    $color = stripslashes($_POST['col'][$id]);
 		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 		$text = $sql->escape($_text);
 //        $sql->query("UPDATE polloptions SET `option`='{$text}',r=".(int)$r.",g=".(int)$g.",b=".(int)$b." WHERE id=$id AND `poll`=$tid");
-if($n>$cntopts){ $insid="null"; } else { $insid=$id; }
+$aid=array_search($id,$idz,true);
+if($aid>=1){ $insid=$id; $idz[$aid]=0; } else { $insid="null"; }
         $sql->query("REPLACE INTO polloptions (`id`,`poll`,`option`,r,g,b) VALUES ($insid,$tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
-        $n++;
 	  }
     }
+  //Cleanup removed options.
+  foreach($idz as $i){
+    if ($i>=1) $sql->query("DELETE FROM polloptions  WHERE id=$i AND `poll`=$tid");
+  }
 }
-  redirect("thread.php?id=$tid",-1);
+ /redirect("thread.php?id=$tid",-1);
   } else {
 
   //No submitted data, fetch from the thread/poll data
@@ -129,9 +138,8 @@ $i=1;
 ".        "$L[TR]>
 ".        "  $L[TD1c]>Poll choices:</td>
 ".        "  $L[TD2]><div id=\"polloptions\">";
-$n=0;
-while($n<$cntopts){
-  $poll=$sql->fetchq("SELECT * FROM `polloptions` WHERE `poll`=$tid ORDER BY `id` LIMIT $n,1");
+$p=$sql->query("SELECT * FROM `polloptions` WHERE `poll`=$tid ORDER BY `id`");
+foreach($p as $poll){
   $pid=$poll['id'];
   $str="$optfield1".$pid."$optfield2".$pid."$optfield3";
   echo sprintf($str, $poll['option'], $poll['r'], $poll['g'], $poll['b']);

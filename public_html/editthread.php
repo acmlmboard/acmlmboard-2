@@ -80,7 +80,7 @@ if($aid>=1){ $insid=$id; $idz[$aid]=0; } else { $insid="null"; }
     if ($i>=1) $sql->query("DELETE FROM polloptions  WHERE id=$i AND `poll`=$tid");
   }
 }
- /redirect("thread.php?id=$tid",-1);
+ redirect("thread.php?id=$tid",-1);
   } else {
 
   //No submitted data, fetch from the thread/poll data

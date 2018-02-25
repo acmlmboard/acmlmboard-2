@@ -56,16 +56,18 @@ pageheader("Edit Thread");
   $title = $sql->escape($_POST['title']);
   $iconurl=addslashes($iconurl);
   $sql->query("UPDATE threads SET `title`='{$title}',`icon`='$iconurl' WHERE `id`=$tid");
+  $n=1;
   if(isset($ispoll)){
-      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}'");  
+      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
       foreach ($_POST['opt'] as $id => $_text)
 	  {
 	    $color = stripslashes($_POST['col'][$id]);
 		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 		$text = $sql->escape($_text);
 //        $sql->query("UPDATE polloptions SET `option`='{$text}',r=".(int)$r.",g=".(int)$g.",b=".(int)$b." WHERE id=$id AND `poll`=$tid");
-        $sql->query("REPLACE INTO polloptions (`id`,`poll`,`option`,r,g,b) VALUES ($id,$tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
-
+if($n>$cntopts){ $insid="null"; } else { $insid=$id; }
+        $sql->query("REPLACE INTO polloptions (`id`,`poll`,`option`,r,g,b) VALUES ($insid,$tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
+        $n++;
 	  }
     }
 }
@@ -93,10 +95,6 @@ $i=1;
 ".        "      Custom: $L[INPt]=iconurl size=40 maxlength=100>
 ";
 
-//Debug
-  echo "<div style=\"background: #444444; border: 1px solid #FF0000; color: #FF0000;\"><pre>";
-print_r($thread);
-echo "</pre><br>$cntopts</div>";
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>
 ".        " <form action=editthread.php method=post>

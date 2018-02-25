@@ -624,7 +624,7 @@ function tagRow($text, $tag, $fid, $bit, $color)
 	
 	$imgfile = "./gfx/tags/tag$fid-$bit.png";
 	if ($fid === null || !file_exists($imgfile))
-		$imgfile = "manageforums.php?ajax=renderTag&amp;text=$tag&amp;color=$color";
+		$imgfile = "manageforums.php?ajax=renderTag&amp;text=".str_replace("+","%2B",$tag)."&amp;color=$color";
 	$imgtag = "<img src=\"{$imgfile}\" alt=\"".htmlspecialchars($tag)."\" style=\"vertical-align:bottom;\">";
 	
 	return "<span style=\"min-width:200px; display:inline-block;\">".htmlspecialchars($text)."&nbsp;{$imgtag}</span>".

@@ -576,6 +576,8 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       else
         $trash='| ';
 
+      $edthr="| <a href=editthread.php?id=$tid>Edit Thread</a> ";
+
       $retag=sizeof($tags)?"<a href=javascript:showtbox()>Tag</a> | ":"";
       $edit="<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
     
@@ -601,7 +603,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       $opt="Moderating";
     } else {
       $fmovelinks="";
-      $close = $stick = $trash = "";
+      $close = $stick = $edthr = $trash = "";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
       $edit = "<a href=javascript:showrbox()>Rename</a>";
       $opt = "Thread";
@@ -628,6 +630,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "    $close
 ".        "    $trash
 ".        "    $edit
+".        "    $edthr
 ".        "    </span>
 ".        "    <span id=mappend>
 ".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread[title],ENT_COMPAT | ENT_HTML401,'UTF-8')."\" maxlength=100>

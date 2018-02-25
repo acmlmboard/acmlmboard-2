@@ -157,7 +157,7 @@
     $msg=str_replace('[/spoiler]','</span></span>',$msg);
     $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
-    $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1>',$msg);
+    $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
     $msg=str_replace('[quote]','<blockquote><hr>',$msg);
     $msg=str_replace('[/quote]','<hr></blockquote>',$msg);
     //Color Codes. Possibly could be simplified...

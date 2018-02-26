@@ -88,14 +88,14 @@
 				$primary, $_POST['description']);
 				
 			if ($act == 'new')
-				$sql->prepare("INSERT INTO `group` VALUES (0,?,?,?,?,?,?,?,?,?,?,?)", $values);
+				$sql->prepare("INSERT INTO `group` VALUES (null,?,'',null,?,?,?,?,?,?,?,?,?,?)", $values);
 			else
 			{
 				$values[] = $_GET['id'];
 				$sql->prepare("UPDATE `group` SET `title`=?,`nc0`=?,`nc1`=?,`nc2`=?,`inherit_group_id`=?,`default`=?,`banned`=?,
 					`sortorder`=?,`visible`=?,`primary`=?,`description`=? WHERE id=?", $values);
 			}
-				
+
 			die(header('Location: editgroups.php'));
 		}
 	}

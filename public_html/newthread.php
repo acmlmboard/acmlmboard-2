@@ -63,13 +63,12 @@
     $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
 	
 if($act!="Submit"){
-  echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+  $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbar();
 	 
 	if ($ispoll)
 	{
-		echo '<script type="text/javascript" src="jscolor/jscolor.js"></script>';
-		echo '<script type="text/javascript" src="polleditor.js"></script>';
+		$extjs.='<script type="text/javascript" src="jscolor/jscolor.js"></script><script type="text/javascript" src="polleditor.js"></script>';
 		$optfield = '<div><input type="text" name="opt[]" size=40 maxlength=40 value="%s"> - Color: <input class="color" name="col[]" value="%02X%02X%02X"> - <button class="submit" onclick="removeOption(this.parentNode);return false;">Remove</button></div>';
 	}
 }
@@ -163,7 +162,7 @@ if($act!="Submit"){
 ";
     }
  pageheader("New $type",$forum[id]);
-    print "$top
+    print "$extjs $top
 ".        "<br><br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
 ".        " $L[TBL1]>
@@ -279,7 +278,7 @@ $pollprev.="$L[TBLend]";
     }
 
  pageheader("New $type",$forum[id]);
-    print "$top - Preview
+    print "$extjs $top - Preview
 ".        "$pollprev<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>

@@ -133,6 +133,8 @@ if($_COOKIE['pstbon']>=1){
     if($act=='unstick') $action=',sticky=0';
     if($act=='close'  ) $action=',closed=1';
     if($act=='open'   ) $action=',closed=0';
+    if($act=='filter'  ) $action=',filter=1';
+    if($act=='unfilter') $action=',filter=0';
     if($act=='trash'  )
       editthread($tid,'',$trashid,'',1);
     if($act=='rename' )
@@ -344,7 +346,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN threads t ON p.thread=t.id "
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE p.date>$mintime AND ISNULL(pt2.id) "
+                      ."WHERE p.date>$mintime AND ISNULL(pt2.id) AND t.filter=0 "
                       ."ORDER BY p.date DESC "
                       ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
@@ -571,6 +573,11 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       else
         $close="| $link('close')>Close</a>";
 
+      if($thread[filter])
+        $filtr="| $link('unfilter')>Remove Filter</a>";
+      else
+        $filtr="| $link('filter')>Add Filter</a>";
+
       if($thread[forum]!=$trashid)
         $trash="| $link('trash')>Trash</a> |";
       else
@@ -603,7 +610,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       $opt="Moderating";
     } else {
       $fmovelinks="";
-      $close = $stick = $edthr = $trash = "";
+      $close = $stick = $filtr = $edthr = $trash = "";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
       $edit = "<a href=javascript:showrbox()>Rename</a>";
       $opt = "Thread";
@@ -630,6 +637,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "    $close
 ".        "    $trash
 ".        "    $edit
+".        "    $filtr
 ".        "    $edthr
 ".        "    </span>
 ".        "    <span id=mappend>

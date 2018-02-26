@@ -1403,6 +1403,7 @@ CREATE TABLE `threads` (
   `icon` varchar(100) NOT NULL,
   `tags` int(12) NOT NULL,
   `announce` int(1) NOT NULL,
+  `filter` tinyint(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `forum` (`forum`),
   KEY `user` (`user`),

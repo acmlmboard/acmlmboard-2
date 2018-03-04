@@ -63,13 +63,12 @@
     $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
 	
 if($act!="Submit"){
-  echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+  $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbar();
 	 
 	if ($ispoll)
 	{
-		echo '<script type="text/javascript" src="jscolor/jscolor.js"></script>';
-		echo '<script type="text/javascript" src="polleditor.js"></script>';
+		$extjs.='<script type="text/javascript" src="jscolor/jscolor.js"></script><script type="text/javascript" src="polleditor.js"></script>';
 		$optfield = '<div><input type="text" name="opt[]" size=40 maxlength=40 value="%s"> - Color: <input class="color" name="col[]" value="%02X%02X%02X"> - <button class="submit" onclick="removeOption(this.parentNode);return false;">Remove</button></div>';
 	}
 }
@@ -163,7 +162,7 @@ if($act!="Submit"){
 ";
     }
  pageheader("New $type",$forum[id]);
-    print "$top
+    print "$extjs $top
 ".        "<br><br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
 ".        " $L[TBL1]>
@@ -211,6 +210,7 @@ print     "  $L[TR]>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=filter id=filter value=1 ".($_POST[filter]?"checked":"")."><label for=filter>Flag as NSFW</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
     print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
@@ -278,7 +278,7 @@ $pollprev.="$L[TBLend]";
     }
 
  pageheader("New $type",$forum[id]);
-    print "$top - Preview
+    print "$extjs $top - Preview
 ".        "$pollprev<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
@@ -318,6 +318,7 @@ print     "  $L[TR]>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist($_POST[mid])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=filter id=filter value=1 ".($_POST[filter]?"checked":"")."><label for=filter>Flag as NSFW</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
     print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
@@ -330,8 +331,10 @@ print     "  $L[TR]>
   }elseif($act=='Submit'){
     if(!($iconurl=$_POST[iconurl]))
       $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
-
+    $nolayout=$_POST['nolayout'];
+    $filter=$_POST['filter'];
     checknumeric($nolayout);
+    checknumeric($filter);
     if(can_edit_forum_threads($fid)){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
@@ -357,8 +360,8 @@ print     "  $L[TR]>
 
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");
-    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky) "
-               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick)");
+    $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky,filter) "
+               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick,$filter)");
     $tid=$sql->insertid();
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");

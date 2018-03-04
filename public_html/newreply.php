@@ -64,7 +64,7 @@
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
   if($act!="Submit"){
-    echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+    $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
 
@@ -132,7 +132,7 @@
 
   if($err){
     pageheader('New reply',$thread[forum]);
-    print "$top - Error";
+    print "$extjs $top - Error";
     noticemsg("Error", $err);
   }elseif($act=='Preview' || !$act){
     if($act=='Preview'){
@@ -171,7 +171,7 @@
 
  if($act=='Preview') {
     pageheader('New reply',$thread[forum]);
-    print "$top - Preview
+    print "$extjs $top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
@@ -182,7 +182,7 @@
 "; 
 } else {
     pageheader('New reply',$thread[forum]);
-    print "$top 
+    print "$extjs $top 
 ".        "<br><br> 
 "; }
 print 

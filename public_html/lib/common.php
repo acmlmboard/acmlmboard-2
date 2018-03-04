@@ -99,8 +99,11 @@
      {
       sendirc("{irccolor-base}".get_irc_groupname($loguser['group_id'])." {irccolor-name}".($loguser['displayname'] ? $loguser['displayname'] : $loguser['name'])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}", $config['staffchan']);
      }
-
+  if(str_replace("sprites.php?","",$url)!=$url || isset($nourltracker)){ //Do not update last url if the clicked link was a sprite
+    $sql->query("UPDATE `users` SET `lastview`=".ctime().",`ip`='$userip', `ipfwd`='$userfwd', `ipbanned`='0' WHERE `id`='$loguser[id]'");
+} else {
     $sql->query("UPDATE `users` SET `lastview`=".ctime().",`ip`='$userip', `ipfwd`='$userfwd', `url`='".(isssl() ? "!" : "").addslashes($url)."', `ipbanned`='0' WHERE `id`='$loguser[id]'");
+}
     }
    else
     {

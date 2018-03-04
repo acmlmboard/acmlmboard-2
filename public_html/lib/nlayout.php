@@ -92,7 +92,7 @@ function rendernewstatus($type,$newcount='0'){
   global $statusimageset;
 
   if($statusimageset !='') $imagepath = $statusimageset;
-  else $imagepath = "../img/status/";
+  else $imagepath = "img/status/";
 
   switch ($type) {
   case "n": 

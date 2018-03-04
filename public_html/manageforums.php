@@ -571,9 +571,13 @@ function saveperms($bind, $id)
 			continue;
 			
 		$myperms = $_POST['perm'][$gid];
-		foreach ($perms as $perm)
-			$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`)
-				VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, $myperms[$perm]?0:1));
+		foreach ($perms as $perm){
+			if($myperms[$perm]==1){
+				$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, 0));
+			} else {
+				$sql->prepare("DELETE FROM `x_perm` WHERE `x_id`=? AND `x_type`=? AND `perm_id`=? AND `bindvalue`=?", array($gid,'group',$perm,$bind));
+			}
+		}
 	}
 }
 
@@ -624,7 +628,7 @@ function tagRow($text, $tag, $fid, $bit, $color)
 	
 	$imgfile = "./gfx/tags/tag$fid-$bit.png";
 	if ($fid === null || !file_exists($imgfile))
-		$imgfile = "manageforums.php?ajax=renderTag&amp;text=$tag&amp;color=$color";
+		$imgfile = "manageforums.php?ajax=renderTag&amp;text=".str_replace("+","%2B",$tag)."&amp;color=$color";
 	$imgtag = "<img src=\"{$imgfile}\" alt=\"".htmlspecialchars($tag)."\" style=\"vertical-align:bottom;\">";
 	
 	return "<span style=\"min-width:200px; display:inline-block;\">".htmlspecialchars($text)."&nbsp;{$imgtag}</span>".

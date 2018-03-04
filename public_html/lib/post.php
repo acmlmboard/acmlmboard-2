@@ -56,13 +56,15 @@
   }
   function filterurl($match)
   {
-	$src=str_replace($match[1],"",$match[0]);
-	return "enc64$src".base64_encode($match[1]);
+	if(stripos($match[0],"href")!==false) $src="href";
+	if(stripos($match[0],"src")!==false) $src="src";
+	return "enc64$src=".base64_encode($match[1]);
   }
   function unfilterurl($match)
   {
-	$src=str_replace($match[1],"",$match[0]);
-	return "$src".base64_decode($match[1]);
+	if(stripos($match[0],"href")!==false) $src="href";
+	if(stripos($match[0],"src")!==false) $src="src";
+	return "$src=".base64_decode($match[1]);
   }
   function makecode($match)
   {
@@ -137,8 +139,8 @@
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
     //Url filtering on href= or src=
-    $msg=preg_replace_callback('/href=["\']?([^"\'>]+)["\']?/','filterurl',$msg);
-    $msg=preg_replace_callback('/src=["\']?([^"\'>]+)["\']?/','filterurl',$msg);
+    $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
+    $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 	
@@ -157,8 +159,8 @@
     }
 
     //Unfilter URLs now we've passed the smilies.
-    $msg=preg_replace_callback('/enc64href=["\']?([^"\'>]+)["\']?/','unfilterurl',$msg);
-    $msg=preg_replace_callback('/enc64src=["\']?([^"\'>]+)["\']?/','unfilterurl',$msg);
+    $msg=preg_replace_callback('/enc64href=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
+    $msg=preg_replace_callback('/enc64src=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
 
     //Relocated here due to conflicts with specific smilies.
     $msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
@@ -311,26 +313,26 @@
   function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name' tabindex=\"-1\"></font></a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\"  title='$title' class='Submit $name' tabindex=\"-1\"></font></a></td>";
   }
   
   function posttoolbar()
   {
 	global $L;
-	return posttoolbutton("message","B","Bold","[b]","[/b]")
-           .posttoolbutton("message","I","Italic","[i]","[/i]")
-           .posttoolbutton("message","U","Underline","[u]","[/u]")
-           .posttoolbutton("message","S","Strikethrough","[s]","[/s]")
+	return posttoolbutton("message","ToolBarB","Bold","[b]","[/b]")
+           .posttoolbutton("message","ToolBarI","Italic","[i]","[/i]")
+           .posttoolbutton("message","ToolBarU","Underline","[u]","[/u]")
+           .posttoolbutton("message","ToolBarS","Strikethrough","[s]","[/s]")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","_","IRC","[irc]","[/irc]")
-           .posttoolbutton("message","/","URL","[url]","[/url]")
-           .posttoolbutton("message","!","Spoiler","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","Quote","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","Code","[code]","[/code]","cd")
+           .posttoolbutton("message","ToolBarIrc","IRC","[irc]","[/irc]")
+           .posttoolbutton("message","ToolBarUrl","URL","[url]","[/url]")
+           .posttoolbutton("message","ToolBarSpoil","Spoiler","[spoiler]","[/spoiler]","sp")
+           .posttoolbutton("message","ToolBarQuote","Quote","[quote]","[/quote]","qt")
+           .posttoolbutton("message","ToolBarCode","Code","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","[]","IMG","[img]","[/img]")
-           .posttoolbutton("message","%","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-		   .posttoolbutton("message","YT","YouTube","[youtube]","[/youtube]","yt");
+           .posttoolbutton("message","ToolBarImg","IMG","[img]","[/img]")
+           .posttoolbutton("message","ToolBarSvg","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
+		   .posttoolbutton("message","ToolBarYt","YouTube","[youtube]","[/youtube]","yt");
   }
   
   function moodlist($mid, $userid='') { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked

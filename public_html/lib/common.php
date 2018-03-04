@@ -329,20 +329,7 @@
       <title>$pagetitle$boardtitle</title>
       $config[meta]
       <link rel=\"icon\" type=\"image/png\" href=\"$favicon\">
-      <style>
-       .spoiler1
-        {
-         border: 1px dotted rgba(255,255,255,0.5);
-        }
-       .spoiler2
-        {
-         opacity: 0;
-        }
-       .spoiler2:hover
-        {
-         opacity: 1;
-        }
-      </style>
+      <link rel=\"stylesheet\" href=\"css/global.css\">
       <link rel=\"stylesheet\" href=\"css/$themefile\">
       <link href=\"lib/prettify/sunburst.css\" type=\"text/css\" rel=\"stylesheet\" />
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>

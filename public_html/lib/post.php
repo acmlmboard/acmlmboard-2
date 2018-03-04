@@ -56,10 +56,13 @@
   }
   function filterurl($match)
   {
-	global $L;
-	$list = array("_","-");
-	$list2 = array("%5F","%2D");
-	return "href=\"".str_replace($list,$list2,$match[1])."\"";
+	$src=str_replace($match[1],"",$match[0]);
+	return "enc64$src".base64_encode($match[1]);
+  }
+  function unfilterurl($match)
+  {
+	$src=str_replace($match[1],"",$match[0]);
+	return "$src".base64_decode($match[1]);
   }
   function makecode($match)
   {
@@ -87,7 +90,7 @@
     else
 		return "<object data=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$svgcode.$svgout))."\" type=\"image/svg+xml\" width=\"{$match[1]}\" height=\"{$match[2]}\"></object>";
   }
-  
+/*  Function is no longer used.
   function makeswf($match)
   {
 	global $L;
@@ -107,7 +110,7 @@
 ".		"		<a href=\"#\" onclick=\"document.getElementById('swf{$swfid}').innerHTML='';document.getElementById('swf{$swfid}stop').style.display='none';document.getElementById('swf{$swfid}play').style.display='block';return false;\">&#x25A0;</a>
 ".		"	</div>
 ".		"</td></tr></table>";
-  }
+  }*/
   
   function filterstyle($match)
   {
@@ -128,8 +131,14 @@
     $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
-    //Anti-code/smile in urls. Experimental version 2.
+
+    //Moved [url] and [img] tags here to filter
+    $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
+    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
+    $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
+    //Url filtering on href= or src=
     $msg=preg_replace_callback('/href=["\']?([^"\'>]+)["\']?/','filterurl',$msg);
+    $msg=preg_replace_callback('/src=["\']?([^"\'>]+)["\']?/','filterurl',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 	
@@ -147,17 +156,17 @@
         $msg=str_replace($smilies[$i][text],'<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
 
+    //Unfilter URLs now we've passed the smilies.
+    $msg=preg_replace_callback('/enc64href=["\']?([^"\'>]+)["\']?/','unfilterurl',$msg);
+    $msg=preg_replace_callback('/enc64src=["\']?([^"\'>]+)["\']?/','unfilterurl',$msg);
+
     //Relocated here due to conflicts with specific smilies.
     $msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
-    //$msg=preg_replace("'lemonparty'si",'ffff',$msg); Lemonparty Filter
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
     $msg=str_replace('[spoiler]','<span class="spoiler1" onclick=""><span class="spoiler2">',$msg);
     $msg=str_replace('[/spoiler]','</span></span>',$msg);
-    $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
-    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
-    $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
     $msg=str_replace('[quote]','<blockquote><hr>',$msg);
     $msg=str_replace('[/quote]','<hr></blockquote>',$msg);
     //Color Codes. Possibly could be simplified...
@@ -180,16 +189,12 @@
     $msg=preg_replace("'\[color=([a-f0-9]{6})\](.*?)\[/color\]'si",'<span style="color: #\\1">\\2</span>',$msg);
 
     $msg=preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si',"get_username_link",$msg);
-//    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
-    //$msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg); //For Reference. Original no quote @username
 
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
     $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);
     $msg=preg_replace_callback("'\[thread=([0-9]+)\]'si","get_threadlink",$msg);
     $msg=preg_replace_callback("'\[username=([[A-Za-z0-9 _\-%]+)\]'si","get_username_link",$msg);
 
-
-    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);
 
     $msg=preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><span class="quotedby"><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small></span><hr>',$msg);
     $msg=preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><span class="quotedby"><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small></span><hr>',$msg);
@@ -199,10 +204,6 @@
     if(isssl()) $msg=str_replace($config[base],$config[sslbase],$msg);
     else $msg=str_replace($config[sslbase],$config[base],$msg);
 
-    //$msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg); //Reggie? Image file not present in tree
-
-	// [Mega-Mario] this can cause security issues, and who uses [swf] anyway?
-    //$msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
 
 	//[KAWA] Youtube tag.
 	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);

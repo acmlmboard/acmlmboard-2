@@ -36,4 +36,21 @@ function buttonProc(e,bk,leadin,leadout)
 		}
 	}
 }
-
+function buttonSmile(e,bk,leadin,leadout)
+{
+		wrapSelection(e,leadin,"");
+		document.getElementById(bk).className="b n1";
+}
+function togglesmiles()
+{
+          var table = document.getElementById('smilebar');
+          var ishidden = 1;
+          if(table.style['display'] == 'none') {
+              table.style['display'] = '';
+              ishidden = 0;
+          }
+          else {
+            table.style['display'] = 'none';
+            ishidden = 1;
+          }
+}

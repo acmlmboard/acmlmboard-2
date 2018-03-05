@@ -317,22 +317,30 @@
   }
   
   function posttoolbar()
-  {
-	global $L;
+  { 
+	global $smilies,$L;
+	//print_r($smilies);
+        $smiletxt="$L[TBL] style='display: none' id='smilebar'>$L[TR] class='toolbar'>$L[TD3]>";
+        for($i=0;$i<$smilies[num];$i++){
+          $smiletxt.="<div style=\"float:left; margin: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".$smilies[$i][text]."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 100%;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]."></button></font></a></div>";
+          //if($i%16==15 && $i!=$smilies[num]) $smiletxt.="</tr>$L[TR] class='toolbar'>";
+        }
 	return posttoolbutton("message","ToolBarB","Bold","[b]","[/b]")
            .posttoolbutton("message","ToolBarI","Italic","[i]","[/i]")
            .posttoolbutton("message","ToolBarU","Underline","[u]","[/u]")
            .posttoolbutton("message","ToolBarS","Strikethrough","[s]","[/s]")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","ToolBarIrc","IRC","[irc]","[/irc]")
            .posttoolbutton("message","ToolBarUrl","URL","[url]","[/url]")
            .posttoolbutton("message","ToolBarSpoil","Spoiler","[spoiler]","[/spoiler]","sp")
+           .posttoolbutton("message","ToolBarIrc","IRC","[irc]","[/irc]")
            .posttoolbutton("message","ToolBarQuote","Quote","[quote]","[/quote]","qt")
            .posttoolbutton("message","ToolBarCode","Code","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","ToolBarImg","IMG","[img]","[/img]")
            .posttoolbutton("message","ToolBarSvg","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-		   .posttoolbutton("message","ToolBarYt","YouTube","[youtube]","[/youtube]","yt");
+	   .posttoolbutton("message","ToolBarYt","YouTube","[youtube]","[/youtube]","yt")
+           ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\"></font></a></td>"
+           ."$smiletxt";
   }
   
   function moodlist($mid, $userid='') { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked

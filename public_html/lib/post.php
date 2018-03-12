@@ -313,7 +313,7 @@
   function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\"  title='$title' class='Submit $name' tabindex=\"-1\"></font></a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\"  title='$title' class='Submit $name' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>";
   }
   
   function posttoolbar()
@@ -322,7 +322,7 @@
 	//print_r($smilies);
         $smiletxt="$L[TBL] style='display: none' id='smilebar'>$L[TR] class='toolbar'>$L[TD3]>";
         for($i=0;$i<$smilies[num];$i++){
-          $smiletxt.="<div style=\"float:left; margin: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".$smilies[$i][text]."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 100%;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]."></button></font></a></div>";
+          $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".$smilies[$i][text]."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
           //if($i%16==15 && $i!=$smilies[num]) $smiletxt.="</tr>$L[TR] class='toolbar'>";
         }
 	return posttoolbutton("message","ToolBarB","Bold","[b]","[/b]")
@@ -339,7 +339,7 @@
            .posttoolbutton("message","ToolBarImg","IMG","[img]","[/img]")
            .posttoolbutton("message","ToolBarSvg","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
 	   .posttoolbutton("message","ToolBarYt","YouTube","[youtube]","[/youtube]","yt")
-           ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\"></font></a></td>"
+           ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>"
            ."$smiletxt";
   }
   

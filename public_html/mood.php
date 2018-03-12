@@ -69,7 +69,7 @@
     }
     die(); //Don't render page.
   }
-  pageheader('Mood Avatar Editor 0.a');
+  pageheader('Mood Avatar Editor');
 //Various magic
   if(isset($err)){
     noticemsg("Notice", $err);

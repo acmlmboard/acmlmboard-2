@@ -1,0 +1,1 @@
+INSERT INTO `kafuka`.`perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-smilies', 'Update Smilies', '', '3', 'users'), ('edit-thread', 'Edit Own Thread/Poll', '', '2', 'users');

@@ -7,7 +7,7 @@
   checknumeric($tid);
   needs_login(1);
 
-    $thread=$sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, t.forum fid".($log?', r.time frtime':'').' '
+    $thread=$sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, t.forum fid".($log?', r.time frtime':'').', t.user owner '
                         ."FROM threads t LEFT JOIN forums f ON f.id=t.forum "
                   .($log?"LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) ":'')
 		  	."LEFT JOIN polls p ON p.id=t.id "
@@ -17,10 +17,10 @@
     {
       error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
-if (!can_edit_forum_threads($thread[forum])){
+if(has_perm('edit-thread') && $thread['owner']==$loguser['id']) $caneditown=1;
+if (!can_edit_forum_threads($thread[forum]) && !isset($caneditown)){
   $err="    You have no permissions to modify threads in this forum!";
 pageheader("Edit Thread");
-    print "$top - Error";
     noticemsg("Error", $err);
     pagefooter();
     die();

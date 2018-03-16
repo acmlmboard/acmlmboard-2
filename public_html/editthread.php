@@ -53,9 +53,9 @@ pageheader("Edit Thread");
   //No Errors detected
   if(!($iconurl=$_POST[iconurl]))
     $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
-  $title = $sql->escape($_POST['title']);
+  $title = addslashes($_POST['title']);
   $iconurl=addslashes($iconurl);
-  $sql->query("UPDATE threads SET `title`='{$title}',`icon`='$iconurl' WHERE `id`=$tid");
+  $sql->query("UPDATE threads SET `title`='$title',`icon`='$iconurl' WHERE `id`=$tid");
   if(isset($ispoll)){
      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
      $oid=$sql->query("SELECT id FROM `polloptions` WHERE `poll`=$tid");

@@ -560,7 +560,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
   $modlinks='<br>';
   if($tid && 
     (can_edit_forum_threads($thread[forum]) || 
-      ($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')))) {
+      ($loguser[id] == $thread[user] && !$thread[closed] && (has_perm('edit-thread') || has_perm('rename-own-thread'))))) {
     $link="<a href=javascript:submitmod";
     if (can_edit_forum_threads($thread[forum])) {
       if($thread[sticky])
@@ -611,9 +611,12 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
     } else {
       $fmovelinks="";
       $close = $stick = $filtr = $edthr = $trash = "";
-      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('edit-thread')) $edthr="| <a href=editthread.php?id=$tid>Edit ".(($thread[ispoll]==1)? 'Poll' : 'Icon')."</a> ";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
-      $edit = "<a href=javascript:showrbox()>Rename</a>";
+      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')){
+        $canrnbar="| ";
+        $edit = "<a href=javascript:showrbox()>Rename</a>";
+      }
+      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('edit-thread')) $edthr="$canrnbar <a href=editthread.php?id=$tid>Edit ".(($thread[ispoll]==1)? 'Poll' : 'Icon')."</a> ";
       $opt = "Thread";
     }
     $taglinks="";

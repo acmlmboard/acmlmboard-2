@@ -110,6 +110,9 @@ $s['url'], $s['text'],
 )) {
 $r['action'] = "edit";
       $pagebar['message'] = "Smiley successfully created.";
+      $id=-1; //We're creating a smilie.
+      $t['url']=$s['url'];
+      $t['text']=$s['text'];
 }
 else {
  $pagebar['message'] = "Unable to create smiley.";
@@ -122,7 +125,7 @@ $pagebar['breadcrumb'] = array(
     );
 
 
-if ($id) {
+if ($id && $id!=-1) {
     $t=$sql->fetchp('SELECT * FROM smilies WHERE text=?',array($id));
   if (!$t && !$_POST['text']) { noticemsg("Notice", "Invalid smiley code"); pagefooter(); die();
   } else {
@@ -157,8 +160,8 @@ $form = array(
         'text' => array(
           'title' => 'Code',
           'type' => 'text',
-          'length' => 10,
-          'size' => 7,
+          'length' => 15,
+          'size' => 10,
 'value' => $t['text'],
         ),
         'url' => array(

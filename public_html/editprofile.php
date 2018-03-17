@@ -98,8 +98,8 @@
       if(!$error){
         $tmpfile=$_FILES[minipic][tmp_name];
         list($width,$height,$type)=getimagesize($tmpfile);
-        if($width!=$minipicsize || $height!=$minipicsize) {
-          $error.="- Minipic size must be {$minipicsize}x$minipicsize.<br />";
+        if($width>$minipicsize || $height>$minipicsize) {
+          $error.="- Minipic size must be {$minipicsize}x$minipicsize or smaller.<br />";
         } else if($type!=3 && $type!=1) {
           $error.="- Minipic file broken or not a valid PNG or GIF image!<br />";
         } else {
@@ -417,7 +417,7 @@ if (has_perm("edit-users"))
 ".           fieldrow('Rankset'   ,fieldselect('rankset', $user['rankset'], ranklist()))."
 ".           ((checkctitle($targetuserid)) ?fieldrow('Title'           ,fieldinput(40,255,'title'     )):"")."
 ".           fieldrow('Picture'         ,'<input type=file name=picture size=40> <input type=checkbox name=picturedel value=1 id=picturedel><label for=picturedel>Erase</label><br><font class=sfont>Must be PNG, JPG or GIF, within 80KB, within '.$avatardimx.'x'.$avatardimy.'.</font>')."
-".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, exactly '.$minipicsize.'x'.$minipicsize.'.</font>')."
+".           fieldrow('MINIpic'         ,'<input type=file name=minipic size=40> <input type=checkbox name=minipicdel value=1 id=minipicdel><label for=minipicdel>Erase</label><br><font class=sfont>Must be PNG or GIF, within 10KB, within '.$minipicsize.'x'.$minipicsize.'.</font>')."
 ".           (checkcusercolor($targetuserid) ? fieldrow('Custom username color',$colorinput) : "" )."
 ";
 

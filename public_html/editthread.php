@@ -7,7 +7,7 @@
   checknumeric($tid);
   needs_login(1);
 
-    $thread=$sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, t.forum fid".($log?', r.time frtime':'').' '
+    $thread=$sql->fetchq("SELECT t.*, NOT ISNULL(p.id) ispoll, p.question, p.multivote, p.changeable, f.title ftitle, t.forum fid".($log?', r.time frtime':'').', t.user owner '
                         ."FROM threads t LEFT JOIN forums f ON f.id=t.forum "
                   .($log?"LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) ":'')
 		  	."LEFT JOIN polls p ON p.id=t.id "
@@ -17,10 +17,10 @@
     {
       error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
-if (!can_edit_forum_threads($thread[forum])){
+if(has_perm('edit-thread') && $thread['owner']==$loguser['id']) $caneditown=1;
+if (!can_edit_forum_threads($thread[forum]) && !isset($caneditown)){
   $err="    You have no permissions to modify threads in this forum!";
 pageheader("Edit Thread");
-    print "$top - Error";
     noticemsg("Error", $err);
     pagefooter();
     die();
@@ -53,9 +53,10 @@ pageheader("Edit Thread");
   //No Errors detected
   if(!($iconurl=$_POST[iconurl]))
     $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
-  $title = $sql->escape($_POST['title']);
+  //If the user is not a moderator and has their perm to 
+  if(!has_perm('rename-own-thread') && !can_edit_forum_threads($thread[forum])){ $title=""; } else { $title = "`title`='".$_POST[title]."',"; }
   $iconurl=addslashes($iconurl);
-  $sql->query("UPDATE threads SET `title`='{$title}',`icon`='$iconurl' WHERE `id`=$tid");
+  $sql->query("UPDATE threads SET $title`icon`='$iconurl' WHERE `id`=$tid");
   if(isset($ispoll)){
      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
      $oid=$sql->query("SELECT id FROM `polloptions` WHERE `poll`=$tid");
@@ -103,7 +104,7 @@ $i=1;
           "      $L[INPr]=iconid value=0> None&nbsp; &nbsp;
 ".        "      Custom: $L[INPt]=iconurl size=40 maxlength=100>
 ";
-
+if(!has_perm('rename-own-thread')){  $distitle=" disabled title=\"You do not have permission to edit thread titles.\""; } else { $distitle=""; }
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>
 ".        " <form action=editthread.php method=post>
@@ -114,7 +115,7 @@ $i=1;
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
-".        "    $L[TD2]>$L[INPt]=title value=\"".$thread['title']."\" size=100 maxlength=100></td>
+".        "    $L[TD2]>$L[INPt]=title value=\"".$thread['title']."\" size=100 maxlength=100$distitle></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>$typecap icon:</td>
 ".        "    $L[TD2]>

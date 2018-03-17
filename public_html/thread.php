@@ -560,7 +560,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
   $modlinks='<br>';
   if($tid && 
     (can_edit_forum_threads($thread[forum]) || 
-      ($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')))) {
+      ($loguser[id] == $thread[user] && !$thread[closed] && (has_perm('edit-thread') || has_perm('rename-own-thread'))))) {
     $link="<a href=javascript:submitmod";
     if (can_edit_forum_threads($thread[forum])) {
       if($thread[sticky])
@@ -612,7 +612,11 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       $fmovelinks="";
       $close = $stick = $filtr = $edthr = $trash = "";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
-      $edit = "<a href=javascript:showrbox()>Rename</a>";
+      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')){
+        $canrnbar="| ";
+        $edit = "<a href=javascript:showrbox()>Rename</a>";
+      }
+      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('edit-thread')) $edthr="$canrnbar <a href=editthread.php?id=$tid>Edit ".(($thread[ispoll]==1)? 'Poll' : 'Icon')."</a> ";
       $opt = "Thread";
     }
     $taglinks="";
@@ -793,10 +797,11 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
 ".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
+     if($loguser[posttoolbar]!=1)
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]
-".        "  $L[TR] $quickreplydisplay >
+".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]";
+    print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Reply:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>$quotetext</textarea></td>
 ".        "  $L[TR1] $quickreplydisplay >

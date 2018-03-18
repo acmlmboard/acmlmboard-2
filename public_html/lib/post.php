@@ -322,7 +322,7 @@
 	//print_r($smilies);
         $smiletxt="$L[TBL] style='display: none' id='smilebar'>$L[TR] class='toolbar'>$L[TD3]>";
         for($i=0;$i<$smilies[num];$i++){
-          $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".$smilies[$i][text]."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
+          $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".addslashes($smilies[$i][text])."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
           //if($i%16==15 && $i!=$smilies[num]) $smiletxt.="</tr>$L[TR] class='toolbar'>";
         }
 	return posttoolbutton("message","ToolBarB","Bold","[b]","[/b]")

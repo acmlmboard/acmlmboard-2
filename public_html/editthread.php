@@ -100,10 +100,6 @@ $i=1;
 ".        "      Custom: $L[INPt]=iconurl value=\"".$thread['icon']."\" size=40 maxlength=100>
 ";
 } else { $ext="value=\"$match\""; }
-  $iconlist.=
-          "      $L[INPr]=iconid value=0> None&nbsp; &nbsp;
-".        "      Custom: $L[INPt]=iconurl size=40 maxlength=100>
-";
 if(!has_perm('rename-own-thread')){  $distitle=" disabled title=\"You do not have permission to edit thread titles.\""; } else { $distitle=""; }
 
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>

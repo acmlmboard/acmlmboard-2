@@ -271,6 +271,12 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
       else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage secondary groups</a>";
     }
     
+    $editbadges ="";
+    if(has_perm('edit-user-badges') && $config['badgesystem'] == true)
+    {
+      $editbadges="| <a href=\"assignbadges.php?uid=".$user['id']."\">Manage user badges</a>";
+    }
+
     $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
 
     $banuser ="";
@@ -484,7 +490,7 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View private messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit mood avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit user</a>":"") ."
-                       ". $banuser." ". $editpermissions." ".$secondarygroups."
+                      ". $banuser." ". $editpermissions." ".$secondarygroups." ".$editbadges."
            $L[TBLend]";
            pagefooter();
            

@@ -341,6 +341,12 @@ function userfields($tbl='', $pf='')
   //Badge username manipulation
   if($config['badgesystem'] && $config['usernamebadgeeffects'])
       {
+
+        if(has_badge_perm("rainbow_username", $user[$u.'id']))
+         {
+                $nc = randnickcolor();
+         }
+
         $cssstyle = "color:#$nc;";
 
         $result = has_badge_perm("change_username_style", $user[$u.'id']);

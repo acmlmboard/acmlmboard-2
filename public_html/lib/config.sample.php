@@ -48,12 +48,16 @@
   
   $config['log']    = 0; // Enables logging to the database of moderator & administrative actions. 0=off; 1=profile; 2=thread & post; 5=access
   $config['ckey']   = "configckey";
-  $config['address']   = "url";  // Hostname or IP address of your server (this will be public)
+  $config['address']   = "url";  // Hostname or IP address of your server (this will be public, required for rss feeds to function correctly)
   $config['base']   = "http://".$config['address']; // Replace if you need fine control of the address
   $config['sslbase']= "https://".$config['address']; // Replace if you need fine control of the address
   $config['path']   = "/";// If you run your copy in a specific path (ie: http://www.example.gov/board) than this would be 'board/''
-  $config['meta']   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"Acmlmboard, Your Stuff\">";// This is used for search engine keywords.
   $config['showssl'] = false; // Shows a link/icon to allow a user to switch to ssl. Enable if you are using on a https server.
+
+  /* Default metadata for when a page does not provide any 
+     This content is used by bots (I.E. Discord, Slack, Google, Bing). */
+  $config['metakey'] = "Acmlmboard, Your Stuff"; //Keywords for Metadata.
+  $config['meta']   = "<meta name='description' content=\"Stuff goes here!\"><meta name='keywords' content=\"".$config['metakey']."\">"; //Default for no metadata provided by the page.
 
 /* -- Everything past this point is optional.  It is recommended to get the board up and running first before adjusting the following                  --
    -- The amount of options may be overwelming at first. AB 2.5+ was designed to allow for great flexiblity. As such there are many optional features. -- */

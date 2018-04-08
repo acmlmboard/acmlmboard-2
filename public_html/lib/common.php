@@ -242,7 +242,7 @@
    //2/21/2007 xkeeper - todo: add $forumid attribute (? to add "forum user is in" and markread links
    // also added number_format to views
    // also changed the title to be "pagetitle - boardname" and not vice-versa
-  function pageheader($pagetitle="", $fid=0)
+  function pageheader($pagetitle="", $fid=0, $metadata="Default")
    {
     global $L, $dateformat, $sql, $log, $loguser ,$sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
            $logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays;
@@ -322,12 +322,16 @@
      $logbar                = $loguser;
      $logbar['showminipic'] = 1;
     }
-   
+   if ($metadata!="Default"){
+     $mdata="<meta name='description' content=\"$metadata\"><meta name='keywords' content=\"".$config['metakey']."\">";
+   } else {
+     $mdata=$config['meta'];
+   }
     print "<!DOCTYPE html>
       <html>
       <head>
       <title>$pagetitle$boardtitle</title>
-      $config[meta]
+      $mdata
       <link rel=\"icon\" type=\"image/png\" href=\"$favicon\">
       <link rel=\"stylesheet\" href=\"css/global.css\">
       <link rel=\"stylesheet\" href=\"css/$themefile\">

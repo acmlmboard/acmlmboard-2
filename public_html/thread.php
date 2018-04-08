@@ -233,8 +233,9 @@ if($_COOKIE['pstbon']>=1){
     $feedicons.=feedicon("img/rss3.png","rss.php?thread=$thread[id]","RSS feed for this thread");
     $feedicons.=feedicon("img/rss2.png","rss.php?forum=$thread[forum]","RSS feed for this section");
     
+    if(!$pid) $meta=threadformeta($tid); else $meta=postformeta($pid);
     //append thread's title to page title
-    pageheader($thread[title],$thread[fid]);
+    pageheader($thread[title],$thread[fid],$meta);
 
     //mark thread as read // 2007-02-21 blackhole89
     if($log && $thread[lastdate]>$thread[frtime])
@@ -277,7 +278,7 @@ if($_COOKIE['pstbon']>=1){
                       ."FROM users "
                       ."WHERE id=$uid ");
     //title
-    pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
+    pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]),0,"Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
     $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "

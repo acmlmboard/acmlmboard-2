@@ -328,12 +328,12 @@
 		else $permsassigned[$key] = true;
 		
 		$permtitle = $perm['permtitle'];
-		if (!$permtitle) $permtitle = $perm['perm_id'];
+		if (!$permtitle) $permtitle = "[!] ".$perm['perm_id']; //Marking undefined perms with a [!] to flag them up
 		
 		$ret .= "<td style=\"width:25%;\">&bull; ";
 		if ($discarded) $ret .= '<s>';
-		if ($perm['revoke']) $ret .= '<span style="color:#f88;">Revoke</span>: ';
-		else $ret .= '<span style="color:#8f8;">Grant</span>: ';
+		if ($perm['revoke']) $ret .= '<span style="color:#ff8888;">Revoke</span>: ';
+		else $ret .= '<span style="color:#88ff88;">Grant</span>: ';
 		$ret .= '\''.htmlspecialchars($permtitle).'\'';
 		
 		if ($perm['bindvalue'])

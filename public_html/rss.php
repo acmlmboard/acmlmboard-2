@@ -19,7 +19,7 @@
 ";
 
   $fieldlist='';
-  $ufields=array('id','name','sex','group_id');
+  $ufields=array('id','name','displayname','sex','group_id');
   foreach($ufields as $field)
     $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
 
@@ -61,8 +61,8 @@
       //And yes, that is how you do HTML in RSS. :)
       print "    <item>
 ".          "      <title>".date("[$loguser[timeformat]]",$p[date])." by $p[u2name]: $ptext</title>
-".          "      <description>Post by &lt;a href=\"$config[base]$config[path]profile.php?id=$p[u2id]\"&gt;$p[u2name]&lt;/a&gt;, ".
-                     "thread by &lt;a href=\"$config[base]$config[path]profile.php?id=$p[u1id]\"&gt;$p[u1name]&lt;/a&gt; ".
+".          "      <description>Post by &lt;a href=\"$config[base]$config[path]profile.php?id=$p[u2id]\"&gt;".($p[u2displayname]?$p[u2displayname]:$p[u2name])."&lt;/a&gt;, ".
+                     "thread by &lt;a href=\"$config[base]$config[path]profile.php?id=$p[u1id]\"&gt;".($p[u1displayname]?$p[u1displayname]:$p[u1name])."&lt;/a&gt; ".
                      "in &lt;a href=\"$config[base]$config[path]forum.php?id=$p[forum]\"&gt;$p[ftitle]&lt;/a&gt;</description>
 ".          "      <pubDate>".date("r",$p[date])."</pubDate>
 ".          "      <category>$p[ftitle]</category>
@@ -95,8 +95,8 @@
       //And yes, that is how you do HTML in RSS. :)
       print "    <item>
 ".          "      <title>$t[title] - ".date("[$loguser[timeformat]]",$t[lastdate])." by $t[u2name]</title>
-".          "      <description>Last post by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u2id]\"&gt;$t[u2name]&lt;/a&gt;, ".
-                     "thread by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u1id]\"&gt;$t[u1name]&lt;/a&gt;</description>
+".          "      <description>Last post by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u2id]\"&gt;".($t[u2displayname]?$t[u2displayname]:$t[u2name])."&lt;/a&gt;, ".
+                     "thread by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u1id]\"&gt;".($t[u1displayname]?$t[u1displayname]:$t[u1name])."&lt;/a&gt;</description>
 ".          "      <pubDate>".date("r",$t[lastdate])."</pubDate>
 ".          "      <category>$t[ftitle]</category>
 ".          "      <guid>$config[base]$config[path]thread.php?pid=$t[lastid]#$t[lastid]</guid>
@@ -129,9 +129,9 @@
       //Whitespace feels awkward within <description></description> but i'm not sure what to change it to, feel free to change this blackhole89!
       //And yes, that is how you do HTML in RSS. :)
       print "    <item>
-".          "      <title>$t[title] - ".date("[$loguser[timeformat]]",$t[lastdate])." by $t[u2name]</title>
-".          "      <description>Last post by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u2id]\"&gt;$t[u2name]&lt;/a&gt;, ".
-                     "thread by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u1id]\"&gt;$t[u1name]&lt;/a&gt; ".
+".          "      <title>$t[title] - ".date("[$loguser[timeformat]]",$t[lastdate])." by ".($t[u2displayname]?$t[u2displayname]:$t[u2name])."</title>
+".          "      <description>Last post by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u2id]\"&gt;".($t[u2displayname]?$t[u2displayname]:$t[u2name])."&lt;/a&gt;, ".
+                     "thread by &lt;a href=\"$config[base]$config[path]profile.php?id=$t[u1id]\"&gt;".($t[u1displayname]?$t[u1displayname]:$t[u1name])."&lt;/a&gt; ".
                      "in &lt;a href=\"$config[base]$config[path]forum.php?id=$t[forum]\"&gt;$t[ftitle]&lt;/a&gt;</description>
 ".          "      <pubDate>".date("r",$t[lastdate])."</pubDate>
 ".          "      <category>$t[ftitle]</category>

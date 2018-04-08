@@ -9,9 +9,9 @@
   print "<?xml version=\"1.0\"?>
 ".      "<rss version=\"2.0\" xmlns:atom=\"http://www.w3.org/2005/Atom\">
 ".      "  <channel>
-".      "    <title>$boardtitle</title>
-".      "    <copyright>Posts are owned by the poster. Acmlmboard $abversion software Copyright 2005-2015 $boardprog</copyright>
-".      "    <generator>Acmlmboard $abversion ($abdate)</generator>
+".      "    <title>".strip_tags($boardtitle)."</title>
+".      "    <copyright>Posts are owned by the poster. Acmlmboard ".strip_tags($abversion)." software Copyright 2005-2018 ".strip_tags($boardprog)."</copyright>
+".      "    <generator>Acmlmboard ".strip_tags($abversion)." ($abdate)</generator>
 ".      "    <ttl>5</ttl>
 ".      "    <atom:link href=\"$config[base]$url\" rel=\"self\" type=\"application/rss+xml\" />
 ".      "    <language>en</language>

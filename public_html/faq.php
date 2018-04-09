@@ -1,7 +1,8 @@
 <?php
 include('lib/common.php');
-include('lib/diff/Diff.php');
-include('lib/diff/Diff/Renderer/inline.php');
+// why was this included if it isn't used?
+//include('lib/diff/Diff.php');
+//include('lib/diff/Diff/Renderer/inline.php');
 
 //Smilies List
 $smilieslist = $sql->query("SELECT * FROM `smilies`");

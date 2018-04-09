@@ -18,7 +18,7 @@ function zero_width_name($ircname){
         return $ircname;
 }
 
-function get_irc_color($color,$bcolor){
+function get_irc_color($color, $bcolor = ""){
 	switch ($color)	{
 		case "white":
 		case "00":

@@ -63,6 +63,10 @@ if($act!="Submit"){ //Classical Redirect
   }
 
   if($act=='Submit'){
+    $message = $_POST[message];
+    if(strlen($message)>60000)  // Protection against huge posts getting cut off
+      $err="    This post is too long. Maximum length: 60000 characters. <br>
+".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
     if(($tdepth=tvalidate($message))!=0)
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>
@@ -204,6 +208,7 @@ print     "  $L[TR]>
     $rev=$sql->fetchq("SELECT MAX(revision) m FROM poststext WHERE id=$pid");
     $rev=$rev[m];
     $mid=(isset($_POST[mid])?(int)$_POST[mid]:-1);
+    $nolayout=$_POST['nolayout'];
     checknumeric($mid);
     checknumeric($nolayout);
     if(can_edit_forum_threads($thread['forum'])){
@@ -211,16 +216,15 @@ print     "  $L[TR]>
     	checknumeric($_POST['stick']);
         checknumeric($_POST['open']);
         checknumeric($_POST['unstick']);
-   	if($_POST['close']) $modext=",closed=1";
-	if($_POST['stick']) $modext.=",sticky=1";
-  	if($_POST['open']) $modext=",closed=0";
-	if($_POST['unstick']) $modext.=",sticky=0";
+   	if($_POST['close']) $modext="closed=1";
+	if($_POST['stick']){ if(isset($modext)){ $modext.=",sticky=1"; } else { $modext="sticky=1"; } }
+  	if($_POST['open']) $modext="closed=0";
+	if($_POST['unstick']){ if(isset($modext)){ $modext.=",sticky=0"; } else { $modext="sticky=0"; } }
     }
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
     $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
-    $sql->query("UPDATE threads SET lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id='$thread[id]'");
-    $sql->query("UPDATE forums SET lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
+    if(isset($modext)) $sql->query("UPDATE threads SET $modext WHERE id='$thread[id]'");
     
     if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("post edit ".$pid." rev ".$rev)."')");
 

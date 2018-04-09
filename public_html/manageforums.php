@@ -571,9 +571,13 @@ function saveperms($bind, $id)
 			continue;
 			
 		$myperms = $_POST['perm'][$gid];
-		foreach ($perms as $perm)
-			$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`)
-				VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, $myperms[$perm]?0:1));
+		foreach ($perms as $perm){
+			if($myperms[$perm]==1){
+				$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, 0));
+			} else {
+				$sql->prepare("DELETE FROM `x_perm` WHERE `x_id`=? AND `x_type`=? AND `perm_id`=? AND `bindvalue`=?", array($gid,'group',$perm,$bind));
+			}
+		}
 	}
 }
 
@@ -591,6 +595,9 @@ function renderTag($TagText, $ForumID, $TagBit, $TintColour)
 	$TagTextImage = RenderText($TagText);
 	$Tag = Image::Create($TagTextImage->Size[0] + 11, 16);
 
+	$TagLen=$TagTextImage->Size[0] + 11;
+	$Tag->RendTag($TagLen,$TintColour);
+/* Legacy method
 	$LeftImage = Image::LoadPNG("./gfx/tagleft.png");
 	$RightImage = Image::LoadPNG("./gfx/tagright.png");
 	$Tag->DrawImageDirect($LeftImage, 0, 0);
@@ -600,7 +607,7 @@ function renderTag($TagText, $ForumID, $TagBit, $TintColour)
 
 	$Tag->DrawImageDirect($RightImage, $Tag->Size[0] - 8, 0);
 	$Tag->Colourize(hexdec(substr($TintColour, 0, 2)), hexdec(substr($TintColour, 2, 2)), hexdec(substr($TintColour, 4, 2)), 0xFF);
-
+*/
 	$Tag->DrawImageDirect($TagTextImage, 8, 2);
 	
 	if ($ForumID === null)
@@ -608,8 +615,8 @@ function renderTag($TagText, $ForumID, $TagBit, $TintColour)
 	else
 		$Tag->SavePNG("./gfx/tags/tag$ForumID-$TagBit.png");
 
-	$LeftImage->Dispose();
-	$RightImage->Dispose();
+	/*$LeftImage->Dispose();
+	$RightImage->Dispose();*/
 	$Tag->Dispose();
 	$TagTextImage->Dispose();
 }
@@ -621,7 +628,7 @@ function tagRow($text, $tag, $fid, $bit, $color)
 	
 	$imgfile = "./gfx/tags/tag$fid-$bit.png";
 	if ($fid === null || !file_exists($imgfile))
-		$imgfile = "manageforums.php?ajax=renderTag&amp;text=$tag&amp;color=$color";
+		$imgfile = "manageforums.php?ajax=renderTag&amp;text=".str_replace("+","%2B",$tag)."&amp;color=$color";
 	$imgtag = "<img src=\"{$imgfile}\" alt=\"".htmlspecialchars($tag)."\" style=\"vertical-align:bottom;\">";
 	
 	return "<span style=\"min-width:200px; display:inline-block;\">".htmlspecialchars($text)."&nbsp;{$imgtag}</span>".

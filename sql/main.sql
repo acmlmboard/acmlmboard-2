@@ -1403,6 +1403,7 @@ CREATE TABLE `threads` (
   `icon` varchar(100) NOT NULL,
   `tags` int(12) NOT NULL,
   `announce` int(1) NOT NULL,
+  `filter` tinyint(3) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `forum` (`forum`),
   KEY `user` (`user`),
@@ -1828,3 +1829,5 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2017-12-28 14:30:14
+INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-smilies', 'Update Smilies', '', '3', 'users'), ('edit-thread', 'Edit Own Thread/Poll', '', '2', 'users');
+INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (NULL, 2, 'group', 'edit-thread', '', 0, 0);

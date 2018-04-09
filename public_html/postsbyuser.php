@@ -34,7 +34,7 @@
       $i=0;
       while($post=$sql->fetch($p)) {
         if(!(can_view_forum($post))) $tlink="<i>(Restricted forum)</i>";
-        else $tlink="<a href=thread.php?pid=$post[id]#$post[id]>$post[title]</a>";
+        else $tlink="<a href=thread.php?pid=$post[pid]#$post[pid]>$post[title]</a>";
         $print.=" ".(($i=!$i)?$L[TR3]:$L[TR2]).">
 ".              "  $L[TDc]>$post[pid]
 ".              "  $L[TDc]>#$post[num]
@@ -74,7 +74,7 @@
   if(isset($_GET[postsbythread])) {
   $time=$_GET[time];
 if(!$time) $time=86400;
-  $posters=$sql->query("SELECT t.id,t.replies,t.title,t.forum,f.id,f.private,COUNT(p.id) cnt FROM threads t,posts p,forums f WHERE p.user=$id AND p.thread=t.id AND p.date>".(ctime()-$time).' AND t.forum=f.id GROUP BY t.id ORDER BY cnt DESC');
+  $posters=$sql->query("SELECT t.id tid,t.replies,t.title,t.forum,f.id,f.private,COUNT(p.id) cnt FROM threads t,posts p,forums f WHERE p.user=$id AND p.thread=t.id AND p.date>".(ctime()-$time).' AND t.forum=f.id GROUP BY t.id ORDER BY cnt DESC');
   $u=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
   $username=($u[displayname]?$u[displayname]:$u[name]);
   if($time<999999999) $during=' during the last '.timeunits2($time);
@@ -89,15 +89,16 @@ if(!$time) $time=86400;
 ".	"$L[TDh]>Thread total
 ".      "  </tr>
   ";
+$n=0;
   for($i=1;$t=$sql->fetch($posters);$i++){
     $print.= "
-	<tr>
+	".(($n=!$n)?$L[TR3]:$L[TR2]).">
 ".	"$L[TDc]>$i</td>
 ".	"$L[TD] align=left>
     ";
     if(!(can_view_forum($t)))
 	$print.= "<i>(Restricted forum)</i>";
-    else $print.= "<a href=thread.php?id=$t[id]>$t[title]</a>";
+    else $print.= "<a href=thread.php?id=$t[tid]>$t[title]</a>";
     $print.= "
 	</td>
 ".	"$L[TDc]>$t[cnt]</td>
@@ -132,11 +133,11 @@ if(!$time) $time=86400;
 ".	"$L[TDh]>Forum total
 ".      "  </tr>
   ";
+$n=0;
   for($i=1;$f=$sql->fetch($posters);$i++){
-      if($i>1) $print.= '<tr>';
 	if(!(can_view_forum($f))) $link="<i>(Restricted forum)</i>";
 	else $link="<a href=forum.php?id=$f[id]>$f[title]</a>";
-      $print.= "
+      $print.= (($n=!$n)?$L[TR3]:$L[TR2]).">
 ".	"$L[TDc]>$i</td>
 ".	"$L[TD]>$link</td>
 ".	"$L[TDc]>$f[cnt]</td>

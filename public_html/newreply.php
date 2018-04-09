@@ -64,7 +64,7 @@
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
   if($act!="Submit"){
-    echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+    $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
 
@@ -86,6 +86,9 @@
 
   if($act=='Submit'){
     $message = $_POST[message];
+    if(strlen($message)>60000)  // Protection against huge posts getting cut off
+      $err="    This post is too long. Maximum length: 60000 characters. <br>
+".         "    $threadlink";
     if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
@@ -124,12 +127,12 @@
   //does the user have reading access to the quoted post?
   if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
-  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".str_replace("&","&amp",$post[text])."[/quote]";
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".$post[text]."[/quote]";
   }
 
   if($err){
     pageheader('New reply',$thread[forum]);
-    print "$top - Error";
+    print "$extjs $top - Error";
     noticemsg("Error", $err);
   }elseif($act=='Preview' || !$act){
     if($act=='Preview'){
@@ -168,7 +171,7 @@
 
  if($act=='Preview') {
     pageheader('New reply',$thread[forum]);
-    print "$top - Preview
+    print "$extjs $top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
@@ -179,7 +182,7 @@
 "; 
 } else {
     pageheader('New reply',$thread[forum]);
-    print "$top 
+    print "$extjs $top 
 ".        "<br><br> 
 "; }
 print 

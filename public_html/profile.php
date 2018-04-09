@@ -177,9 +177,9 @@ if($_COOKIE['pstbon']==-1){
     $post['text'] = "[quote=\"Emuz\" id=\"2\"]<a href=\"/#fakelink\">[b]The[/b] sample link.</a> [quote=\"Acmlm\" id=\"1\"][quote=\"Shroomy\"]Sample nested quote.[/quote][spoiler]Sample spoiler, but I guess I ruined that for you hehe[/spoiler][/quote]^Sample [u]sarcasm[/u][/quote]
 How about some code: 
 [code]<?php
-if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Scrydan was here.... 
+if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Epele: simple test.... 
 {
-   print \"Sample code.\"; #oops you just missed him!
+   print \"Sample code.\"; #It may print something.. or confuse you.
 }
 ?>[/code]
 [i]Sample[/i] message.";
@@ -271,6 +271,12 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
       else */$secondarygroups="| <a href=\"assignsecondary.php?uid=".$user['id']."\">Manage secondary groups</a>";
     }
     
+    $editbadges ="";
+    if(has_perm('edit-user-badges') && $config['badgesystem'] == true)
+    {
+      $editbadges="| <a href=\"assignbadges.php?uid=".$user['id']."\">Manage user badges</a>";
+    }
+
     $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
 
     $banuser ="";
@@ -484,7 +490,7 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View private messages</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit mood avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit user</a>":"") ."
-                       ". $banuser." ". $editpermissions." ".$secondarygroups."
+                      ". $banuser." ". $editpermissions." ".$secondarygroups." ".$editbadges."
            $L[TBLend]";
            pagefooter();
            

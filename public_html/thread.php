@@ -133,6 +133,8 @@ if($_COOKIE['pstbon']>=1){
     if($act=='unstick') $action=',sticky=0';
     if($act=='close'  ) $action=',closed=1';
     if($act=='open'   ) $action=',closed=0';
+    if($act=='filter'  ) $action=',filter=1';
+    if($act=='unfilter') $action=',filter=0';
     if($act=='trash'  )
       editthread($tid,'',$trashid,'',1);
     if($act=='rename' )
@@ -231,8 +233,9 @@ if($_COOKIE['pstbon']>=1){
     $feedicons.=feedicon("img/rss3.png","rss.php?thread=$thread[id]","RSS feed for this thread");
     $feedicons.=feedicon("img/rss2.png","rss.php?forum=$thread[forum]","RSS feed for this section");
     
+    if(!$pid) $meta=threadformeta($tid); else $meta=postformeta($pid);
     //append thread's title to page title
-    pageheader($thread[title],$thread[fid]);
+    pageheader($thread[title],$thread[fid],$meta);
 
     //mark thread as read // 2007-02-21 blackhole89
     if($log && $thread[lastdate]>$thread[frtime])
@@ -275,7 +278,7 @@ if($_COOKIE['pstbon']>=1){
                       ."FROM users "
                       ."WHERE id=$uid ");
     //title
-    pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
+    pageheader("Posts by ".($user[displayname] ? $user[displayname] : $user[name]),0,"Posts by ".($user[displayname] ? $user[displayname] : $user[name]));
     $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
@@ -344,7 +347,7 @@ if($_COOKIE['pstbon']>=1){
                       ."LEFT JOIN threads t ON p.thread=t.id "
                       ."LEFT JOIN forums f ON f.id=t.forum "
                       ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE p.date>$mintime AND ISNULL(pt2.id) "
+                      ."WHERE p.date>$mintime AND ISNULL(pt2.id) AND t.filter=0 "
                       ."ORDER BY p.date DESC "
                       ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
@@ -558,7 +561,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
   $modlinks='<br>';
   if($tid && 
     (can_edit_forum_threads($thread[forum]) || 
-      ($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')))) {
+      ($loguser[id] == $thread[user] && !$thread[closed] && (has_perm('edit-thread') || has_perm('rename-own-thread'))))) {
     $link="<a href=javascript:submitmod";
     if (can_edit_forum_threads($thread[forum])) {
       if($thread[sticky])
@@ -571,10 +574,17 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       else
         $close="| $link('close')>Close</a>";
 
+      if($thread[filter])
+        $filtr="| $link('unfilter')>Remove Filter</a>";
+      else
+        $filtr="| $link('filter')>Add Filter</a>";
+
       if($thread[forum]!=$trashid)
         $trash="| $link('trash')>Trash</a> |";
       else
         $trash='| ';
+
+      $edthr="| <a href=editthread.php?id=$tid>Edit Thread</a> ";
 
       $retag=sizeof($tags)?"<a href=javascript:showtbox()>Tag</a> | ":"";
       $edit="<a href=javascript:showrbox()>Rename</a> | $retag <a href=javascript:showmove()>Move</a>";
@@ -601,9 +611,13 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
       $opt="Moderating";
     } else {
       $fmovelinks="";
-      $close = $stick = $trash = "";
+      $close = $stick = $filtr = $edthr = $trash = "";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
-      $edit = "<a href=javascript:showrbox()>Rename</a>";
+      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')){
+        $canrnbar="| ";
+        $edit = "<a href=javascript:showrbox()>Rename</a>";
+      }
+      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('edit-thread')) $edthr="$canrnbar <a href=editthread.php?id=$tid>Edit ".(($thread[ispoll]==1)? 'Poll' : 'Icon')."</a> ";
       $opt = "Thread";
     }
     $taglinks="";
@@ -628,6 +642,8 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "    $close
 ".        "    $trash
 ".        "    $edit
+".        "    $filtr
+".        "    $edthr
 ".        "    </span>
 ".        "    <span id=mappend>
 ".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread[title],ENT_COMPAT | ENT_HTML401,'UTF-8')."\" maxlength=100>
@@ -782,10 +798,11 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
     print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
 ".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
 ";
+     if($loguser[posttoolbar]!=1)
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
-".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]
-".        "  $L[TR] $quickreplydisplay >
+".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]";
+    print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Reply:</td>
 ".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>$quotetext</textarea></td>
 ".        "  $L[TR1] $quickreplydisplay >

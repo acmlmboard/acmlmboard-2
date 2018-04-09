@@ -68,7 +68,7 @@ confirm => true),
 $data[] = array
 		(
 			"id" => $mon['id'],
-			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" />",
+			"img" => "<img src=\"img/sprites/".$pic."\" title=\"".$mon['title']."\" alt=\"\" / style=\"max-width: 400px;\">",
 			"name" => $mon['name'],
       "franchiseid" => $spritecateg[$mon['franchiseid']],
 			"flavor" => $mon['flavor'],
@@ -216,6 +216,8 @@ $form = array(
           'type' => 'dropdown',
           'choices' => array(
               'free' => 'Free',
+              'left' => 'Left',
+              'right' => 'Right',
               'sidepic' => 'Sidepic',
               'bottom' => 'Bottom',
 	      'top' => 'Top',

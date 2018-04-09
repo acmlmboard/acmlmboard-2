@@ -40,29 +40,42 @@
 
     $msg=preg_replace("'-moz-binding'si",' -mo<z>z-binding',$msg);
     $msg=str_ireplace("expression","ex<z>pression",$msg);
-    $msg=preg_replace("'filter:'si",'filter&#58;>',$msg);
-    $msg=preg_replace("'javascript:'si",'javascript&#58;>',$msg);
-    $msg=preg_replace("'transform:'si",'transform&#58;>',$msg);
+    $msg=preg_replace("'filter\s:'si",'filter&#58;>',$msg);
+    $msg=preg_replace("'javascript\s:'si",'javascript&#58;>',$msg);
+    $msg=preg_replace("'transform\s:'si",'transform&#58;>',$msg);
 	
 	return $msg;
   }
+  function nofilterchar($match)
+  {
+	$code = htmlspecialchars($match[1]);
+	$list = array("\r\n","[",":",")","_","@","-");
+	$list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
+	return str_replace($list,$list2,$code);
   
+  }
+  function filterurl($match)
+  {
+	if(stripos($match[0],"href")!==false) $src="href";
+	if(stripos($match[0],"src")!==false) $src="src";
+	return "enc64$src=".base64_encode($match[1]);
+  }
+  function unfilterurl($match)
+  {
+	if(stripos($match[0],"href")!==false) $src="href";
+	if(stripos($match[0],"src")!==false) $src="src";
+	return "$src=".base64_decode($match[1]);
+  }
   function makecode($match)
   {
 	global $L;
-	$code = htmlspecialchars($match[1]);
-	$list = array("\r\n","[",":",")","_","@","-");
-    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code class=\"prettyprint\" style=\"font-size:9pt;\">".nofilterchar($match)."</code></table>";
   }
  
   function makeirc($match)
   {
     global $L;
-	$code = htmlspecialchars($match[1]);
-    $list = array("\r\n","[",":",")","_","@","-");
-    $list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;");
-    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".str_replace($list,$list2,$code)."</code></table>";
+    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".nofilterchar($match)."</code></table>";
   } 
   function makesvg($match)
   {
@@ -79,7 +92,7 @@
     else
 		return "<object data=\"data:image/svg+xml;base64,".htmlspecialchars(base64_encode($svgin.$svgcode.$svgout))."\" type=\"image/svg+xml\" width=\"{$match[1]}\" height=\"{$match[2]}\"></object>";
   }
-  
+/*  Function is no longer used.
   function makeswf($match)
   {
 	global $L;
@@ -99,7 +112,7 @@
 ".		"		<a href=\"#\" onclick=\"document.getElementById('swf{$swfid}').innerHTML='';document.getElementById('swf{$swfid}stop').style.display='none';document.getElementById('swf{$swfid}play').style.display='block';return false;\">&#x25A0;</a>
 ".		"	</div>
 ".		"</td></tr></table>";
-  }
+  }*/
   
   function filterstyle($match)
   {
@@ -108,7 +121,8 @@
 	// remove newlines.
 	// this will prevent them being replaced with <br> tags and breaking the CSS
 	$style = str_replace("\n", '', $style);
-	
+	$style=preg_replace("'@keyframes'si",'noanimation4u',$style);
+	$style=preg_replace("'@-webkit-keyframe'si",'noanimation4u',$style);
 	return $match[1].$style.$match[3];
   }
 
@@ -117,9 +131,16 @@
 
     //[blackhole89] - [code] tag
     $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
-
     //[irc] variant of [code]
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
+
+    //Moved [url] and [img] tags here to filter
+    $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
+    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
+    $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
+    //Url filtering on href= or src=
+    $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
+    $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
 	
 	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 	
@@ -134,22 +155,20 @@
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace($smilies[$i][text],'�'.$smilies[$i][text].'�',$msg);
-      for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace('�'.$smilies[$i][text].'�','<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
+        $msg=str_replace($smilies[$i][text],'<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
     }
+
+    //Unfilter URLs now we've passed the smilies.
+    $msg=preg_replace_callback('/enc64href=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
+    $msg=preg_replace_callback('/enc64src=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
 
     //Relocated here due to conflicts with specific smilies.
     $msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);
 	
-    //$msg=preg_replace("'lemonparty'si",'ffff',$msg); Lemonparty Filter
     $msg=preg_replace("'\[(b|i|u|s)\]'si",'<\\1>',$msg);
     $msg=preg_replace("'\[/(b|i|u|s)\]'si",'</\\1>',$msg);
-    $msg=str_replace('[spoiler]','<span class="spoiler1"><span class="spoiler2">',$msg);
+    $msg=str_replace('[spoiler]','<span class="spoiler1" onclick=""><span class="spoiler2">',$msg);
     $msg=str_replace('[/spoiler]','</span></span>',$msg);
-    $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
-    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
-    $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1>',$msg);
     $msg=str_replace('[quote]','<blockquote><hr>',$msg);
     $msg=str_replace('[/quote]','<hr></blockquote>',$msg);
     //Color Codes. Possibly could be simplified...
@@ -172,16 +191,12 @@
     $msg=preg_replace("'\[color=([a-f0-9]{6})\](.*?)\[/color\]'si",'<span style="color: #\\1">\\2</span>',$msg);
 
     $msg=preg_replace_callback('\'@\"((([^"]+))|([A-Za-z0-9_\-%]+))\"\'si',"get_username_link",$msg);
-//    $msg=preg_replace_callback('\'@(("([^"]+)"))\'si',"get_username_link",$msg);
-    //$msg=preg_replace_callback('\'@(("([^"]+)")|([A-Za-z0-9_\-%]+))\'si',"get_username_link",$msg); //For Reference. Original no quote @username
 
     $msg=preg_replace_callback("'\[user=([0-9]+)\]'si","get_userlink",$msg);
     $msg=preg_replace_callback("'\[forum=([0-9]+)\]'si","get_forumlink",$msg);
     $msg=preg_replace_callback("'\[thread=([0-9]+)\]'si","get_threadlink",$msg);
     $msg=preg_replace_callback("'\[username=([[A-Za-z0-9 _\-%]+)\]'si","get_username_link",$msg);
 
-
-    $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);
 
     $msg=preg_replace("'\[reply=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><span class="quotedby"><small><i><a href=showprivate.php?id=\\2>Sent by \\1</a></i></small></span><hr>',$msg);
     $msg=preg_replace("'\[quote=\"(.*?)\" id=\"(.*?)\"\]'si",'<blockquote><span class="quotedby"><small><i><a href=thread.php?pid=\\2#\\2>Posted by \\1</a></i></small></span><hr>',$msg);
@@ -191,13 +206,9 @@
     if(isssl()) $msg=str_replace($config[base],$config[sslbase],$msg);
     else $msg=str_replace($config[sslbase],$config[base],$msg);
 
-    //$msg=preg_replace(":reggie:","<img src='img/reggie.jpg'>",$msg); //Reggie? Image file not present in tree
-
-	// [Mega-Mario] this can cause security issues, and who uses [swf] anyway?
-    //$msg=preg_replace_callback("'\[swf ([0-9]+) ([0-9]+)\](.*?)\[/swf\]'si",'makeswf',$msg);
 
 	//[KAWA] Youtube tag.
-	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="420" height="315" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
+	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
     
     if ($htmlcomcolor = has_badge_perm("show-html-comments")) {
       if ($htmlcomcolor == "1") $htmlcomcolor = "#66ff66";
@@ -302,26 +313,34 @@
   function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\" class=\"submit\" title='$title' value='$name' tabindex=\"-1\"></font></a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:buttonProc('$e','tbk$names','$leadin','$leadout')\"><font size='0.1'><input type=\"button\"  title='$title' class='Submit $name' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>";
   }
   
   function posttoolbar()
-  {
-	global $L;
-	return posttoolbutton("message","B","Bold","[b]","[/b]")
-           .posttoolbutton("message","I","Italic","[i]","[/i]")
-           .posttoolbutton("message","U","Underline","[u]","[/u]")
-           .posttoolbutton("message","S","Strikethrough","[s]","[/s]")
+  { 
+	global $smilies,$L;
+	//print_r($smilies);
+        $smiletxt="$L[TBL] style='display: none' id='smilebar'>$L[TR] class='toolbar'>$L[TD3]>";
+        for($i=0;$i<$smilies[num];$i++){
+          $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".addslashes($smilies[$i][text])."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
+          //if($i%16==15 && $i!=$smilies[num]) $smiletxt.="</tr>$L[TR] class='toolbar'>";
+        }
+	return posttoolbutton("message","ToolBarB","Bold","[b]","[/b]")
+           .posttoolbutton("message","ToolBarI","Italic","[i]","[/i]")
+           .posttoolbutton("message","ToolBarU","Underline","[u]","[/u]")
+           .posttoolbutton("message","ToolBarS","Strikethrough","[s]","[/s]")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","_","IRC","[irc]","[/irc]")
-           .posttoolbutton("message","/","URL","[url]","[/url]")
-           .posttoolbutton("message","!","Spoiler","[spoiler]","[/spoiler]","sp")
-           .posttoolbutton("message","&#133;","Quote","[quote]","[/quote]","qt")
-           .posttoolbutton("message",";","Code","[code]","[/code]","cd")
+           .posttoolbutton("message","ToolBarUrl","URL","[url]","[/url]")
+           .posttoolbutton("message","ToolBarSpoil","Spoiler","[spoiler]","[/spoiler]","sp")
+           .posttoolbutton("message","ToolBarIrc","IRC","[irc]","[/irc]")
+           .posttoolbutton("message","ToolBarQuote","Quote","[quote]","[/quote]","qt")
+           .posttoolbutton("message","ToolBarCode","Code","[code]","[/code]","cd")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","[]","IMG","[img]","[/img]")
-           .posttoolbutton("message","%","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
-		   .posttoolbutton("message","YT","YouTube","[youtube]","[/youtube]","yt");
+           .posttoolbutton("message","ToolBarImg","IMG","[img]","[/img]")
+           .posttoolbutton("message","ToolBarSvg","SVG","[svg <WIDTH> <HEIGHT>]","[/svg]","sv")
+	   .posttoolbutton("message","ToolBarYt","YouTube","[youtube]","[/youtube]","yt")
+           ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>"
+           ."$smiletxt";
   }
   
   function moodlist($mid, $userid='') { // 2009-07 Sukasa: It occurred to me that this would be better off in function.php, but last I checked

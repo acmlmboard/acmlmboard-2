@@ -1,0 +1,17 @@
+.spoiler1 { border: 1px dotted rgba(255,255,255,0.5); }
+.spoiler2{ opacity: 0; }
+.spoiler2:hover{ opacity: 1; }
+
+.ToolBarB { background: #000000 url(../img/toolbar/bold.gif) center no-repeat; }
+.ToolBarI { background: #000000 url(../img/toolbar/italic.gif) center no-repeat; }
+.ToolBarU { background: #000000 url(../img/toolbar/underline.gif) center no-repeat; }
+.ToolBarS { background: #000000 url(../img/toolbar/strike.gif) center no-repeat; }
+.ToolBarImg { background: #000000 url(../img/toolbar/image.gif) center no-repeat; }
+.ToolBarUrl { background: #000000 url(../img/toolbar/link.gif) center no-repeat; }
+.ToolBarSpoil { background: #000000 url(../img/toolbar/spoiler.gif) center no-repeat; }
+.ToolBarCode { background: #000000 url(../img/toolbar/code.gif) center no-repeat; }
+.ToolBarYt { background: #000000 url(../img/toolbar/youtube.png) center no-repeat; }
+.ToolBarIrc { background: #000000 url(../img/toolbar/irc.gif) center no-repeat; }
+.ToolBarQuote { background: #000000 url(../img/toolbar/quote.gif) center no-repeat; }
+.ToolBarSvg { background: #000000 url(../img/toolbar/svg.gif) center no-repeat; }
+.ToolBarSmile { background: #000000 url(../img/smilies/smile.gif) center no-repeat; }

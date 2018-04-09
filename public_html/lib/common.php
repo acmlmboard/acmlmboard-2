@@ -1,12 +1,12 @@
-﻿<?php
+<?php
   require "lib/function.php";
 
   header("Content-type: text/html; charset=utf-8");
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "12/28/2017";
-  $abversion = "2.5.3";
+  $abdate    = "4/09/2018";
+  $abversion = "2.5.4 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -99,8 +99,11 @@
      {
       sendirc("{irccolor-base}".get_irc_groupname($loguser['group_id'])." {irccolor-name}".($loguser['displayname'] ? $loguser['displayname'] : $loguser['name'])."{irccolor-base} changed IPs from {irccolor-no}$oldip{irccolor-base} to {irccolor-yes}$userip{irccolor-base}", $config['staffchan']);
      }
-
+  if(str_replace("sprites.php?","",$url)!=$url || isset($nourltracker)){ //Do not update last url if the clicked link was a sprite
+    $sql->query("UPDATE `users` SET `lastview`=".ctime().",`ip`='$userip', `ipfwd`='$userfwd', `ipbanned`='0' WHERE `id`='$loguser[id]'");
+} else {
     $sql->query("UPDATE `users` SET `lastview`=".ctime().",`ip`='$userip', `ipfwd`='$userfwd', `url`='".(isssl() ? "!" : "").addslashes($url)."', `ipbanned`='0' WHERE `id`='$loguser[id]'");
+}
     }
    else
     {
@@ -239,7 +242,7 @@
    //2/21/2007 xkeeper - todo: add $forumid attribute (? to add "forum user is in" and markread links
    // also added number_format to views
    // also changed the title to be "pagetitle - boardname" and not vice-versa
-  function pageheader($pagetitle="", $fid=0)
+  function pageheader($pagetitle="", $fid=0, $metadata="Default")
    {
     global $L, $dateformat, $sql, $log, $loguser ,$sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
            $logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays;
@@ -319,27 +322,18 @@
      $logbar                = $loguser;
      $logbar['showminipic'] = 1;
     }
-   
+   if ($metadata!="Default"){
+     $mdata="<meta name='description' content=\"$metadata\"><meta name='keywords' content=\"".$config['metakey']."\">";
+   } else {
+     $mdata=$config['meta'];
+   }
     print "<!DOCTYPE html>
       <html>
       <head>
       <title>$pagetitle$boardtitle</title>
-      $config[meta]
+      $mdata
       <link rel=\"icon\" type=\"image/png\" href=\"$favicon\">
-      <style>
-       .spoiler1
-        {
-         border: 1px dotted rgba(255,255,255,0.5);
-        }
-       .spoiler2
-        {
-         opacity: 0;
-        }
-       .spoiler2:hover
-        {
-         opacity: 1;
-        }
-      </style>
+      <link rel=\"stylesheet\" href=\"css/global.css\">
       <link rel=\"stylesheet\" href=\"css/$themefile\">
       <link href=\"lib/prettify/sunburst.css\" type=\"text/css\" rel=\"stylesheet\" />
       <script type=\"text/javascript\" src=\"lib/prettify/prettify.js\"></script>
@@ -532,9 +526,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog   = ($user['lastpost'] <= $user['lastview']);
-       $�           = ($onuserlog ? "":"(");
-       $�           = ($onuserlog ? "":")");
-       $onuserlist .= ($onusercount ? ", ":"").$�.($user['hidden'] ? "(".userlink($user).")" : userlink($user)).$�;
+       $offline1          = ($onuserlog ? "":"(");
+       $offline2          = ($onuserlog ? "":")");
+       $onuserlist .= ($onusercount ? ", " : "") . $offline1 . ($user['hidden'] ? "(" . userlink($user) . ")" : userlink($user)) . $offline2;
        $onusercount++;
       }
       
@@ -620,9 +614,9 @@
       {
        $user['showminipic'] = 1;
        $onuserlog = ($user['lastpost'] <= $user['lastview']);
-       $�=($onuserlog ? "" : "(");
-       $�=($onuserlog ? "" : ")");
-       $onuserlist.=($onusercount? ", ": "").$�.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$�;
+       $offline1=($onuserlog ? "" : "(");
+       $offline2=($onuserlog ? "" : ")");
+       $onuserlist.=($onusercount? ", ": "").$offline1.($user['hidden'] ? '('.userlink($user).')' : userlink($user)).$offline2;
        $onusercount++;
       }
 
@@ -767,14 +761,12 @@
     //pagestats();
 
     print "<br>
-           $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://bitbucket.org/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
+           $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://github.com/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>
              &copy; 2005-".date("Y")." $boardprog
            $L[TBLend]";
     pagestats();
     //miscbar(); disabled until needed. -Emuz
   }
-
-
 
 ?>

@@ -137,6 +137,10 @@ print     "  $L[TR]>
     $userto=$sql->resultq("SELECT id FROM users WHERE name LIKE '$_POST[userto]' OR displayname LIKE '$_POST[userto]'");
 
     if($userto && $_POST[message]){
+    if(strlen($_POST[message])>60000){  // Protection against huge posts getting cut off
+      $msg="    This post is too long. Maximum length: 60000 characters. <br>
+".         "    Go back or <a href='sendprivate.php'>try again</a>";
+} else {
       //[blackhole89] 2007-07-26
       $recentpms=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-30) AND userfrom='$loguser[id]'");
       $secafterpm=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-$config[secafterpost]) AND userfrom='$loguser[id]'");
@@ -163,6 +167,7 @@ print     "  $L[TR]>
                   redirect("private.php", -1);
              //}
       }
+}
     }elseif(!$userto){
       $msg="    That user doesn't exist!<br>
 ".         "    Go back or <a href=sendprivate.php>try again</a>

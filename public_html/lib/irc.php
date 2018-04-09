@@ -4,6 +4,20 @@
  * in config.php that will handle all the bot specific functions required. This will allow each board owner to
  * easily connect the board to their bot.
  */
+
+function zero_width_name($ircname){
+        global $config;
+
+        if($config['zerowidthirc']){
+
+                $temp = str_split($ircname,1);
+                $zeroirc = implode("\xE2\x80\x8C", $temp);
+
+                return $zeroirc;
+        }
+        return $ircname;
+}
+
 function get_irc_color($color,$bcolor){
 	switch ($color)	{
 		case "white":
@@ -243,7 +257,7 @@ function get_irc_displayname(){
     	}
     }
 
-	$name .= ($loguser[displayname]?$loguser[displayname]:$loguser[name]);
+	$name .= zero_width_name(($loguser[displayname]?$loguser[displayname]:$loguser[name]));
 	return ($name);
 }
 

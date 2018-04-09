@@ -1,0 +1,1 @@
+ALTER TABLE `threads` ADD `filter` TINYINT(3) NOT NULL DEFAULT '0' ;

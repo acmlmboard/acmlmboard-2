@@ -302,9 +302,15 @@ if($_COOKIE['pstbon']>=1){
                                   ."WHERE p.user=$uid ");
   }
   elseif($viewmode == "announce") {
-    $announceftitle = $sql->resultp("SELECT title FROM forums WHERE id=?",array($announcefid));
+	  
 
-    if ($announcefid) pageheader('Announcements',$announcefid);
+	if ($announcefid) { // Forum announcement
+		$announceftitle = $sql->resultp("SELECT title FROM forums WHERE id = ? AND id IN ".forums_with_view_perm(), array($announcefid));
+		if (!$announceftitle) {
+			error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");     
+		}
+		pageheader('Announcements', $announcefid);
+	}
     else {
       $showonusers = 1;
       pageheader('Announcements');

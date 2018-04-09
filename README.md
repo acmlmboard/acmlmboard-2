@@ -24,6 +24,8 @@ Tags
 
 **v2.5.3** - Point Release #3; Includes all fixes that were in the kafuka branch that did not make it to public. Newly genned main.sql.
 
+**v2.5.4** - Point Release #4; Lots of minor fixes and enhancements. Stable updated to 2.5.4.
+
 Note: This board is not guaranteed to work out of the box. Not much support remains these days. You will need to get your hands dirty.
 Please feel free to fork this and improve on it!
 # Installing Acmlmboard II

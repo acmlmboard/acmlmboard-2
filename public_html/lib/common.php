@@ -66,6 +66,40 @@
   if($loguser['tpp'] < 1)
    $loguser['tpp'] = 20;
 
+   // Moved here since the ipbans page would call pageheader() with themes uninitialized otherwise
+   //[KAWA] ABXD-style theme system
+   $themelist = unserialize(file_get_contents("themes_serial.txt"));
+
+   //Config definable theme override
+   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
+    {
+      $theme = $config[override_theme];
+    }
+   elseif (isset($_GET['theme']))
+    {
+      $theme = $_GET['theme'];
+    }
+   else 
+    {
+      $theme = $loguser['theme'];
+    }
+
+  if(is_file("css/".$theme.".css"))
+   {
+    //try CSS first
+    $themefile = $theme.".css";
+   }
+  elseif(is_file("css/".$theme.".php"))
+   {
+    //then try PHP
+    $themefile = $theme.".php";
+   }
+  else //then fall back to Standard
+   {
+    $theme = $themelist[0][1];
+    $themefile = $theme.".css";
+   }
+
   //2007-02-19 blackhole89 - needs to be here because it requires loguser data
   require "lib/ipbans.php";
   
@@ -165,39 +199,6 @@
     $sql->query("INSERT INTO `hourlyviews` (`hour`, `views`)
                  VALUES (".floor(ctime()/3600).",1)
                  ON DUPLICATE KEY UPDATE `views`=`views`+1");
-   }
-
-   //[KAWA] ABXD-style theme system
-   $themelist = unserialize(file_get_contents("themes_serial.txt"));
-
-   //Config definable theme override
-   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
-    {
-      $theme = $config[override_theme];
-    }
-   elseif (isset($_GET['theme']))
-    {
-      $theme = $_GET['theme'];
-    }
-   else 
-    {
-      $theme = $loguser['theme'];
-    }
-
-  if(is_file("css/".$theme.".css"))
-   {
-    //try CSS first
-    $themefile = $theme.".css";
-   }
-  elseif(is_file("css/".$theme.".php"))
-   {
-    //then try PHP
-    $themefile = $theme.".php";
-   }
-  else //then fall back to Standard
-   {
-    $theme = $themelist[0][1];
-    $themefile = $theme.".css";
    }
    
   if($config['override_logo'] && !has_special_perm("bypass-logo-override")) //Config override for the logo file

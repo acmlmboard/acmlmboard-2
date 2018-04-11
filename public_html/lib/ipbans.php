@@ -1,58 +1,33 @@
 <?php
-  //ipbans.php - core for new IP ban functions, started 2007-02-19 // blackhole89
+	//ipbans.php - core for new IP ban functions, started 2007-02-19 // blackhole89
 
-  //delete expired IP bans
-  $sql->query('DELETE FROM ipbans WHERE expires<'.ctime().' AND expires>0');
+	//delete expired IP bans
+	$sql->query('DELETE FROM ipbans WHERE expires < '.ctime().' AND expires > 0');
 
-  //actual ban checking
-  $r=$sql->query("SELECT * FROM ipbans WHERE '$userip' LIKE ipmask");
-  if(@$sql->numrows($r)>0)
-  {
+	// Prioritize hard bans over soft ones
+	$ban = $sql->fetchq("SELECT * FROM ipbans WHERE '{$_SERVER['REMOTE_ADDR']}' LIKE ipmask ORDER BY hard DESC");
+	if ($ban) {
+		// report the IP as banned like before
+		if ($loguser['id']) {
+			$sql->query("UPDATE `users` SET `ipbanned` = '1' WHERE `id` = '{$loguser['id']}'");
+		} else {
+			$sql->query("UPDATE `guests` SET `ipbanned` = '1' WHERE `ip` = '{$_SERVER['REMOTE_ADDR']}'");
+		}
+		
+		// a ban appears to be present. check for type
+		// and restrict user's access if necessary
+		if ($ban['hard']) {
+			//	  header("Location: http://banned.ytmnd.com/");
+			//	  header("Location: http://board.acmlm.org/");
+			//    fuck this shit
+			die("Sorry, but your IP address appears to be banned from this board.");
+		}
 
-    // report the IP as banned like before
-    if ($loguser) $sql -> query("UPDATE `users` SET `ipbanned` = '1' WHERE `id` = '$loguser[id]'");
-    else $sql -> query("UPDATE  `guests` SET `ipbanned` = '1' WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'");
-
-    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
-
-    //a ban appears to be present. check for type
-    //and restrict user's access if necessary
-    $i=$sql->fetch($r);
-    if($i[hard])
-    {
-      //hard IP ban; always restrict access fully
-
-//	  header("Location: http://banned.ytmnd.com/");
-//	  header("Location: http://board.acmlm.org/");
-	  // fuck this shit
-	  
-      pageheader('IP banned');
-      print
-          "$L[TBL1]>
-".        "  $L[TR2]>
-".        "    $L[TD1c]>
-".        "      Sorry, but your IP address appears to be banned from this board.
-".        "$L[TBLend]
-";
-      pagefooter();
-      die();
-	  
-    } else if(!$i[hard] && (!$log || $loguser[group_id]==$bannedgroup[id])) {
-      //"soft" IP ban allows non-banned users with existing accounts to log on
-      if(!strstr($_SERVER['PHP_SELF'],"login.php"))
-      {
-        pageheader('IP restricted');
-        print
-          "$L[TBL1]>
-".        "  $L[TR2]>
-".        "    $L[TD1c]>
-".        "      Access from your IP address to this board appears to be limited.<br>
-".        "      <A HREF=login.php>Login</A>
-".        "$L[TBLend]
-";
-        pagefooter();
-        die();
-      }
-    }
-  }
-?>
+		// "soft" IP ban allows non-banned users with existing accounts to log on
+		$bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned` = 1");
+		if (!$loguser['id'] || $loguser['group_id'] == $bannedgroup) { // NOTE: This originally was checking $bannedgroup['id'], making the last check always fail
+			if (strpos($_SERVER['PHP_SELF'], "login.php") === false) {
+				error("IP restricted", "Access from your IP address to this board appears to be limited.<br><a href='login.php'>Login</a>");
+			}
+		}
+	}

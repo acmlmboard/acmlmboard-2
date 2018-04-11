@@ -149,6 +149,17 @@
 		}
 		return $out;
 	}
+	
+	// returns array indexed by an unique field
+	// similar to PDO::FETCH_KEY_PAIR
+	function getresultsbykey($query, $key, $val) {
+		$res = $this->query($query);
+		$out = array();
+		while ($x = $this->fetch($res)) {
+			$out[$x[$key]] = $x[$val];
+		}
+		return $out;
+	}
 
   }
 ?>

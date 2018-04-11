@@ -323,7 +323,7 @@
      $logbar['showminipic'] = 1;
     }
    if ($metadata!="Default"){
-     $mdata="<meta name='description' content=\"$metadata\"><meta name='keywords' content=\"".$config['metakey']."\">";
+     $mdata="<meta name='description' content=\"".htmlspecialchars($metadata)."\"><meta name='keywords' content=\"".$config['metakey']."\">";
    } else {
      $mdata=$config['meta'];
    }

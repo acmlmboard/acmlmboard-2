@@ -3,7 +3,7 @@
 
 	//delete expired IP bans
 	$sql->query('DELETE FROM ipbans WHERE expires < '.ctime().' AND expires > 0');
-
+	
 	// Prioritize hard bans over soft ones
 	$ban = $sql->fetchq("SELECT * FROM ipbans WHERE '{$_SERVER['REMOTE_ADDR']}' LIKE ipmask ORDER BY hard DESC");
 	if ($ban) {
@@ -24,8 +24,8 @@
 		}
 
 		// "soft" IP ban allows non-banned users with existing accounts to log on
-		$bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned` = 1");
-		if (!$loguser['id'] || $loguser['group_id'] == $bannedgroup) { // NOTE: This originally was checking $bannedgroup['id'], making the last check always fail
+		$bannedgroups = $sql->getresults("SELECT id FROM `group` WHERE `banned` = 1");
+		if (!$loguser['id'] || in_array($loguser['group_id'], $bannedgroups)) { // NOTE: The last check originally didn't work and always failed
 			if (strpos($_SERVER['PHP_SELF'], "login.php") === false) {
 				error("IP restricted", "Access from your IP address to this board appears to be limited.<br><a href='login.php'>Login</a>");
 			}

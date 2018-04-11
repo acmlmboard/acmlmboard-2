@@ -19,7 +19,9 @@
       $start=usectime();
       if($res=@$this->db->query($query)){
         $this->queries++;
-        $this->rowst+=$res->num_rows;
+		if ($res instanceof MySQLi) {
+			$this->rowst+=$res->num_rows;
+		}
       }else
         print $this->error();
 
@@ -134,6 +136,18 @@
 	function affectedrows()
 	{
 		return $this->db->affected_rows;
+	}
+	
+	// returns a one dimentional array out of a query
+	// similar to PDO::FETCH_COLUMN
+	function getresults($query, $col = 0) {
+		$res = $this->query($query);
+		$out = array();
+		$max = $this->numrows($res);
+		for ($i = 0; $i < $max; ++$i) {
+			$out[] = $this->result($res, $i, $col);
+		}
+		return $out;
 	}
 
   }

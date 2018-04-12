@@ -282,7 +282,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
 	if (has_perm('edit-permissions') && has_perm('ban-users')) {
 		$bannedgroup = $sql->getresults("SELECT id FROM `group` WHERE `banned` = 1");
 		if (in_array($user['group_id'], $bannedgroup)) {
-			$banuser = "| <a href='banmanager.php?unban&id={$user['id']}'>Unban user</a>";
+			$banuser = "| <a href='banmanager.php?unban&id={$user['id']}'>Unban user</a> | <a href='banmanager.php?id={$user['id']}'>Edit ban</a>";
 		} else {
 			$banuser = "| <a href='banmanager.php?id={$user['id']}'>Ban user</a>";
 		}

@@ -754,6 +754,29 @@
     pagefooter();
     die();
    }
+   
+
+  function cookiemsg($title, $message)
+   {
+    global $L;
+    // Invalidate the previous cookie, which requires this to be called before pageheader()
+    header("Set-Cookie: pstbon={$_COOKIE['pstbon']}; Max-Age=1; Version=1");
+    if ($message) {
+        return "
+		<script language='javascript'>
+			function dismiss() {
+				document.getElementById('postmes').style['display'] = 'none';
+			}
+		</script>
+		<div id='postmes' onclick='dismiss()' title='Click to dismiss.'><br>
+			$L[TBL1] width='100%' id='edit'>
+				$L[TRh]>$L[TDh]>{$title}<div style='float: right'><a style='cursor: pointer' onclick='dismiss()'>[x]</a></td></tr>
+				$L[TR1]>$L[TD1l]>{$message}</td></tr>
+			</table>
+		</div>";
+     }
+     return "";
+   }
     
   function pagefooter()
    {

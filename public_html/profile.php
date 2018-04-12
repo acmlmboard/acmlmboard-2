@@ -277,15 +277,16 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
       $editbadges="| <a href=\"assignbadges.php?uid=".$user['id']."\">Manage user badges</a>";
     }
 
-    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
-
-    $banuser ="";
-    if(has_perm('edit-permissions'))
-    {
-      if(!has_perm('ban-users')) $banuser ="";
-      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?id=".$user['id']."\">Ban user</a>";
-      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?unban&id=".$user['id']."\">Unban user</a>";
-    }
+	
+	$banuser = "";
+	if (has_perm('edit-permissions') && has_perm('ban-users')) {
+		$bannedgroup = $sql->getresults("SELECT id FROM `group` WHERE `banned` = 1");
+		if (in_array($user['group_id'], $bannedgroup)) {
+			$banuser = "| <a href='banmanager.php?unban&id={$user['id']}'>Unban user</a> | <a href='banmanager.php?id={$user['id']}'>Edit ban</a>";
+		} else {
+			$banuser = "| <a href='banmanager.php?id={$user['id']}'>Ban user</a>";
+		}
+	}
     
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";

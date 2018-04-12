@@ -1,79 +1,225 @@
 <?php
-  require 'lib/common.php';
-  pageheader('IP bans');
-  $action=$_GET['action'];//Stop gap to allow esiting without major changes. -Emuz
-  $what=$_GET['what'];//Ditto -Emuz
-  function ipfmt($a) {
-    $expl=explode(".",$a);
-    $dot="<font~color=#808080>.</font>";
-    return str_replace("~"," ",str_replace(" ","&nbsp;",sprintf("%3s%s%3s%s%3s%s%3s",$expl[0],$dot,$expl[1],$dot,$expl[2],$dot,$expl[3])));
-  }
+	require "lib/common.php";
+	
+	// New IP ban management page
+	// Now with pagination and filter functionality
+	
+	if (!has_perm('edit-ip-bans')) {
+		error("Error", "You have no permissions to do this!<br> <a href='index.php'>Back to main</a>");
+	}
+	
+	$_GET['newip'] = isset($_GET['newip']) ? $_GET['newip'] : "";
+	
+	if (isset($_POST['ipban'])) {
+		check_token($_POST['auth']);
 
-  if(!has_perm('edit-ip-bans')) {
-    noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); 
-    pagefooter(); 
-    die();
-  } else {
-    if($action=="del")
-    {
-      $data=explode(",",decryptpwd($what));
-      $sql->query("DELETE FROM ipbans WHERE ipmask='$data[0]' AND expires='$data[1]'");
-    } else if($action=="add" && $_POST[ipmask] ) {
-      $sql->query("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES "
-                 ."('$_POST[ipmask]','$_POST[hard]','".($_POST[expires]>0?($_POST[expires]+time()):0)."','".addslashes($loguser[name])."','$_POST[reason]')");
-    }
-    $ipbans=$sql->query("SELECT * FROM ipbans");
-    echo "<form action=ipbans.php?action=add method=post>
-".       "$L[TBL1]>
-".       "  $L[TRh]>
-".       "    $L[TDh] colspan=9>New IP ban</td>
-".       "  $L[TR]>
-".       "    $L[TD1]>&nbsp;IP&nbsp;mask&nbsp;
-".       "    $L[TD2]>$L[INPt]=ipmask>
-".       "    $L[TD1]>&nbsp;Hard&nbsp;ban?&nbsp;
-".       "    $L[TD2]>$L[INPc]=hard value=1>
-".       "    $L[TD1]>&nbsp;Expires?&nbsp;
-".       "    $L[TD2]>".fieldselect("expires",0,array("600"=>"10 minutes",
-						      "3600"=>"1 hour",
-						      "10800"=>"3 hours",
-						      "86400"=>"1 day",
-						      "172800"=>"2 days",
-						      "259200"=>"3 days",
-						      "604800"=>"1 week",
-						      "1209600"=>"2 weeks",
-						      "2419200"=>"1 month",
-						      "4838400"=>"2 months",
-						      "0"=>"never"))."
-".       "    $L[TD1]>&nbsp;Comment&nbsp;
-".       "    $L[TD2] style=width:100%>$L[INPt]=reason style=width:100%>
-".       "    $L[TD2c] colspan=8>$L[INPs] value='Add IP ban'>
-".       "$L[TBLend]</form><br>
-".       "$L[TBL1]>
-".       "  $L[TRh]>
-".       "    $L[TDh] colspan=6>IP bans</td>
-".       "  $L[TRg]>
-".       "    $L[TD]>IP mask</td>
-".       "    $L[TD]>hard?</td>
-".       "    $L[TD]>Expires</td>
-".       "    $L[TD]>Banner</td>
-".       "    $L[TD] width=100%>Comment</td>
-".       "    $L[TD]>Actions
+		$_POST['newip']     = isset($_POST['newip']) ? str_replace('*', '%', trim($_POST['newip'])) : "";
+		$_POST['reason']    = isset($_POST['reason']) ? $_POST['reason'] : "";
+		$_POST['expire']    = isset($_POST['expire']) ? ((int) $_POST['expire']) : 0;
+		$_POST['hard']      = isset($_POST['hard'])   ? ((int) $_POST['hard'])   : 0;
+		
+		// A few sanity checks to make sure we're not doing something horribly wrong
+		$wildcard = strpos($_POST['newip'], '%');
+		$checkip  = str_replace('%', '', $_POST['newip']);
+		
+		if (!$checkip) {
+			error("Error", "You didn't enter an IP mask.");
+		} else if ($wildcard !== false && $wildcard != strlen($_POST['newip']) - 1) {
+			error("Error", "The wildcard can only be the last character.");
+		} else if (stripos($_SERVER['REMOTE_ADDR'], $checkip) === 0) {
+			error("For your protection", "You cannot ban an IP range you're part of.");
+		} else if ($sql->resultq("SELECT COUNT(*) FROM ipbans WHERE ipmask = '".addslashes($_POST['newip'])."' AND hard = '{$_POST['hard']}'")) {
+			error("Error", "This IP mask is already ".($_POST['hard'] ? "hard" : "soft")." IP banned!");
+		}
+		
+		if ($_POST['expire']) { // Get the unban date, if set
+			$_POST['expire'] = ctime() + $_POST['expire'];
+		}
+		
+		// Actually ban the IP now
+		$send = array($_POST['newip'], $_POST['hard'], $_POST['expire'], $loguser['name'], $_POST['reason']);
+		$sql->prepare("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES (?,?,?,?,?)", $send);
+		$what = $_POST['hard'] ? "an hard" : "a soft";
+		sendirc("{irccolor-base}{irccolor-name}{$loguser['name']}{irccolor-base} added {$what} IP ban for {irccolor-name}{$addr}{irccolor-base} (reason: '{$_POST['reason']}').", $config['staffchan']);
+		
+		redirect("?", -1);
+	} else if (isset($_POST['dodel'])) {
+		check_token($_POST['auth']);
+		
+		// Iterate over the sent IPs and add them to the query
+		if (isset($_POST['delban']) && !empty($_POST['delban'])){
+			$i = 0;
+			foreach ($_POST['delban'] as $ban) {
+				$data = explode(",", decryptpwd(urldecode($ban)));
+				$sql->query("DELETE FROM ipbans WHERE ipmask = '".addslashes($data[0])."' AND expires = ".((int) $data[1])." AND hard = ".((int) $data[2]));
+				++$i;
+			}
+			redirect("?", $i);
+		} else {
+			redirect("?", -2);
+		}
+	}
+	
+	
+	// Query values
+	$outres = array();
+	$qdata  = array();
+	
+	if (isset($_GET['ip'])) {
+		$searchip = $_GET['ip'];
+	} else {
+		$searchip = isset($_POST['searchip']) ? $_POST['searchip'] : "";
+	}
+	if (isset($_POST['setreason']) && $_POST['setreason']) {
+		$reason = $_POST['setreason'];
+	} else {
+		$reason = isset($_POST['searchreason']) ? $_POST['searchreason'] : "";
+	}	
+	
+	if ($reason) {
+		$outres[] = $reason.'%';
+		$qdata[]  = "i.reason LIKE ?";
+	}
+	if ($searchip) {
+		$outres[] = str_replace('*', '%', $searchip);
+		$qdata[]  = "i.ipmask LIKE ?";
+	}
+	$qwhere = $qdata ? "WHERE ".implode(" AND ", $qdata) : "";
+	
+	// Prepare data for the page selection
+	$total  = $sql->resultp("SELECT COUNT(*) FROM ipbans i {$qwhere}", $outres);
+	$ppp	= isset($_GET['ppp']) ? ((int) $_GET['ppp']) : 100;
+	$ppp	= max(min($ppp, 500), 1);
+	$_POST['page']  = isset($_POST['page']) ? ((int) $_POST['page']) : 0;
+	$pagelist       = pageselect($total, $ppp); // Needs to be here, since it will fix the page number in case it's too high
+
+	$bans  = $sql->prepare("
+		SELECT i.ipmask, i.hard, i.expires, i.banner, i.reason, ".userfields()."
+		FROM ipbans i
+		LEFT JOIN users u ON i.banner = u.name
+		{$qwhere}
+		ORDER BY i.ipmask ASC
+		LIMIT ".($_POST['page'] * $ppp).",{$ppp}
+	", $outres);
+	
+
+	
+	// Cookie status messages
+	$cookiemsg = "";
+	if (isset($_COOKIE['pstbon'])) {
+		switch ($_COOKIE['pstbon']) {
+			case -1: $cookiemsg = cookiemsg("Message", "Successfully added an IP ban."); break;
+			case -2: $cookiemsg = cookiemsg("Message", "No bans selected for removal."); break;
+			default: $cookiemsg = cookiemsg("Message", "Removed {$_COOKIE['pstbon']} IP ban".($_COOKIE['pstbon'] == 1 ? "" : "s")."."); break;
+		}
+	}
+	
+	pageheader("IP Bans");
+	$auth_tag = auth_tag();
+	
+print "{$cookiemsg}
+	<form method='POST' action='?ppp={$ppp}'>
+	$L[TBL1]>
+		$L[TRh]>
+			$L[TDh] style='width: 120px'>&nbsp;</td>
+			$L[TDh]>&nbsp;</td>
+		</tr>
+		$L[TR1]>
+			$L[TD1c]><b>Search IP Mask:</b></td>
+			$L[TD2]>
+				$L[INPt]='searchip' size=10 maxlength=32 value=\"".htmlspecialchars($searchip)."\">
+				<small>use * as wildcard</small>
+			</td>
+		</tr>
+		$L[TR1]>
+			$L[TD1c]><b>Reason:</b></td>
+			$L[TD2]>
+				$L[INPt]='searchreason' size=72 value=\"".htmlspecialchars($reason)."\"> or special: 
+				<select name='setreason'>
+					<option value=''></option>
+					<option value='Banned'>Generic ban</option>
+				</select>
+			</td>
+		</tr>
+		$L[TR1]>
+			$L[TD1c]><b>View page:</b></td>
+			$L[TD2]>{$pagelist}</td>
+		</tr>
+		<tr>$L[TD2] colspan='2'>$L[INPs]='dosearch' value='Search'></td></tr>
+	</table>
+	</form>
+	<form method='POST' action='?ppp={$ppp}'>
+	$L[TBL2]>
+		$L[TRh]>
+			$L[TDhc] style='width: 30px'>#</td>
+			$L[TDhc]>IP Mask</td>
+			<!-- $L[TDhc] style='width: 200px'>Ban date</td> -->
+			$L[TDhc] style='width: 350px'>Expiration date</td>
+			$L[TDhc] style='width: 90px'>Hard Ban</td>
+			$L[TDhc]>Reason</td>
+			$L[TDhc]>Banned by</td>
+		</tr>
 ";
-    while($i=$sql->fetch($ipbans)) {
-      echo "$L[TR]>
-".         "  $L[TD1]><font face='courier new'>".ipfmt($i[ipmask])."</font>
-".         "  $L[TD2c]><font color=".($i[hard]?"red>Yes":"green>No")."</font>
-".         "  $L[TD2c]>".($i[expires]?
-		 cdate($loguser[dateformat],$i[expires])."&nbsp;".cdate($loguser[timeformat],$i[expires])
-		:"never")."
-".         "  $L[TD2c]>$i[banner]
-".         "  $L[TD2]>".stripslashes($i[reason])."
-".         "  $L[TD2c]><a href=ipbans.php?action=del&what=".urlencode(encryptpwd($i[ipmask].",".$i[expires])).">del</a>
+
+	for ($i = 0; $x = $sql->fetch($bans); ++$i) {
+		$n = ($i%2)+1;
+		$tr  = $L['TR'.$n];
+		$td  = $L['TD'.$n];
+		$tdc = $L['TD'.$n.'c'];
+		
+		print "
+		$tr>
+			$tdc>$L[INPc]='delban[]' value=\"".urlencode(encryptpwd($x['ipmask'].",".$x['expires'].",".$x['hard']))."\"></td>
+			$tdc>".ipfmt($x['ipmask'])."</td>
+			$tdc>".($x['expires'] ? cdate($dateformat, $x['expire'])." (".timeunits2($x['expires']-ctime()).")" : "Never")."</td>
+			$tdc><span style='color: ".($x['hard'] ? "red'>Yes" : "green'>No")."</span></td>
+			$td>" .($x['reason'] ? htmlspecialchars($x['reason']) : "None")."</td>
+			$tdc>".($x['banner'] ? userlink($x) : "Automatic")."</td>
+		</tr>
+		";
+	}
+
+print "
+		$L[TR1]>$L[TD1] colspan='6'>$L[INPs]='dodel' value='Delete selected'>{$auth_tag}</td></tr>
+	</table>
+	</form>
+	<form method='POST' action='?ppp={$ppp}'>
+	$L[TBL1] id='addban'>
+		$L[TRh]>$L[TDhc] colspan='2'><b>Add IP ban</b></td></tr>
+		
+		$L[TR1]>
+			$L[TD1c] style='width: 120px'><b>IP Mask:</b></td>
+			$L[TD2]>
+				$L[INPt]='newip' value=\"".htmlspecialchars($_GET['newip'])."\">
+				<small>use * as a wildcard (ie: 192.168.*)</small>
+			</td>
+		</tr>
+		$L[TR1]>
+			$L[TD1c]><b>Ban reason:</b></td>
+			$L[TD2]>$L[INPt]='reason' style='width: 500px'></td>
+		</tr>
+		$L[TR1]>
+			$L[TD1c]><b>Expires:</b></td>
+			$L[TD2]>".bantimeselect('expire', 0)."</td>
+		</tr>
+		$L[TR1]>
+			$L[TD1c]><b>Options:</b></td>
+			$L[TD2]>$L[INPc]='hard' id='hard' value=1><label for='hard'>Hard ban</label></td>
+		</tr>
+		$L[TR2]>$L[TD2] colspan='2'>$L[INPs]='ipban' value='IP Ban'>{$auth_tag}</td></tr>
+	</table>
+	</form>
 ";
-    }
-    echo "$L[TBLend]";
-  }
+	pagefooter();
+	
 
-
-  pagefooter();
-?>
+function ipfmt($a) {
+	$a = str_replace("%", "*", $a);
+	if (strpos($a, ':') === false) {
+		$expl = explode(".", $a);
+		$dot = "<font~color=#808080>.</font>";
+		return str_replace("~", " ", str_replace(" ", "&nbsp;", sprintf("%3s%s%3s%s%3s%s%3s", $expl[0], $dot, $expl[1], $dot, $expl[2], $dot, $expl[3])));
+	} else { // lol ipv6
+		return str_replace(":", "<font color=#808080>:</font>", $a);
+	}
+}

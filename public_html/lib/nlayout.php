@@ -454,8 +454,8 @@ function bantimeselect($name, $date = 0, $condition = true) {
 // Select list for page selection (to use for _POST forms)
 function pageselect($total, $ppp) {
 	$_POST['page'] = isset($_POST['page']) ? (int) $_POST['page'] : 0;
-	$pages         = ceil($total / $ppp);
-	if ($_POST['page'] >= $pages) $_POST['page'] = $pages - 1; // Restrict selected page to real value
+	$pages         = max(1, ceil($total / $ppp)); // Prevent showing a blank select box
+	if ($_POST['page'] < 0 || $_POST['page'] >= $pages) $_POST['page'] = max(0, $pages - 1); // Restrict selected page to real value
 	
 	$pagectrl = "";
 	for ($i = 0; $i < $pages;) {

@@ -29,6 +29,7 @@ if (isset($_GET['unban'])) {
 	}
 	
 	if (isset($_POST['unbanuser'])) {
+		check_token($_POST['auth']);
 		$sql->query("UPDATE users SET group_id = '{$defaultgroup}', title = '', tempbanned = 0 WHERE id = '{$user['id']}'");
 		redirect("profile.php?id={$_GET['id']}", -1); // "User has been unbanned.", 'the user'
 	}
@@ -48,13 +49,15 @@ if (isset($_GET['unban'])) {
 ".    "    Are you sure?
 ".        "  $L[TR1]>
 ".        "    $L[TD1c]>
-".        "      $L[INPs]='unbanuser' value='Unban User'> - <a href='profile.php?id={$_GET['id']}'>Cancel</a>
+".        "      $L[INPs]='unbanuser' value='Unban User'> - <a href='profile.php?id={$_GET['id']}'>Cancel</a>".auth_tag()."
 ".    "$L[TBLend]
 ";
 } else {
 	$message = isset($bannedgroups[$user['group_id']]) ? "This user is already banned. Continuing will replace the ban information." : "";
 	
 	if (isset($_POST['banuser'])) {
+		check_token($_POST['auth']);
+		
 		$_POST['tempbanned'] = isset($_POST['tempbanned']) ? ((int) $_POST['tempbanned']) : 0;
 		$_POST['destgroup']  = isset($_POST['destgroup']) ? ((int) $_POST['destgroup']) : 0;
 		$_POST['title']      = isset($_POST['title']) ? $_POST['title'] : "";
@@ -88,23 +91,7 @@ if (isset($_GET['unban'])) {
 		'message'    => $message,
 	);
 	RenderPageBar($pagebar);
-	//--
-	$curdate = $user['tempbanned'] ? $user['tempbanned'] - ctime() : "0";
-	$bandates = array(
-		$curdate  => timeunits2($curdate),
-		"0"       => "never",
-		"600"     => "10 minutes",
-		"3600"    => "1 hour",
-		"10800"   => "3 hours",
-		"86400"   => "1 day",
-		"172800"  => "2 days",
-		"259200"  => "3 days",
-		"604800"  => "1 week",
-		"1209600" => "2 weeks",
-		"2419200" => "1 month",
-		"4838400" => "2 months",
-	);
-	//--
+	
 	print "<form action='?id={$_GET['id']}' method='post'> 
 	".    "$L[TBL1]>
 	".
@@ -114,7 +101,7 @@ if (isset($_GET['unban'])) {
 	".        "      $L[TD2]>$L[INPt]='title' class='right'></td>
 	".        "  $L[TR]>
 	".        "    $L[TD1c]>Expires?</td>
-	".        "      $L[TD2]>".fieldselect("tempbanned", $curdate, $bandates)."</td>
+	".        "      $L[TD2]>".bantimeselect("tempbanned", $user['tempbanned'])."</td>
 	".        "  $L[TR]>
 	".        "  $L[TR1]>
 	".        "    $L[TD1c]>Destination group:</td>
@@ -123,7 +110,7 @@ if (isset($_GET['unban'])) {
 	".        "  $L[TR1]>
 	".        "    $L[TD]>&nbsp;</td>
 	".        "    $L[TD]>
-	".        "      $L[INPs]='banuser' value='Ban User'>
+	".        "      $L[INPs]='banuser' value='Ban User'>".auth_tag()."
 	".    "$L[TBLend]
 	";
 }

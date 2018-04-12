@@ -65,5 +65,18 @@
     if($a[1]!=$loguser[id]) return $fallback;
     else return $a[0];
   }
+  
+  function check_token(&$check, $var = '') {
+    if ($check != generate_token($var)) {
+      error("Error", "Invalid token");
+    }
+  }
+  function generate_token($var = '') {
+    global $pwdsalt, $pwdsalt2, $loguser;
+	return md5($pwdsalt2 . $loguser['pass'] . $var . $pwdsalt);
+	// Leaving this alternate hash commented for consistency with other md5 token checks. It can still be enabled just fine.
+    //return hash('sha256', $pwdsalt2 . $loguser['pass'] . $_SERVER['REMOTE_ADDR'] . $var . $pwdsalt);
+  }
+  function auth_tag($var = '') { return "<input type='hidden' name='auth' value=\"".generate_token($var)."\">"; }
 
 ?>

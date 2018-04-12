@@ -394,12 +394,13 @@ function RenderPageBar($pagebar) {
 // 2/22/2007 xkeeper - takes $choices (array with "value" and "name")
   function fieldselect($field,$checked,$choices){
     global $L;
-    $text="
+    $text = "
 ".        "$L[SEL]=$field>";
-    $sel[$checked]=' selected';
-    foreach($choices as $key=>$val)
-      $text.="
-".           "      $L[OPT]=\"$key\"$sel[$key]>$val</option>";
+    //$sel[$checked]=' selected';
+    foreach($choices as $key => $val) {
+      $text .= "
+".             "      $L[OPT]=\"$key\"".($key == $checked ? ' selected' : '').">$val</option>";
+	}
     return "$text
 ".         "</select>";
   }
@@ -427,6 +428,42 @@ function RenderPageBar($pagebar) {
     }
     return "$text    ";
   }
+
+
+// Reusable ban time selection
+function bantimeselect($name, $date = 0, $condition = true) {
+	$val = ($condition && $date) ? ceil(($date - ctime())) : 0;
+	$selector = array(
+		$val       => timeunits2($val),
+		"0"        => "*** Never ***", // If $val is 0, this option will replace it
+		"3600"     => "1 hour",
+		"10800"    => "3 hours",
+		"86400"    => "1 day",
+		"172800"   => "2 days",
+		"259200"   => "3 days",
+		"604800"   => "1 week",
+		"1209600"  => "2 weeks",
+		"2419200"  => "1 month",
+		"4838400"  => "2 months",
+		"14515200" => "6 months",
+	);
+	if ($val) ksort($selector); // Place the $val entry in the correct position
+	return fieldselect($name, $val, $selector);
+}
+
+// Select list for page selection (to use for _POST forms)
+function pageselect($total, $ppp) {
+	$_POST['page'] = isset($_POST['page']) ? (int) $_POST['page'] : 0;
+	$pages         = ceil($total / $ppp);
+	if ($_POST['page'] >= $pages) $_POST['page'] = $pages - 1; // Restrict selected page to real value
+	
+	$pagectrl = "";
+	for ($i = 0; $i < $pages;) {
+		$selected = ($_POST['page'] == $i) ? " selected" : "";
+		$pagectrl .= "<option value='{$i}'{$selected}>".(++$i)."</option>\r\n";
+	}
+	return "<select name='page'>{$pagectrl}</select>";
+}
 
   function themelist() {
     global $sql, $loguser;

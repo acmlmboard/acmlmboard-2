@@ -17,7 +17,7 @@ $user = $sql->fetchq("SELECT id, group_id, tempbanned FROM `users` WHERE `id` = 
 if (!$user) {
 	error("Error", "Invalid user ID.");
 } else if ((is_root_gid($user['group_id']) || (!has_perm_with_bindvalue('can-edit-group', $user['group_id']) && $_GET['id'] != $loguser['id'])) && !has_perm('no-restrictions')) {
-	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+	error("Error", "You have no permissions to do this!<br> <a href='index.php'>Back to main</a>");
 } 
 
 // Get list of banned groups
@@ -36,7 +36,7 @@ if (isset($_GET['unban'])) {
 	
 	pageheader('Unban User');
 	$pagebar = array(
-		'breadcrumb' => array(array('href'=>'index.php', 'title'=>'Index')),
+		'breadcrumb' => array(array('href'=>'index.php', 'title'=>'Main')),
 		'title'      => 'Unban user',
 		'actions'    => array(),
 		'message'    => ''
@@ -85,7 +85,7 @@ if (isset($_GET['unban'])) {
 	
 	pageheader('Ban User');
 	$pagebar = array(
-		'breadcrumb' => array(array('href'=>'index.php', 'title'=>'Index')),
+		'breadcrumb' => array(array('href'=>'index.php', 'title'=>'Main')),
 		'title'      => 'Ban user',
 		'actions'    => array(),
 		'message'    => $message,

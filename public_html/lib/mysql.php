@@ -138,6 +138,16 @@
 		return $this->db->affected_rows;
 	}
 	
+	// PDO::FETCH_ASSOC + fetchAll
+	function getarray($query) {
+		$res = $this->query($query);
+		$out = array();
+		while ($x = $this->fetch($res)) {
+			$out[] = $x;
+		}
+		return $out;
+	}
+	
 	// returns a one dimentional array out of a query
 	// similar to PDO::FETCH_COLUMN
 	function getresults($query, $col = 0) {

@@ -10,7 +10,6 @@ function zero_width_name($ircname){
 
         if($config['zerowidthirc']){
 
-                //$temp = str_split($ircname,1); //Built in Method
                 $temp = str_split_unicode($ircname,1);
                 $zeroirc = implode("\xE2\x80\x8C", $temp);
 

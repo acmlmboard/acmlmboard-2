@@ -4,7 +4,7 @@
   function userlink_by_name($name) {
     global $sql, $config;
     $u = $sql->fetchp("SELECT ".userfields().",minipic FROM users WHERE UPPER(name)=UPPER(?) OR UPPER(displayname)=UPPER(?)",array($name, $name));     
-    if ($u) return userlink($u,null,$config[userlinkminipic]);
+    if ($u) return userlink($u,null,$config['userlinkminipic']);
     else return 0;
   }
 
@@ -12,7 +12,7 @@
 
   function get_userlink($matches) {
     global $config;
-    return userlink_by_id($matches[1],$config[userlinkminipic]);
+    return userlink_by_id($matches[1],$config['userlinkminipic']);
   }
   function get_username_link($matches) {
     $x = str_replace('"','',$matches[1]);
@@ -154,8 +154,8 @@
     $msg=str_replace("\n",'<br>',$msg);
     
     if (!$nosmilies) {
-      for($i=0;$i<$smilies[num];$i++)
-        $msg=str_replace($smilies[$i][text],'<img src='.$smilies[$i][url].' align=absmiddle border=0 alt="'.$smilies[$i][text].'" title="'.$smilies[$i][text].'">',$msg);
+      for($i=0;$i<$smilies['num'];$i++)
+        $msg=str_replace($smilies[$i]['text'],'<img src='.$smilies[$i]['url'].' align=absmiddle border=0 alt="'.$smilies[$i]['text'].'" title="'.$smilies[$i]['text'].'">',$msg);
     }
 
     //Unfilter URLs now we've passed the smilies.
@@ -203,8 +203,8 @@
     $msg=preg_replace("'\[quote=(.*?)\]'si",'<blockquote><span class="quotedby"><i>Posted by \\1</i></span><hr>',$msg);
     $msg=preg_replace("'>>([0-9]+)'si",'>><a href=thread.php?pid=\\1#\\1>\\1</a>',$msg);
     //dynamically convert SSL and non-SSL links
-    if(isssl()) $msg=str_replace($config[base],$config[sslbase],$msg);
-    else $msg=str_replace($config[sslbase],$config[base],$msg);
+    if(isssl()) $msg=str_replace($config['base'],$config['sslbase'],$msg);
+    else $msg=str_replace($config['sslbase'],$config['base'],$msg);
 
 
 	//[KAWA] Youtube tag.
@@ -321,8 +321,8 @@
 	global $smilies,$L;
 	//print_r($smilies);
         $smiletxt="$L[TBL] style='display: none' id='smilebar'>$L[TR] class='toolbar'>$L[TD3]>";
-        for($i=0;$i<$smilies[num];$i++){
-          $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".addslashes($smilies[$i][text])."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i][text]."\"><img src=".$smilies[$i][url]." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
+        for($i=0;$i<$smilies['num'];$i++){
+          $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:buttonSmile('message','tbkSmile','".addslashes($smilies[$i]['text'])."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i]['text']."\"><img src=".$smilies[$i]['url']." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
           //if($i%16==15 && $i!=$smilies[num]) $smiletxt.="</tr>$L[TR] class='toolbar'>";
         }
 	return posttoolbutton("message","ToolBarB","Bold","[b]","[/b]")

@@ -40,7 +40,7 @@
 		$send = array($_POST['newip'], $_POST['hard'], $_POST['expire'], $loguser['name'], $_POST['reason']);
 		$sql->prepare("INSERT INTO ipbans (ipmask,hard,expires,banner,reason) VALUES (?,?,?,?,?)", $send);
 		$what = $_POST['hard'] ? "an hard" : "a soft";
-		sendirc("{irccolor-base}{irccolor-name}{$loguser['name']}{irccolor-base} added {$what} IP ban for {irccolor-name}{$addr}{irccolor-base} (reason: '{$_POST['reason']}').", $config['staffchan']);
+		sendirc("{irccolor-base}{irccolor-name}{$loguser['name']}{irccolor-base} added {$what} IP ban for {irccolor-name}{$_POST['newip']}{irccolor-base} (reason: '{$_POST['reason']}').", $config['staffchan']);
 		
 		redirect("?", -1);
 	} else if (isset($_POST['dodel'])) {

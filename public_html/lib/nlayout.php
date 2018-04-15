@@ -382,11 +382,11 @@ function RenderPageBar($pagebar) {
   function fieldoption($field,$checked,$choices){
     global $L;
     $text='';
-    $sel[$checked]=' checked=1';
+    //$sel[$checked]=' checked=1';
     //[KAWA] Added <label> so the text is clickable.
     foreach($choices as $key=>$val)
       $text.="
-".           "      <label>$L[INPr]=$field value=$key$sel[$key]>$val &nbsp;</label>";
+".           "      <label>$L[INPr]=$field value=$key".($key == $checked ? ' checked=1' : '').">$val &nbsp;</label>";
     return "$text
 ".         "    ";
   }
@@ -463,6 +463,59 @@ function pageselect($total, $ppp) {
 		$pagectrl .= "<option value='{$i}'{$selected}>".(++$i)."</option>\r\n";
 	}
 	return "<select name='page'>{$pagectrl}</select>";
+}
+
+function pagelist($total, $limit, $url, $sel = 0, $showall = false) {
+	$pagelist = "";
+	$pages    = ceil($total / $limit);
+	if ($pages < 2) return "";
+	for ($i = 1; $i <= $pages; ++$i) { // for some reason the indexes start from 1, not 0
+		if (
+			   $showall // If we don't show all the pages, show:
+			|| ($i < 7 || $i > $pages - 7)      // First / last 7 pages
+			|| ($i > $sel - 5 && $i < $sel + 5) // 10 choices around the selected page
+			|| !($i % 10)                       // Show 10, 20, etc...
+		) {
+			$w = ($i == $sel) ? "w" : "a";
+			$pagelist .= " <{$w} href='{$url}&page={$i}'>{$i}</{$w}>";
+		} else if (substr($pagelist, -1) != ".") {
+			$pagelist .= " ...";
+		}
+	}
+	return "Pages: {$pagelist}";
+}
+
+function forumlist($name, $sel = 0, $jsurl = '') {
+	global $sql;
+	$forumlinks = "";
+	$forums = $sql->query("
+		SELECT f.id, f.title, f.cat, c.title cattitle
+		FROM forums f
+		LEFT JOIN categories c ON f.cat = c.id
+		WHERE c.id IN ".cats_with_view_perm()." AND f.id IN ".forums_with_view_perm()."
+		ORDER BY c.ord, f.ord
+	");	
+	$prevcat = 0;
+	while ($forum = $sql->fetch($forums)) {
+		if ($prevcat != $forum['cat']) {
+			$forumlinks .= "</optgroup><optgroup label=\"{$forum['cattitle']}\">";
+			$prevcat = $forum['cat'];
+		}		
+		$forumlinks .= "<option value='{$forum['id']}'".($forum['id'] == $sel ? ' selected' : '').">{$forum['title']}</option>";
+	}
+	
+	if ($jsurl) { // JS auto redirect (ie: forum jump)
+		return "
+		<form method='GET'>
+			<select name='{$name}' onChange='parent.location=\"{$jsurl}\"+this.options[this.selectedIndex].value' style='position: relative; top: 8px'>
+			{$forumlinks}
+			</select>
+			<noscript>$L[INPs] value='Go'></noscript>
+		</form>
+		";
+	} else {
+		return "<select name='$name'>$forumlinks</select>";
+	}
 }
 
   function themelist() {

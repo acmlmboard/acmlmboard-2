@@ -37,13 +37,16 @@ if (isset($_POST['search'])) {
 			noticemsg("Error", "Invalid mode selected."); 
 			pagefooter();
 	}
-	/*
+	
 	$message = "";
+	if (strlen(trim(str_replace(array('AND', 'OR'), '', $_POST['text']))) < 4) {
+		$message = "You have to search for at least 4 characters.";
+	}
+	
 	if ($message) {
 		noticemsg("Error", "The search could not start for the following reason(s):{$message}");
 		$_POST['search'] = NULL; // Do not display "No results found" message
-	} else { */
-	if (true) {
+	} else {
 		// All OK!
 		$searchtext = parsesearch($_POST['text'], "{$stable}.{$sfield}", $matches);
 		

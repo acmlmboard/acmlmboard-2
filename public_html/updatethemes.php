@@ -1,9 +1,9 @@
 <?php
+  $nourltracker=1;
+  require("lib/common.php");
 
-require("lib/common.php");
-pageheader();
-
-
+  if (!has_perm('manage-board')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+  pageheader("Updating Themes.");
 print "Scanning for new themes...<br>";
 
 $files = scandir("css");

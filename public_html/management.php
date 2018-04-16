@@ -1,4 +1,5 @@
 <?php
+$nourltracker=1;
 require 'lib/common.php';
 
 if (!has_perm('manage-board')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");

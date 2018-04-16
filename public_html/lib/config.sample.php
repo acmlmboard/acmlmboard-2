@@ -125,6 +125,7 @@
   $config['ircbase'] = "http://".$config['address']."".$config['path'];
   $config['staffchan'] = '#staffchangoeshere PASSWORD';
   $config['pubchan'] = '#pubchangoeshere PASSWORD';
+  $config['zerowidthirc'] = true; //Enabling will add Zero Width Chars so Nicknames don't trigger highlighting
   $config['ircnickprefix'] = true; //Use an IRC prefix when sending messages to the IRC channel.
   $config['ircnickcolor'] = false; //Use the nick color for the whole nick on IRC.
   $config['ircnicksex'] = false; //Use a Color to reflect each user's Sex Color. N/A Defaults nothing.

@@ -5,8 +5,8 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "3/04/2018";
-  $abversion = "2.5.3 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
+  $abdate    = "4/12/2018";
+  $abversion = "2.5.4 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control
@@ -65,6 +65,40 @@
    $loguser['ppp'] = 20;
   if($loguser['tpp'] < 1)
    $loguser['tpp'] = 20;
+
+   // Moved here since the ipbans page would call pageheader() with themes uninitialized otherwise
+   //[KAWA] ABXD-style theme system
+   $themelist = unserialize(file_get_contents("themes_serial.txt"));
+
+   //Config definable theme override
+   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
+    {
+      $theme = $config[override_theme];
+    }
+   elseif (isset($_GET['theme']))
+    {
+      $theme = $_GET['theme'];
+    }
+   else 
+    {
+      $theme = $loguser['theme'];
+    }
+
+  if(is_file("css/".$theme.".css"))
+   {
+    //try CSS first
+    $themefile = $theme.".css";
+   }
+  elseif(is_file("css/".$theme.".php"))
+   {
+    //then try PHP
+    $themefile = $theme.".php";
+   }
+  else //then fall back to Standard
+   {
+    $theme = $themelist[0][1];
+    $themefile = $theme.".css";
+   }
 
   //2007-02-19 blackhole89 - needs to be here because it requires loguser data
   require "lib/ipbans.php";
@@ -165,39 +199,6 @@
     $sql->query("INSERT INTO `hourlyviews` (`hour`, `views`)
                  VALUES (".floor(ctime()/3600).",1)
                  ON DUPLICATE KEY UPDATE `views`=`views`+1");
-   }
-
-   //[KAWA] ABXD-style theme system
-   $themelist = unserialize(file_get_contents("themes_serial.txt"));
-
-   //Config definable theme override
-   if($config['override_theme'] && !has_special_perm("bypass-theme-override")) //If defined in config & current user does not have the special bypass perm; use the theme defined.
-    {
-      $theme = $config[override_theme];
-    }
-   elseif (isset($_GET['theme']))
-    {
-      $theme = $_GET['theme'];
-    }
-   else 
-    {
-      $theme = $loguser['theme'];
-    }
-
-  if(is_file("css/".$theme.".css"))
-   {
-    //try CSS first
-    $themefile = $theme.".css";
-   }
-  elseif(is_file("css/".$theme.".php"))
-   {
-    //then try PHP
-    $themefile = $theme.".php";
-   }
-  else //then fall back to Standard
-   {
-    $theme = $themelist[0][1];
-    $themefile = $theme.".css";
    }
    
   if($config['override_logo'] && !has_special_perm("bypass-logo-override")) //Config override for the logo file
@@ -323,7 +324,7 @@
      $logbar['showminipic'] = 1;
     }
    if ($metadata!="Default"){
-     $mdata="<meta name='description' content=\"$metadata\"><meta name='keywords' content=\"".$config['metakey']."\">";
+     $mdata="<meta name='description' content=\"".htmlspecialchars($metadata)."\"><meta name='keywords' content=\"".$config['metakey']."\">";
    } else {
      $mdata=$config['meta'];
    }
@@ -752,6 +753,29 @@
     noticemsg($name,$msg);
     pagefooter();
     die();
+   }
+   
+
+  function cookiemsg($title, $message)
+   {
+    global $L;
+    // Invalidate the previous cookie, which requires this to be called before pageheader()
+    header("Set-Cookie: pstbon={$_COOKIE['pstbon']}; Max-Age=1; Version=1");
+    if ($message) {
+        return "
+		<script language='javascript'>
+			function dismiss() {
+				document.getElementById('postmes').style['display'] = 'none';
+			}
+		</script>
+		<div id='postmes' onclick='dismiss()' title='Click to dismiss.'><br>
+			$L[TBL1] width='100%' id='edit'>
+				$L[TRh]>$L[TDh]>{$title}<div style='float: right'><a style='cursor: pointer' onclick='dismiss()'>[x]</a></td></tr>
+				$L[TR1]>$L[TD1l]>{$message}</td></tr>
+			</table>
+		</div>";
+     }
+     return "";
    }
     
   function pagefooter()

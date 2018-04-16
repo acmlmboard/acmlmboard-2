@@ -1,332 +1,430 @@
 <?php
-require("lib/common.php");
-require("lib/threadpost.php");
-loadsmilies();
 
-pageheader("Search");
+require "lib/common.php";
+require "lib/threadpost.php";
 
-$showforum=1;
+pageheader("Simple Search");
 
-$HARBL="<table class=harbl";
-print "<style>.harbl{width:100%;border-collapse:collapse;padding:0}.lame{border-right:1px solid black;border-top:1px solid black}.superlame{border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black}.bblone{border-bottom:1px solid black}form{margin:0}optgroup{font-style:normal}</style>
-<script>
-var lit='search';
-function field(show) {
-	document.getElementById(lit+'btn').className='n2 superlame';
-	document.getElementById(lit+'div').style.display='none';
-	document.getElementById(show+'btn').className='lame';
-	document.getElementById(show+'div').style.display='block';
-	lit=show;
+$showtags = false;
+
+// Defaults
+$_POST['text']   = isset($_POST['text'])    ? $_POST['text'] : "";
+$_POST['user']   = isset($_POST['user'])    ? trim($_POST['user']) : "";
+$_POST['ipmask'] = isset($_POST['ipmask'])  ? trim($_POST['ipmask']) : "";
+// Search in thread titles
+$_POST['mode']  = isset($_POST['mode'])  ? (int) $_POST['mode'] : 0;
+// Search in General Forum only
+$_POST['forumena'] = isset($_POST['forumena']) ? (int) $_POST['forumena'] : 1;
+$_POST['forum']    = isset($_POST['forum'])    ? (int) $_POST['forum'] : 1;
+// Search in the last 30 days
+$_POST['date']     = isset($_POST['date'])     ? (int) $_POST['date']     : 1;
+$_POST['datedays'] = isset($_POST['datedays']) ? (int) $_POST['datedays'] : 30;
+// Do not order posts
+$_POST['order']  = isset($_POST['order'])  ? (int) $_POST['order']  : 0;
+$_POST['filter'] = isset($_POST['filter']) ? (int) $_POST['filter'] : 0;
+// Date ranges
+$datefrom = fieldstotimestamp('from', '_POST');
+$dateto   = fieldstotimestamp('to', '_POST');
+
+
+
+if (isset($_POST['search'])) {
+		
+	switch ($_POST['mode']) {
+		case 0: $stable = "t";  $sfield = "title"; break;
+		case 1: $stable = "pt"; $sfield = "text"; break;
+		default: 
+			noticemsg("Error", "Invalid mode selected."); 
+			pagefooter();
+	}
+	
+	$message = "";
+	if (strlen(trim(str_replace(array('AND', 'OR'), '', $_POST['text']))) < 4) {
+		$message = "You have to search for at least 4 characters.";
+	}
+	
+	if ($message) {
+		noticemsg("Error", "The search could not start for the following reason(s):{$message}");
+		$_POST['search'] = NULL; // Do not display "No results found" message
+	} else {
+		// All OK!
+		$searchtext = parsesearch($_POST['text'], "{$stable}.{$sfield}", $matches);
+		
+		// Display a message immediately while we're fetching posts. This will be hidden after we're done.
+		print "
+		<br>
+		$L[TBL1] id='pleasewait'>
+			$L[TRh]>$L[TDh]>Please wait</td></tr>
+			$L[TR]>$L[TD1c] style='padding: 25px'>A search is in progress...</td></tr>
+		</table>";
+		
+		// Get the list of forums we're allowed to search in
+		$forums = $sql->getresultsbykey("
+			SELECT f.id, f.title
+			FROM forums f
+			LEFT JOIN categories c ON f.cat = c.id 
+			WHERE f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()."
+		", 'id', 'title');
+		if (!$forums) { // just in case
+			noticemsg("Error", "You aren't allowed to search in any forum.");
+			pagefooter();
+		}
+		$allowedforums = "(".implode(',', array_keys($forums)).")";
+		//--
+		
+		$qval    = array();
+		$qsearch = array();
+		
+		
+		// Common shared options
+		if ($searchtext) {
+			$qsearch[] = "({$searchtext})";
+		}
+		if (has_perm('view-post-ips') && $_POST['ipmask']) {
+			$qsearch[] = "u.ip LIKE ?";
+			$qval[]    = str_replace('*', '%', $_POST['ipmask']);
+		}
+		if ($_POST['forumena'] && $_POST['forum']) {
+			$qsearch[] = "t.forum = ?";
+			$qval[]    = $_POST['forum'];
+		}
+		if (!$_POST['filter']) {
+			$qsearch[] = "t.filter = ".($_POST['lulz'] ? 1 : 0);
+		}
+		
+		
+		if ($_POST['mode'] == 0) { // Search in thread text
+			$limit   = $loguser['tpp'];
+			
+			if ($_POST['date'] == 1 && $_POST['datedays'] > 0) {
+				$qsearch[] = "t.lastdate > ?";
+				$qval[]    = ctime() - $_POST['datedays'] * 86400;
+			} else if ($_POST['date'] == 2 && $datefrom && $dateto && $datefrom <= $dateto) {
+				$qsearch[] = "t.lastdate > ? AND t.lastdate < ?";
+				$qval[]    = $datefrom;
+				$qval[]    = $dateto;
+			} else {
+				$_POST['date'] = 0; // Do not preserve choice on bad $datefrom/$dateto
+			}
+			if ($_POST['user']) {
+				$qsearch[] = "u1.name = ?";
+				$qval[]    = $_POST['user'];
+			}
+			switch ($_POST['order']) {
+				case 1: $order = "ORDER BY t.lastdate ASC"; break;
+				case 2: $order = "ORDER BY t.lastdate DESC"; break;
+				default: $order = "";
+			}		
+			$qwhere = $qsearch ? implode(' AND ', $qsearch)." AND" : "";
+			
+			
+			$total = $sql->resultp("
+				SELECT COUNT(*) 
+				FROM threads t 
+				LEFT JOIN users u1 ON u1.id  = t.user 
+				WHERE {$qwhere} t.forum IN {$allowedforums}
+			", $qval);
+			$pageselect = pageselect($total, $limit); // Will restrict $_POST['page'] to real values
+			
+			$results = $sql->prepare("
+				SELECT ".userfields('u1','u1').", ".userfields('u2','u2').", t.*, 0 ispoll, 1 isread
+				FROM threads t 
+				LEFT JOIN users u1 ON u1.id = t.user 
+				LEFT JOIN users u2 ON u2.id = t.lastuser
+				WHERE {$qwhere} t.forum IN {$allowedforums}
+				{$order}
+				LIMIT ".($_POST['page'] * $limit).", {$limit}
+			", $qval);
+			
+			if ($showtags) {
+				$tags = $sql->getarray("SELECT * FROM tags WHERE fid ".($_POST['forumena'] ? " = {$_POST['forum']}" : " IN {$allowedforums}"));
+			}
+			
+		} else { // Posts
+			$limit   = $loguser['ppp'];
+			
+			if ($_POST['date'] == 1 && $_POST['datedays'] > 0) {
+				$qsearch[] = "p.date > ?";
+				$qval[]    = ctime() - $_POST['datedays'] * 86400;
+			} else if ($_POST['date'] == 2 && $datefrom && $dateto) {
+				$qsearch[] = "p.date > ? AND p.date < ?";
+				$qval[]    = $datefrom;
+				$qval[]    = $dateto;
+			} else {
+				$_POST['date'] = 0; // Do not preserve choice on bad $datefrom/$dateto
+			}
+			if ($_POST['user']) {
+				$qsearch[] = "u.name = ?";
+				$qval[]    = $_POST['user'];
+			}
+			switch ($_POST['order']) {
+				case 1: $order = "ORDER BY p.id ASC"; break;
+				case 2: $order = "ORDER BY p.id DESC"; break;
+				default: $order = "";
+			}			
+			$qwhere = $qsearch ? implode(' AND ', $qsearch)." AND" : "";
+			
+			// TODO: why not just as an extra option in userfields()
+			$ufields = array('posts','regdate','lastpost','lastview','location','rankset','title','usepic','head','sign','signsep', 'minipic');
+			$fieldlist = "";
+			foreach ($ufields as $field)
+				$fieldlist .= "u.{$field} u{$field},";
+			
+			$results = $sql->prepare("
+				SELECT ".userfields('u','u').", $fieldlist u.posts uposts, p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, t.title ttitle, t.forum tforum 
+				FROM posts p 
+				LEFT JOIN poststext  pt  ON p.id     = pt.id 
+				LEFT JOIN poststext  pt2 ON pt.id    = pt2.id AND pt2.revision = (pt.revision+1) 
+				LEFT JOIN users      u   ON p.user   = u.id 
+				LEFT JOIN threads    t   ON p.thread = t.id 
+				WHERE {$qwhere} ISNULL(pt2.id) ".(true ? "AND p.deleted = 0" : "")."
+				AND t.forum IN {$allowedforums}
+				{$order}
+			", $qval);
+			
+			$total = $sql->numrows($results);
+			$pageselect = pageselect($total, $limit);
+		}
+		
+		
+	
+	}
 }
-</script>";
-
-$categs=$sql->query("SELECT * "
-                   ."FROM categories "
-                   ."WHERE id IN ".cats_with_view_perm()." "
-                   ."ORDER BY ord");
-while($c=$sql->fetch($categs))
-  $categ[$c[id]]=$c;
-$forums=$sql->query("SELECT f.* "
-                   ."FROM forums f "
-                   ."LEFT JOIN categories c ON c.id=f.cat "
-                   ."WHERE f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
-                   ."ORDER BY c.ord,ord");
-
-$cat=-1;
-$fsel="$L[SEL]=f>$L[OPT]=0>Any</option>";
-
-while($forum=$sql->fetch($forums)){
-  if($forum[cat]!=$cat){
-    $cat=$forum[cat];
-    $fsel.="<optgroup label='".($categ[$cat][title])."'>";
-  }
-  $sel="";
-  if($_GET[f]==$forum[id]) $sel=" selected";
-  $fsel.="$L[OPT]=$forum[id]$sel>$forum[title]</option>";
-}
-$fsel.="</select>";
-
-print "$L[TBL1]>
-".    "  $L[TRh]>
-" .   "    $L[TDh]>Search</td>
-"  .  "  $L[TR]>
-"   . "    $L[TD1] style=padding:10 height=150 valign=top>
-"    ."      <form action=search.php method=get>
-"   . "      <table cellpadding=0 cellspacing=0><tr><td>
-"  .  "      <table cellpadding=0 cellspacing=0 style=cursor:default;width:100%><tr><td width=15 class=bblone>&nbsp;<td width=60 class=lame style='border-left:1px solid black' align=center id=searchbtn onclick=field('search')><b>Search</b><td width=60 class='n2 superlame' align=center id=filterbtn onclick=field('filter')><b>Filters</b><td width=60 class='n2 superlame' align=center id=emptybtn onclick=field('empty')><b>Harbl</b><td class=bblone>&nbsp;</table>
-" .   "      <tr><td style='padding:3;border-left:1px solid black;border-right:1px solid black;border-bottom:1px solid black'>
-".    "      <div id=searchdiv>$HARBL>
-" .   "      <tr><td>Search for:&nbsp;<td>$L[INPt]=q size=40 value='".htmlspecialchars(stripslashes($_GET[q]), ENT_QUOTES)."'><td>&nbsp;$L[INPs]=action value=Search></td>
-"  .  "      <tr><td><td>in:&nbsp;$L[INPr]=w value=0 id=threadtitle".(($_GET[w]==0)?" checked":"")."><label for=threadtitle>&nbsp;thread title</label>&nbsp;$L[INPr]=w value=1 id=posttext".(($_GET[w]==1)?" checked":"")."><label for=posttext>&nbsp;post text</label><td>
-"   . "      </table></div>
-"    ."      <div id=filterdiv style=display:none>$HARBL>
-"   . "      <tr><td>Forum:&nbsp;<td>$fsel
-"  .  "      <tr><td>Thread creator:&nbsp;<td>$L[INPt]=t value='".htmlspecialchars(stripslashes($_GET[t]), ENT_QUOTES)."'>
-" .   "      <tr><td>Post creator:&nbsp;<td>$L[INPt]=p value='".htmlspecialchars(stripslashes($_GET[p]), ENT_QUOTES)."'>
-".    "      <tr><td> <td><font class='sfont'>% acts as a generic wildcard.</font>
-" .   "      <tr><td><td>$L[INPs]=action value=Search>
-"  .  "      </table></div>
-"   . "      <div id=emptydiv style=display:none>";
+if (!$datefrom) $datefrom = ctime() - 86400;
+if (!$dateto)   $dateto   = ctime();
 
 
 
-print "      </div></td></table>
-"    ."      </form>
-"   . "    </td>
-"  .  "</table>";
 
-if($_GET[action] == "Search") {
-if(strlen($_GET[q]) > 3) {
-	print "<br>
-".        "<div id=pleasewait>
-".        "$L[TBL1]>
-".        "  $L[TRh]>
-".        "    $L[TDh]>Results</td>
-".        "  $L[TR]>
-".        "    $L[TD1] style=padding:25 align=center>
-".        "    Search in progress...
-".        "</table>
-".        "</div>
-".        "<div id=youwaited style=display:none>
-".        "$L[TBL1]>
-".        "  $L[TRh]>
-".        "    $L[TDh]>Results</td>
-".        "</table>";
-if($_GET[w] == 1) {
-
-  $searchquery = $_GET[q];
-  $searchquery = preg_replace("@[^\" a-zA-Z0-9]@", "", $searchquery);
-  preg_match_all("@\"([^\"]+)\"@", $searchquery, $matches);
-  foreach($matches[0] as $key => $value) {
-    $searchquery = str_replace($value, " !".$key." ", $searchquery);
-  }
-  $searchquery = str_replace("\"", "", $searchquery);
-  while(strpos($searchquery, "  ") !== FALSE) {
-    $searchquery = str_replace("  ", " ", $searchquery);
-  }
-  $wordor = explode(" ", trim($searchquery));
-  $dastring = "";
-  $lastbool = 0;
-  $defbool = "AND";
-  $nextbool = "";
-  $searchfield = "pt.text";
-  $boldify = array();
-  foreach($wordor as $numbah => $werdz) {
-	if($lastbool == 0) {
-		$nextbool = $defbool;
-	}
-    if((($werdz == "OR") || ($werdz == "AND")) && !empty($dastring)) {
-		$nextbool = $werdz;
-		$lastbool = 1;
-	}
-	else {
-		if(substr($werdz, 0, 1) == "!") {
-			$dastring .= $nextbool." ".$searchfield." LIKE '%".$matches[1][substr($werdz, 1)]."%' ";
-			$boldify[$numbah] = "@".$matches[1][substr($werdz, 1)]."@i";
-		}
-		else {
-			$dastring .= $nextbool." ".$searchfield." LIKE '%".$werdz."%' ";
-			$boldify[$numbah] = "@".$werdz."@i";
-		}
-	}
-  }
-  $dastring = trim(substr($dastring, strlen($defbool)));
-//  print $dastring;
-  $fieldlist='';
-  $ufields=array('id','name','posts','regdate','lastpost','lastview','location','sex','group_id','rankset','title','usepic','head','sign');
-  foreach($ufields as $field)
-    $fieldlist.="u.$field u$field,";
-
-  if(strlen($_GET[p]))
-    $dastring.=" AND u.name LIKE '$_GET[p]' ";
-
-  if($_GET[f])
-    $dastring.=" AND f.id='$_GET[f]' ";
-
-  $posts=$sql->query("SELECT $fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, t.title ttitle, t.forum tforum "
-                    ."FROM posts p "
-                    ."LEFT JOIN poststext pt ON p.id=pt.id "
-                    ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
-                    ."LEFT JOIN users u ON p.user=u.id "
-                    ."LEFT JOIN threads t ON p.thread=t.id "
-                    ."LEFT JOIN forums f ON f.id=t.forum "
-                    ."LEFT JOIN categories c ON c.id=f.cat "
-                    ."WHERE $dastring AND ISNULL(pt2.id) "
-                   ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
-
-                    ."ORDER BY p.id");
-
-
-  while($post=$sql->fetch($posts)){
-    $pthread[id]=$post[tid];
-    $pthread[title]=$post[ttitle];
-    $post[text]=preg_replace($boldify,"<b>\\0</b>",$post[text]); 
-    print "<br>
-".         threadpost($post,0,$pthread);
-  }
-}
-else {
-  $searchquery = $_GET[q];
-  $searchquery = preg_replace("@[^\" a-zA-Z0-9]@", "", $searchquery);
-  preg_match_all("@\"([^\"]+)\"@", $searchquery, $matches);
-  foreach($matches[0] as $key => $value) {
-    $searchquery = str_replace($value, " !".$key." ", $searchquery);
-  }
-  $searchquery = str_replace("\"", "", $searchquery);
-  while(strpos($searchquery, "  ") !== FALSE) {
-    $searchquery = str_replace("  ", " ", $searchquery);
-  }
-  $wordor = explode(" ", trim($searchquery));
-  $dastring = "";
-  $lastbool = 0;
-  $defbool = "AND";
-  $nextbool = "";
-  $searchfield = "t.title";
-  $boldify = array();
-  foreach($wordor as $numbah => $werdz) {
-	if($lastbool == 0) {
-		$nextbool = $defbool;
-	}
-    if((($werdz == "OR") || ($werdz == "AND")) && !empty($dastring)) {
-		$nextbool = $werdz;
-		$lastbool = 1;
-	}
-	else {
-		if(substr($werdz, 0, 1) == "!") {
-			$dastring .= $nextbool." ".$searchfield." LIKE '%".$matches[1][substr($werdz, 1)]."%' ";
-			$boldify[$numbah] = "@".$matches[1][substr($werdz, 1)]."@i";
-		}
-		else {
-			$dastring .= $nextbool." ".$searchfield." LIKE '%".$werdz."%' ";
-			$boldify[$numbah] = "@".$werdz."@i";
-		}
-	}
-  }
-  $dastring = trim(substr($dastring, strlen($defbool)));
-  
-  $fieldlist='';
-  $ufields=array('id','name','sex','group_id');
-  foreach($ufields as $field)
-    $fieldlist.="u1.$field u1$field, u2.$field u2$field, ";
-
-  if(strlen($_GET[t]))
-    $dastring.=" AND u1.name LIKE '$_GET[t]' ";
-
-  if($_GET[f])
-    $dastring.=" AND f.id='$_GET[f]' ";
-
-  if($page<1) $page=1;
-  $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle "
-                      ."FROM threads t "
-                      ."LEFT JOIN users u1 ON u1.id=t.user "
-                      ."LEFT JOIN users u2 ON u2.id=t.lastuser "
-                      ."LEFT JOIN forums f ON f.id=t.forum "
-                      ."LEFT JOIN categories c ON f.cat=c.id "
-                      ."WHERE $dastring "
-                   ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
-                      ."ORDER BY t.sticky DESC, t.lastdate DESC "
-                      ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
-
-
-  $forum[threads]=$sql->resultq("SELECT count(*) "
-                               ."FROM threads t "
-			       ."LEFT JOIN users u1 ON u1.id=t.user "
-                               ."LEFT JOIN forums f ON f.id=t.forum "
-                               ."LEFT JOIN categories c ON f.cat=c.id "
-                               ."WHERE $dastring "
-                   ."AND f.id IN ".forums_with_view_perm()." AND c.id IN ".cats_with_view_perm()." "
-);
-  print "<br>
-".      "$L[TBL1]>
-".      "  $L[TRh]>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".      "    $L[TDh] width=17>&nbsp;</td>
-".($showforum?
-        "    $L[TDh]>Forum</td>":'')."
-".      "    $L[TDh]>Title</td>
-".      "    $L[TDh] width=130>Started by</td>
-".      "    $L[TDh] width=50>Replies</td>
-".      "    $L[TDh] width=50>Views</td>
-".      "    $L[TDh] width=130>Last post</td>
-";
-
-  $lsticky=0;
-  for($i=1;$thread=$sql->fetch($threads);$i++){
-    $pagelist='';
-    if($thread[replies]>=$loguser[ppp]){
-      for($p=1;$p<=1+floor($thread[replies]/$loguser[ppp]);$p++)
-        $pagelist.=" <a href=thread.php?id=$thread[id]&page=$p>$p</a>";
-      $pagelist=" <font class=sfont>(pages: $pagelist)</font>";
-    }
-
-    $status='';
-    if($thread[closed])                $status.='off';
-    if($thread[replies]>=50)           $status.='hot';
-
-    if($log){
-      if(!$thread[isread]) $status.='new';
-    }else
-      if($thread[lastdate]>(ctime()-3600)) $status.='new';
-
-    if($status)
-      $status="<img src=img/status/$status.png>";
-    else
-      $status='&nbsp;';
-
-    if(!$thread[title])
-      $thread[title]=' ';
-
-    if($thread[icon])
-      $icon="<img src=$thread[icon] height=15>";
-    else
-      $icon='&nbsp;';
-
-    if($thread[sticky])
-      $tr='TR1c';
-    else
-      $tr=($i%2?'TR2':'TR3').'c';
-
-    if(!$thread[sticky] && $lsticky)
-      print
-          "  $L[TRg]>
-".        "    $L[TD] colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
-";
-    $lsticky=$thread[sticky];
-
-    print "  $L[$tr]>
-".        "    $L[TD1]>$status</td>
-".        "    $L[TD]>$icon</td>
-".($showforum?
-          "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
-".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$pagelist</td>
-".        "    $L[TD]>".userlink($thread,'u1')."</td>
-".        "    $L[TD]>$thread[replies]</td>
-".        "    $L[TD]>$thread[views]</td>
-".        "    $L[TD]><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by ".userlink($thread,'u2')."</font></td>
-";
-  }
-
-  if($forum[threads]<=$loguser[tpp])
-    $fpagelist='<br>';
-  else{
-    $fpagelist='Pages:';
-    for($p=1;$p<=1+floor(($forum[threads]-1)/$loguser[tpp]);$p++)
-      if($p==$page)
-        $fpagelist.=" $p";
-      else
-        $fpagelist.=" <a href=search.php?q=".urlencode($_GET[q])."&action=Search&w=0&f=0&t=&p=&page=$p>$p</a>";
-  }
-
-  print "$L[TBLend]
-".      "$fpagelist
+print "
+<form method='POST' action='?'>
+$L[TBL1]>
+	$L[TRh]>$L[TDhc] colspan=2><b>Search</b></td></tr>
+	$L[TR1]>
+		$L[TD1c]><b>Search for:</b></td>
+		$L[TD2]>$L[INPt]='text' size=40 value=\"".htmlspecialchars($_POST['text'])."\"></td>
+	</tr>
+	$L[TR1]>
+		$L[TD1c]><b>Search in:</b></td>
+		$L[TD2]>".fieldoption('mode', $_POST['mode'], array(
+			0 => 'Thread title',
+			1 => 'Post text'
+		))."</td>
+	</tr>
+	$L[TR1]>
+		$L[TD1c]><b>User name:</b></td>
+		$L[TD2]>$L[INPt]='user' size=20 value=\"".htmlspecialchars($_POST['user'])."\"></td>
+	</tr>
+".(has_perm('view-post-ips') ? "
+	$L[TR1]>
+		$L[TD1c]><b>IP mask:</b></td>
+		$L[TD2]>
+			$L[INPt]='ipmask' size=16 maxlength=32 value=\"".htmlspecialchars($_POST['ipmask'])."\">
+			<small>use * as wildcard</small>
+		</td>
+	</tr>
+" :"")."
+	$L[TR1]>
+		$L[TD1c]><b>Forum:</b></td>
+		$L[TD2]>".fieldoption('forumena', $_POST['forumena'], array(
+			0 => 'All forums',
+			1 => 'Only in '.forumlist('forum', $_POST['forum'])
+		))."</td>
+	</tr>
+	$L[TR1]>
+		$L[TD1c]><b>Date:</b></td>
+		$L[TD2]>".fieldoption('date', $_POST['date'], array(
+			0 => 'Any date',
+			1 => "Last $L[INPt]='datedays' size=4 maxlength=4 value='{$_POST['datedays']}' style='text-align: right'> days",
+			2 => "From ".datetofields($datefrom, 'from')." to ".datetofields($dateto, 'to')." (mm/gg/yyyy)",
+		))."</td>
+	</tr>
+	$L[TR1]>
+		$L[TD1c]><b>Show NSFW threads:</b></td>
+		$L[TD2]>".fieldoption('filter', $_POST['filter'], array(
+			0 => 'No',
+			1 => "Yes"
+		))."
+		$L[INPh]='lulz' value=0>
+		</td>
+	</tr>
+	$L[TR1]>
+		$L[TD1c]><b>Order:</b></td>
+		$L[TD2]>".fieldoption('order', $_POST['order'], array(
+			0 => 'Disabled',
+			1 => 'Oldest first',
+			2 => 'Newest first',
+		))."</td>
+	</tr>
+".(isset($_POST['search']) ? "
+	$L[TR1] id='pagetr'>
+		$L[TD1c]><b>View page:</b></td>
+		$L[TD2]>{$pageselect}</td>
+	</tr>
+" : "")."
+	$L[TR2]>
+		$L[TD1c]></td>
+		$L[TD2]>$L[INPs]='search' value='Search'></td>
+	</tr>
+</table>
+</form>
 ";
 
 
+// Search results
+if (isset($_POST['search'])) {
+	
+	if (!$total) {
+		noticemsg("Search", "No results found.");
+	} else if (!$_POST['mode']) { // Threads mode
+		
+  print "
+		<br>
+		$L[TBL1]>
+			$L[TRh]>
+				$L[TDh] style='width: 17px'>&nbsp;</td>
+				$L[TDh] style='width: 17px'>&nbsp;</td>
+				$L[TDh]>Forum</td>
+				$L[TDh]>Title</td>
+				$L[TDh] style='width: 130px'>Started by</td>
+				$L[TDh] style='width: 50px'>Replies</td>
+				$L[TDh] style='width: 50px'>Views</td>
+				$L[TDh] style='width: 130px'>Last post</td>
+			</tr>
+";
+		for ($i = 0; $thread = $sql->fetch($results); ++$i) {		
+			$pagelist = pagelist($thread['replies'] + 1, $loguser['ppp'], 'thread.php?id='.$thread['id'], -1, $loguser['longpages']);
+			if ($pagelist) {
+				$pagelist = " <span class='sfont'>(".lcfirst($pagelist).")</span>";
+			}
+
+			// Thread status
+			$status   = '';
+			$statalt  = '';
+			if ($thread['closed']) { 
+				$status  .= 'o'; 
+				$statalt  = 'OFF'; 
+			}
+			if ($thread['replies'] >= 50) { // $config['hotcount'] / $misc['hotcount']
+				$status .= '!'; 
+				if (!$statalt) $statalt = 'HOT';
+			}
+			if ($loguser['id']){
+				if (!$thread['isread']) { 
+					$status .= 'n'; 
+					if ($statalt != 'HOT') $statalt  = 'NEW'; 
+				}
+			} else {
+				if ($thread['lastdate'] > (ctime() - 3600)) { 
+					$status.='n'; 
+					if ($statalt!='HOT') $statalt='NEW';
+				}
+			}
+			$status = $status ? rendernewstatus($status) : "&nbsp;";
+			
+			// Other data
+			if (!$thread['title']) $thread['title'] = '?'; // 'hurr durr I made a blank thread';
+			$icon = $thread['icon'] ? "<img src=\"{$thread['icon']}\" style='max-height: 15px'>" : "";
+			
+			// Handle tags
+			$taglist = "";
+			if ($showtags) {
+				for ($k = 0; $k < sizeof($tags); ++$k) {
+					$t = $tags[$k];
+					if ($thread['tags'] & (1 << $t['bit'])) {
+						if ($config['classictags']) {
+							list($r,$g,$b) = sscanf($t['color'],"%02X%02X%02X");
+							if ($r < 128 && $g < 128) { 
+								$r += 32;
+								$g += 32; 
+							}
+							$t['color2'] = sprintf("%02X%02X%02X",$r,$g,$b);
+							$taglist.=" <span style='background-repeat: repeat; background: url('gfx/tpng.php?c={$t['color']}&t=105'); font-size: 7pt; font-family: Small Fonts, sans-serif; padding: 1px 1px'>"
+									  ."<span style='background-repeat: repeat; background: url('gfx/tpng.php?c={$t['color']}&t=105'); font-size: 7pt; font-family: Small Fonts, sans-serif; padding: 2px 3px; color: {$t['color2']}' alt=\"{$t['name']}\">{$t['tag']}"
+									  ."</span></span>";
+						} else {
+							$taglist .= " <img src=\"./gfx/tags/tag{$t['fid']}-{$t['bit']}.png\" alt=\"{$t['name']}\" title=\"{$t['name']}\" style='position: relative; top: 3px'/>";
+						}
+					}
+				}
+			}
+
+			$tr = ($i % 2 ? 'TR2' : 'TR3').'c';
+
+			print "
+			$L[$tr]>
+				$L[TD1]>$status</td>
+				$L[TD]>$icon</td>
+				$L[TD]><a href='forum.php?id={$thread['forum']}'>{$forums[$thread['forum']]}</a></td>
+				$L[TDl]><a href='thread.php?id={$thread['id']}'>".forcewrap(htmlval($thread['title']))."</a>$taglist$pagelist</td>
+				$L[TD]>".userlink($thread,'u1',$config['startedbyminipic'])."</td>
+				$L[TD]>{$thread['replies']}</td>
+				$L[TD]>{$thread['views']}</td>
+				$L[TD]>
+					<nobr>".cdate($dateformat,$thread['lastdate'])."</nobr><br>
+					<span class='sfont'>
+						by&nbsp;".userlink($thread,'u2',$config['forumminipic'])."
+						&nbsp;<a href='thread.php?pid={$thread['lastid']}#{$thread['lastid']}'>&raquo;</a>
+					</span>
+				</td>
+			</tr>";
+		}
+		print "</table>";
+	} else { // Posts mode
+		$data = $results->data_seek($_POST['page'] * $limit);
+		
+		for ($i = 0; ($post = $sql->fetch($results)) && $i < $limit; ++$i){
+			// Boldify text
+			$post[$sfield] = preg_replace($matches, "<b>\\0</b>",$post[$sfield]);
+			$post['maxrevision'] = $post['revision']; // not pinned, hence the max. revision equals the revision we selected
+			print "<br>" . threadpost($post, 0);
+		}
+	}
+	
+	
+?>
+<script type='text/javascript'>
+	document.getElementById('pleasewait').style.display = 'none';
+	document.getElementById('pagetr').style.display = 'table-row';
+</script>
+<?php
 }
-print "</div>
-".    "<script>document.getElementById('pleasewait').style.display='none';document.getElementById('youwaited').style.display='block';</script>";
-  }
-}
+
 pagefooter();
 
-?>
+function parsesearch($srctext, $srcfield, &$boldify) {
+	$searchquery = preg_replace("@[^\" a-zA-Z0-9]@", "", $srctext);
+	preg_match_all("@\"([^\"]+)\"@", $searchquery, $matches);
+	foreach($matches[0] as $key => $value) {
+		$searchquery = str_replace($value, " !".$key." ", $searchquery);
+	}
+	$searchquery = str_replace("\"", "", $searchquery);
+	while(strpos($searchquery, "  ") !== FALSE) {
+		$searchquery = str_replace("  ", " ", $searchquery);
+	}
+	$wordor    = explode(" ", trim($searchquery));
+	$dastring  = "";
+	$lastbool  = 0;
+	$defbool   = "AND";
+	$nextbool  = "";
+	$searchfield = $srcfield;
+	$boldify = array();
+	foreach ($wordor as $numbah => $werdz) {
+		if ($lastbool == 0) {
+			$nextbool = $defbool;
+		}
+		if((($werdz == "OR") || ($werdz == "AND")) && !empty($dastring)) {
+			$nextbool = $werdz;
+			$lastbool = 1;
+		} else {
+			if(substr($werdz, 0, 1) == "!") {
+				$dastring .= $nextbool." ".$searchfield." LIKE '%".$matches[1][substr($werdz, 1)]."%' ";
+				$boldify[$numbah] = "@".$matches[1][substr($werdz, 1)]."@i";
+			} else {
+				$dastring .= $nextbool." ".$searchfield." LIKE '%".$werdz."%' ";
+				$boldify[$numbah] = "@".$werdz."@i";
+			}
+		}
+	}
+	return trim(substr($dastring, strlen($defbool)));
+}

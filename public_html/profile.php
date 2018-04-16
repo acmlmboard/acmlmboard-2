@@ -177,9 +177,9 @@ if($_COOKIE['pstbon']==-1){
     $post['text'] = "[quote=\"Emuz\" id=\"2\"]<a href=\"/#fakelink\">[b]The[/b] sample link.</a> [quote=\"Acmlm\" id=\"1\"][quote=\"Shroomy\"]Sample nested quote.[/quote][spoiler]Sample spoiler, but I guess I ruined that for you hehe[/spoiler][/quote]^Sample [u]sarcasm[/u][/quote]
 How about some code: 
 [code]<?php
-if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Scrydan was here.... 
+if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Epele: simple test.... 
 {
-   print \"Sample code.\"; #oops you just missed him!
+   print \"Sample code.\"; #It may print something.. or confuse you.
 }
 ?>[/code]
 [i]Sample[/i] message.";
@@ -277,15 +277,16 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Sc
       $editbadges="| <a href=\"assignbadges.php?uid=".$user['id']."\">Manage user badges</a>";
     }
 
-    $bannedgroup = $sql->resultq("SELECT id FROM `group` WHERE `banned`=1");
-
-    $banuser ="";
-    if(has_perm('edit-permissions'))
-    {
-      if(!has_perm('ban-users')) $banuser ="";
-      elseif($user['group_id'] != $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?id=".$user['id']."\">Ban user</a>";
-      elseif($user['group_id'] = $bannedgroup['group_id']) $banuser="| <a href=\"banmanager.php?unban&id=".$user['id']."\">Unban user</a>";
-    }
+	
+	$banuser = "";
+	if (has_perm('edit-permissions') && has_perm('ban-users')) {
+		$bannedgroup = $sql->getresults("SELECT id FROM `group` WHERE `banned` = 1");
+		if (in_array($user['group_id'], $bannedgroup)) {
+			$banuser = "| <a href='banmanager.php?unban&id={$user['id']}'>Unban user</a> | <a href='banmanager.php?id={$user['id']}'>Edit ban</a>";
+		} else {
+			$banuser = "| <a href='banmanager.php?id={$user['id']}'>Ban user</a>";
+		}
+	}
     
     //[KAWA] Blocklayout ported from ABXD
     $qblock    = "SELECT * FROM `blockedlayouts` WHERE `user`='$uid' AND `blockee`='$loguser[id]'";

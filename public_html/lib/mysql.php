@@ -19,7 +19,9 @@
       $start=usectime();
       if($res=@$this->db->query($query)){
         $this->queries++;
-        $this->rowst+=$res->num_rows;
+		if ($res instanceof MySQLi) {
+			$this->rowst+=$res->num_rows;
+		}
       }else
         print $this->error();
 
@@ -134,6 +136,39 @@
 	function affectedrows()
 	{
 		return $this->db->affected_rows;
+	}
+	
+	// PDO::FETCH_ASSOC + fetchAll
+	function getarray($query) {
+		$res = $this->query($query);
+		$out = array();
+		while ($x = $this->fetch($res)) {
+			$out[] = $x;
+		}
+		return $out;
+	}
+	
+	// returns a one dimentional array out of a query
+	// similar to PDO::FETCH_COLUMN
+	function getresults($query, $col = 0) {
+		$res = $this->query($query);
+		$out = array();
+		$max = $this->numrows($res);
+		for ($i = 0; $i < $max; ++$i) {
+			$out[] = $this->result($res, $i, $col);
+		}
+		return $out;
+	}
+	
+	// returns array indexed by an unique field
+	// similar to PDO::FETCH_KEY_PAIR
+	function getresultsbykey($query, $key, $val) {
+		$res = $this->query($query);
+		$out = array();
+		while ($x = $this->fetch($res)) {
+			$out[$x[$key]] = $x[$val];
+		}
+		return $out;
 	}
 
   }

@@ -40,7 +40,7 @@ imagefilledrectangle($im,1,6,600*$z/$n-1,14,$cstd);
 $str="";
 $str=sprintf("%.1f%% ($z)",100*$z/$n);
 
-//imagettftext($im,10,0, floor(600*$z/$n)+3, 14, $cwhite, "/var/sites/acmlmboard/board/gfx/speculum.ttf", $str);
+//imagettftext($im,10,0, floor(600*$z/$n)+3, 14, $cwhite, "speculum.ttf", $str);
 
 $fontW=fontc(255,255,255, 210,210,210,  0, 0, 0);
 frender($im,$fontW, floor(600*$z/$n)+5, 7,0,$str);
@@ -58,6 +58,7 @@ for($i=0;$i<=600;$i+=10) {
 imagealphablending($im,FALSE);
 imagesavealpha($im,TRUE);
 
+header('Content-type: image/png');
 imagepng($im);
 
 ?>

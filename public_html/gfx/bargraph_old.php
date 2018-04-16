@@ -1,6 +1,11 @@
 <?php
 $im=imagecreatetruecolor(690,20);
 
+$n=$_GET['n'];
+$b=$_GET['b'];
+$g=$_GET['g'];
+$r=$_GET['r'];
+$z=$_GET['z'];
 if($n==0) $n=1;
 
 imagealphablending($im,FALSE);
@@ -31,7 +36,7 @@ imagefilledrectangle($im,0,14,600*$z/$n,20,$cshadow);
 $str="";
 $str=sprintf("%.1f%% ($z)",100*$z/$n);
 
-imagettftext($im,10,0, floor(600*$z/$n)+3, 14, $cwhite, "/var/sites/acmlmboard/board/gfx/verdana.ttf", $str);
+imagettftext($im,10,0, floor(600*$z/$n)+3, 14, $cwhite, "verdana.ttf", $str);
 
 imagesavealpha($im,FALSE);
 imagealphablending($im,TRUE);
@@ -45,6 +50,7 @@ for($i=0;$i<600;$i+=10) {
 imagealphablending($im,FALSE);
 imagesavealpha($im,TRUE);
 
+header('Content-type: image/png');
 imagepng($im);
 
 ?>

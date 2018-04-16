@@ -28,8 +28,8 @@ $y=1; $max=0;
 $f=$sql->query("SELECT id,title FROM forums WHERE id>0 AND private=0");
 while($d=$sql->fetch($f)) {
 	$a=$sql->resultq("SELECT COUNT(*) FROM posts p, threads t WHERE t.id=p.thread AND t.forum=$d[id] AND p.date>".(ctime()-86400));
-	imagettftext($im,7,0,1,($y++)*(340/$count)-5,$cwhite, "/var/sites/acmlmboard/board/gfx/verdana.ttf",$d[title]);
-	//imagettftext($im,8,0,277-5*strlen((string)$a),($y-1)*(340/$count)-5,$c2,"/var/sites/acmlmboard/board/gfx/verdana.ttf",$a);
+	imagettftext($im,7,0,1,($y++)*(340/$count)-5,$cwhite, "verdana.ttf",$d['title']);
+	//imagettftext($im,8,0,277-5*strlen((string)$a),($y-1)*(340/$count)-5,$c2,"verdana.ttf",$a);
 	if($a>$max) $max=$a;
 }
 

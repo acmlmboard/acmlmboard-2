@@ -58,7 +58,7 @@ for($i=0;$i<=600;$i+=10) {
 imagealphablending($im,FALSE);
 imagesavealpha($im,TRUE);
 
-header('Content-type: image/png');
+ Header('Content-type:image/png');
 
 imagepng($im);
 

@@ -1,5 +1,6 @@
 <?php
 //Uses editpost.php as template
+  $nourltracker=1;
 
   require 'lib/common.php';
 

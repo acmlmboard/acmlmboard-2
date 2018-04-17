@@ -59,6 +59,7 @@ imagealphablending($im,FALSE);
 imagesavealpha($im,TRUE);
 
 header('Content-type: image/png');
+
 imagepng($im);
 
 ?>

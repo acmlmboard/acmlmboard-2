@@ -1,4 +1,5 @@
 <?php
+  $nourltracker=1;
   include('lib/common.php');
 
   if(!has_perm('edit-attentions-box')) {

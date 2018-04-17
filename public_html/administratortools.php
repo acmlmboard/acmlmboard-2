@@ -1,4 +1,5 @@
 <?php
+  $nourltracker=1;
 require 'lib/common.php';
 
 //Controls board settings - SquidEmpress

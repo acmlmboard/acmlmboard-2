@@ -1,4 +1,5 @@
 <?php
+$nourltracker=1;
 require('lib/common.php');
 
 if (!has_perm('edit-forums')) 

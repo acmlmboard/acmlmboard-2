@@ -1,6 +1,6 @@
 <?php
-
-require("lib/common.php");
+  $nourltracker=1;
+  require("lib/common.php");
 
   $r = request_variables(array('id','action','act'));
   $pagebar = array();

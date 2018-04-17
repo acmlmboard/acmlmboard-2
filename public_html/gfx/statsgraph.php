@@ -39,7 +39,7 @@ imagealphablending($im,TRUE);
 $posts=101800;
 while($day=$sql->fetch($stats)){
   $x++;
-  $y=$day[posts]-$posts;
+  $y=$day['posts']-$posts;
   $abuf->push($y);
 
   imageline($im,$x,320- $abuf->get()/2,$x,320- $y/2,$c1);
@@ -49,13 +49,13 @@ while($day=$sql->fetch($stats)){
   imageline($im,$x-1,320-$yold/2,   $x-0,320-$abuf->get()/2   ,$c2);
 
   if(!(($x-1)%64)) {
-  	imagettftext($im,7,0, $x, 10, $cwhite, "/var/sites/acmlmboard/board/gfx/verdana.ttf", $day[date]);
+  	imagettftext($im,7,0, $x, 10, $cwhite, "verdana.ttf", $day['date']);
   }
 
-  $users=$day[users];
-  $posts=$day[posts];
-  $threads=$day[threads];
-  $views=$day[views];
+  $users=$day['users'];
+  $posts=$day['posts'];
+  $threads=$day['threads'];
+  $views=$day['views'];
   $yold=$abuf->get();
 }
 

@@ -1,7 +1,9 @@
 <?php
   require 'lib/common.php';
   needs_login(1);
-  
+// Support for larger-than-spec avatars
+  if($avatardimx>=180){ $avax=$avatardimx; } else { $avax=180; }
+  if($avatardimy>=180){ $avay=$avatardimy; } else { $avay=180; }
 //Permissions
   if(isset($_GET['user'])){
     $edid=$_GET['user'];
@@ -119,7 +121,7 @@
     $L[TDh]>Default</td>
   </tr>
   $L[TR]>
-    $L[TD2]><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url($aurl) no-repeat center;\" id=\"defava\"></div>
+    $L[TD2]><div style=\"padding: 0px; margin: 0px; width: ".$avax."px; height: ".$avay."px; background: url($aurl) no-repeat center;\" id=\"defava\"></div>
   </tr>$L[TR]>
     $L[TD1]><a href=\"#\" onclick=\"edit(-1,'','')\">Edit</a> | <a href=\"#\" onclick=\"del(-1,'Default')\">Delete</a></td>
   </tr>
@@ -142,7 +144,7 @@
     $L[TDh]>".stripslashes($mav['label'])."</td>
   </tr>
   $L[TR]>
-    $L[TD2]><div style=\"padding: 0px; margin: 0px; width: 180px; height: 180px; background: url(".$aurl.") no-repeat center;\"></div>
+    $L[TD2]><div style=\"padding: 0px; margin: 0px; width: ".$avax."px; height: ".$avay."px; background: url(".$aurl.") no-repeat center;\"></div>
   </tr>$L[TR]>
     $L[TD1]><a href=\"#\" onclick=\"edit(".$mav['id'].",'".htmlspecialchars($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".htmlspecialchars($mav['label'])."')\">Delete</a></td>
   </tr>

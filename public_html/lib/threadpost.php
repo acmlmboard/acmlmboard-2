@@ -22,7 +22,8 @@ function usegfxnums()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx;
+    if($avatardimx>=180){ $sidewidth=$avatardimx; } else { $sidewidth=180; }
     $exp=calcexp($post['uposts'],(ctime()-$post['uregdate'])/86400);
 
     $post['head']=str_replace("<!--", "&lt;!--", $post['head']);
@@ -141,7 +142,7 @@ $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $postheaderrow 
 ".        "  $L[TR]>
-".        "    <td class=\"b n1 $tbar1\" style=\"border-bottom:0; border-right:0; min-width: 180px;\" height=17>
+".        "    <td class=\"b n1 $tbar1\" style=\"border-bottom:0; border-right:0; min-width: ".$sidewidth."px;\" height=17>
 ".        "      ".userlink($post,'u',$config['threadminipic']).
 
 

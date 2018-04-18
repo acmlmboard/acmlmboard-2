@@ -5,7 +5,8 @@ require "lib/threadpost.php";
 
 pageheader("Simple Search");
 
-$showtags = false;
+$showtags    = false; 
+$likefilter  = true;  // Filter SQL LIKE wildcards (% and _)
 
 // Defaults
 $_POST['text']   = isset($_POST['text'])    ? $_POST['text'] : "";
@@ -40,9 +41,9 @@ if (isset($_POST['search'])) {
 	
 	$message = "";
 	$qsearch = array();
-	$qsearch[] = parsesearch($_POST['text'], "{$stable}.{$sfield}", $qval, $matches);
+	$qsearch[] = parsesearch($_POST['text'], "{$stable}.{$sfield}", $qval, $matches, $likefilter);
 	
-	if (!$qsearch[0] || strlen(trim(str_replace(array('AND', 'OR', '%', '_'), '', $_POST['text']))) < 4)
+	if (!$qsearch[0] || strlen(trim(str_replace(array('AND', 'OR', '%', '_', '\\'), '', $_POST['text']))) < 4)
 		$message = "You have to search for at least 4 characters.";
 	if (count($matches) > 5)
 		$message = "Too many AND/OR statements.";
@@ -390,7 +391,12 @@ if (isset($_POST['search'])) {
 pagefooter();
 
 
-function parsesearch($srctext, $srcfield, &$qval, &$boldify) {
+function parsesearch($srctext, $srcfield, &$qval, &$boldify, $likefilter = true) {
+	// If wildcards have to be filtered, do it now
+	if ($likefilter) {
+		$srctext = strtr($srctext, array('%' => '\\%', '_' => '\\_'));
+	}
+	
 	// Get an array of non-empty words
 	$words = explode(" ", strtoupper(trim($srctext)));
 	$words = array_filter($words, function($x) { return $x !== ''; });

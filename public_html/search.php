@@ -398,7 +398,7 @@ function parsesearch($srctext, $srcfield, &$qval, &$boldify, $likefilter = true)
 	}
 	
 	// Get an array of non-empty words
-	$words = explode(" ", strtoupper(trim($srctext)));
+	$words = explode(" ", trim($srctext));
 	$words = array_filter($words, function($x) { return $x !== ''; });
 	if (!$words) 
 		return "";

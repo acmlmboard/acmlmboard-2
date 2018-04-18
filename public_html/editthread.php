@@ -144,7 +144,7 @@ $p=$sql->query("SELECT * FROM `polloptions` WHERE `poll`=$tid ORDER BY `id`");
 foreach($p as $poll){
   $pid=$poll['id'];
   $str="$optfield1".$pid."$optfield2".$pid."$optfield3";
-  echo sprintf($str, $poll['option'], $poll['r'], $poll['g'], $poll['b']);
+  echo sprintf($str, htmlentities($poll['option']), $poll['r'], $poll['g'], $poll['b']);
   $n++;
 }
 echo "  </div>

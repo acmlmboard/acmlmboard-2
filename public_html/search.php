@@ -42,7 +42,7 @@ if (isset($_POST['search'])) {
 	$qsearch = array();
 	$qsearch[] = parsesearch($_POST['text'], "{$stable}.{$sfield}", $qval, $matches);
 	
-	if (!$qsearch[0] || strlen(trim(str_replace(array('AND', 'OR'), '', $_POST['text']))) < 4)
+	if (!$qsearch[0] || strlen(trim(str_replace(array('AND', 'OR', '%', '_'), '', $_POST['text']))) < 4)
 		$message = "You have to search for at least 4 characters.";
 	if (count($matches) > 5)
 		$message = "Too many AND/OR statements.";

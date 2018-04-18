@@ -39,17 +39,18 @@ if (isset($_POST['search'])) {
 	}
 	
 	$message = "";
-	if (strlen(trim(str_replace(array('AND', 'OR'), '', $_POST['text']))) < 4) {
+	$qsearch = array();
+	$qsearch[] = parsesearch($_POST['text'], "{$stable}.{$sfield}", $qval, $matches);
+	
+	if (!$qsearch[0] || strlen(trim(str_replace(array('AND', 'OR'), '', $_POST['text']))) < 4)
 		$message = "You have to search for at least 4 characters.";
-	}
+	if (count($matches) > 5)
+		$message = "Too many AND/OR statements.";
 	
 	if ($message) {
-		noticemsg("Error", "The search could not start for the following reason(s):{$message}");
+		noticemsg("Error", "The search could not start for the following reason(s): {$message}");
 		$_POST['search'] = NULL; // Do not display "No results found" message
 	} else {
-		// All OK!
-		$searchtext = parsesearch($_POST['text'], "{$stable}.{$sfield}", $matches);
-		
 		// Display a message immediately while we're fetching posts. This will be hidden after we're done.
 		print "
 		<br>
@@ -72,14 +73,8 @@ if (isset($_POST['search'])) {
 		$allowedforums = "(".implode(',', array_keys($forums)).")";
 		//--
 		
-		$qval    = array();
-		$qsearch = array();
-		
-		
 		// Common shared options
-		if ($searchtext) {
-			$qsearch[] = "({$searchtext})";
-		}
+		$qsearch[0] = "({$qsearch[0]})";
 		if (has_perm('view-post-ips') && $_POST['ipmask']) {
 			$qsearch[] = "u.ip LIKE ?";
 			$qval[]    = str_replace('*', '%', $_POST['ipmask']);
@@ -93,7 +88,8 @@ if (isset($_POST['search'])) {
 		}
 		
 		
-		if ($_POST['mode'] == 0) { // Search in thread text
+		if ($_POST['mode'] == 0) { 
+			// Search options for thread title mode
 			$limit   = $loguser['tpp'];
 			
 			if ($_POST['date'] == 1 && $_POST['datedays'] > 0) {
@@ -140,7 +136,8 @@ if (isset($_POST['search'])) {
 				$tags = $sql->getarray("SELECT * FROM tags WHERE fid ".($_POST['forumena'] ? " = {$_POST['forum']}" : " IN {$allowedforums}"));
 			}
 			
-		} else { // Posts
+		} else { 
+			// Search options for posts text mode
 			$limit   = $loguser['ppp'];
 			
 			if ($_POST['date'] == 1 && $_POST['datedays'] > 0) {
@@ -278,7 +275,7 @@ if (isset($_POST['search'])) {
 		noticemsg("Search", "No results found.");
 	} else if (!$_POST['mode']) { // Threads mode
 		
-  print "
+		print "
 		<br>
 		$L[TBL1]>
 			$L[TRh]>
@@ -375,7 +372,7 @@ if (isset($_POST['search'])) {
 		
 		for ($i = 0; ($post = $sql->fetch($results)) && $i < $limit; ++$i){
 			// Boldify text
-			$post[$sfield] = preg_replace($matches, "<b>\\0</b>",$post[$sfield]);
+			$post[$sfield] = preg_replace($matches, "<b>$0</b>",$post[$sfield]);
 			$post['maxrevision'] = $post['revision']; // not pinned, hence the max. revision equals the revision we selected
 			print "<br>" . threadpost($post, 0);
 		}
@@ -392,39 +389,34 @@ if (isset($_POST['search'])) {
 
 pagefooter();
 
-function parsesearch($srctext, $srcfield, &$boldify) {
-	$searchquery = preg_replace("@[^\" a-zA-Z0-9]@", "", $srctext);
-	preg_match_all("@\"([^\"]+)\"@", $searchquery, $matches);
-	foreach($matches[0] as $key => $value) {
-		$searchquery = str_replace($value, " !".$key." ", $searchquery);
-	}
-	$searchquery = str_replace("\"", "", $searchquery);
-	while(strpos($searchquery, "  ") !== FALSE) {
-		$searchquery = str_replace("  ", " ", $searchquery);
-	}
-	$wordor    = explode(" ", trim($searchquery));
-	$dastring  = "";
-	$lastbool  = 0;
-	$defbool   = "AND";
-	$nextbool  = "";
-	$searchfield = $srcfield;
-	$boldify = array();
-	foreach ($wordor as $numbah => $werdz) {
-		if ($lastbool == 0) {
-			$nextbool = $defbool;
-		}
-		if((($werdz == "OR") || ($werdz == "AND")) && !empty($dastring)) {
-			$nextbool = $werdz;
-			$lastbool = 1;
+
+function parsesearch($srctext, $srcfield, &$qval, &$boldify) {
+	// Get an array of non-empty words
+	$words = explode(" ", strtoupper(trim($srctext)));
+	$words = array_filter($words, function($x) { return $x !== ''; });
+	if (!$words) 
+		return "";
+
+	// Iterate over each word to generate the SQL statement / query values / bold text regex
+	$qsearch = "";       // Search query with placeholders
+	$qval    = array();  // Query values
+	$boldify = array();  // Words to highlight (regex)
+	$curword  = "";      // Current processed word
+	foreach ($words as $x) {
+		if ($curword && ($x == 'AND' || $x == 'OR')) { // AND / OR are separators
+			$qsearch  .= "{$srcfield} LIKE ? {$x} ";
+			$curword   = substr($curword, 1);
+			$boldify[] = "/".preg_quote($curword, '/')."/i";
+			$qval[]    = "%{$curword}%";
+			$curword   = "";
 		} else {
-			if(substr($werdz, 0, 1) == "!") {
-				$dastring .= $nextbool." ".$searchfield." LIKE '%".$matches[1][substr($werdz, 1)]."%' ";
-				$boldify[$numbah] = "@".$matches[1][substr($werdz, 1)]."@i";
-			} else {
-				$dastring .= $nextbool." ".$searchfield." LIKE '%".$werdz."%' ";
-				$boldify[$numbah] = "@".$werdz."@i";
-			}
+			$curword  .= " {$x}";
 		}
 	}
-	return trim(substr($dastring, strlen($defbool)));
+	$qsearch  .= "{$srcfield} LIKE ?";
+	$curword   = substr($curword, 1);
+	$boldify[] = "/".preg_quote($curword, '/')."/i";
+	$qval[]    = "%{$curword}%";
+	
+	return $qsearch;
 }

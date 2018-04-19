@@ -479,8 +479,8 @@ if(checkcextendedprofile($targetuserid))
 ".           fieldrow('Threads per page',fieldinput( 3,  3,'tpp'       ))."
 ".           fieldrow('Long pagelists'  ,fieldoption('longpages',$user[longpages],array('Abbreviate as needed','Always display in entirety')))."
 ".           fieldrow('Font size'       ,fieldinput( 3,  3,'fontsize'  ))."
-".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',0,$datelist))."
-".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',0,$timelist))."
+".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',-1,$datelist))."
+".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',-1,$timelist))."
 ".           fieldrow('Post layouts', fieldoption('blocklayouts',$user['blocklayouts'],array('Show everything in general', 'Block everything')))."
 ";
 if ($config['spritesystem'])

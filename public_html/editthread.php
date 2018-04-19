@@ -116,7 +116,7 @@ if(!has_perm('rename-own-thread')){  $distitle=" disabled title=\"You do not hav
 ";
     print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
-".        "    $L[TD2]>$L[INPt]=title value=\"".$thread['title']."\" size=100 maxlength=100$distitle></td>
+".        "    $L[TD2]>$L[INPt]=title value=\"".htmlentities($thread['title'])."\" size=100 maxlength=100$distitle></td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>$typecap icon:</td>
 ".        "    $L[TD2]>

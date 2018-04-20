@@ -36,8 +36,8 @@ Requirements
 These requirements are based on our development environment's specifications. While older versions may work since the code is mostly wrote for 2005, our new components take advantage of more modern functioning. It is recommended you use the requirements provided for best results.
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
-- MySQL5
-- PHP >=v5.4.3 (again old versions may work, with some features disabled.)
+- MySQL5+/MariaSQL
+- PHP >=v5.6 (old versions may work, but are unsupported.**Note:** As of commit f92315e on develop 5.6 is **REQUIRED** )
 - PHP-GD
 - mcrypt and the module for PHP
 - phpmyadmin or DB tool of your choice.

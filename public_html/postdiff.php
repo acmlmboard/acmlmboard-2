@@ -73,6 +73,14 @@ pageheader("Post revision differences");
 </script>
 <?php
 
+// Highlight selected mode link
+$modes     = array('Character', 'Word', 'Sentence', 'Paragraph');
+$modelinks = "";
+for ($i = 0; $i < 4; ++$i) {
+	$w = ($i == $mode) ? "b" : "a";
+	$modelinks .= " | <{$w} href='?id={$pid}&o={$r1}&n={$r2}&m={$i}'>{$modes[$i]}</{$w}>";
+}
+
 print "
 $L[TBL1]>
 	$L[TRh]>$L[TDh] colspan=2>Revision diff for post #{$pid}</td></tr>
@@ -86,12 +94,7 @@ $L[TBL1]>
 	</tr>
 	$L[TR1]>
 		$L[TD1c]><b>Diff mode:</b></td>
-		$L[TD2]>
-			<a href='?id={$pid}&o={$r1}&n={$r2}&m=0'>Character</a> - 
-			<a href='?id={$pid}&o={$r1}&n={$r2}&m=1'>Word</a> - 
-			<a href='?id={$pid}&o={$r1}&n={$r2}&m=2'>Sentence</a> - 
-			<a href='?id={$pid}&o={$r1}&n={$r2}&m=3'>Paragraph</a>
-		</td>
+		$L[TD2]>".substr($modelinks, 3)."</td>
 	</tr>
 	$L[TR1]>
 		$L[TD1c]><b>Show:</b></td>

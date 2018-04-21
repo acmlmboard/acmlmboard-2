@@ -15,3 +15,6 @@
 .ToolBarQuote { background: #000000 url(../img/toolbar/quote.gif) center no-repeat; }
 .ToolBarSvg { background: #000000 url(../img/toolbar/svg.gif) center no-repeat; }
 .ToolBarSmile { background: #000000 url(../img/smilies/smile.gif) center no-repeat; }
+
+ins { text-decoration: none; color: #40FF30; border: 1px dashed #208018; background: #10400C; }
+del { text-decoration: none; color: #FF4000; border: 1px dashed #802000; background: #401000; }

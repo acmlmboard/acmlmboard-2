@@ -493,7 +493,7 @@ function forumlist($name, $sel = 0, $jsurl = '') {
 		FROM forums f
 		LEFT JOIN categories c ON f.cat = c.id
 		WHERE c.id IN ".cats_with_view_perm()." AND f.id IN ".forums_with_view_perm()."
-		ORDER BY c.ord, f.ord
+		ORDER BY c.ord, c.id, f.ord, f.id
 	");	
 	$prevcat = 0;
 	while ($forum = $sql->fetch($forums)) {

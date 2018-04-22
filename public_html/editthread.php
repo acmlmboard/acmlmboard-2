@@ -59,26 +59,26 @@ pageheader("Edit Thread");
   $sql->query("UPDATE threads SET $title`icon`='$iconurl' WHERE `id`=$tid");
   if(isset($ispoll)){
      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
-     $oid=$sql->query("SELECT id FROM `polloptions` WHERE `poll`=$tid");
-$n=1;
-foreach($oid as $i){
-  $idz[$n]=$i['id'];
-  $n++;
-}
+     $oldchoices = $sql->getresultsbykey("SELECT id, 1 val FROM polloptions WHERE poll = {$tid}", 'id', 'val');
      foreach ($_POST['opt'] as $id => $_text)
 	  {
 	    $color = stripslashes($_POST['col'][$id]);
 		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 		$text = $sql->escape($_text);
 //        $sql->query("UPDATE polloptions SET `option`='{$text}',r=".(int)$r.",g=".(int)$g.",b=".(int)$b." WHERE id=$id AND `poll`=$tid");
-$aid=array_search($id,$idz,true);
-if($aid>=1){ $insid=$id; $idz[$aid]=0; } else { $insid="null"; }
+		if (isset($oldchoices[$id])) { // Update existing option
+			unset($oldchoices[$id]);
+			$insid = $id;
+		} else { // New option
+			$insid = 'null';
+		}
         $sql->query("REPLACE INTO polloptions (`id`,`poll`,`option`,r,g,b) VALUES ($insid,$tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
 	  }
     }
   //Cleanup removed options.
-  foreach($idz as $i){
-    if ($i>=1) $sql->query("DELETE FROM polloptions  WHERE id=$i AND `poll`=$tid");
+  foreach($oldchoices as $voteid => $z){
+	$sql->query("DELETE FROM polloptions WHERE id={$voteid} AND `poll`={$tid}");
+	$sql->query("DELETE FROM pollvotes   WHERE id={$voteid}");
   }
 }
  redirect("thread.php?id=$tid",-1);

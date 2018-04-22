@@ -128,6 +128,7 @@ function usegfxnums()
         $revisionstr.=" | Go to revision: ";
         for($i=1;$i<=$post['maxrevision'];++$i)
           $revisionstr.="<a href=\"thread.php?pid={$post['id']}&amp;pin={$post['id']}&amp;rev=$i#{$post['id']}\">$i</a> ";
+        $revisionstr .= " -- <a href='postdiff.php?id={$post['id']}&o=".($post['maxrevision']-1)."&n={$post['maxrevision']}'>Diff</a>";
       }
 
       // if quote enabled then if $postlink2 then postlink2 .= | [quote]

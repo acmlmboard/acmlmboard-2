@@ -9,8 +9,14 @@ $mode = isset($_GET['m'])  ? (int)$_GET['m'] : 0;
 $t = $sql->resultq("SELECT thread FROM posts WHERE id=$pid");
 if (!$t) 
 	error("Error", "This post does not exist.<br> <a href=./>Back to main</a>");
-$f = $sql->resultq("SELECT forum FROM threads WHERE id=$t");
-if (!can_view_forum_post_history($f) || !can_view_forum($f))
+$f = $sql->fetchq("
+	SELECT f.id, f.private, f.cat, c.private cprivate
+	FROM threads t 
+	LEFT JOIN forums     f ON f.id = t.forum
+	LEFT JOIN categories c ON c.id = f.cat
+	WHERE t.id = $t AND t.forum IN ".forums_with_view_perm()."
+");
+if (!can_view_forum_post_history($f['id']) || !can_view_forum($f))
 	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
 

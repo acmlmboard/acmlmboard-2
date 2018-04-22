@@ -139,6 +139,7 @@ print "{$cookiemsg}
 				<select name='setreason'>
 					<option value=''></option>
 					<option value='Banned'>Generic ban</option>
+					<option value='online.php ban'>Online users ban</option>
 				</select>
 			</td>
 		</tr>

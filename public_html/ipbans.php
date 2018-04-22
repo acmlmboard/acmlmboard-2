@@ -8,7 +8,8 @@
 		error("Error", "You have no permissions to do this!<br> <a href='index.php'>Back to main</a>");
 	}
 	
-	$_GET['newip'] = isset($_GET['newip']) ? $_GET['newip'] : "";
+	$_GET['newip']     = isset($_GET['newip'])     ? $_GET['newip']     : "";
+	$_GET['newreason'] = isset($_GET['newreason']) ? $_GET['newreason'] : ""; // special reason text usually
 	
 	if (isset($_POST['ipban'])) {
 		check_token($_POST['auth']);
@@ -138,6 +139,7 @@ print "{$cookiemsg}
 				<select name='setreason'>
 					<option value=''></option>
 					<option value='Banned'>Generic ban</option>
+					<option value='online.php ban'>Online users ban</option>
 				</select>
 			</td>
 		</tr>
@@ -196,7 +198,7 @@ print "
 		</tr>
 		$L[TR1]>
 			$L[TD1c]><b>Ban reason:</b></td>
-			$L[TD2]>$L[INPt]='reason' style='width: 500px'></td>
+			$L[TD2]>$L[INPt]='reason' style='width: 500px' value=\"".htmlspecialchars($_GET['newreason'])."\"></td>
 		</tr>
 		$L[TR1]>
 			$L[TD1c]><b>Expires:</b></td>

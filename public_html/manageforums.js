@@ -62,20 +62,20 @@ function chooseLocalmod(field)
 function addLocalmod()
 {
 	var field = document.getElementById('addmod_name');
-	var user = field.value;
-	ajaxGet('manageforums.php?ajax=localmodRow&user=' + encodeURIComponent(user), 
+	var username = field.value;
+	ajaxGet('manageforums.php?ajax=localmodRow&username=' + encodeURIComponent(username), 
 	function(res)
 	{
 		if (!res)
 		{
-			alert('Error: user \''+user+'\' could not be found.');
+			alert('Error: user \''+username+'\' could not be found.');
 			return;
 		}
 		
 		res = res.split('|');
 		if (document.getElementById('localmod_'+res[0]))
 		{
-			alert('Error: user \''+user+'\' is already assigned to this forum.');
+			alert('Error: user \''+username+'\' is already assigned to this forum.');
 			return;
 		}
 		

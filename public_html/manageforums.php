@@ -13,7 +13,7 @@ if ($_GET['ajax'])
 	$ajax = $_GET['ajax'];
 	if ($ajax == 'localmodRow')
 	{
-		$user = $sql->fetchp("SELECT ".userfields()." FROM users WHERE name=? OR displayname=?",array($_GET['user'],$_GET['user']));
+		$user = $sql->fetchp("SELECT ".userfields()." FROM users WHERE name=? OR displayname=?",array($_GET['username'],$_GET['username']));
 		if (!$user) die();
 		print $user['id'].'|'.localmodRow($user);
 	}

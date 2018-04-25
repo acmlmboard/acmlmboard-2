@@ -24,6 +24,8 @@ if (has_perm("edit-badges"))
   $mlinks[] = array('url' => "editbadges.php", 'title' => 'Manage badges');
 if (has_perm("edit-groups")) 
   $mlinks[] = array('url' => "editgroups.php", 'title' => 'Manage groups');
+if (has_perm("trash-users")) 
+  $mlinks[] = array('url' => "trashuser.php", 'title' => 'Trash users');
 if (has_perm("admin-tools-access")) 
   $mlinks[] = array('url' => "administratortools.php", 'title' => 'Administrator Tools');
 

@@ -148,6 +148,17 @@
 		return $out;
 	}
 	
+	// returns the entire row indexed by an unique field
+	// similar to PDO::FETCH_UNIQUE
+	function getarraybykey($query, $key) {
+		$res = $this->query($query, $hash);
+		$out = array();
+		while ($x = $this->fetch($res)) {
+			$out[$x[$key]] = $x;
+		}
+		return $out;
+	}
+	
 	// returns a one dimentional array out of a query
 	// similar to PDO::FETCH_COLUMN
 	function getresults($query, $col = 0) {

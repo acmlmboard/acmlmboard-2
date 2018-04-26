@@ -46,7 +46,7 @@ $L[TBL1]>
 		$L[TDh] style='width: 90px'>Last view</td>
 		$L[TDh] style='width: 140px'>Last post</td>
 ".($showurl ? "$L[TDh]>URL</td>":'')."
-".($showip  ? "$L[TDh] style='width: 120px'>IP</td>":'')."
+".($showip  ? "$L[TDh] style='width: 170px'>IP</td>":'')."
 		$L[TDh] style='width: 50px'>Posts</td>
 	</tr>";
 
@@ -90,7 +90,7 @@ $L[TBL1]>
 		$L[TDh] style='width: 70px; min-width: 150px'>User agent (Browser)</td>
 		$L[TDh] style='width: 70px'>Last view</td>
 		$L[TDh]>URL</td>
-".($showip ? "$L[TDh] style='width: 120px'>IP</td>":'')."
+".($showip ? "$L[TDh] style='width: 170px'>IP</td>":'')."
 	</tr>
 ";
 

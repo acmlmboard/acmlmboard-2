@@ -145,7 +145,7 @@
   $config['ircshopnotice'] = false; //enables the option to print on your main irc channel anytime someone equips an item
 
 //The following are optional values you can change to personalize your board
-  $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention™" on B2
+  $config['atnname']  = "News"; // Title of the attention box. It was 'News' on ABII and "Points of Required Attention" on B2
 
 //The following enables the classic style forum tags. This will possibly be replaced/in addition to user variable
   $config['classictags'] = false;

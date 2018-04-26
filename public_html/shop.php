@@ -21,7 +21,7 @@ if($_COOKIE['pstbon']==-1){
 }
 
   $action=$_GET[action];
-  if ($_POST[action]=="save"&&has_perm('manage-shop-items')) {
+  if ($_GET[action]=="save"&&has_perm('manage-shop-items')) {
     checknumeric($_GET[id]);
     $set="";
     $id = $_GET[id];
@@ -157,7 +157,7 @@ print       "<br>
 ".            "$L[TBLend] <br>
 ".            "<img src=gfx/status.php?u=$loguser[id]><br>
 ".            "<br>
-".            "$L[TBL1] style=width:300px>
+".            "$L[TBL1] style=width:480px>
 ".            "  $L[TRh] align=left>
 ".            "    $L[TDh] colspan=9>$L[INPt]='name' size='40' value=\"".str_replace("\"","&quot;",$item[name])."\"> <img src='img/coin.gif'> 
 ".            "      $L[INPt]='coins' size='7' value=\"".str_replace("\"","&quot;",$item[coins])."\"> <img src='img/coin2.gif'> 

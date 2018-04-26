@@ -47,7 +47,7 @@
   $puzzle = $puzzleVariations[array_rand($puzzleVariations)]; 
   
   $config['log']    = 0; // Enables logging to the database of moderator & administrative actions. 0=off; 1=profile; 2=thread & post; 5=access
-  $config['ckey']   = "configckey";
+  $config['ckey']   = "Change this key!"; // Must be exactly 16, 24 or 32 characters, otherwise logging in won't work
   $config['address']   = "url";  // Hostname or IP address of your server (this will be public, required for rss feeds to function correctly)
   $config['base']   = "http://".$config['address']; // Replace if you need fine control of the address
   $config['sslbase']= "https://".$config['address']; // Replace if you need fine control of the address

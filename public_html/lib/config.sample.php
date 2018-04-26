@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 /*** Acmlmboard 2 - Configuration ***
   Please look through the file and will in the apropriate information.

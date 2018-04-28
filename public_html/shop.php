@@ -1,399 +1,457 @@
 <?php
-  require 'lib/common.php';
-
-  $rdmsg="";
-  if($_COOKIE['pstbon']){
-	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
- $rdmsg="<script language=\"javascript\">
-	function dismiss()
-	{
-		document.getElementById(\"postmes\").style['display'] = \"none\";
+	require 'lib/common.php';
+	
+	const TOKEN_SHOP = 60;
+	
+	// Check for login right away
+	needs_login(1);
+	
+	// Same thing for checking if we have access to the item shop / shop editor
+	$_GET['id']     = isset($_GET['id'])     ? (int)$_GET['id'] : 0;
+	$_GET['cat']    = isset($_GET['cat'])    ? (int) $_GET['cat'] : 0;
+	$_GET['action'] = isset($_GET['action']) ? $_GET['action'] : "";
+	
+	// Add shop editor specific actions here
+	$shopedit = in_array($_GET['action'], array('edit','save'));
+	$canedit  = has_perm('manage-shop-items');
+	
+	if (!has_perm('use-item-shop')) {
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+	} else if ($shopedit && !$canedit) {
+		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
-</script>
-	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
-if($_COOKIE['pstbon']==-1){
-	$rdmsg.="Item Sold<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>The $pitem[name] has been unequipped and sold.</td></tr></table></div>";
-} elseif($_COOKIE['pstbon']==-2){
-	$rdmsg.="Item Bought<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>The $item[name] has been bought and equipped!</td></tr></table></div>"; }
-}
-
-  $action=$_GET[action];
-  if ($_POST[action]=="save"&&has_perm('manage-shop-items')) {
-    checknumeric($_GET[id]);
-    $set="";
-    $id = $_GET[id];
-    $stype="";
-    if ($_GET[id]!=-1) {
-      for($i=0;$i<9;$i++) {
-        $stype.=(preg_match('/^x/', $_POST[$stat[$i]])?'m':'a');
-        $set.="`s".$stat[$i]."`=".preg_replace('/[+x\.]/','',(strlen($_POST[$stat[$i]])?$_POST[$stat[$i]]:'0')).", ";
-      }
-      $set.="`name`='$_POST[name]', `desc`='$_POST[desc]', `stype`='$stype', `coins`='$_POST[coins]', `coins2`='$_POST[coins2]', `cat`='$_POST[cat]', `hidden`=".($_POST['hidden'] ? "1" : "0");
-      $sql->query("UPDATE items SET $set WHERE id='$_GET[id]'");
-
-    } else {
-      for($i=0;$i<9;$i++) {
-        $stype.=(preg_match('/^x/', $_POST[$stat[$i]])?'m':'a');
-        $set.="`s$stat[$i]`=".preg_replace('/[x+-\.]/','',$_POST[$stat[$i]]).", ";
-        $names.="`s$stat[$i]`, ";
-        $vals.="'".preg_replace('/[x+-\.]/','',$_POST[$stat[$i]])."', ";
-      }
-      $names.="`name`, `desc`, `stype`, `coins`, `coins2`, `cat`, `hidden`";
-      $vals.="'$_POST[name]', '$_POST[desc]', '$stype', '$_POST[coins]', '$_POST[coins2]', '$_POST[cat]', ".($_POST['hidden'] ? "1" : "0")."";
-      $sql->query("INSERT INTO items ($names) VALUES ($vals)");
-      $id = $sql->insertid();
-    }
-    header("location: shop.php?action=desc&id=$id");       
-  }
-
-
-  needs_login(1);
-
-  $cat=$_GET[cat];
-  checknumeric($cat);
-$f=fopen("shop-ref.log","a");
-fwrite($f,"[".date("m-d-y H:i:s")."] ".$ref."\n");
-fclose($f);
-
-  if(!has_perm('use-item-shop')){
-  pageheader('Item shop');
-     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
-  }elseif (($_GET[action]=='edit'||$_GET[action]=='save'||$_GET[action]=='delete')&&!has_perm('manage-shop-items')) { //Added (Sukasa)
-  pageheader('Item shop');
-     error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
-  }else {
-    $user=$sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
-                      .'FROM users u '
-                      .'LEFT JOIN usersrpg r ON u.id=r.id '
-                      ."WHERE u.id=$loguser[id]");
-    $p=$user[posts];
-    $d=(ctime()-$user[regdate])/86400;
-    $st=getstats($user);
-    $GP=$st[GP];
-
-    switch($action){
-      case 'delete': //Added (Sukasa)
-        checknumeric($_GET[id]);
-        if ($_GET[id]) { //Can't delete nothing
-          $sql->query("DELETE FROM items WHERE id='$_GET[id]'");
-          for ($i=1;$i<7;$i++)
-            $sql->query("UPDATE usersrpg SET `eq$i` = 0 WHERE `eq$i`='$_GET[id]'");
-        }
-      case '':
-        $shops  =$sql->query ('SELECT * FROM itemcateg ORDER BY corder');
-        $eq     =$sql->fetchq("SELECT * FROM usersrpg WHERE id=$loguser[id]");
-        $eqitems=$sql->query ('SELECT * FROM items');
-
-        while($item=$sql->fetch($eqitems))
-          $items[$item[id]]=$item;
-
-        while($shop=$sql->fetch($shops))
-          $shoplist.=
-              "  $L[TR]>
-".            "    $L[TD2]>
-".            "      <a href=shop.php?action=items&cat=$shop[id]#status>$shop[name]</a>
-".            "      <br><font class=sfont>$shop[description]</font>
-".            "    </td>
-".            "    $L[TD1c]><a href=shop.php?action=desc&id=".$eq["eq$shop[id]"].">".$items[$eq["eq$shop[id]"]][name]."</a></td>
-";
-  pageheader('Item shop');
-        print "<img src=gfx/status.php?u=$loguser[id]>
-";
-    if($_COOKIE['pstbon']){ print $rdmsg;}
-print       "<br>
-".            "$L[TBL1]>
-".            "  $L[TRh]>
-".            "    $L[TDh]>Shop</td>
-".            "    $L[TDh]>Item equipped</td>
-".            "$shoplist
-".            "$L[TBLend]
-";
-      break;
-      case 'edit': //Added (Sukasa)
-        checknumeric($_GET[id]);
-        $item=$sql->fetchq("SELECT * FROM items WHERE id='$_GET[id]' union select * from items where id='-1'");
-  pageheader('Item shop');
-        print "<style>
-".            "   .disabled {color:#888888}
-".            "   .higher   {color:#abaffe}
-".            "   .equal    {color:#ffea60}
-".            "   .lower    {color:#ca8765}
-".            "</style>
-";
-        $statlist='';
-        $catlist=$L[OPT]."='99'>Not Listed</option>";
-        $shops=$sql->query ('SELECT * FROM itemcateg ORDER BY corder');
-        while($shop=$sql->fetch($shops)) {
-          $catlist.=$L[OPT].'="'.$shop[id]."\"".(($shop[id]==$item[cat])||($item[cat]==99&&isset($_GET[cat])&&$shop[id]==$_GET[cat])?
-            "selected='selected'":"").">".$shop[name]."</option>";
-        }
-        for($i=0;$i<9;$i++){
-          $st=$item["s$stat[$i]"];
-          if(substr($item[stype],$i,1)=='m'){
-            $st=vsprintf('x%1.2f',$st/100);
-          }else{
-            if($st>0) $st="+$st";
-          }
-          $itst=$item["s$stat[$i]"];
-          $eqst=$eqitem["s$stat[$i]"];
-          if(!$color){
-                if($itst> 0) $cl='higher';
-            elseif($itst==0) $cl='equal';
-            elseif($itst< 0) $cl='lower';
-          }else
-            $cl='';
-
-          $statlist.= "
-".                    "    $L[TD2oc]'>$L[INPt]='$stat[$i]' size='4' value='$st'></td>";
-          $stathdr.=  "
-".                    "    $L[TD1c] width=6%>$stat[$i]</td>
-";
-        }
-        print "<form action='shop.php?action=save&id=$item[id]' method='post'>$L[TBL1]>
-".            "  $L[TD1c]><a href=shop.php>Return to shop list</a>
-".            "$L[TBLend] <br>
-".            "<img src=gfx/status.php?u=$loguser[id]><br>
-".            "<br>
-".            "$L[TBL1] style=width:300px>
-".            "  $L[TRh] align=left>
-".            "    $L[TDh] colspan=9>$L[INPt]='name' size='40' value=\"".str_replace("\"","&quot;",$item[name])."\"> <img src='img/coin.gif'> 
-".            "      $L[INPt]='coins' size='7' value=\"".str_replace("\"","&quot;",$item[coins])."\"> <img src='img/coin2.gif'> 
-".            "      $L[INPt]='coins2' size='7' value=\"".str_replace("\"","&quot;",$item[coins2])."\">$L[INPc]='hidden' id='hidden' ".($item[hidden]?"checked":"")."><label for='hidden'>Hidden Item</label></td>
-".            "  $L[TR]>
-".            "    $stathdr
-".            "  $L[TR]>
-".            "    $statlist
-".            "  $L[TR]>
-".            "    $L[TD2] colspan=8>$L[INPt]='desc' size='40' value=\"".str_replace("\"","&quot;",$item[desc])."\">  
-".            "      $L[INPl]='cat' style='width: 115px'>$catlist</select>
-".            "      $L[TD2]>$L[INPs]='Save' value='Save'> 
-".            "    </td>
-".            "$L[TBLend]</form>
-";
-      break;
-      case 'desc':
-        checknumeric($_GET[id]);
-        $item=$sql->fetchq("SELECT * FROM items WHERE id='$_GET[id]'");
-  pageheader('Item shop');
-        print "<style>
-".            "   .disabled {color:#888888}
-".            "   .higher   {color:#abaffe}
-".            "   .equal    {color:#ffea60}
-".            "   .lower    {color:#ca8765}
-".            "</style>
-";
-        $statlist='';
-        for($i=0;$i<9;$i++){
-          $st=$item["s$stat[$i]"];
-          if(substr($item[stype],$i,1)=='m'){
-            $st=vsprintf('x%1.2f',$st/100);
-            if($st==100) $st='&nbsp;';
-          }else{
-            if($st>0) $st="+$st";
-            if(!$st) $st='&nbsp;';
-          }
-          $itst=$item["s$stat[$i]"];
-          $eqst=$eqitem["s$stat[$i]"];
-          $edit="";
-          if (has_perm('manage-shop-items')) //Added (Sukasa)
-            $edit=" [<a href='shop.php?action=edit&id=$item[id]'>Edit</a>] [<a href='shop.php?action=delete&id=$item[id]'>Delete</a>]";
-          if(!$color){
-                if($itst> 0) $cl='higher';
-            elseif($itst==0) $cl='equal';
-            elseif($itst< 0) $cl='lower';
-          }else
-            $cl='';
-
-          $statlist.= "
-".                    "    $L[TD2oc] $cl'>$st</td>";
-          $stathdr.=  "
-".                    "    $L[TD1c] width=6%>$stat[$i]</td>
-";
-        }
-        print "$L[TBL1]>
-".            "  $L[TD1c]><a href=shop.php>Return to shop list</a>
-".            "$L[TBLend] <br>
-".            "<img src=gfx/status.php?u=$loguser[id]><br>
-".            "<br>
-".            "$L[TBL1] style=width:300px>
-".            "  $L[TRh] align=left>
-".            "    $L[TDh] colspan=9>$item[name]$edit</td>
-".            "  $L[TR]>
-".            "    $stathdr
-".            "  $L[TR]>
-".            "    $statlist
-".            "  $L[TR]>
-".            "    $L[TD2] colspan=9><font class=sfont>$item[desc]</font></td>
-".            "$L[TBLend]
-";
-      break;
-      case 'items':
-        
-        $eq=$sql->fetchq("SELECT eq$cat AS e FROM usersrpg WHERE id=$loguser[id]");
-        $eqitem=$sql->fetchq("SELECT * FROM items WHERE id=$eq[e]");
-
-        $edit="";
-        if (has_perm('manage-shop-items'))
-          $edit=" | <a href='shop.php?action=edit&id=-1&cat=$cat'>Add new item</a>";
-
-  pageheader('Item shop');
-        print "<script>
-".            "  function preview(user,item,cat,name){
-".            "    document.getElementById('prev').src='gfx/status.php?u='+user+'&it='+item+'&ct='+cat+'&'+Math.random();
-".            "    document.getElementById('pr').innerHTML='Equipped with<br>'+name+'<br>---------->';
-".            "  }
-".            "</script>
-".            "<style>
-".            "   .disabled {color:#888888}
-".            "   .higher   {color:#abaffe}
-".            "   .equal    {color:#ffea60}
-".            "   .lower    {color:#ca8765}
-".            "</style>
-".            "
-".            "$L[TBL1]>
-".            "  $L[TD1c]><a href=shop.php>Return to shop list</a> $edit
-".            "$L[TBLend]
-".            "<br>
-".            "$L[TBL] id=status>
-".            "  $L[TDn] width=256><img src=gfx/status.php?u=$loguser[id]></td>
-".            "  $L[TDnc] width=150>
-".            "    <font class=fonts>
-".            "      <div id=pr></div>
-".            "    </font>
-".            "  </td>
-".            "  $L[TDn]>
-".            "    <img src=img/_.png id=prev>
-".            "$L[TBLend]
-".            "<br>
-";
-        $atrlist='';
-        for($i=0;$i<9;$i++)
-          $atrlist.="    $L[TDh] width=6%>$stat[$i]</td>
-";
-
-        $seehidden = 0;
-        if (has_perm('manage-shop-items'))
-          $seehidden = 1;
-
-        $items=$sql->query('SELECT * FROM items '
-                          ."WHERE (cat=$cat OR cat=0) AND `hidden` <= $seehidden "
-                          .'ORDER BY type,coins');
-
-        print "$L[TBL1]>
-".            "  $L[TRh]>
-".            "    $L[TDh] width=100>Commands</td>
-".            "    $L[TD2] width=1 rowspan=10000>&nbsp;</td>
-".            "    $L[TDh]>Item</td>
-".            "$atrlist
-".            "    $L[TDh] width=6%><img src=img/coin.gif></td>
-".            "    $L[TDh] width=6%><img src=img/coin2.gif></td>
-";
-
-        while($item=$sql->fetch($items)){
-          $buy=    "<a href=shop.php?action=buy&id=$item[id]>Buy</a>";
-          $sell=   "<a href=shop.php?action=sell&cat=$cat>Sell</a>";
-          $preview="<a href=#status onclick=\"preview($loguser[id],$item[id],$cat,'".addslashes($item[name])."')\">Preview</a>";
-
-              if($item[id] && $item[id]==$eq[e]) $comm=$sell;
-          elseif($item[id] && $item[coins]<=$GP && $item[coins2]<=0) $comm="$buy | $preview";
-          elseif(!$item[id] && !$eq[e])          $comm='-';
-          else                                   $comm=$preview;
-
-          if($item[id]==$eqitem[id]) $color=' class=equal';
-          elseif($item[coins]>$GP)   $color=' class=disabled';
-          else                       $color='';
-          $atrlist='';
-          for($i=0;$i<9;$i++){
-            $st=$item["s$stat[$i]"];
-            if(substr($item[stype],$i,1)=='m'){
-              $st=vsprintf('x%1.2f',$st/100);
-              if($st==100) $st='&nbsp;';
-            }else{
-              if($st>0) $st="+$st";
-              if(!$st) $st='&nbsp;';
-            }
-            $itst=$item["s$stat[$i]"];
-            $eqst=$eqitem["s$stat[$i]"];
-
-            if(!$color && substr($item[stype],$i,1)==substr($eqitem[stype],$i,1)){
-                  if($itst> $eqst) $cl='higher';
-              elseif($itst==$eqst) $cl='equal';
-              elseif($itst< $eqst) $cl='lower';
-            }else
-              $cl='';
-
-            $atrlist.= "
-".            "    $L[TD2oc] $cl'>$st</td>";
-          }
-
-          print
-              "  $L[TR]$color>
-".            "    $L[TD2c]>$comm</td>
-".            "    $L[TD1]><b><a href=shop.php?action=desc&id=$item[id]>$item[name]</a></b></td>
-".            "$atrlist
-".            "    $L[TD1r]>$item[coins]</td>
-".            "    $L[TD1r]>$item[coins2]</td>
-";
-        }
-        print "$L[TBLend]
-";
-      break;
-      case 'buy':
-        if(!strstr($ref,"shop.php?action=items&cat=") || ctime()-$loguser[lastview]<1) die();
-
-        $id=$_GET[id];
-        checknumeric($id);
-        $item=$sql->fetchq("SELECT * FROM items WHERE id=$id");
-
-        if($item[coins]<=$GP && $item[coins2]<=0 && $item[cat]) { //FIXME
-          $pitem=$sql->fetchq("SELECT coins FROM items WHERE id=".$user['eq'.$item[cat]]);
-          $pitem[coins]=intval($pitem[coins]); //fixes the problem if no prior item had been equipped/$pitem[coins] is empty for whatever reason [blackhole89]
-          $sql->query("UPDATE usersrpg "
-                     ."SET eq$item[cat]=$id, spent=spent-$pitem[coins]*0.6+$item[coins] "
-                     ."WHERE id=$loguser[id]");
-
-	  if($config['ircshopnotice']) sendirc("{irccolor-name}".get_irc_displayname()." {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
-              /*if($loguser[redirtype]==0){ //Classical Redirect
-  $loguser['blocksprites']=1;
-  pageheader('Item shop');
-          print
-              "$L[TBL1]>
-".            "  $L[TD1c]>
-".            "    The $item[name] has been bought and equipped!<br>
-".            "    ".redirect('shop.php','the shop')."
-".            "$L[TBLend]
-";
-             } else { //Modern redirect*/
-                  redirect("shop.php",-2);
-             //}
-        }
-      break;
-      case 'sell':
-        $pitem=$sql->fetchq("SELECT name, coins FROM items "
-                           ."WHERE id=".$user['eq'.$cat]);
-        $sql->query("UPDATE usersrpg "
-                   ."SET eq$cat=0, spent=spent-$pitem[coins]*0.6 "
-                   ."WHERE id=$loguser[id]");
-
-              /*if($loguser[redirtype]==0){ //Classical Redirect
-  $loguser['blocksprites']=1;
-  pageheader('Item shop');
-        print "$L[TBL1]>
-".            "  $L[TD1c]>
-".            "    The $pitem[name] has been unequipped and sold.<br>
-".            "    ".redirect('shop.php','the shop')."
-".            "$L[TBLend]
-";
-             } else { //Modern redirect*/
-                  redirect("shop.php",-1);
-             //}
-      break;
-      default:
-    }
-  }
-
-  pagefooter();
+	
+	
+	$user = $sql->fetchq("
+		SELECT u.name, u.posts, u.regdate, r.* 
+		FROM users u 
+		LEFT JOIN usersrpg r ON u.id = r.id 
+		WHERE u.id = {$loguser['id']}
+	");
+	
+	$st = getstats($user);
+	$coins  = $st['GP'];
+	$gcoins = $st['gcoins'];
+	
+	// refresh-o-rama
+	switch ($_GET['action']) {
+		case 'save': //Added (Sukasa)
+			check_token($_POST['auth'], TOKEN_SHOP);
+			
+			// Delete checkbox marked
+			if ($_GET['id'] != -1 && isset($_POST['delete']) && $_POST['delete']) {
+				if ($_GET['id']) { // Can't delete nothing
+					$sql->query("DELETE FROM items WHERE id = {$_GET['id']}");
+					// Remove deleted item from users' inventories
+					for ($i = 1; $i < 7; $i++)
+						$sql->query("UPDATE usersrpg SET `eq{$i}` = 0 WHERE `eq{$i}` = {$_GET['id']}");
+				}
+				redirect("?", -5);
+			}
+			
+			// derp
+			$_POST['name']   = isset($_POST['name'])   ? $_POST['name'] : "";
+			$_POST['desc']   = isset($_POST['desc'])   ? $_POST['desc'] : "";
+			$_POST['coins']  = isset($_POST['coins'])  ? (int)$_POST['coins']  : 0;
+			$_POST['coins2'] = isset($_POST['coins2']) ? (int)$_POST['coins2'] : 0;
+			$_POST['cat']    = isset($_POST['cat'])    ? (int)$_POST['cat']    : 0;
+			$_POST['hidden'] = isset($_POST['hidden']) ? (int)$_POST['hidden'] : 0;
+			
+			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = {$_POST['cat']}");
+			if (!$realshop && $_POST['cat'] != 99)
+				error("Error", "The selected category does not exist.");
+			if (!trim($_POST['name']))
+				error("Error", "The item must have a name.");
+			if ($_POST['coins'] < 0 || $_POST['coins2'] < 0)
+				error("Error", "You cannot save items with negative cost!"); //error("uh oh", "everybody is banned now.<br>good job");
+			
+			// Convert stats to the format stored in the db
+			$set   = "";
+			$stype = "";
+			for ($i = 0; $i < 9; $i++) {
+				$status = (isset($_POST[$stat[$i]]) && trim($_POST[$stat[$i]])) ? (string)$_POST[$stat[$i]] : '0';
+				$mode = strtolower(substr($status, 0, 1)) == 'x' ? 'm' : 'a'; // only the x operator in the first character matters
+				$val  = ($mode == 'm') ? substr($status, 1) * 100 : $status; // m -> .2 decimal; a -> int
+				$set   .= "s{$stat[$i]} = ".(int)$val.", ";
+				$stype .= $mode;
+			}
+			// other item info
+			$set .= "`name`='".addslashes($_POST['name'])."', `desc`='".addslashes($_POST['desc'])."', `stype`='{$stype}', `coins`={$_POST['coins']}, `coins2`={$_POST['coins2']}, `cat`='{$_POST['cat']}', `hidden`={$_POST['hidden']}";
+				
+			if ($_GET['id'] == -1) {
+				$sql->query("INSERT INTO items SET {$set}");
+				$id = $sql->insertid();
+			} else {
+				$sql->query("UPDATE items SET {$set} WHERE id = {$_GET['id']}");
+				$id = $_GET['id'];
+			}
+			redirect("shop.php?action=desc&id={$id}#{$id}", -4);
+			break;
+		case 'buy':
+			check_token($_GET['auth'], TOKEN_SHOP);
+			
+			$item     = $sql->fetchq("SELECT * FROM items WHERE id={$_GET['id']}");
+			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = '{$item['cat']}'"); // Never buy category 99 items
+			
+			if ($item['coins'] <= $coins && $item['coins2'] <= $gcoins && $realshop) {
+				// If a previous item was equipped, unequip it now (automatically sell it)
+				if (!$user['eq'.$item['cat']])
+					$pitem = array('coins' => 0, 'coins2' => 0); // No item equipped
+				else
+					$pitem = $sql->fetchq("SELECT coins, coins2 FROM items WHERE id = ".$user['eq'.$item['cat']]);
+				
+				$sql->query("
+					UPDATE usersrpg SET 
+						eq{$item['cat']} = {$_GET['id']},
+						spent  = spent  - {$pitem['coins']}  * 0.6 + {$item['coins']},
+						gcoins = gcoins + {$pitem['coins2']} * 0.6 - {$item['coins2']}
+					WHERE id = {$loguser['id']}
+				");
+				
+				if ($config['ircshopnotice'])
+					sendirc("{irccolor-name}" . get_irc_displayname() . " {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
+				redirect("shop.php", -2); // The {$item['name']} has been bought and equipped!, 'shop.php','the shop'
+			}
+			redirect("shop.php", -3);
+			break;
+		case 'sell':
+			check_token($_GET['auth'], TOKEN_SHOP);
+			
+			$pitem = $sql->fetchq("SELECT name, coins, coins2 FROM items WHERE id = ".$user["eq{$_GET['cat']}"]);
+			if ($pitem) {
+				$sql->query("
+					UPDATE usersrpg SET 
+						eq{$_GET['cat']} = 0,
+						spent  = spent  - {$pitem['coins']}  * 0.6,
+						gcoins = gcoins + {$pitem['coins2']} * 0.6
+					WHERE id = {$loguser['id']}
+				");
+			} else {
+				redirect("shop.php", -3); //error("uh oh", "No.");
+			}
+			redirect("shop.php", -1); // "The {$pitem['name']} has been unequipped and sold.", 'shop.php', 'the shop'
+			break;
+	}
+	
+	
+	// Cookie status messages
+	$rdmsg = "";
+	if (isset($_COOKIE['pstbon'])) {
+		switch ($_COOKIE['pstbon']) {
+			case -1: $rdmsg = cookiemsg("Item Sold", "The item has been unequipped and sold.");	break;
+			case -2: $rdmsg = cookiemsg("Item Bought", "The item has been bought and equipped!"); break;
+			case -3: $rdmsg = cookiemsg("uh oh", "You aren't allowed to do this."); break;
+			case -4: $rdmsg = cookiemsg("Item Saved", "The item data has been saved."); break;
+			case -5: $rdmsg = cookiemsg("Item Deleted", "The item has been deleted."); break;
+		}
+	}
+	
+	
+	pageheader('Item shop');
 ?>
+<style>
+	.disabled {color:#888888}
+	.higher   {color:#abaffe}
+	.equal    {color:#ffea60}
+	.lower    {color:#ca8765}
+	.selected {color:#cbeffe; font-weight: bold}
+</style>
+<?php
+	
+	switch ($_GET['action']) {		
+		case '':
+			// Shop category list
+			$shops   = $sql->query('SELECT * FROM itemcateg ORDER BY corder');
+			$eq      = $sql->fetchq("SELECT * FROM usersrpg WHERE id = {$loguser['id']}");
+			
+			// Only grab necessary items, not everything
+			$eqitems = $sql->getresultsbykey("SELECT id, name FROM items WHERE id IN (".implode(',', $eq).")", 'id', 'name');
+			
+			$shoplist = "";
+			while ($shop = $sql->fetch($shops)) {
+				$id = $eq["eq{$shop['id']}"];
+				if ($id) {
+					$itemlink = "<a href='shop.php?action=desc&id={$id}#{$id}'>{$eqitems[$id]}</a>";
+				} else {
+					$itemlink = ""; // "-";
+				}
+				$shoplist .= "
+				$L[TR]>
+					$L[TD2]>
+						<a href='shop.php?action=items&cat={$shop['id']}#status'>{$shop['name']}</a>
+						<br><span class='sfont'>{$shop['description']}</span>
+					</td>
+					$L[TD1c]>{$itemlink}</td>
+				</tr>";
+				
+			}
+			
+			print "
+			{$rdmsg}
+			<br>
+			<table style='border-spacing: 0px'>
+				<tr>
+					<td><img src='gfx/status.php?u={$loguser['id']}'></td>
+					<td style='width: 10px; display: block; vertical-align: top'></td>
+					<td style='width: 100%; vertical-align: top'>
+						$L[TBL1]>
+							$L[TRh]>
+								$L[TDh]>Shop</td>
+								$L[TDh]>Item equipped</td>
+							</tr>
+							{$shoplist}
+						$L[TBLend]
+					</td>
+				</tr>
+			</table>
+			";
+			
+			break;
+		case 'edit': //Added (Sukasa)
+			// Edit / add item
+			
+			// Create dummy item if a new one is being added
+			$item = $sql->fetchq("SELECT * FROM items WHERE id='{$_GET['id']}' UNION SELECT * FROM items WHERE id='-1'");
+			if ($_GET['id'] == -1) { // Default to the category specified via url (and not to the default value 99)
+				$item['cat'] = $_GET['cat'];
+			}
+			
+			// For the category select box
+			$shops     = $sql->getresultsbykey('SELECT id, name FROM itemcateg ORDER BY corder', 'id', 'name');
+			$shops[99] = "*** Not listed ***";
+			
+			// Item attributes headers
+			$stathdr = "";
+			for ($i = 0; $i < 9; $i++) {
+				$stathdr .= "$L[TDhc] style='width: 50px'><b>{$stat[$i]}</b></td>";
+			}
+			
+			$statlist = itemrow($item, true); // Don't hide +0 / x1.00
+			
+			print "
+			<form action='shop.php?action=save&id={$item['id']}' method='POST'>
+			$L[TBL1]>$L[TR1]>$L[TD1c]><a href='shop.php'>Return to shop list</a> | <a href='shop.php?action=items&cat={$item['cat']}'>Return to item list</a> </tr>$L[TBLend]
+			<br>
+			<table style='width: 100%; border-spacing: 0px'>
+				<tr>
+					<td style='vertical-align: top'><img src='gfx/status.php?u={$loguser['id']}'></td>
+					<td style='vertical-align: top'>
+						$L[TBL1]>
+							$L[TRh]>$L[TDhc] colspan=12>".($_GET['id'] == -1 ? "Adding a new item" : "Editing '".htmlspecialchars($item['name'])."'")."</td></tr>
+							$L[TR1]>
+								$L[TD1c] style='width: 100px'><b>Item name:</b></td>
+								$L[TD2] colspan=9>$L[INPt]='name' size='40' value=\"". htmlspecialchars($item['name']) ."\"></td>
+							</tr>
+							$L[TR1]>
+								$L[TD1c]><b>Description:</b></td>
+								$L[TD2] colspan=9>$L[INPt]='desc' size='75' value=\"". htmlspecialchars($item['desc']) ."\"></td>
+							</tr>
+							$L[TR1]>
+								$L[TD1c]><b>Category:</b></td>
+								$L[TD2] colspan=9>".fieldselect('cat', $item['cat'], $shops)."</td>
+							</tr>
+							$L[TR1]>
+								$L[TD1c]><b>Cost:</b></td>
+								$L[TD2] colspan=9>
+									<img src='img/coin.gif' align='absmiddle'> $L[INPt]='coins' size='6' value=\"" . htmlspecialchars($item['coins']) . "\"> - 
+									<img src='img/coin2.gif' align='absmiddle'> $L[INPt]='coins2' size='6' value=\"" . htmlspecialchars($item['coins2']) . "\">
+								</td>
+							</tr>
+							$L[TR1]>
+								$L[TD1c]><b>Options:</b></td>
+								$L[TD2] colspan=9>
+									<label>$L[INPc]='hidden'".($item['hidden'] ? " checked" : "")."> Hidden Item</label> 
+									".($_GET['id'] != -1 ? "<label style='float: right'>$L[INPc]='delete' value=1> Delete Item&nbsp;</label>" : "")."
+								</td>
+							</tr>
+							$L[TR1]>
+								$L[TD1c]><b>Stats:</b></td>
+								{$stathdr}
+							</tr>
+							$L[TR1]>
+								$L[TD1c]>&nbsp;</td>
+								{$statlist}
+							</tr>
+							$L[TR1]>
+								$L[TD1]></td>
+								$L[TD2] colspan=9>$L[INPs]='Save' value='Save'>".auth_tag(TOKEN_SHOP)."</td>
+							</tr>
+						$L[TBLend]
+					</td>
+				</tr>
+			</table>
+			</form>";
+			//break;
+		case 'desc': 
+			// Get the category to highlight the item it it's not the dummy one
+			if ($_GET['action'] != 'edit' && $_GET['id'] != -1) {
+				$_GET['cat'] = $sql->resultq("SELECT cat FROM items WHERE id = {$_GET['id']}");
+				if (!$_GET['cat']) {
+					noticemsg("Error", "This item does not exist!");
+					pagefooter();
+					die;
+				}
+			}
+		
+		case 'items': // Item selection in a category
+			
+			// Invalid categories (or category 99) have nothing to equip from.
+			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = {$_GET['cat']}");
+			if ($realshop) {
+				$eqitem = $sql->fetchq("SELECT i.* FROM items i	INNER JOIN usersrpg r ON i.id = r.eq{$_GET['cat']}");
+			} else {
+				$eqitem = false; // Category 99 or invalid
+			}
+			
+			$edit = "";
+			if ($canedit)
+				$edit = " | <a href='shop.php?action=edit&id=-1&cat={$_GET['cat']}'>Add new item</a>";
+			
+			// Not necessary when editing an item (it only bloats the page)
+			if ($_GET['action'] != 'edit') {
+				print "
+				$L[TBL1]>$L[TR1]>$L[TD1c]><a href='shop.php'>Return to shop list</a> {$edit}</td></tr>$L[TBLend]
+				<br>
+				$L[TBL] id='status'>
+					<tr>
+						$L[TDn] style='width: 256px'><img src='gfx/status.php?u={$loguser['id']}'></td>
+						$L[TDnc] style='width: 150px'>
+						<div id='pr' class='sfont'></div>
+						</td>
+					$L[TDn]><img src=img/_.png id=prev>$L[TBLend]
+				<br>";
+				?>
+<script type="text/javascript">
+  function preview(user,item,cat,name){
+    document.getElementById('prev').src='gfx/status.php?u='+user+'&it='+item+'&ct='+cat+'&'+Math.random();
+    document.getElementById('pr').innerHTML='Equipped with<br>'+name+'<br>---------->';
+  }
+</script>
+				<?php
+			}
+			
+			// Item attributes headers
+			$stathdr = "";
+			for ($i = 0; $i < 9; $i++) {
+				$stathdr .= "$L[TDh] style='width: 50px'>{$stat[$i]}</td>";
+			}
+			
+			// Hidden items can be only seen by those who can use the shop editor
+			$seehidden = (int)$canedit;
+			/*$seehidden = 0;
+			if ($canedit)
+				$seehidden = 1;
+			*/
+			
+			// Display items for this category
+			$items = $sql->query("
+				SELECT * FROM items 
+				WHERE (cat = {$_GET['cat']} OR cat = 0) AND `hidden` <= {$seehidden} 
+				ORDER BY type,coins
+			");
+			
+			print "
+			$L[TBL1]>
+				$L[TRh]>
+					$L[TDh] style='width: 150px'>Commands</td>
+					$L[TD2] width=1 rowspan=10000>&nbsp;</td>
+					$L[TDh]>Item</td>
+					{$stathdr}
+					$L[TDh] width=6%><img src=img/coin.gif></td>
+					$L[TDh] width=6%><img src=img/coin2.gif></td>
+				</tr>";
+			
+			while ($item = $sql->fetch($items)) {
+				
+				// Only display edit action when editing an item
+				$edit    = "<a href='shop.php?action=edit&id={$item['id']}'>Edit</a>";
+				if ($_GET['action'] == 'edit') {
+					$comm = $edit;
+				} else {
+					$tokenstr = "&auth=".generate_token(TOKEN_SHOP);
+					$buy     = "<a href='shop.php?action=buy&id={$item['id']}{$tokenstr}'>Buy</a>";
+					$sell    = "<a href='shop.php?action=sell&cat={$_GET['cat']}{$tokenstr}'>Sell</a>";
+					$preview = "<a href='#status' onclick=\"preview({$loguser['id']},{$item['id']},{$_GET['cat']},'".addslashes($item['name'])."')\">Preview</a>";
+					
+					// Determine when to display the buy / preview text
+					if      ($eqitem && $item['id'] == $eqitem['id'])                             $comm = $sell;
+					else if ($realshop && $item['coins'] <= $coins && $item['coins2'] <= $gcoins) $comm = "$buy | $preview";
+					//else if (!$item['id'] && !$eqitem['id'])                                        $comm = '';
+					else                                                                          $comm = $preview;
+				
+					// Extra link appended
+					if ($canedit) $comm .= ($comm ? " | " : "").$edit;
+				
+				}
+				
+				// Row colors
+				if      ($_GET['id'] == $item['id'])                           $color = " class='selected'";
+				else if ($eqitem && $item['id'] == $eqitem['id'])              $color = " class='equal'";
+				else if ($item['coins'] > $coins || $item['coins2'] > $gcoins) $color = " class='disabled'";
+				else                                                           $color = " class=''";
+				
+				print "
+				$L[TR]{$color} id='{$item['id']}'>
+					$L[TD2c]>{$comm}</td>
+					$L[TD1]>
+						<b class='equal'>{$item['name']}</b> 
+						<span class='sfont'>- {$item['desc']}</span>
+					</td>
+					".itemrow($item, false, $color, $eqitem)."
+					$L[TD1r]>{$item['coins']}</td>
+					$L[TD1r]>{$item['coins2']}</td>
+				</tr>";
+			}
+			print "$L[TBLend]";
+			break;
+
+		default:
+	}
+
+	pagefooter();
+
+// Render the status attributes for an item
+function itemrow($item, $editmode = false, $color = '', $eqitem = false) {
+	global $L, $stat;
+	
+	$atrlist = "";
+	for ($i = 0; $i < 9; $i++) {
+		$st = $item["s{$stat[$i]}"];
+		// Determine if the status boost is treated as multiplier (fixed point decimal) or sum (integer)
+		if ($item['stype'][$i] == 'm') {
+			$st = vsprintf('x%1.2f', $st / 100);
+			if (!$editmode && $st == 100) // Do not display x1.00
+				$st = '&nbsp;';
+		} else {
+			if ($st > 0)
+				$st = "+$st";
+			if (!$editmode && !$st) // Do not display +0
+				$st = '&nbsp;';
+		}
+		$itst = $item["s$stat[$i]"];
+		
+		// Comparision with the current equipped item is disabled when editing an item
+		if ($eqitem !== false) {
+			$eqst = $eqitem["s$stat[$i]"];
+			$sametype = ($item['stype'][$i] == $eqitem['stype'][$i]); // multiplier type must match to show color
+		} else {
+			$eqst = 0;
+			$sametype = true;
+		}
+		
+		// Color selection
+		if (!$color && $sametype) {
+			if      ($itst >  $eqst) $cl = 'higher';
+			else if ($itst == $eqst) $cl = 'equal';
+			else if ($itst <  $eqst) $cl = 'lower';
+		} else {
+			$cl = '';
+		}
+		
+		if ($editmode)
+			$atrlist .= "$L[TD2c]>$L[INPt]='{$stat[$i]}' size='6' value='{$st}'></td>";
+		else
+			$atrlist .= "$L[TD2oc] {$cl}'>{$st}</td>";
+	}
+	return $atrlist;
+}

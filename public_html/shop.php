@@ -21,7 +21,6 @@
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
 	
-	
 	$user = $sql->fetchq("
 		SELECT u.name, u.posts, u.regdate, r.* 
 		FROM users u 
@@ -338,10 +337,6 @@
 			
 			// Hidden items can be only seen by those who can use the shop editor
 			$seehidden = (int)$canedit;
-			/*$seehidden = 0;
-			if ($canedit)
-				$seehidden = 1;
-			*/
 			
 			// Display items for this category
 			$items = $sql->query("

@@ -15,7 +15,7 @@
 		check_token($_POST['auth']);
 
 		$_POST['newip']     = isset($_POST['newip']) ? str_replace('*', '%', trim($_POST['newip'])) : "";
-		$_POST['reason']    = isset($_POST['reason']) ? $_POST['reason'] : "";
+		$_POST['reason']    = isset($_POST['reason']) ? stripslashes($_POST['reason']) : "";
 		$_POST['expire']    = isset($_POST['expire']) ? ((int) $_POST['expire']) : 0;
 		$_POST['hard']      = isset($_POST['hard'])   ? ((int) $_POST['hard'])   : 0;
 		
@@ -72,9 +72,9 @@
 		$searchip = isset($_POST['searchip']) ? $_POST['searchip'] : "";
 	}
 	if (isset($_POST['setreason']) && $_POST['setreason']) {
-		$reason = $_POST['setreason'];
+		$reason = stripslashes($_POST['setreason']);
 	} else {
-		$reason = isset($_POST['searchreason']) ? $_POST['searchreason'] : "";
+		$reason = isset($_POST['searchreason']) ? stripslashes($_POST['searchreason']) : "";
 	}	
 	
 	if ($reason) {

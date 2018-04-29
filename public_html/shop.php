@@ -36,7 +36,9 @@
 	switch ($_GET['action']) {
 		case 'save': //Added (Sukasa)
 			check_token($_POST['auth'], TOKEN_SHOP);
-			
+			if (!$_GET['id']) {
+				error("Error", "No item specified.<br> <a href=./>Back to main</a>");
+			}
 			// Delete checkbox marked
 			if ($_GET['id'] != -1 && isset($_POST['delete']) && $_POST['delete']) {
 				if ($_GET['id']) { // Can't delete nothing
@@ -75,20 +77,21 @@
 				$stype .= $mode;
 			}
 			// other item info
-			$set .= "`name`='".addslashes($_POST['name'])."', `desc`='".addslashes($_POST['desc'])."', `stype`='{$stype}', `coins`={$_POST['coins']}, `coins2`={$_POST['coins2']}, `cat`='{$_POST['cat']}', `hidden`={$_POST['hidden']}";
-				
+			$set .= "`name`=?, `desc`=?, `stype`='{$stype}', `coins`={$_POST['coins']}, `coins2`={$_POST['coins2']}, `cat`='{$_POST['cat']}', `hidden`={$_POST['hidden']}";
+			$vals = array(stripslashes($_POST['name']), stripslashes($_POST['desc']));
+			
 			if ($_GET['id'] == -1) {
-				$sql->query("INSERT INTO items SET {$set}");
+				$sql->prepare("INSERT INTO items SET {$set}", $vals);
 				$id = $sql->insertid();
 			} else {
-				$sql->query("UPDATE items SET {$set} WHERE id = {$_GET['id']}");
+				$sql->prepare("UPDATE items SET {$set} WHERE id = {$_GET['id']}", $vals);
 				$id = $_GET['id'];
 			}
+			
 			redirect("shop.php?action=desc&id={$id}#{$id}", -4);
 			break;
 		case 'buy':
 			check_token($_GET['auth'], TOKEN_SHOP);
-			
 			$item     = $sql->fetchq("SELECT * FROM items WHERE id={$_GET['id']}");
 			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = '{$item['cat']}'"); // Never buy category 99 items
 			
@@ -208,12 +211,18 @@
 			break;
 		case 'edit': //Added (Sukasa)
 			// Edit / add item
-			
+			if (!$_GET['id']) {
+				noticemsg("Error", "No item specified.<br> <a href=./>Back to main</a>");
+				pagefooter();
+				die;
+			}
+
 			// Create dummy item if a new one is being added
 			$item = $sql->fetchq("SELECT * FROM items WHERE id='{$_GET['id']}' UNION SELECT * FROM items WHERE id='-1'");
 			if ($_GET['id'] == -1) { // Default to the category specified via url (and not to the default value 99)
 				$item['cat'] = $_GET['cat'];
 			}
+			$_GET['cat'] = $item['cat'];
 			
 			// For the category select box
 			$shops     = $sql->getresultsbykey('SELECT id, name FROM itemcateg ORDER BY corder', 'id', 'name');
@@ -282,8 +291,8 @@
 			</form>";
 			//break;
 		case 'desc': 
-			// Get the category to highlight the item it it's not the dummy one
-			if ($_GET['action'] != 'edit' && $_GET['id'] != -1) {
+			// Get the category to highlight the item
+			if ($_GET['action'] != 'edit') {
 				$_GET['cat'] = $sql->resultq("SELECT cat FROM items WHERE id = {$_GET['id']}");
 				if (!$_GET['cat']) {
 					noticemsg("Error", "This item does not exist!");
@@ -294,12 +303,17 @@
 		
 		case 'items': // Item selection in a category
 			
-			// Invalid categories (or category 99) have nothing to equip from.
 			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = {$_GET['cat']}");
 			if ($realshop) {
+				// Normal category
 				$eqitem = $sql->fetchq("SELECT i.* FROM items i	INNER JOIN usersrpg r ON i.id = r.eq{$_GET['cat']}");
+			} else if ($_GET['cat'] == 99) {
+				// Default one, with unequipable items
+				$eqitem = false;
 			} else {
-				$eqitem = false; // Category 99 or invalid
+				noticemsg("Error", "This category does not exist!");
+				pagefooter();
+				die;
 			}
 			
 			$edit = "";
@@ -341,7 +355,7 @@
 			// Display items for this category
 			$items = $sql->query("
 				SELECT * FROM items 
-				WHERE (cat = {$_GET['cat']} OR cat = 0) AND `hidden` <= {$seehidden} 
+				WHERE cat = {$_GET['cat']} AND `hidden` <= {$seehidden} 
 				ORDER BY type,coins
 			");
 			
@@ -371,7 +385,6 @@
 					// Determine when to display the buy / preview text
 					if      ($eqitem && $item['id'] == $eqitem['id'])                             $comm = $sell;
 					else if ($realshop && $item['coins'] <= $coins && $item['coins2'] <= $gcoins) $comm = "$buy | $preview";
-					//else if (!$item['id'] && !$eqitem['id'])                                        $comm = '';
 					else                                                                          $comm = $preview;
 				
 					// Extra link appended
@@ -401,6 +414,7 @@
 			break;
 
 		default:
+			noticemsg("Error", "What do you think you're doing?");
 	}
 
 	pagefooter();

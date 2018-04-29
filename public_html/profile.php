@@ -211,10 +211,15 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
      
    while($shop = $sql -> fetch($shops))
     {
+     if ($eq['eq'.$shop['id']]) {
+         $itemlink = "<a href=\"shop.php?action=desc&id=".$eq['eq'.$shop['id']]."#".$eq['eq'.$shop['id']]."\">".htmlspecialchars($items[$eq['eq'.$shop['id']]]['name'])."</a>";
+	 } else {
+         $itemlink = "<b>Nothing</b>";
+	 }
      $shoplist.="
          $L[TR] class=\"sfont\">
-           $L[TD1] width=\"70\">$shop[name]</td>
-           $L[TD2]><a href=\"shop.php?action=desc&id=".$eq['eq'.$shop['id']]."\">".$items[$eq['eq'.$shop['id']]]['name']."</a></td>
+           $L[TD1] width=\"70\">{$shop['name']}</td>
+           $L[TD2]>{$itemlink}</td>
          </tr>";
     }
     $shoplist.="

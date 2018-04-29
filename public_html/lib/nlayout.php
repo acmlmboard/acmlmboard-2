@@ -406,27 +406,12 @@ function RenderPageBar($pagebar) {
   }
 
   function itemselect($field,$current,$cat) {
-    global $sql, $L;
-
-    $viewhidden = 0;
-
-    if (has_perm('manage-shop-items'))
-      $viewhidden = 1;
-
-    $items = $sql->query("SELECT * FROM items WHERE `cat` = 0 UNION SELECT * FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden");
-
-    $text="
-".        "$L[SEL]=$field>";
-
-    while ($item = $sql->fetch($items)) {
-      $text.="
-".           "      $L[OPT]=\"$item[id]\"";
-      if ($current == $item['id'])
-        $text.=" selected";
-
-      $text.="> $item[name]</option>";
-    }
-    return "$text    ";
+    global $sql;
+	$viewhidden = (int)has_perm('manage-shop-items');
+	$items = $sql->getresultsbykey("SELECT id, name FROM items WHERE `cat` = $cat AND `hidden` <= $viewhidden", 'id', 'name');
+	$items[0] = "*** Nothing ***";
+	ksort($items);
+	return fieldselect($field, $current, $items);
   }
 
 

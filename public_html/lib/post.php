@@ -128,6 +128,10 @@
 	$style=preg_replace("'[.](.*?)body'si",'.\\1XBDY',$style);
 	$style=preg_replace("'body'si",'fish',$style);
 	$style=preg_replace("'[.](.*?)XBDY'si",'.\\1body',$style);
+//Blacklisting html tag
+	$style=preg_replace("'[.](.*?)html'si",'.\\1XBDY',$style);
+	$style=preg_replace("'html'si",'fish',$style);
+	$style=preg_replace("'[.](.*?)XBDY'si",'.\\1html',$style);
 	return $match[1].$style.$match[3];
   }
 

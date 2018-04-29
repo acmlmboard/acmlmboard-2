@@ -212,7 +212,9 @@
 		case 'edit': //Added (Sukasa)
 			// Edit / add item
 			if (!$_GET['id']) {
-				error("Error", "No item specified.<br> <a href=./>Back to main</a>");
+				noticemsg("Error", "No item specified.<br> <a href=./>Back to main</a>");
+				pagefooter();
+				die;
 			}
 
 			// Create dummy item if a new one is being added

@@ -112,6 +112,10 @@ if($act!="Submit"){
     if(($tdepth=tvalidate($message))!=0)
       $err="    This post would disrupt the board's table layout! The calculated table depth is $tdepth.<br>
 ".         "    $forumlink";
+    $invalidchars=array(">","\"","'");
+    if(strlen(trim(str_replace($invalidchars,"",$_POST['iconurl'])))<strlen($_POST['iconurl']))
+      $err="    Invalid thread icon.<br>
+".         "    $backlink";
     if(strlen(trim(str_replace(" ","",$title)))<4)
       $err="    You need to enter a longer $type title.<br>
 ".         "    $forumlink";

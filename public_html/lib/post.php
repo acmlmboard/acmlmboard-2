@@ -132,6 +132,10 @@
 	$style=preg_replace("'[.](.*?)html'si",'.\\1XBDY',$style);
 	$style=preg_replace("'html'si",'fish',$style);
 	$style=preg_replace("'[.](.*?)XBDY'si",'.\\1html',$style);
+//Selectors that shouldn't be used by a post/layout
+	$style=str_replace(':root','',$style);
+	$style=str_replace(':not','',$style);
+
 	return $match[1].$style.$match[3];
   }
 

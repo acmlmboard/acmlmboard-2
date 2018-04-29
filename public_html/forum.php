@@ -323,10 +323,10 @@ echo announcement_row($fid,3,4);
       $status='&nbsp;';
 
     if(!$thread[title])
-      $thread[title]='�';
+      $thread[title]='?';
 
     if($thread[icon])
-      $icon="<img src='$thread[icon]' height=15>";
+      $icon="<img src='$thread[icon]' style='max-height: 17px; max-width: 17px;'>";
     else
       $icon='&nbsp;';
 

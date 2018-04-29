@@ -75,15 +75,17 @@
 				$stype .= $mode;
 			}
 			// other item info
-			$set .= "`name`='".addslashes($_POST['name'])."', `desc`='".addslashes($_POST['desc'])."', `stype`='{$stype}', `coins`={$_POST['coins']}, `coins2`={$_POST['coins2']}, `cat`='{$_POST['cat']}', `hidden`={$_POST['hidden']}";
-				
+			$set .= "`name`=?, `desc`=?, `stype`='{$stype}', `coins`={$_POST['coins']}, `coins2`={$_POST['coins2']}, `cat`='{$_POST['cat']}', `hidden`={$_POST['hidden']}";
+			$vals = array(stripslashes($_POST['name']), stripslashes($_POST['desc']));
+			
 			if ($_GET['id'] == -1) {
-				$sql->query("INSERT INTO items SET {$set}");
+				$sql->prepare("INSERT INTO items SET {$set}", $vals);
 				$id = $sql->insertid();
 			} else {
-				$sql->query("UPDATE items SET {$set} WHERE id = {$_GET['id']}");
+				$sql->prepare("UPDATE items SET {$set} WHERE id = {$_GET['id']}", $vals);
 				$id = $_GET['id'];
 			}
+			
 			redirect("shop.php?action=desc&id={$id}#{$id}", -4);
 			break;
 		case 'buy':
@@ -214,6 +216,7 @@
 			if ($_GET['id'] == -1) { // Default to the category specified via url (and not to the default value 99)
 				$item['cat'] = $_GET['cat'];
 			}
+			$_GET['cat'] = $item['cat'];
 			
 			// For the category select box
 			$shops     = $sql->getresultsbykey('SELECT id, name FROM itemcateg ORDER BY corder', 'id', 'name');

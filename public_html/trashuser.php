@@ -80,8 +80,8 @@
 	);
 	
 	// Variable fetching
-	$_POST['searchname']  = isset($_POST['searchname']) ? $_POST['searchname']    : "";
-	$_POST['searchip']    = isset($_POST['searchip'])   ? $_POST['searchip']      : "";
+	$_POST['searchname']  = isset($_POST['searchname']) ? stripslashes($_POST['searchname'])    : "";
+	$_POST['searchip']    = isset($_POST['searchip'])   ? stripslashes($_POST['searchip'])      : "";
 	$_POST['maxposts']    = isset($_POST['maxposts'])   ? (int)$_POST['maxposts'] : 0;
 	
 	// Display only banned users by default

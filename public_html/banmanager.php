@@ -58,9 +58,9 @@ if (isset($_GET['unban'])) {
 	if (isset($_POST['banuser'])) {
 		check_token($_POST['auth']);
 		
-		$_POST['tempbanned'] = isset($_POST['tempbanned']) ? ((int) $_POST['tempbanned']) : 0;
-		$_POST['destgroup']  = isset($_POST['destgroup']) ? ((int) $_POST['destgroup']) : 0;
-		$_POST['title']      = isset($_POST['title']) ? $_POST['title'] : "";
+		$_POST['tempbanned'] = isset($_POST['tempbanned']) ? ((int)$_POST['tempbanned']) : 0;
+		$_POST['destgroup']  = isset($_POST['destgroup']) ? ((int)$_POST['destgroup']) : 0;
+		$_POST['title']      = isset($_POST['title']) ? stripslashes($_POST['title']) : "";
 		
 		// Sanity check. Do not allow tampering.
 		if (!isset($bannedgroups[$_POST['destgroup']])) {

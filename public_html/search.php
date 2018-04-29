@@ -9,9 +9,9 @@ $showtags    = false;
 $likefilter  = true;  // Filter SQL LIKE wildcards (% and _)
 
 // Defaults
-$_POST['text']   = isset($_POST['text'])    ? $_POST['text'] : "";
-$_POST['user']   = isset($_POST['user'])    ? trim($_POST['user']) : "";
-$_POST['ipmask'] = isset($_POST['ipmask'])  ? trim($_POST['ipmask']) : "";
+$_POST['text']   = isset($_POST['text'])    ? stripslashes($_POST['text']) : "";
+$_POST['user']   = isset($_POST['user'])    ? trim(stripslashes($_POST['user'])) : "";
+$_POST['ipmask'] = isset($_POST['ipmask'])  ? trim(stripslashes($_POST['ipmask'])) : "";
 // Search in thread titles
 $_POST['mode']  = isset($_POST['mode'])  ? (int) $_POST['mode'] : 0;
 // Search in General Forum only

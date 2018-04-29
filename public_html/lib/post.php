@@ -121,8 +121,13 @@
 	// remove newlines.
 	// this will prevent them being replaced with <br> tags and breaking the CSS
 	$style = str_replace("\n", '', $style);
+//Prevent animations, as too many can slow up less powerful systems.
 	$style=preg_replace("'@keyframes'si",'noanimation4u',$style);
 	$style=preg_replace("'@-webkit-keyframe'si",'noanimation4u',$style);
+//Blacklisting body tag [Epele]
+	$style=preg_replace("'[.](.*?)body'si",'.\\1XBDY',$style);
+	$style=preg_replace("'body'si",'fish',$style);
+	$style=preg_replace("'[.](.*?)XBDY'si",'.\\1body',$style);
 	return $match[1].$style.$match[3];
   }
 

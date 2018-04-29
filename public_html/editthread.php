@@ -33,6 +33,10 @@ if ($ispoll==1) $cntopts=@$sql->result($sql->query("SELECT count(*) FROM pollopt
   //Submission Code
   $backlink="<a href=\"thread.php?id=$tid\">Return to thread</a>";
   //Error Detections
+    $invalidchars=array(">","\"","'");
+    if(strlen(trim(str_replace($invalidchars,"",$_POST['iconurl'])))<strlen($_POST['iconurl']))
+      $err="    Invalid thread icon.<br>
+".         "    $backlink";
     if(strlen(trim(str_replace(" ","",$_POST['title'])))<4)
       $err="    You need to enter a longer $type title.<br>
 ".         "    $backlink";
@@ -47,7 +51,7 @@ if ($ispoll==1) $cntopts=@$sql->result($sql->query("SELECT count(*) FROM pollopt
     }
 if(isset($err)){
 pageheader("Edit Thread");
-    print "$top - Error";
+    //print "$top - Error";
     noticemsg("Error", $err);
 } else {
   //No Errors detected

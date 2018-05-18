@@ -1,9 +1,10 @@
 <?php
-  require 'lib/datetime.php';
   require 'lib/request.php';
+  require 'lib/config.php';
+  require 'lib/errorhandler.php';
+  require 'lib/datetime.php';
   require 'lib/mysql.php';
   require 'lib/layout.php';
-  require 'lib/config.php';
   require 'lib/database.php';
   require 'lib/perm.php';  
   require 'lib/helpers.php';

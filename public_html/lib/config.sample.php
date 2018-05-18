@@ -125,6 +125,7 @@
   $config['ircbase'] = "http://".$config['address']."".$config['path'];
   $config['staffchan'] = '#staffchangoeshere PASSWORD';
   $config['pubchan'] = '#pubchangoeshere PASSWORD';
+  $config['debugchan'] = $config['staffchan'];
   $config['zerowidthirc'] = true; //Enabling will add Zero Width Chars so Nicknames don't trigger highlighting
   $config['ircnickprefix'] = true; //Use an IRC prefix when sending messages to the IRC channel.
   $config['ircnickcolor'] = false; //Use the nick color for the whole nick on IRC.
@@ -163,6 +164,12 @@
   $config['avatardimx'] = $avatardimx;
   $config['avatardimy'] = $avatardimy;
   $config['avatardimy'] = $avatardimy;
+  
+  // Error reporting settings
+  $config['enableerrorhandler'] = true; // Register error handlers (disabling this disables the next options)
+  $config['enablesqldebug']     = true; // Show query list at the bottom of the page
+  $config['reporterrors']       = E_ALL  ^ (E_NOTICE | E_WARNING); // Show these errors on the error list. 0 to hide all
+  $config['ircerrors']          = E_ERROR | E_USER_NOTICE | E_USER_WARNING | E_USER_ERROR; // Report these errors on IRC
 
 
    // xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula

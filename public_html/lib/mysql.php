@@ -8,10 +8,17 @@
 	// SQL debug stuff
 	public static $debug = false;
 	public static $query_list = array();
+	public $server_name = "";
 	public function connect($host,$user,$pass) {
 		global $config;
+		
 		self::$debug = $config['enablesqldebug'];
-		return $this->db=new mysqli($host,$user,$pass);
+		
+		$this->db = new mysqli($host,$user,$pass);
+		if ($this->db) { // account for both MariaDB and MySQL error messages
+			$this->server_name = (strpos($this->db->server_info, "MariaDB") ? "MariaDB": "MySQL");
+		}
+		return $this->db;
 	}
     public function selectdb($dbname)          {$this->db->set_charset("latin1"); return $this->db->select_db($dbname);}
 
@@ -31,7 +38,7 @@
 				$this->rowst+=$res->num_rows;
 			}
 		} else {
-			$error = $this->db->error;
+			$error = str_replace("You have an error in your SQL syntax; check the manual that corresponds to your ".($this->server_name)." server version for the right syntax to use", "SQL syntax error", $this->db->error);
 			trigger_error($error, E_USER_NOTICE);
 		}
 		$timetaken = microtime(true) - $start;

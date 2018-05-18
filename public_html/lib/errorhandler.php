@@ -51,6 +51,7 @@ function error_reporter($type, $msg, $file, $line, $context) {
 	
 
 	if ($custom) { // E_USER_*
+		$backtrace = debug_backtrace();
 		if (substr($file, -9) === "mysql.php") { // Query error most likely, get the parent
 			for ($i = 1; substr($backtrace[$i]['file'], -9) === "mysql.php"; ++$i);
 			$file = $backtrace[$i]['file'];
@@ -62,7 +63,6 @@ function error_reporter($type, $msg, $file, $line, $context) {
 			// 0 -> error_reporter
 			// 1 -> function the custom error was triggered
 			// 2 -> parent function
-			$backtrace = debug_backtrace();
 			for ($i = 1; isset($backtrace[$i]) && $backtrace[$i]['function'] == 'trigger_error'; ++$i);
 			if (isset($backtrace[$i])) { // Normal
 				$func = $backtrace[$i]['function'];

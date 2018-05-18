@@ -31,7 +31,7 @@
 				$this->rowst+=$res->num_rows;
 			}
 		} else {
-			$error = $this->db->error();
+			$error = $this->db->error;
 			trigger_error($error, E_USER_NOTICE);
 		}
 		$timetaken = microtime(true) - $start;

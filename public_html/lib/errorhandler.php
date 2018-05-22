@@ -95,13 +95,22 @@ function error_reporter($type, $msg, $file, $line, $context) {
 	if (!error_reporting())
 		$typetext = "@{$typetext}";
 	
+	// Hide directory
 	$file = strip_doc_root($file);
 	if (in_array(substr($func, 0, 7), array('require', 'include'))) { // also prevent require(_once) & friends from showing the full directory
 		$args = strip_doc_root($args);
 	}
 
 	// Local reporting
-	$er_errors[] = array($typetext, $msg, $func, $args, $file, $line);
+	$er_errors[] = array(
+		'type'      => $typetext, 
+		'message'   => $msg, 
+		'function'  => $func,
+		'arguments' => $args,
+		'file'      => $file,
+		'line'      => $line
+	);
+	
 	// IRC reporting
 	if ($config['ircerrors'] & $type) { // !is_numeric($type) ||
 		$userstr = ($loguser['id'] ? "user: {irccolor-name}{$loguser['name']}{irccolor-base} ({irccolor-name}{$_SERVER['REMOTE_ADDR']}{irccolor-base})" : "guest's IP: {irccolor-name}{$_SERVER['REMOTE_ADDR']}")."{irccolor-base}";
@@ -138,8 +147,24 @@ function error_printer() {
 	
 	global $L, $er_errors, $er_hidden;
 	
-	//              0     1      2      3      4      5
-	//array($typetext, $msg, $func, $args, $file, $line);
+	// Code to toggle the tables (and hide the links used to do that when JS is disabled)
+?>
+<script type="text/javascript">
+	function toggleTableBody(key) {
+		var tbl = document.getElementById(key);
+		var lnk = document.getElementById('l'+key);
+		if (tbl.style.display == 'none') {
+			tbl.style.display = 'table-row-group';
+			lnk.innerHTML = '[-]';
+		} else {
+			tbl.style.display = 'none';
+			lnk.innerHTML = '[+]';
+		}
+	}
+</script>
+<noscript><style>.hideTable{display: none}</style></noscript>
+<?php
+	
 	if ($er_errors || $er_hidden) {
 		$cnt = count($er_errors);	
 		print "<br><br>
@@ -147,8 +172,10 @@ function error_printer() {
 			$L[TRh]>
 				$L[TDhc] colspan=4>
 					<b>PHP Errors: {$cnt}".($er_hidden ? " (+ {$er_hidden} hidden)" : "")."</b>
+					<a href='#er' id='lerrors' class='hideTable' onclick=\"toggleTableBody('errors')\" style='float: right'>[-]</a>
 				</td>
-			</tr>";
+			</tr>
+			<tbody id='errors'>";
 		if ($cnt) { // Extra check to hide this when the only errors are hidden
 			print "
 			$L[TRh]>
@@ -159,13 +186,15 @@ function error_printer() {
 			</tr>";
 		}
 		
-		for ($i = 0; $i < $cnt; ++$i) {
-			$cell = ($i%2)+1;
+		$i = 0;
+		foreach ($er_errors as $x) {
+			// Standard row color effect
+			$cell = (++$i%2)+1;
 			$td = $L["TD{$cell}"];
 			$tc = $L["TD{$cell}c"];
 			
-			if ($er_errors[$i][2]) {
-				$func = $er_errors[$i][2]."(".print_args($er_errors[$i][3]).")";
+			if ($x['function']) {
+				$func = $x['function']."(".print_args($x['arguments']).")";
 			} else {
 				$func = "<i>(main)</i>";
 			}
@@ -173,53 +202,59 @@ function error_printer() {
 			print "
 				$L[TR1]>
 					$tc>".($i+1)."</td>
-					$tc>{$er_errors[$i][0]}</td>
+					$tc>{$x['type']}</td>
 					$tc>
 						{$func}
-						<div class='sfont'>{$er_errors[$i][4]}:{$er_errors[$i][5]}</div>
+						<div class='sfont'>{$x['file']}:{$x['line']}</div>
 					</td>
-					$td>{$er_errors[$i][1]}</td>						
+					$td>{$x['message']}</td>						
 				</tr>";
 		}
 			
-		print "</table>";
+		print "</tbody></table>";
 	}
-	//                            0       1            2           3           4           5              6
-	//self::$query_list[] = array(1, $query, $b['pfunc'], $b['file'], $b['line'], $timetaken, isset($error));
 	
 	// Query debug list
 	// Fairly similar to the error list
 	if (class_exists('mysql') && mysql::$debug) {
-		$i = 0;
 		$cnt = count(mysql::$query_list);
 		print "<br><br>
 		$L[TBL1]>
 			$L[TRh]>
-				$L[TDhc] colspan=4>
+				$L[TDhc] colspan=5>
 					<b>SQL Query Debugger (Total: {$cnt})</b>
+					<a href='#er' id='lsqlerrors' class='hideTable' onclick=\"toggleTableBody('sqlerrors')\" style='float: right'>[-]</a>
 				</td>
 			</tr>
-			$L[TRh]>
-				$L[TDhc] style='width: 20px'>&nbsp;</td>
-				$L[TDhc] style='width: 250px'>Function</td>
-				$L[TDhc]>Query</td>
-				$L[TDhc]>Time</td>
-			</tr>";
-		for ($i = 0; $i < $cnt; ++$i) {
-			$cell = ($i%2)+1;
+			<tbody id='sqlerrors'>
+				$L[TRh]>
+					$L[TDhc] style='width: 20px'>&nbsp;</td>
+					$L[TDhc] style='width: 250px'>Function</td>
+					$L[TDhc]>Query</td>
+					$L[TDhc] style='width: 50px'>Rows</td>
+					$L[TDhc] style='width: 80px'>Time</td>
+				</tr>";
+				
+		$i = 0;
+		foreach (mysql::$query_list as $x) {
+			// Standard row color effect
+			$cell = (++$i%2)+1;
 			$td = $L["TD{$cell}"];
 			$tc = $L["TD{$cell}c"];
-			if (mysql::$query_list[$i][2]) {
-				$func = mysql::$query_list[$i][2];
+			
+			if ($x['function']) {
+				$func = $x['function']; //."(".print_args($x['arguments']).")";
 			} else {
 				$func = "<i>(main)</i>";
 			}
 			
 			// Mark errors as red
-			if (!mysql::$query_list[$i][6]) {
-				$query = mysql::$query_list[$i][1];
+			if ($x['error']) {
+				$query = "<span style='color:#F00; border-bottom:1px dotted red' title=\"".htmlspecialchars($x['error'])."\">{$x['query']}</span>";
+			} else if (!$x['type']) { // Connection message
+				$query = "<i>{$x['message']}</i>";
 			} else {
-				$query = "<span style='color:#F00; border-bottom:1px dotted red' title=\"".mysql::$query_list[$i][6]."\">".mysql::$query_list[$i][1]."</span>";
+				$query = $x['message'];
 			}
 			
 			print "
@@ -227,13 +262,14 @@ function error_printer() {
 					$tc>".($i+1)."</td>
 					$tc>
 						{$func}
-						<div class='sfont'>".strip_doc_root(mysql::$query_list[$i][3]).":".mysql::$query_list[$i][4]."</div>
+						<div class='sfont'>".strip_doc_root($x['file']).":{$x['line']}</div>
 					</td>
-					$tc>{$query}</td>
-					$td>".sprintf("%01.6fs",mysql::$query_list[$i][5])."</td>						
+					$td>{$query}</td>
+					$tc>{$x['rows']}</td>
+					$tc>".sprintf("%01.6fs", $x['time'])."</td>						
 				</tr>";
 		}
-		print "</table>";
+		print "</tbody></table>";
 	}
 	
 	return true;

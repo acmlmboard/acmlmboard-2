@@ -133,7 +133,7 @@ print   "$L[TBL1]>
     print "  $L[$tr]>
 ".        "    $L[TD2]><a href=private.php?action=del&id=$pmsg[id]&showdel=$showdel&view=$_GET[view]><img src=img/delete.png></a></td>
 ".        "    $L[TD1]>$status</td>
-".        "    $L[TDl]><a href=showprivate.php?id=$pmsg[id]>".forcewrap(htmlval($pmsg[title]))."</a></td>
+".        "    $L[TDl] style=\"word-break: break-all;\"><a href=showprivate.php?id=$pmsg[id]>".htmlval($pmsg[title])."</a></td>
 ".        "    $L[TD]>".userlink($pmsg,'u')."</td>
 ".        "    $L[TD]><nobr>".cdate($dateformat,$pmsg['date'])."</nobr></td>
 ";

@@ -354,7 +354,7 @@ if (isset($_POST['search'])) {
 				$L[TD1]>$status</td>
 				$L[TD]>$icon</td>
 				$L[TD]><a href='forum.php?id={$thread['forum']}'>{$forums[$thread['forum']]}</a></td>
-				$L[TDl]><a href='thread.php?id={$thread['id']}'>".forcewrap(htmlval($thread['title']))."</a>$taglist$pagelist</td>
+				$L[TDl] style=\"word-break: break-all;\"><a href='thread.php?id={$thread['id']}'>".htmlval($thread['title'])."</a>$taglist$pagelist</td>
 				$L[TD]>".userlink($thread,'u1',$config['startedbyminipic'])."</td>
 				$L[TD]>{$thread['replies']}</td>
 				$L[TD]>{$thread['views']}</td>

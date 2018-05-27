@@ -307,22 +307,6 @@
     return $text;
   }
 
-    function forcewrap($text){
-    $l=0;
-    $text2='';
-    for($i=0;$i<strlen($text);$i++){
-      $text2.=$text[$i];
-      if($text[$i]==' ')
-        $l=0;
-      else{
-        $l++;
-        if(!($l%30))
-          $text2.=' ';
-      }
-    }
-    return $text2;
-  }
-
   function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;

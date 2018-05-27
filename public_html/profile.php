@@ -86,7 +86,7 @@ if($_COOKIE['pstbon']==-1){
 
    if($pfound && $thread)
     {
-     $lastpostlink = "<br>in <a href=\"thread.php?pid=$thread[id]#$thread[id]\">".forcewrap(htmlval($thread['ttitle']))."</a> 
+     $lastpostlink = "<br>in <a href=\"thread.php?pid=$thread[id]#$thread[id]\">".htmlval($thread['ttitle'])."</a> 
                      (<a href=\"forum.php?id=$thread[forum]\">".htmlval($thread['ftitle'])."</a>)";
     }
    else if($user['posts'] == 0)
@@ -385,7 +385,7 @@ print "    $L[TBL] width=\"100%\">
                    $L[TD2]>".cdate($dateformat, $user['regdate'])." (".timeunits($days * 86400)." ago)
                  $L[TR]>
                    $L[TD1]><b>Last post</b></td>
-                   $L[TD2]>
+                   $L[TD2] style=\"word-break: break-all;\">
                      ".($user['lastpost']? cdate($dateformat, $user['lastpost'])." (".timeunits(ctime() - $user['lastpost'])." ago)" : "None")."
                      $lastpostlink
                  $L[TR]>

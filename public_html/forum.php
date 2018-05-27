@@ -363,7 +363,7 @@ echo announcement_row($fid,3,4);
 ".        "    $L[TD]>$icon</td>
 ".($showforum?
           "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
-".        "    $L[TDl]>".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>$taglist$pagelist</td>
+".        "    $L[TDl] style=\"word-break: break-all;\">".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=\"thread.php?id=$thread[id]\">".htmlval($thread[title])."</a>$taglist$pagelist</td>
 ".        "    $L[TD]>".userlink($thread,'u1',$config[startedbyminipic])."</td>
 ".        "    $L[TD]>$thread[replies]</td>
 ".        "    $L[TD]>$thread[views]</td>

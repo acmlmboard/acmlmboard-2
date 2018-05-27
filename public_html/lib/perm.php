@@ -582,8 +582,8 @@ function perms_for_x($xtype,$xid) {
  function threadlink_by_id($tid) {
  	global $sql;
     $thread = $sql->fetchp("SELECT id,title FROM threads WHERE id=? AND forum IN ".forums_with_view_perm(),array($tid));
-	
-	if ($thread) return "<a href=thread.php?id=$thread[id]>".forcewrap(htmlval($thread[title]))."</a>";
+	//forcewrap() removed. Use CSS in container where this would be called. [Epele]
+	if ($thread) return "<a href=thread.php?id=$thread[id]>".htmlval($thread[title])."</a>";
 	else return 0;
  }
 

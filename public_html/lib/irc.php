@@ -222,7 +222,7 @@ function get_irc_style($style){
 	}
 	return $ircstyle;
 }
-function set_irc_style($fcolor,$bcolor,$style){
+function set_irc_style($fcolor,$bcolor="",$style=""){
 	return get_irc_style($style).get_irc_color($fcolor,$bcolor);
 }
 function get_irc_displayname(){
@@ -284,16 +284,16 @@ function get_irc_groupname($gid) {
 function sendirc($text,$channel=null){
    global $config, $irccolor;
 
-   if(!$config[enableirc]) return false;
+   if(!$config['enableirc']) return false;
   //str_replace method to replace the board address. replaces {boardurl} with the link to the board thread/post.
-  $text=str_replace('{boardurl}',$config[ircbase],$text);
+  $text=str_replace('{boardurl}',$config['ircbase'],$text);
   //str_replace method to fill in color codes
-  $text=str_replace('{irccolor-base}',set_irc_style($irccolor[base]),$text);
-  $text=str_replace('{irccolor-name}',set_irc_style($irccolor[name]),$text);
-  $text=str_replace('{irccolor-title}',set_irc_style($irccolor[title]),$text);
-  $text=str_replace('{irccolor-url}',set_irc_style($irccolor[url]),$text);
-  $text=str_replace('{irccolor-yes}',set_irc_style($irccolor[yes]),$text);
-  $text=str_replace('{irccolor-no}',set_irc_style($irccolor[no]),$text);
+  $text=str_replace('{irccolor-base}',set_irc_style($irccolor['base']),$text);
+  $text=str_replace('{irccolor-name}',set_irc_style($irccolor['name']),$text);
+  $text=str_replace('{irccolor-title}',set_irc_style($irccolor['title']),$text);
+  $text=str_replace('{irccolor-url}',set_irc_style($irccolor['url']),$text);
+  $text=str_replace('{irccolor-yes}',set_irc_style($irccolor['yes']),$text);
+  $text=str_replace('{irccolor-no}',set_irc_style($irccolor['no']),$text);
 
   if ($channel != null) $chan = $channel;
   else $chan = $config[pubchan];

@@ -306,7 +306,7 @@
 			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = {$_GET['cat']}");
 			if ($realshop) {
 				// Normal category
-				$eqitem = $sql->fetchq("SELECT i.* FROM items i	INNER JOIN usersrpg r ON i.id = r.eq{$_GET['cat']}");
+				$eqitem = $sql->fetchq("SELECT i.* FROM items i	INNER JOIN usersrpg r ON i.id = r.eq{$_GET['cat']} WHERE r.id = {$loguser['id']}");
 			} else if ($_GET['cat'] == 99) {
 				// Default one, with unequipable items
 				$eqitem = false;

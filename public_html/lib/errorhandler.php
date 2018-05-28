@@ -143,7 +143,7 @@ function highlight_trace($arr) {
 */
 function error_printer() {
 	// Exit if we don't have permission to view the errors
-	if (!has_perm('show-debugger')) return true;
+	if (!has_perm('view-debugger')) return true;
 	
 	global $L, $er_errors, $er_hidden;
 	

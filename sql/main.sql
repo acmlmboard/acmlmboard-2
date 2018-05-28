@@ -1831,3 +1831,7 @@ UNLOCK TABLES;
 -- Dump completed on 2017-12-28 14:30:14
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-smilies', 'Update Smilies', '', '3', 'users'), ('edit-thread', 'Edit Own Thread/Poll', '', '2', 'users');
 INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindvalue`, `revoke`) VALUES (NULL, 2, 'group', 'edit-thread', '', 0, 0);
+INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`)
+VALUES
+	('view-debugger', 'Display Debug Messages', 'Shows error handler messages when enabled', 3, '');
+

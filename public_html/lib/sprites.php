@@ -137,7 +137,7 @@ $monScript = "<script language=\"javascript\">
 					alert(x.responseText);
 			}
 		};
-		x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."', true);
+		x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."&x_ajax=1', true);
 		x.send(null);
 	}
 </script>";

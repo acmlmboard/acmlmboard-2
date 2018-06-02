@@ -170,7 +170,7 @@
   $config['enablesqldebug']     = true; // Show query list at the bottom of the page
   $config['reporterrors']       = E_ALL  ^ (E_NOTICE | E_WARNING); // Show these errors on the error list. 0 to hide all
   $config['ircerrors']          = E_ERROR | E_USER_NOTICE | E_USER_WARNING | E_USER_ERROR; // Report these errors on IRC
-
+  $config['enableerrorlist']    = true; // Allows local reporting
 
    // xkeeper 07/15/2007 - adding horrible spatula quotes for fis^H^H^H^H spatula
   $spatulas = array(

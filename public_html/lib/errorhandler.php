@@ -142,8 +142,15 @@ function highlight_trace($arr) {
 }
 */
 function error_printer() {
+	global $config;
+	
+	// Prevent error list from erroneously showing up on AJAX requests
+	// TODO: It could be made to Console.log() the errors here rather than disabling them
+	if (isset($_GET['x_ajax']))
+		$config['enableerrorlist'] = false;
+	
 	// Exit if we don't have permission to view the errors
-	if (!has_perm('view-debugger')) return true;
+	if (!has_perm('view-debugger') || !$config['enableerrorlist']) return true;
 	
 	global $L, $er_errors, $er_hidden;
 	

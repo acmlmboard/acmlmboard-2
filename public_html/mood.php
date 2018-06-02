@@ -107,7 +107,7 @@
 					document.getElementById(\"defava\").style['background'] = \"none\";
 			}
 		};
-		y.open('POST','mood.php$lnkex',true);
+		y.open('POST','mood.php$lnkex&x_ajax=1',true);
 		y.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 		y.send('a=Delete&id='+av_id);
 		}

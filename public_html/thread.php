@@ -758,7 +758,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
         function updatequickreplystatus(ishidden)
         {
           x = new XMLHttpRequest();
-          x.open('GET', 'userpref.php?field=hidequickreply&value='+ishidden);
+          x.open('GET', 'userpref.php?field=hidequickreply&value='+ishidden+'&x_ajax=1');
           x.send(null);
         }
         function togglequickreply()

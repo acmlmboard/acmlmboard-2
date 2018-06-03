@@ -17,7 +17,7 @@ function ajaxGet(url, callback)
             callback(this.responseText);
         }
     };
-	x.open('GET', url);
+	x.open('GET', url + '&x_ajax=1');
 	x.send(null);
 }
 

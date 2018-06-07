@@ -95,9 +95,10 @@
 	$pagelist       = pageselect($total, $ppp); // Needs to be here, since it will fix the page number in case it's too high
 
 	$bans  = $sql->prepare("
-		SELECT i.ipmask, i.hard, i.expires, i.banner, i.reason, ".userfields()."
+		SELECT i.ipmask, i.hard, i.expires, i.banner, i.reason, ".userfields().", f.cc2 ipflag
 		FROM ipbans i
 		LEFT JOIN users u ON i.banner = u.name
+		LEFT JOIN ip2c  f ON (f.ip_from <= inet_aton(i.ipmask) AND f.ip_to >= inet_aton(i.ipmask))
 		{$qwhere}
 		ORDER BY i.ipmask ASC
 		LIMIT ".($_POST['page'] * $ppp).",{$ppp}
@@ -172,7 +173,7 @@ print "{$cookiemsg}
 		print "
 		$tr>
 			$tdc>$L[INPc]='delban[]' value=\"".urlencode(encryptpwd($x['ipmask'].",".$x['expires'].",".$x['hard']))."\"></td>
-			$tdc>".ipfmt($x['ipmask'])."</td>
+			$tdc>".ipfmt($x['ipmask'], $x['ipflag'])."</td>
 			$tdc>".($x['expires'] ? cdate($dateformat, $x['expire'])." (".timeunits2($x['expires']-ctime()).")" : "Never")."</td>
 			$tdc><span style='color: ".($x['hard'] ? "red'>Yes" : "green'>No")."</span></td>
 			$td>" .($x['reason'] ? htmlspecialchars($x['reason']) : "None")."</td>
@@ -215,12 +216,17 @@ print "
 	pagefooter();
 	
 
-function ipfmt($a) {
+function ipfmt($a, $ipflag = "") {
 	$a = str_replace("%", "*", $a);
+	// Do not display a broken flag
+	if (strpos($a, "*") !== false) {
+		$ipflag = '-';
+	}
+	
 	if (strpos($a, ':') === false) {
 		$expl = explode(".", $a);
 		$dot = "<font~color=#808080>.</font>";
-		return str_replace("~", " ", str_replace(" ", "&nbsp;", sprintf("%3s%s%3s%s%3s%s%3s", $expl[0], $dot, $expl[1], $dot, $expl[2], $dot, $expl[3])));
+		return str_replace("~", " ", str_replace(" ", "&nbsp;", sprintf("%3s%s%3s%s%3s%s%3s", $expl[0], $dot, $expl[1], $dot, $expl[2], $dot, $expl[3])))." ".flagip($a, $ipflag, true);
 	} else { // lol ipv6
 		return str_replace(":", "<font color=#808080>:</font>", $a);
 	}

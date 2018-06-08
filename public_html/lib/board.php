@@ -2,12 +2,12 @@
 
   //2007-07-01 blackhole89
   //xkeeper: fadding width/height to make it load better, adding align to move it away from the IP somewhat
-  function flagip($ip, $flag = '') {
+  function flagip($ip, $flag = '', $onlyflag = false) {
     if (!$flag) {
 	  global $sql; 
 	  $flag = $sql->resultq("SELECT cc2 FROM ip2c WHERE ip_from<=inet_aton('{$ip}') AND ip_to>=inet_aton('{$ip}')");
 	} 
-    return ($flag != '-' ?" <img src=\"img/flags/".strtolower($flag).".png\" title='{$flag}' style='width: 16px; height: 11px; float: right'>" : "") . $ip . " <small>[<a href='http://google.com/search?q={$ip}'>G</a>]</small> ";
+    return ($flag != '-' ?" <img src=\"img/flags/".strtolower($flag).".png\" title='{$flag}' style='width: 16px; height: 11px; float: right'>" : "") . ($onlyflag ? "" : $ip . " <small>[<a href='http://google.com/search?q={$ip}'>G</a>]</small> ");
   }
 
   function feedicon($icon,$para,$text="RSS feed"){

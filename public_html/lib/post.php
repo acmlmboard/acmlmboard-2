@@ -255,7 +255,7 @@
     $s=str_replace("&mood&",$post['mood'],$s);
     $s=str_replace("&postrank&",$sql->result($sql->query("SELECT count(*) FROM users WHERE posts>".$post['uposts']),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
-    $s= preg_replace('@&(\d+)&@sie','max($1 - '.$post['num'].', 0)', $s);
+    $s = preg_replace_callback('@&(\d+)&@si', function ($match) use ($post) { return max($match[1] - $post['num'], 0); }, $s);
     return $s;
   }
 

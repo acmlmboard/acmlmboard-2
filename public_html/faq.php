@@ -61,7 +61,8 @@ print "<table cellspacing=\"0\" class=\"c1\">
 ".    "    <td class=\"b h\">FAQ</td>
 ".    "  <tr>
 ".    "    <td class=\"b n1\" style='padding:10px!important;'>
-".    "    <a href=\"#gpg\">General Posting Guidelines</a><br><br>";
+".    "    <a href=\"#gpg\">General Posting Guidelines</a><br>
+".    "    <a href=\"#cookies\">Are cookies used?</a><br><br>";
 
 if($config['spritesystem'] == true) print "    <a href=\"#sprite\">What are these little character doodads appearing on the board?</a><br>";
 print    "    <a href=\"#move\">I just made a thread, where did it go?</a><br>
@@ -124,7 +125,10 @@ print "<table cellspacing=\"0\" class=\"c1\">
 ".    "  <br>The use of CSS usage to change your username colour, impersonate being staff, or similar is forbidden. Any alteration to one's username (font, icon etc) fake custom titles, and other additional text in a non-post field are under discretion of the the staff. Likewise, use of CSS that changes the board layout, others' posts or anything outside of your own post is forbidden. Failure to do so can result in deletion of your post layout, or even disabling the feature on your account altogether.
 ".    "  <br>
 ".    "  <br><b><u>Disclaimer</u></b>:
-".    "  <br>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.";
+".    "  <br>If you don't like this place, or cannot deal with decisions or conversations had here, you will be offered no compensation and you will not be given any explanations herewith. This is a free service; so you are not entitled to anything contained herein, nor are you entitled to anything from any other party.
+
+".    "  <tr class=\"h\"><td class=\"b h\"><a name='cookies'>Are cookies used?
+".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Cookies are used on this site to store login information and pass information between pages during redirection. Cookies are not used in any way to track you.";
 
 if($config['spritesystem'] == true) print    "  <tr class=\"h\"><td class=\"b h\"><a name='sprite'>What are these little character doodads appearing on the board?
 ".    "  <tr><td class=\"b n1\" style='padding:10px!important;'>Those are called Sprites. If you click on them, you will have \"found\" them and will be logged <a href=\"sprites.php\">here</a>. Collect them all!";
@@ -169,6 +173,7 @@ print    "  <tr class=\"h\"><td class=\"b h\"><a name='move'>I just made a threa
 	 <tr><td class='b n1'>[forum=<i>id</i>]</td><td class='b n2'>Creates a link to a forum by id.</td>
 	 <tr><td class='b n1'>[thread=<i>id</i>]</td><td class='b n2'>Creates a link to a thread by id.</td>
 	 <tr><td class='b n1'>[youtube]<i>video id</i>[/youtube]</td><td class='b n2'>Creates an embeded YouTube video.</td>
+	 <tr><td class='b n1'>[nobr]<i>text</i>[/nobr]</td><td class='b n2'>Text and code between these tags are not automatically given line breaks.</td>
 	 </table>
 
 ".    "  <tr class=\"h\"><td class=\"b h\"><a name='irc'>What's this IRC thing I keep hearing about?

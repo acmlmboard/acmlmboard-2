@@ -113,14 +113,18 @@
 ".		"	</div>
 ".		"</td></tr></table>";
   }*/
-  
+    function nobreaks($match)
+  {
+	return str_replace("\n", '', $match[1]);
+  }
+ 
   function filterstyle($match)
   {
 	$style = $match[2];
-	
 	// remove newlines.
 	// this will prevent them being replaced with <br> tags and breaking the CSS
 	$style = str_replace("\n", '', $style);
+
 //Prevent animations, as too many can slow up less powerful systems.
 	$style=preg_replace("'@keyframes'si",'noanimation4u',$style);
 	$style=preg_replace("'@-webkit-keyframe'si",'noanimation4u',$style);
@@ -151,6 +155,7 @@
     $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
+    $msg=preg_replace("'\[imgs\](.*?)\[/imgs\]'si",'<a href="\1" title="Click to enlarge"><img src="\1" style="max-width: 300px; max-height: 300px;"></a>',$msg);
     //Url filtering on href= or src=
     $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
     $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
@@ -164,6 +169,7 @@
 	//[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
 
+    $msg=preg_replace_callback("'\[nobr\](.*?)\[/nobr\]'si",'nobreaks',$msg); //No Line Breaks tag block
     $msg=str_replace("\n",'<br>',$msg);
     
     if (!$nosmilies) {

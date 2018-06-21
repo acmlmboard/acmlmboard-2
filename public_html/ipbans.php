@@ -174,7 +174,7 @@ print "{$cookiemsg}
 		$tr>
 			$tdc>$L[INPc]='delban[]' value=\"".urlencode(encryptpwd($x['ipmask'].",".$x['expires'].",".$x['hard']))."\"></td>
 			$tdc>".ipfmt($x['ipmask'], $x['ipflag'])."</td>
-			$tdc>".($x['expires'] ? cdate($dateformat, $x['expire'])." (".timeunits2($x['expires']-ctime()).")" : "Never")."</td>
+			$tdc>".($x['expires'] ? cdate($dateformat, $x['expires'])." (".timeunits2($x['expires']-ctime()).")" : "Never")."</td>
 			$tdc><span style='color: ".($x['hard'] ? "red'>Yes" : "green'>No")."</span></td>
 			$td>" .($x['reason'] ? htmlspecialchars($x['reason']) : "None")."</td>
 			$tdc>".($x['name'] ? userlink($x) : $x['banner'])."</td>

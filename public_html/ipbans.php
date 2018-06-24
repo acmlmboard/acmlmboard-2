@@ -95,10 +95,9 @@
 	$pagelist       = pageselect($total, $ppp); // Needs to be here, since it will fix the page number in case it's too high
 
 	$bans  = $sql->prepare("
-		SELECT i.ipmask, i.hard, i.expires, i.banner, i.reason, ".userfields().", f.cc2 ipflag
+		SELECT i.ipmask, i.hard, i.expires, i.banner, i.reason, ".userfields()."
 		FROM ipbans i
 		LEFT JOIN users u ON i.banner = u.name
-		LEFT JOIN ip2c  f ON (f.ip_from <= inet_aton(i.ipmask) AND f.ip_to >= inet_aton(i.ipmask))
 		{$qwhere}
 		ORDER BY i.ipmask ASC
 		LIMIT ".($_POST['page'] * $ppp).",{$ppp}
@@ -226,7 +225,7 @@ function ipfmt($a, $ipflag = "") {
 	if (strpos($a, ':') === false) {
 		$expl = explode(".", $a);
 		$dot = "<font~color=#808080>.</font>";
-		return str_replace("~", " ", str_replace(" ", "&nbsp;", sprintf("%3s%s%3s%s%3s%s%3s", $expl[0], $dot, $expl[1], $dot, $expl[2], $dot, $expl[3])))." ".flagip($a, $ipflag, true);
+		return str_replace("~", " ", str_replace(" ", "&nbsp;", sprintf("%3s%s%3s%s%3s%s%3s", $expl[0], $dot, $expl[1], $dot, $expl[2], $dot, $expl[3])))." ".flagip($a, "", true);
 	} else { // lol ipv6
 		return str_replace(":", "<font color=#808080>:</font>", $a);
 	}

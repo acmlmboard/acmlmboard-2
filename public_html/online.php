@@ -14,18 +14,16 @@
 	$showurl = has_perm('view-user-urls');
 	$showip  = has_perm('view-post-ips');
 
-	// Since the IP flags need to be fetched anyway (if we're admins), do it here rather than HITTING THE DB FOR EACH IP
+	// Removed IP2C query at this level due to db strain.
 	$users = $sql->query("
-		SELECT u.*".($showip ? ", f.cc2 ipflag " : "")."
+		SELECT u.* 
 		FROM users u
-		".($showip ? "LEFT JOIN ip2c f ON (f.ip_from <= inet_aton(u.ip) AND f.ip_to >= inet_aton(u.ip))" : "")."
 		WHERE u.lastview > ".(ctime()-$_GET['time'])." $hiddencheck
 		ORDER BY u.lastview DESC
 	");
 	$guests = $sql->query("
-		SELECT g.*".($showip ? ", f.cc2 ipflag " : "")."
+		SELECT g.* 
 		FROM guests g
-		".($showip ? "LEFT JOIN ip2c f ON (f.ip_from <= inet_aton(g.ip) AND f.ip_to >= inet_aton(g.ip))" : "")."
 		WHERE g.date > ".(ctime()-$_GET['time'])." 
 		ORDER BY g.bot ASC, g.date DESC
 	");
@@ -73,7 +71,7 @@ $L[TBL1]>
 		</td>" : '')."
 ".($showip ? "
 		$L[TD]>
-			".flagip($user['ip'], $user['ipflag'])."<br>
+			".flagip($user['ip'])."<br>
 			<small>".($user['ipbanned'] ? "(<a href='ipbans.php?ip={$user['ip']}'>IP banned</a>)" : "<a href='ipbans.php?newip={$user['ip']}&newreason=online.php%20ban#addban'>IP Ban</a>")."</small>
 		</td>" : '')."
 		$L[TD]>{$user['posts']}</td>
@@ -132,7 +130,7 @@ $L[TBL1]>
 		</td>
 ".($showip ? "
 		$L[TD]>".
-			flagip($guest['ip'], $guest['ipflag'])."<br>
+			flagip($guest['ip'])."<br>
 			<small>".($guest['ipbanned'] ? "(<a href='ipbans.php?ip={$guest['ip']}'>IP banned</a>)" : "<a href='ipbans.php?newip={$guest['ip']}&newreason=online.php%20ban#addban'>IP Ban</a>")."</small>
 		</td>" : '')."
 	</tr>";

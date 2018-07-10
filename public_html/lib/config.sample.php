@@ -94,8 +94,8 @@
   //This will allow you to set the goal limits for 'Projected date' in profile.php
   $config['topposts'] = '5000'; //Number of posts to set the goal to.
   $config['topthreads'] = '200'; //Number of threads created to set the goal to.
+  $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
 
-  $config['threadprevnext'] = false; //Enables links to jump one thread newer/older
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
   $config['registrationpuzzle'] = true;
   //The following enables the optional badge system
@@ -103,8 +103,6 @@
   $config['spritesystem'] = true; //The sprite system allows users to catch graphic 'sprites' on the board. Collect them all!
   
   $config['extendedprofile'] = false; //This feature allows for an unlimited about of profile fields in a user's profile *DO NOT USE EXPEREMENTAL*
-
-  $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
 
   $config['rootuseremail'] = false; //Enable the Root Administrator's email to be shown in the No Permission page to a user who can edit other users but not Root Administrators.
   $config['displayname'] = false; //Enable the use of the "Display Name" System. (allows a second name to be used instead of the User's)

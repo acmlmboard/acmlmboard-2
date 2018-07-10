@@ -37,7 +37,7 @@
         } else { $err.=$ava_out; }
       } else { //No file uploaded
         if(strlen($_POST['url'])>0) {
-          $img_data=getimagesize($_POST['url']); print_r($img_data);
+          $img_data=getimagesize($_POST['url']); 
           $ftypes=array("png","jpeg","jpg","gif");
           if($img_data[0]>$avatardimx){ $err="Image linked is too wide.<br>"; }
           if($img_data[1]>$avatardimy){ $err.="Image linked is too tall.<br>"; }
@@ -76,6 +76,7 @@
   if(isset($err)){
     noticemsg("Notice", $err);
   }
+  if(isset($linkex)){ $ajax="&x_ajax=1"; } else { $ajax="?x_ajax=1"; }
   print "<script language=\"javascript\">
 	function edit(av_id, av_lab, av_url)
 	{
@@ -107,7 +108,7 @@
 					document.getElementById(\"defava\").style['background'] = \"none\";
 			}
 		};
-		y.open('POST','mood.php$lnkex&x_ajax=1',true);
+		y.open('POST','mood.php$lnkex$ajax',true);
 		y.setRequestHeader('Content-type','application/x-www-form-urlencoded');
 		y.send('a=Delete&id='+av_id);
 		}

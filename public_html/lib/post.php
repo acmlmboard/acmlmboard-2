@@ -227,7 +227,7 @@
 
 
 	//[KAWA] Youtube tag.
-	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
+	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="https://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
     
     if ($htmlcomcolor = has_badge_perm("show-html-comments")) {
       if ($htmlcomcolor == "1") $htmlcomcolor = "#66ff66";

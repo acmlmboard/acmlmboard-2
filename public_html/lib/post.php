@@ -156,21 +156,24 @@
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
     $msg=preg_replace("'\[imgs\](.*?)\[/imgs\]'si",'<a href="\1" title="Click to enlarge"><img src="\1" style="max-width: 300px; max-height: 300px;"></a>',$msg);
+
+	
+    $msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
+
+    //Moving Line Break parsing to before the security filter, as this can be used to bypass it.
+    $msg=preg_replace_callback("'\[nobr\](.*?)\[/nobr\]'si",'nobreaks',$msg); //No Line Breaks tag block
+    $msg=str_replace("\n",'<br>',$msg);
+    // security filtering needs to be done before [svg] is parsed because [svg]
+    // uses tags that are otherwise blacklisted
+    $msg = securityfilter($msg);
     //Url filtering on href= or src=
     $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
     $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
-	
-	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
-	
-	// security filtering needs to be done before [svg] is parsed because [svg]
-	// uses tags that are otherwise blacklisted
-	$msg = securityfilter($msg);
-	
-	//[blackhole89] - [svg] tag
+
+    //[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
 
-    $msg=preg_replace_callback("'\[nobr\](.*?)\[/nobr\]'si",'nobreaks',$msg); //No Line Breaks tag block
-    $msg=str_replace("\n",'<br>',$msg);
+
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies['num'];$i++)
@@ -227,7 +230,7 @@
 
 
 	//[KAWA] Youtube tag.
-	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="http://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
+	$msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="https://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
     
     if ($htmlcomcolor = has_badge_perm("show-html-comments")) {
       if ($htmlcomcolor == "1") $htmlcomcolor = "#66ff66";

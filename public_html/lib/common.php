@@ -453,7 +453,7 @@
 	else
 	{
 		if (has_perm("logout")) 
-		  $userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Logout');
+		  $userlinks[$ul++] = array('logout' => 1);
 	}
     if (has_perm("update-own-profile")) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
@@ -484,15 +484,16 @@
       {
        print " | ";
       }
-      print "<a href=\"$v[url]\">$v[title]</a>";
+      if($v[logout]){ print "<a href=\"\"><label for=\"lgout\">Log Out</label></a>"; } else { print "<a href=\"$v[url]\">$v[title]</a>"; }
       $c++;
      }
 
      print "
                </td>
-               <form action=\"login.php\" method=\"post\" name=\"logout\">
+               <form action=\"login.php\" method=\"post\" name=\"logout\" onsubmit=\"if(!confirm('Do you wish to log out?')){return false;} else {  document.getElementById('lghash').value='".md5($pwdsalt2.$loguser['pass'].$pwdsalt)."'; }\">
                  $L[INPh]=\"action\" value=\"logout\">
-                 $L[INPh]=\"p\" value=".md5($pwdsalt2.$loguser['pass'].$pwdsalt).">
+                 <input type=\"submit\" id=\"lgout\" style=\"display: none;\">
+                 $L[INPh]=\"lghash\" id=\"lghash\" value=\"TurtlesTurtlesTurtles\">
                </form>";
     
     if ($radar)

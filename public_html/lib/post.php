@@ -160,17 +160,19 @@
     $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
     $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
 	
-	$msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
-	
-	// security filtering needs to be done before [svg] is parsed because [svg]
-	// uses tags that are otherwise blacklisted
-	$msg = securityfilter($msg);
-	
-	//[blackhole89] - [svg] tag
-    $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
+    $msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 
+    //Moving Line Break parsing to before the security filter, as this can be used to bypass it.
     $msg=preg_replace_callback("'\[nobr\](.*?)\[/nobr\]'si",'nobreaks',$msg); //No Line Breaks tag block
     $msg=str_replace("\n",'<br>',$msg);
+    // security filtering needs to be done before [svg] is parsed because [svg]
+    // uses tags that are otherwise blacklisted
+    $msg = securityfilter($msg);
+
+    //[blackhole89] - [svg] tag
+    $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
+
+
     
     if (!$nosmilies) {
       for($i=0;$i<$smilies['num'];$i++)

@@ -156,9 +156,7 @@
     $msg=preg_replace("'\[url=(.*?)\](.*?)\[/url\]'si",'<a href=\\1>\\2</a>',$msg);    
     $msg=preg_replace("'\[img\](.*?)\[/img\]'si",'<img src=\\1 style="max-width: 100%">',$msg);
     $msg=preg_replace("'\[imgs\](.*?)\[/imgs\]'si",'<a href="\1" title="Click to enlarge"><img src="\1" style="max-width: 300px; max-height: 300px;"></a>',$msg);
-    //Url filtering on href= or src=
-    $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
-    $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
+
 	
     $msg = preg_replace_callback("@(<style.*?>)(.*?)(</style.*?>)@si", 'filterstyle', $msg);
 
@@ -168,6 +166,9 @@
     // security filtering needs to be done before [svg] is parsed because [svg]
     // uses tags that are otherwise blacklisted
     $msg = securityfilter($msg);
+    //Url filtering on href= or src=
+    $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
+    $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
 
     //[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);

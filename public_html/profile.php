@@ -202,7 +202,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
 
     $shops   = $sql -> query('SELECT * FROM itemcateg ORDER BY corder');
     $eq      = $sql -> fetchq("SELECT * FROM usersrpg WHERE id='$uid'");
-    $eqitems = $sql -> query("SELECT * FROM items WHERE `id`='$eq[eq1]' OR `id`='$eq[eq2]' OR `id`='$eq[eq3]' OR `id`='$eq[eq4]' OR `id`='$eq[eq5]' OR `id`='$eq[eq6]'");
+    $eqitems = $sql -> query("SELECT * FROM items WHERE `id` IN ('$eq') ");
     
    while($item = $sql -> fetch($eqitems))
     {

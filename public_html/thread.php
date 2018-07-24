@@ -39,6 +39,8 @@ if($_COOKIE['pstbon']>=1){
       else return " <a href=thread.php?time=$time>".timeunits2($time).'</a> ';
     }
 
+  $thumbhash=str_split(md5($pwdsalt2."T".$_GET['id']."b".$spritesalt."".$loguser['id']),10);
+  $thumbtoken=$thumbhash[1];
 
   loadsmilies();
 
@@ -473,13 +475,13 @@ if($_COOKIE['pstbon']>=1){
 //[KAWA] Thread +1
 if(isset($_GET['thumbsup']))
 {
-  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
+  if (!has_perm('rate-thread') || $thumbtoken!=$_GET['thumbsup']) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("INSERT IGNORE INTO threadthumbs VALUES (".$loguser['id'].", ".$tid.")");
 	$isThumbed = true;
 }
 else if(isset($_GET['thumbsdown']))
 {
-  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
+  if (!has_perm('rate-thread') || $thumbtoken!=$_GET['thumbsdown']) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("DELETE FROM threadthumbs WHERE uid = ".$loguser['id']." AND tid = ".$tid);
 	$isThumbed = false;
 }
@@ -491,9 +493,9 @@ else
 $thumbsUp = "";
 if (has_perm('rate-thread') && $thread['user'] != $loguser['id']) {
   if(!$isThumbed)
-  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup\" class=\"threadthumbsup\">+1</a>";
+  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup=".$thumbtoken."\" class=\"threadthumbsup\">+1</a>";
   else
-  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown\" class=\"threadthumbsdown\">-1</a>";
+  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown=".$thumbtoken."\" class=\"threadthumbsdown\">-1</a>";
 }
 
 $thumbCount = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE tid=".$tid);

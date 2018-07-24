@@ -53,6 +53,7 @@
   $config['sslbase']= "https://".$config['address']; // Replace if you need fine control of the address
   $config['path']   = "/";// If you run your copy in a specific path (ie: http://www.example.gov/board) than this would be 'board/''
   $config['showssl'] = false; // Shows a link/icon to allow a user to switch to ssl. Enable if you are using on a https server.
+  $config['forcessl'] = false; // Bounces users using HTTP to HTTPS if enabled.
 
   /* Default metadata for when a page does not provide any 
      This content is used by bots (I.E. Discord, Slack, Google, Bing). */

@@ -304,7 +304,7 @@
 
     $feedicons .= feedicon("img/rss.png", "rss.php");
 
-   if(isssl())
+   if(isssl() && $config['showssl'])
     {
      $ssllnk = "<img src=\"img/sslon.gif\" title=\"SSL enabled\">";
     }

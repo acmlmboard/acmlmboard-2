@@ -1,6 +1,12 @@
 <?php
   require "lib/function.php";
 
+  //Enforce SSL if enabled.
+  if(!isssl() && $config['forcessl']==true){
+    header("HTTP/1.1 301 Moved Permanently");
+    header("Location: https://".getenv('HTTP_HOST')."".getenv('REQUEST_URI')."");
+    die();
+  }
   header("Content-type: text/html; charset=utf-8");
   
   //[Scrydan] Added these three variables to make editing quicker.
@@ -298,7 +304,7 @@
 
     $feedicons .= feedicon("img/rss.png", "rss.php");
 
-   if(isssl())
+   if(isssl() && $config['showssl'])
     {
      $ssllnk = "<img src=\"img/sslon.gif\" title=\"SSL enabled\">";
     }

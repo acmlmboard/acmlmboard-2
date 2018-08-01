@@ -57,12 +57,13 @@ function usegfxnums()
       $post['usign'] = $post['uhead'] = "";
     //}
 
+	$authval = auth_url($post['id']);
     //post has been deleted, display placeholder
     if($post['deleted']) {
       $postlinks="";
       if(can_edit_forum_posts(getforumbythread($post['thread']))) {
         $postlinks.="<a href=\"thread.php?pid={$post['id']}&amp;pin={$post['id']}&rev={$post['revision']}#{$post['id']}\">Peek</a> | ";
-        $postlinks.="<a href=\"editpost.php?pid=".urlencode(packsafenumeric($post['id']))."&amp;act=undelete\">Undelete</a>";
+        $postlinks.="<a href=\"editpost.php?pid={$post['id']}{$authval}&amp;act=undelete\">Undelete</a>";
       }
 
       if($post['id'])
@@ -115,7 +116,7 @@ function usegfxnums()
         $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid={$post['id']}\">Edit Title</a>";
 
       if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])))
-        $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid=".urlencode(packsafenumeric($post['id']))."&amp;act=delete\">Delete</a>";
+        $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}{$authval}&amp;act=delete\">Delete</a>";
 
       if($post['id'])
         $postlinks.=" | ID: {$post['id']}";

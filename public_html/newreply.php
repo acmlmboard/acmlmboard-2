@@ -11,35 +11,17 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
-  // [Mega-Mario] see my comment in newthread.php
-  if($act=$_POST[action]){
-    $tid=$_POST[tid];
-
-    if ($log)
-	{
-		$userid = $loguser['id'];
-		$user = $loguser;
-		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
-			$err = 'Invalid token.';
-			
-		$pass = $_POST['passenc'];
+  	//--
+	if ($act = $_POST['action']) {
+		check_token($_POST['auth']);
+		$tid = (int) $_POST['tid'];
+	} else {
+		$tid = (int) $_GET['id'];
 	}
-	else
-	{
-      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
-
-    if($userid=checkuser($_POST[name],$pass))
-      $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
-    else
-      $err="    Invalid username or password!<br>
-".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
-
-		$pass = md5($pwdsalt2.$pass.$pwdsalt);
-	}
-  }else{
-    $user=$loguser;
-    $tid=$_GET[id];
-  }
+	$user   = $loguser;
+	$userid = $loguser['id'];
+	//--
+	
   checknumeric($tid);
 
   needs_login(1);
@@ -158,8 +140,6 @@
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     if($act=='Preview') $post[moodlist]=moodlist($_POST[mid]);
     else $post[moodlist]=moodlist();
-    if($act=='Preview') $pass=$_POST[passenc];
-    else $pass=md5($pwdsalt2.$loguser[pass].$pwdsalt);
     $post[nolayout]=$_POST[nolayout];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
@@ -203,8 +183,7 @@ print     "  $L[TR]>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
-".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=\"$pass\">
+".        "      ".auth_tag()."
 ".        "      $L[INPh]=tid value=$tid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>

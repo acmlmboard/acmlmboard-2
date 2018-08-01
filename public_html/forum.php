@@ -45,6 +45,7 @@
 $isIgnored = $sql->resultq("select count(*) from ignoredforums where uid=".$loguser['id']." and fid=".$fid) == 1;
 if(isset($_GET['ignore']))
 {
+  check_token($_GET['auth'], "xign");
   if(!$isIgnored && $loguser['id']!=0)
   {
     $sql->query("insert into ignoredforums values (".$loguser['id'].", ".$fid.")");
@@ -60,6 +61,7 @@ if(isset($_GET['ignore']))
 }
 else if(isset($_GET['unignore']))
 {
+  check_token($_GET['auth'], "xign");
   if($isIgnored)
   {
     $sql->query("delete from ignoredforums where uid=".$loguser['id']." and fid=".$fid);
@@ -81,8 +83,9 @@ if (has_perm('edit-forums')) {
 }
 
 if($loguser['id']!=0){
-$ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore\" class=\"unignoreforum\">Unignore forum</a> "
-             : "<a href=\"forum.php?id=$fid&amp;ignore\" class=\"ignoreforum\">Ignore forum</a> ";
+	$auth = auth_url("xign");
+	$ignoreLink = $isIgnored ? "<a href=\"forum.php?id=$fid&amp;unignore$auth\" class=\"unignoreforum\">Unignore forum</a> "
+				: "<a href=\"forum.php?id=$fid&amp;ignore$auth\" class=\"ignoreforum\">Ignore forum</a> ";
 }
     $threads=$sql->query("SELECT ".userfields('u1','u1').",".userfields('u2','u2').", t.*, 
 

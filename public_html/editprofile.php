@@ -46,10 +46,10 @@
         $listgroup[$group['id']] = $group['title'];
       }
 
-  $token = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
+  
   if($_POST[action]=='Edit profile')
   {
-	if ($_POST['token'] !== $token) die('No.');
+	check_token($_POST['auth']);
 	
 	if ($_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
 		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt)),2147483647);
@@ -510,7 +510,7 @@ if ($config['alwaysshowlvlbar'])
 ".        "    $L[TD]>$L[INPs]=action value='Edit profile'>
 ".        "    $L[INPs]=action value='Preview theme'></td>
 ".        " $L[TBLend]
-".        " $L[INPh]=token value='$token'>
+".        " ".auth_tag()."
 ".        "</form>
 ";
   }

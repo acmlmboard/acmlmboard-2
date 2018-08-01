@@ -377,7 +377,7 @@
 				if ($_GET['action'] == 'edit') {
 					$comm = $edit;
 				} else {
-					$tokenstr = "&auth=".generate_token(TOKEN_SHOP);
+					$tokenstr = auth_url(TOKEN_SHOP);
 					$buy     = "<a href='shop.php?action=buy&id={$item['id']}{$tokenstr}'>Buy</a>";
 					$sell    = "<a href='shop.php?action=sell&cat={$_GET['cat']}{$tokenstr}'>Sell</a>";
 					$preview = "<a href='#status' onclick=\"preview({$loguser['id']},{$item['id']},{$_GET['cat']},'".addslashes($item['name'])."')\">Preview</a>";

@@ -493,13 +493,13 @@
       if($v[logout]){ print "<a href=\"\"><label for=\"lgout\">Log Out</label></a>"; } else { print "<a href=\"$v[url]\">$v[title]</a>"; }
       $c++;
      }
-
+	 // todo: remove this unnecessary extra mungling
      print "
                </td>
-               <form action=\"login.php\" method=\"post\" name=\"logout\" onsubmit=\"if(!confirm('Do you wish to log out?')){return false;} else {  document.getElementById('lghash').value='".md5($pwdsalt2.$loguser['pass'].$pwdsalt)."'; }\">
+               <form action=\"login.php\" method=\"post\" name=\"logout\" onsubmit=\"if(!confirm('Do you wish to log out?')){return false;} else {  document.getElementById('auth').value='".generate_token("weird")."'; }\">
                  $L[INPh]=\"action\" value=\"logout\">
                  <input type=\"submit\" id=\"lgout\" style=\"display: none;\">
-                 $L[INPh]=\"lghash\" id=\"lghash\" value=\"TurtlesTurtlesTurtles\">
+                 $L[INPh]=\"auth\" id=\"auth\" value=\"TurtlesTurtlesTurtles\">
                </form>";
     
     if ($radar)
@@ -755,7 +755,7 @@
   function error($name, $msg)
    {
     global $abversion, $abdate, $boardprog;
-    pageheader('Error');
+	pageheader('Error');
     print "<br>";
     noticemsg($name,$msg);
     pagefooter();

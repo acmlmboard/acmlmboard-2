@@ -66,6 +66,8 @@
     else return $a[0];
   }
   
+  // if you need to use tokens, please use these functions (and make sure the auth key is either in $_GET['auth'] or $_POST['auth'])
+  // DO NOT USE MD5 STUFF DIRECTLY
   function check_token(&$check, $var = '') {
     if ($check != generate_token($var)) {
       error("Error", "Invalid token");
@@ -78,5 +80,5 @@
     //return hash('sha256', $pwdsalt2 . $loguser['pass'] . $_SERVER['REMOTE_ADDR'] . $var . $pwdsalt);
   }
   function auth_tag($var = '') { return "<input type='hidden' name='auth' value=\"".generate_token($var)."\">"; }
-
+  function auth_url($var = '') { return "&auth=".generate_token($var); }
 ?>

@@ -4,12 +4,15 @@ require("lib/common.php");
 
 if(isset($_GET['catch']))
 {
-	require('lib/sprites.php');
+
 	$monID = (int)$_GET['catch'];
 	$userID = (int)$loguser['id'];
-	$spritehash = $_GET['t'];
-	if($userID == 0) die("Not logged in.");
-	if($spritehash != generate_sprite_hash($userID,$monID)) die("Not a valid capture.");
+	
+	if ($userID == 0) die("Not logged in.");
+	// this can't use check_token() as it's meant to return text from an alert
+	if ($_GET['auth'] != generate_token("{$userID}_{$monID}")) die("Not a valid capture.");
+	
+	require('lib/sprites.php');
 
 	$sql->query("INSERT IGNORE INTO sprite_captures VALUES(".$userID.", ".$monID.")") or die("Could not register capture.");
 	if($sql->affectedrows() == 1)

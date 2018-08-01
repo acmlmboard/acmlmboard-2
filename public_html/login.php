@@ -28,13 +28,11 @@ if($_COOKIE['pstbon']==-1){
     }
     $print="  $L[TD1c]>$print</td>";
   }elseif($act=='logout'){
-    //Adding security-hash check to the log out function. This requires a correct login attempt to be made first.
-    if($_POST['lghash']==md5($pwdsalt2.$loguser['pass'].$pwdsalt)){
-      setcookie('user',0);
-      setcookie('pass','');
-      die(header("Location: ./"));
-    }
-    $err="Invalid logout request.";
+	// Using the default token function now! (horray for consistency)
+	check_token($_POST['auth'], "weird");
+	setcookie('user',0);
+	setcookie('pass','');
+	die(header("Location: ./"));
   }
 
   pageheader('Login');

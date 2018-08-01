@@ -6,37 +6,17 @@
     $announce=$_REQUEST[announce];
     checknumeric($announce);
 
-	// [Mega-Mario] This is currently useless. TODO: fix or nuke.
-  if($act=$_POST[action])
-  {
-    $fid=$_POST[fid];
-    if ($log)
-	{
-		$userid = $loguser['id'];
-		$user = $loguser;
-		if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
-			$err = 'Invalid token.';
-			
-		$pass = $_POST['passenc'];
+	//--
+	if ($act = $_POST['action']) {
+		check_token($_POST['auth']);
+		$fid = (int) $_POST['fid'];
+	} else {
+		$fid = (int) $_GET['id'];
 	}
-	else
-	{
-      $pass=md5($pwdsalt2.$_POST[pass].$pwdsalt);
+	$user   = $loguser;
+	$userid = $loguser['id'];
+	//--
 
-    if($userid=checkuser($_POST[name],$pass))
-      $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
-    else
-      $err="    Invalid username or password!<br>
-".         "    <a href=forum.php?id=$fid>Back to forum</a> or <a href=newthread.php?id=$fid>try again</a>";
-
-		$pass = md5($pwdsalt2.$pass.$pwdsalt);
-	}
-  }
-  else
-  {
-    $user=$loguser;
-    $fid=$_GET[id];
-  }
   checknumeric($fid);
 
   needs_login(1);
@@ -172,20 +152,7 @@ if($act!="Submit"){
 ".        " $L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>$typecap</td>
-";
-    if(!$log)
-    print "  $L[TR]>
-".        "    $L[TD1c]>Username:</td>
-".        "    $L[TD2]>$L[INPt]=name size=25 maxlength=25></td>
 ".        "  $L[TR]>
-".        "    $L[TD1c]>Password:</td>
-".        "    $L[TD2]>$L[INPp]=pass size=13 maxlength=32></td>
-";
-    else
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
-";
-    print "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
 ".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100></td>
 ".        "  $L[TR]>
@@ -207,6 +174,7 @@ print     "  $L[TR]>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
+".        "      ".auth_tag()."
 ".        "      $L[INPh]=fid value=$fid>
 ".        "      $L[INPh]=announce value=$announce>
 ".        "      $L[INPs]=action value=Submit>
@@ -311,9 +279,10 @@ print     "  $L[TR]>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
-".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=\"$pass\">
-".        "      $L[INPh]=fid value=$fid>
+".        "      $L[INPh]=auth value=\"".htmlval($_POST['auth'])."\">
+"./*      "      $L[INPh]=passenc value=\"$pass\">
+".*/
+          "      $L[INPh]=fid value=$fid>
 ".        "      $L[INPh]=iconid value=$_POST[iconid]>
 ".        "      $L[INPh]=iconurl value=$_POST[iconurl]>
 ".        "      $L[INPh]=announce value=$announce>

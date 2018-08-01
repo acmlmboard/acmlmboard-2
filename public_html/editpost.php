@@ -12,26 +12,22 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
-  if($act=$_POST[action])
-  {
-    $pid=$_POST[pid];  
-	
-	if ($_POST['passenc'] !== md5($pwdsalt2.$loguser['pass'].$pwdsalt))
-		$err = 'Invalid token.';
-  }
-  else
-  {
-    $pid=$_GET[pid];
+  if($act=$_POST['action']) {
+    check_token($_POST['auth']);
+	$pid = (int) $_POST['pid'];  
+  } else {
+    $pid = (int) $_GET['pid'];
   }
   
   $userid = $loguser['id'];
   $user = $loguser;
-  $pass = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
+ // $pass = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
 
-  if($_GET[act]=='delete' || $_GET[act]=='undelete') {
-    $act=$_GET[act];
-    $pid=unpacksafenumeric($pid);
-  }
+	if ($_GET['act'] == 'delete' || $_GET['act'] == 'undelete') {
+		$act = $_GET['act'];
+		check_token($_GET['auth'], $pid);
+		//$pid=unpacksafenumeric($pid);
+	}
 
   checknumeric($pid);
 
@@ -110,10 +106,8 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        " <form action=editpost.php method=post>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Edit Post</td>
-";
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"$pass\">
-";
+".        "    ".auth_tag();
+
     if($loguser[posttoolbar]!=1)
     print "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
@@ -183,8 +177,7 @@ print     "  $L[TR]>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
-".        "      $L[INPh]=name value=\"".htmlval(stripslashes($_POST[name]))."\">
-".        "      $L[INPh]=passenc value=\"$pass\">
+".        "      $L[INPh]=auth value=\"".htmlval($_POST['auth'])."\">
 ".        "      $L[INPh]=pid value=$pid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>

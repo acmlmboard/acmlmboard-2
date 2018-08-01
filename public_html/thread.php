@@ -39,9 +39,6 @@ if($_COOKIE['pstbon']>=1){
       else return " <a href=thread.php?time=$time>".timeunits2($time).'</a> ';
     }
 
-  $thumbhash=str_split(md5($pwdsalt2."T".$_GET['id']."b".$spritesalt."".$loguser['id']),10);
-  $thumbtoken=$thumbhash[1];
-
   loadsmilies();
 
    if(has_perm('track-deleted-posts')){
@@ -128,9 +125,12 @@ if($_COOKIE['pstbon']>=1){
   else $threadcreator=0;
   $action='';
   //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
-  if($tid && $_POST[c]==md5($pwdsalt2.$loguser[pass].$pwdsalt) && (can_edit_forum_threads(getforumbythread($tid)) ||
+  if($tid && (can_edit_forum_threads(getforumbythread($tid)) ||
      ($loguser[id] == $threadcreator && $_POST[action] == "rename" && has_perm('rename-own-thread')))) {
     $act=$_POST[action];
+	if ($act) {
+      check_token($_POST['auth'], "qmod");
+    }
     if($act=='stick'  ) $action=',sticky=1';
     if($act=='unstick') $action=',sticky=0';
     if($act=='close'  ) $action=',closed=1';
@@ -203,7 +203,8 @@ if($_COOKIE['pstbon']>=1){
     {
       if($_GET['act']=="vote" && $log)
       {
-		$vote=unpacksafenumeric($_GET['vote']);
+		$vote = (int) $_GET['vote']; //unpacksafenumeric($_GET['vote']);
+		check_token($_GET['auth'], "{$tid}_{$vote}");
         if($vote > -1) 
 		{
           if($thread[multivote]){
@@ -464,7 +465,7 @@ if($_COOKIE['pstbon']>=1){
       {
         $h=$opt[s]?"*":"";
 	$cond=$log&&(($thread[multivote]&&!$opt[s])||$thread[changeable]||!$mytotal);
-        $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote=".urlencode(packsafenumeric($opt[id])).">"):"").htmlval($opt[option]).($cond?"</a>":"")." $h$L[TD3]><img src=\"gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]\">";
+        $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote={$opt['id']}".auth_url("{$tid}_{$opt['id']}").">"):"").htmlval($opt[option]).($cond?"</a>":"")." $h$L[TD3]><img src=\"gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]\">";
       }
       $poll.=
           "  $L[TR2]>$L[TDs] colspan=2>Multiple voting is ".($thread[multivote]?"":"not")." allowed. Changing your vote is ".($thread[changeable]?"":"not")." allowed. $total ".($total==1?"user has":"users have")." voted so far.
@@ -475,13 +476,15 @@ if($_COOKIE['pstbon']>=1){
 //[KAWA] Thread +1
 if(isset($_GET['thumbsup']))
 {
-  if (!has_perm('rate-thread') || $thumbtoken!=$_GET['thumbsup']) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
+  check_token($_GET['auth'], "xvt");
+  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("INSERT IGNORE INTO threadthumbs VALUES (".$loguser['id'].", ".$tid.")");
 	$isThumbed = true;
 }
 else if(isset($_GET['thumbsdown']))
 {
-  if (!has_perm('rate-thread') || $thumbtoken!=$_GET['thumbsdown']) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
+  check_token($_GET['auth'], "xvt");
+  if (!has_perm('rate-thread')) { noticemsg("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>"); pagefooter(); die(); }
 	$sql->query("DELETE FROM threadthumbs WHERE uid = ".$loguser['id']." AND tid = ".$tid);
 	$isThumbed = false;
 }
@@ -492,10 +495,11 @@ else
 
 $thumbsUp = "";
 if (has_perm('rate-thread') && $thread['user'] != $loguser['id']) {
+  $authval = auth_url("xvt");
   if(!$isThumbed)
-  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup=".$thumbtoken."\" class=\"threadthumbsup\">+1</a>";
+  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsup$authval\" class=\"threadthumbsup\">+1</a>";
   else
-  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown=".$thumbtoken."\" class=\"threadthumbsdown\">-1</a>";
+  	$thumbsUp = "<a href=\"thread.php?id=$tid&amp;thumbsdown$authval\" class=\"threadthumbsdown\">-1</a>";
 }
 
 $thumbCount = $sql->resultq("SELECT COUNT(*) FROM threadthumbs WHERE tid=".$tid);
@@ -694,7 +698,7 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
 ".        "    <input type=hidden name=arg value=''>
 ".        "    <input type=hidden name=id value=$tid>
 ".        "    <input type=hidden name=action value=''>
-".        "    <input type=hidden name=c value=".md5($pwdsalt2.$loguser[pass].$pwdsalt).">
+".        "    ".auth_tag("qmod")."
 ".        "  </td>
 ".        "  </form>
 ".        "$L[TBLend]
@@ -801,9 +805,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        "  $L[TRh] onclick='togglequickreply();' style='cursor: pointer'>
 ".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
 ";
-    print "  $L[INPh]=name value=\"".htmlval($loguser[name])."\">
-".        "  $L[INPh]=passenc value=\"".md5($pwdsalt2.$loguser[pass].$pwdsalt)."\">
-";
+
      if($loguser[posttoolbar]!=1)
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
@@ -814,6 +816,7 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
 ".        "  $L[TR1] $quickreplydisplay >
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
+".        "      ".auth_tag()."
 ".        "      $L[INPh]=tid value=$tid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>

@@ -27,7 +27,7 @@
  * Common = 0 | Uncommon = 20 | 40 = Slightly Rare | Rare = 60 | Very Rare = 80 | Mew Rare = 99
  */
 
-require_once 'lib/spritelib.php';
+//require_once 'lib/spritelib.php';
 
 $chance = 5 + (rand(0, 6464) % 5);
 
@@ -120,9 +120,6 @@ switch($monData['anchor'])
 
 $monMarkup = "<img id=\"sprite\" style=\"opacity: 0.75; -moz-opacity: 0.75; position: fixed; ".$x."; ".$y."; z-index: 999; max-width: 100%;\" src=\"img/sprites/".$pic."\" title=\"".$monData['title']."\" onclick=\"capture()\" />";
 
-
-$spritehash = generate_sprite_hash($loguser['id'], $monData['id']);
-
 $monScript = "<script language=\"javascript\">
 	function capture()
 	{
@@ -137,7 +134,7 @@ $monScript = "<script language=\"javascript\">
 					alert(x.responseText);
 			}
 		};
-		x.open('GET', 'sprites.php?catch=".$monData['id']."&t=".$spritehash."&x_ajax=1', true);
+		x.open('GET', 'sprites.php?catch=".$monData['id'].auth_url("{$loguser['id']}_{$monData['id']}")."&x_ajax=1', true);
 		x.send(null);
 	}
 </script>";

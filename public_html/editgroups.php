@@ -12,7 +12,8 @@
   
   if ($act == 'delete')
   {
-	$id = unpacksafenumeric($_GET['id']);
+	$id = (int) $_GET['id']; //unpacksafenumeric($_GET['id']);
+	check_token($_GET['auth'], $id);
 	$group = $sql->fetchp("SELECT * FROM `group` WHERE `id`=?", array($id));
 	
 	if (!$group)
@@ -109,7 +110,8 @@
  
  if ($act == 'undelete')
   {
-	$id = unpacksafenumeric($_GET['id']);
+	$id = (int) $_GET['id']; //unpacksafenumeric($_GET['id']);
+	check_token($_GET['auth'], $id);
 	$deletedgroup = $sql->fetchp("SELECT * FROM `deletedgroups` WHERE `id`=?", array($id));
  
 	if (!$deletedgroup)
@@ -175,7 +177,7 @@
 		    $bmisc = $deletedgroup['banned'] == 1 ? 'For banned users' : '-'; 
  
 		$actions = array();
-		if ($caneditperms) $actions[] = array('href'=>'editgroups.php?deletedgroups&act=undelete&id='.urlencode(packsafenumeric($deletedgroup['id'])), 'title'=>'Undelete', 
+		if ($caneditperms) $actions[] = array('href'=>"editgroups.php?deletedgroups&act=undelete&id={$group['id']}".auth_url($group['id']), 'title'=>'Undelete', 
 			'confirm'=>'Are you sure you want to undelete the group "'.htmlspecialchars($deletedgroup['title']).'"?');
  
 		$data[] = array
@@ -322,7 +324,7 @@
 		$actions = array();
 		if ($caneditperms) $actions[] = array('href'=>'editperms.php?gid='.$group['id'], 'title'=>'Edit permissions');
 		$actions[] = array('href'=>'editgroups.php?act=edit&id='.$group['id'], 'title'=>'Edit');
-		if ($caneditperms) $actions[] = array('href'=>'editgroups.php?act=delete&id='.urlencode(packsafenumeric($group['id'])), 'title'=>'Delete', 
+		if ($caneditperms) $actions[] = array('href'=>"editgroups.php?act=delete&id={$group['id']}".auth_url($group['id']), 'title'=>'Delete', 
 			'confirm'=>'Are you sure you want to delete the group "'.htmlspecialchars($group['title']).'"? It will be permanently lost as well as all permissions attached to it.');
 		
 		$data[] = array

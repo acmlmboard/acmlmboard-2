@@ -357,7 +357,12 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
     if($userdisplayname || $usercnickcolor){
       $showrealnick = true;
     }
-    
+	
+	// extra url mungling to remove token 
+	if ($user['url']) {
+		$user['url'] = urlformat($user['url']);
+    }
+	
     print "<a href=\"./\">Main</a> - Profile for ".userdisp($user)."
            <br><br>
 ";

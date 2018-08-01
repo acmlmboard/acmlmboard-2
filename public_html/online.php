@@ -139,10 +139,6 @@ $L[TBL1]>
 
 	pagefooter();
 
-function urlformat($url) {
-	$url = preg_replace('/[\?\&]auth(=[0-9a-z]+)/i', '', $url); // don't reveal the token
-	return str_replace(array("%20", "_"), " ", htmlspecialchars($url, ENT_QUOTES));
-}	
 function sslicon($ssl) {
 	if (has_perm('view-post-ips') && $ssl) {
 		return "<img src='img/ssloff.gif'>";

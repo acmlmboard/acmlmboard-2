@@ -716,6 +716,7 @@
 		 <br>
           $oldpmsgbox";
      }
+     define('HEADER_PRINTED', true);
    }
 
   function pagestats()
@@ -755,7 +756,9 @@
   function error($name, $msg)
    {
     global $abversion, $abdate, $boardprog;
-	pageheader('Error');
+    if (!defined('HEADER_PRINTED')) {
+        pageheader('Error');
+    }
     print "<br>";
     noticemsg($name,$msg);
     pagefooter();

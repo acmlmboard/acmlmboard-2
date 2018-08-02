@@ -85,7 +85,7 @@ pageheader("Edit Thread");
 	$sql->query("DELETE FROM pollvotes   WHERE id={$voteid}");
   }
 }
- redirect("thread.php?id=$tid",-1);
+ redirect("thread.php?id=$tid", "The thread has been edited successfully.", "Message", 'return to the thread');
   } else {
 
   //No submitted data, fetch from the thread/poll data

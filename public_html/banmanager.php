@@ -31,7 +31,7 @@ if (isset($_GET['unban'])) {
 	if (isset($_POST['unbanuser'])) {
 		check_token($_POST['auth']);
 		$sql->query("UPDATE users SET group_id = '{$defaultgroup}', title = '', tempbanned = 0 WHERE id = '{$user['id']}'");
-		redirect("profile.php?id={$_GET['id']}", -1); // "User has been unbanned.", 'the user'
+		redirect("profile.php?id={$_GET['id']}", "User has been unbanned.", "Message", 'the user');
 	}
 	
 	pageheader('Unban User');
@@ -80,7 +80,7 @@ if (isset($_GET['unban'])) {
 		$sql->prepare("UPDATE users SET group_id = ?, title = ?, tempbanned = ? WHERE id = '{$user['id']}'",
 			array($_POST['destgroup'], $banreason, $_POST['tempbanned'] ? $_POST['tempbanned'] + ctime() : 0)
 		);
-		redirect("profile.php?id={$_GET['id']}",-1); // "User has been banned.", 'the user'
+		redirect("profile.php?id={$_GET['id']}", "User has been banned.", "Message", 'the user');
 	}
 	
 	pageheader('Ban User');

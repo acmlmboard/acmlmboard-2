@@ -235,38 +235,16 @@ print     "  $L[TR]>
     sendirc("{irccolor-base}Post edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$thread[id]{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
 
     }
-/*if($loguser[redirtype]==0){ //Classical Redirect
-  $loguser['blocksprites']=1;
-  pageheader('Edit post',$thread[forum]);
-    print "$top - Submit
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    Post edited!<br>
-".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".        "$L[TBLend]
-";
-} else { //Modern redirect*/
-  redirect("thread.php?pid=$pid#edit","-1");
-//}
+    redirect("thread.php?pid={$pid}#xwnd1", "The post was edited successfully.", "Message", htmlval($thread['title']));
   }elseif($act=='delete' ||$act=='undelete'){
     if(!(can_delete_forum_posts($thread[forum]))) {
-  pageheader('Edit post',$thread[forum]);
+      pageheader('Edit post',$thread[forum]);
       print "$top - Error";
-      noticemsg("Error", "You do not have the permission to do this.");
+      error("Error", "You do not have the permission to do this.");
     } else {
       $sql->query("UPDATE posts SET deleted=".($act=='delete'?1:0)." WHERE id='$pid'");
-  /*$loguser['blocksprites']=1;
-  pageheader('Edit post',$thread[forum]);
-      print "$top - ".($act=='delete'?'Delete':'Undelete')." Post
-".          "<br><br>
-".          "$L[TBL1]>
-".          "  $L[TD1c]>
-".          "    Post ".$act."d!<br>
-".          "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".          "$L[TBLend]
-";*/
-  redirect("thread.php?pid=$pid#edit",-1);
+      // heh
+	  redirect("thread.php?pid={$pid}#xwnd1", "The post was {$act}d successfully.", "Message", htmlval($thread['title']));
     }
   }
   //Shamelessly taken from newreply.php - SquidEmpress

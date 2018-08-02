@@ -297,6 +297,7 @@
                . ($config['alwaysshowlvlbar']?(setfield('showlevelbar')  .','):'')
                . setfield('posttoolbar')   .','
                . (has_perm("show-online") || has_perm("edit-user-show-online")?(setfield('hidden')  .','):'')
+               . setfield('redirtype') .','
                . setfield('timezone') .','
                . "tzoff=$tztotal,"
                . "birth='$birthday',"
@@ -307,25 +308,15 @@
                . "WHERE `id`=$user[id]"
                );
   
-               /*if($loguser[redirtype]==0){ //Classical Redirect
-  $loguser['blocksprites']=1;
-  pageheader('Edit profile');
-		print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    Profile changes saved!<br>
-".        "    ".redirect("profile.php?id=$user[id]",'the updated profile')."
-".        "$L[TBLend]
-";
-                } else { //Modern redirect*/
-                  redirect("profile.php?id=$user[id]","Profile was edited successfully.");
-                //}
-    if($config['log'] >= '1') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("user edit ".$targetuserid)."')");
-
-		die(pagefooter());
+        // This went after the redirect, which made it *completely useless*
+        if ($config['log'] >= '1') {
+			$sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("user edit ".$targetuserid)."')");
+		}
+        redirect("profile.php?id={$user['id']}","The profile was edited successfully.", "Edit successful", "the updated profile");
 	}
 	else
 	{
-                noticemsg("Error", "Couldn't save the profile changes. The following errors occured:<br><br>".$error);
+        noticemsg("Error", "Couldn't save the profile changes. The following errors occured:<br><br>".$error);
 
 		$act = '';
 		foreach ($_POST as $k=>$v)
@@ -334,21 +325,9 @@
 	}
   }
 
-  if($act=='Preview theme')
-  {
-  /*if($loguser[redirtype]==0){ //Classical Redirect
-  $loguser['blocksprites']=1;
-  pageheader('Edit profile');
-  print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    The theme will be previewed<br>
-".        "    ".redirect("/?theme=$_POST[theme]",'the theme preview')."
-".        "$L[TBLend]
-";
-   } else { //Modern redirect*/
-   redirect("/?theme=$_POST[theme]",0);
-   //}
-  die(pagefooter());
+  if ($act=='Preview theme') {
+    // No reason to ever use the non instant redirect here
+    redirect("./?theme={$_POST['theme']}", "This is a sample message you can click on to dismiss.", "Message");
   }
 
   pageheader('Edit profile');
@@ -495,6 +474,7 @@ if ($config['spritesystem'])
 ".           fieldrow('Hide from Online Views', fieldoption('hidden',$user['hidden'],array('Show me online', 'Never show me online')))."
 ";
  print"
+".           fieldrow('Redirect Type', fieldoption('redirtype',$user['redirtype'],array('Instant redirect', 'Show redirect page', 'Manual')))."
 ".           fieldrow('AB1.x Number and Bar Graphics', fieldoption('numbargfx',$user['numbargfx'],array('Show them in AB1.x themes', 'Never show them in AB1.x themes')))."
 ";
 if ($config['alwaysshowlvlbar'])

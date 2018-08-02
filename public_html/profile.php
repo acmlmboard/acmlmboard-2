@@ -2,28 +2,6 @@
     require "lib/common.php";
     require "lib/threadpost.php";
 
-  $rdmsg="";
-  if($_COOKIE['pstbon']){
-	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
- $rdmsg="<script language=\"javascript\">
-	function dismiss()
-	{
-		document.getElementById(\"postmes\").style['display'] = \"none\";
-	}
-</script>
-	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
-if($_COOKIE['pstbon']==-1){
-	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>User has been banned.</td></tr></table></div>";
-} elseif($_COOKIE['pstbon']<-1){
-	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>User has been unbanned.</td></tr></table></div>";
-} else {
-	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Profile was edited successfully.</td></tr></table></div>"; }
-}
-
 	loadsmilies();
 
     $uid = $_GET['id'];
@@ -365,9 +343,8 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
 	
     print "<a href=\"./\">Main</a> - Profile for ".userdisp($user)."
            <br><br>
-";
-    if($_COOKIE['pstbon']){ print $rdmsg;}
-print "    $L[TBL] width=\"100%\">
+		   $cookiemsg
+           $L[TBL] width=\"100%\">
              $L[TDn] valign=\"top\">
                $L[TBL1]>
                  $L[TRh]>

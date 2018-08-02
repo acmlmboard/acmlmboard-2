@@ -158,14 +158,7 @@ print     "  $L[TR]>
                    ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".$_POST[title]."',".$_POST[mid].",$_POST[nolayout])");
         $pid=$sql->insertid();
         $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'$_POST[message]')");
-
-             /*if($loguser[redirtype]==0){
-        $msg="    Sent!<br>
-".           "    ".redirect('private.php','private message box')."
-";
-             } else { //Modern redirect*/
-                  redirect("private.php", -1);
-             //}
+        redirect("private.php", "The private message has been sent successfully.", "Sent!", "the private message box");
       }
 }
     }elseif(!$userto){

@@ -43,14 +43,28 @@ function isssl(){
     return (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']=='on');
 }
 
-/*function redirect($url,$msg,$delay=2){
-  return "You will now be redirected to <a href=$url>$msg</a> ...<META HTTP-EQUIV=REFRESH CONTENT=$delay;URL=$url>";
-}*/
-function redirect($url,$msg){
-  header("Set-Cookie: pstbon=".$msg."; Max-Age=60; Version=1");
-  header("Location: ".$url);
-  die();
-  return 0;
+// New cookie message system
+// Reintroduces classic redirect (for better or for worse)
+function redirect($url, $msg = "", $title = "Message", $redirmsg = "", $delay = 2){
+	global $loguser;
+	if (!$redirmsg || !$loguser['redirtype']) {
+		// 0 - Instant redirect (print optional message later)
+		if ($msg) {
+			setcookie('wndmsg', $msg, 0);
+			setcookie('wndtitle', $title, 0);
+		}
+		header("Location: {$url}");
+		die;
+	} else {
+		$loguser['blocksprites'] = 1;
+		if ($loguser['redirtype'] == 2) {
+			// 2 - Classic, no redirect (for debugging usually)
+			error($title, "{$msg}<br>Click <a href=\"{$url}\">here</a> to be continue to {$redirmsg}.");
+		} else { 
+			// 1 - Classic, with redirect (like 1.x)
+			error($title, "{$msg}<br>You will now be redirected to <a href=\"{$url}\">{$redirmsg}</a> ...<META HTTP-EQUIV=REFRESH CONTENT=\"{$delay}\";URL=\"{$url}\">");
+		}
+	}
 }
 
 

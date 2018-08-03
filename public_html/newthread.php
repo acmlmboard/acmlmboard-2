@@ -361,22 +361,22 @@ if (!$announce)   {
     }
 
     // bonus shit
-    $c = rand(250,750);
-    if (!$announce) $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
-
+    if ($announce) {
+        // No coin bonus for announcements
+        $viewlink  = "thread.php?announce=".$forum['id'];
+        $shortlink = "a=".$forum['id'];
+        $message   = "The ".($forum['id'] ? "forum " : "")."announcement has been posted.";
+    } else {
+        $c = rand(250,750);
+        $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
+		
+		$viewlink  = "thread.php?id=$tid";
+        $shortlink = "t=$tid";
+        $message   = ucfirst($type)." posted successfully! (Gained $c bonus coins)";
+    }
+	
     $chan = $sql->resultp("SELECT chan FROM announcechans WHERE id=?",array($forum['announcechan_id']));
-
-if ($announce) {
-  $viewlink = "thread.php?announce=".$forum['id'];
-  $shortlink = "a=".$forum['id'];
-  $bonus = "";
-}
-else {
-  $viewlink = "thread.php?id=$tid";
-  $shortlink = "t=$tid";
-  $bonus = "    Posted! (Gained $c bonus coins)<br>";
-}
-
+	
 if ($announce && $forum['id']==0) {
      sendirc("{irccolor-base}New $type by {irccolor-name}".get_irc_displayname()."{irccolor-url}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}{boardurl}?$shortlink{irccolor-base}",$chan);
 }
@@ -388,22 +388,7 @@ else {
      sendirc("{irccolor-base}New $type by {irccolor-name}".get_irc_displayname()."{irccolor-base} in {irccolor-title}".$forum[title]."{irccolor-url}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}"."{boardurl}?$shortlink{irccolor-base}",$chan);
 
 }
-
-
-/*if($loguser[redirtype]==0){ //Classic
-    $loguser['blocksprites']=1;
-    pageheader("New $type",$forum[id]);
-    print "$top - Submit
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "  $bonus
-".        "    ".redirect($viewlink,"the $type")."
-".        "$L[TBLend]
-";
-} else { //Modern*/
-  redirect($viewlink,$c);
-//}
+    redirect($viewlink, $message, "Posted", "the {$type}");
   }
 
   pagefooter();

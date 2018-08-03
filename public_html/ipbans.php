@@ -43,7 +43,7 @@
 		$what = $_POST['hard'] ? "an hard" : "a soft";
 		sendirc("{irccolor-base}{irccolor-name}{$loguser['name']}{irccolor-base} added {$what} IP ban for {irccolor-name}{$_POST['newip']}{irccolor-base} (reason: '{$_POST['reason']}').", $config['staffchan']);
 		
-		redirect("?", -1);
+		redirect("?", "Successfully added an IP ban to '{$_POST['newip']}'", "Message", "the IP Bans manager");
 	} else if (isset($_POST['dodel'])) {
 		check_token($_POST['auth']);
 		
@@ -55,9 +55,9 @@
 				$sql->query("DELETE FROM ipbans WHERE ipmask = '".addslashes($data[0])."' AND expires = ".((int) $data[1])." AND hard = ".((int) $data[2]));
 				++$i;
 			}
-			redirect("?", $i);
+			redirect("?", "Removed {$i} IP ban".($i == 1 ? "" : "s").".", "Message", "the IP Bans manager");
 		} else {
-			redirect("?", -2);
+			redirect("?", "No bans were selected for removal.", "Message", "the IP Bans manager");
 		}
 	}
 	
@@ -102,18 +102,6 @@
 		ORDER BY i.ipmask ASC
 		LIMIT ".($_POST['page'] * $ppp).",{$ppp}
 	", $outres);
-	
-
-	
-	// Cookie status messages
-	$cookiemsg = "";
-	if (isset($_COOKIE['pstbon'])) {
-		switch ($_COOKIE['pstbon']) {
-			case -1: $cookiemsg = cookiemsg("Message", "Successfully added an IP ban."); break;
-			case -2: $cookiemsg = cookiemsg("Message", "No bans selected for removal."); break;
-			default: $cookiemsg = cookiemsg("Message", "Removed {$_COOKIE['pstbon']} IP ban".($_COOKIE['pstbon'] == 1 ? "" : "s")."."); break;
-		}
-	}
 	
 	pageheader("IP Bans");
 	$auth_tag = auth_tag();

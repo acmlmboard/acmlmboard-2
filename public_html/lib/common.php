@@ -245,6 +245,15 @@
     die();
    } 
    */
+   
+	// New cookie message display
+	$cookiemsg = "";
+	if (isset($_COOKIE['wndmsg']) && $_COOKIE['wndmsg']) {
+		setcookie('wndmsg', null);
+		setcookie('wndtitle', null);
+		$cookiemsg = infownd(htmlspecialchars($_COOKIE['wndtitle']), securityfilter($_COOKIE['wndmsg']));
+	}
+   
 
    //2/21/2007 xkeeper - todo: add $forumid attribute (? to add "forum user is in" and markread links
    // also added number_format to views
@@ -372,6 +381,8 @@
         $L[TR1c]>
           $L[TD] colspan=\"3\">
             ".($log ? userlink($logbar) : "Guest").": ";
+			
+		
 
   if($log)
     {
@@ -757,7 +768,7 @@
    {
     global $abversion, $abdate, $boardprog;
     if (!defined('HEADER_PRINTED')) {
-        pageheader('Error');
+        pageheader('Message');
     }
     print "<br>";
     noticemsg($name,$msg);
@@ -765,28 +776,31 @@
     die();
    }
    
-
-  function cookiemsg($title, $message)
-   {
-    global $L;
-    // Invalidate the previous cookie, which requires this to be called before pageheader()
-    header("Set-Cookie: pstbon={$_COOKIE['pstbon']}; Max-Age=1; Version=1");
-    if ($message) {
-        return "
-		<script language='javascript'>
-			function dismiss() {
-				document.getElementById('postmes').style['display'] = 'none';
-			}
-		</script>
-		<div id='postmes' onclick='dismiss()' title='Click to dismiss.'><br>
-			$L[TBL1] width='100%' id='edit'>
-				$L[TRh]>$L[TDh]>{$title}<div style='float: right'><a style='cursor: pointer' onclick='dismiss()'>[x]</a></td></tr>
+	// Generic closable message
+	function infownd($title, $message) {
+		global $L;
+		static $i = 0;
+		
+		// First time the javascript is output
+		if ($i === 0) {
+			$outjs = "
+			<script language='javascript'>
+				function dismiss(name) {
+					document.getElementById(name).style['display'] = 'none';
+				}
+			</script>";
+		} else {
+			$outjs = "";
+		}
+		++$i;
+		return "{$outjs}
+		<div id='xwnd{$i}' onclick='dismiss(\"xwnd{$i}\")' title='Click to dismiss.'><br>
+			$L[TBL1] style='width: 100%'>
+				$L[TRh]>$L[TDh]>{$title}<div style='float: right'><a style='cursor: pointer' onclick='dismiss(\"xwnd{$i}\")'>[x]</a></td></tr>
 				$L[TR1]>$L[TD1l]>{$message}</td></tr>
 			</table>
-		</div>";
-     }
-     return "";
-   }
+		<br></div>";
+	}
     
   function pagefooter()
    {

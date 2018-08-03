@@ -1,22 +1,6 @@
 <?php
   require 'lib/common.php';
-
-  $rdmsg="";
-  if($_COOKIE['pstbon']){
-	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
- $rdmsg="<script language=\"javascript\">
-	function dismiss()
-	{
-		document.getElementById(\"postmes\").style['display'] = \"none\";
-	}
-</script>
-	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
-if($_COOKIE['pstbon']==-1){
-	$rdmsg.="Sent!<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>The private message has been sent successfully.</td></tr></table></div>"; }
-}
-
+  
   needs_login(1);
   $page=$_GET['page'];
   if(!$page)
@@ -109,10 +93,8 @@ if($_COOKIE['pstbon']==-1){
   }
 
   print "$topbot
-".      "<br>
-";
-    if($_COOKIE['pstbon']){ print $rdmsg;}
-print   "$L[TBL1]>
+".      "<br>$cookiemsg
+".      "$L[TBL1]>
 ".      "  $L[TRh]>
 ".      "    $L[TDh] width=17>&nbsp;</td>
 ".      "    $L[TDh] width=17>&nbsp;</td>

@@ -13,25 +13,6 @@
 
   require 'lib/common.php';
   require 'lib/threadpost.php';
-  $rdmsg="";
-  if($_COOKIE['pstbon']){
-	header("Set-Cookie: pstbon=".$_COOKIE['pstbon']."; Max-Age=1; Version=1");
- $rdmsg="<script language=\"javascript\">
-	function dismiss()
-	{
-		document.getElementById(\"postmes\").style['display'] = \"none\";
-	}
-</script>
-	<div id=\"postmes\" onclick=\"dismiss()\" title=\"Click to dismiss.\"><br>
-".      "$L[TBL1] width=\"100%\" id=\"edit\">$L[TRh]>$L[TDh]>";
-if($_COOKIE['pstbon']>=1){
-	$rdmsg.="Post Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Post successful. ".$_COOKIE['pstbon']." bonus coins.</td></tr></table></div><br>";
-  } else {
-	$rdmsg.="Edit Successful<div style=\"float: right\"><a style=\"cursor: pointer;\" onclick=\"dismiss()\">[x]</a></td></tr>
-".	"<tr>$L[TD1l]>Post was edited successfully.</td></tr></table></div>";
-}
-}
 
     function timelink($time){
       global $timeval;
@@ -41,6 +22,7 @@ if($_COOKIE['pstbon']>=1){
 
   loadsmilies();
 
+  //--
    if(has_perm('track-deleted-posts')){
      $deletedposts=
      "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
@@ -52,7 +34,8 @@ if($_COOKIE['pstbon']>=1){
      $deletedposts="";
      $deletedposts="";
      }
- 
+  //--
+  
   $page = $_REQUEST['page'];
 
   if(!$page)
@@ -87,12 +70,15 @@ if($_COOKIE['pstbon']>=1){
     checknumeric($announcefid);
     $viewmode = "announce";
   }
+  //--
   elseif(isset($_GET[deletedposts])) {
     $viewmode = "deletedposts";
   }
   elseif(isset($_GET[alldeletedposts])) {
     $viewmode = "alldeletedposts";
   }
+  //--
+  
   // "link" support (i.e., thread.php?pid=999whatever)
   elseif($pid=$_GET[pid]){
     checknumeric($pid);
@@ -239,6 +225,9 @@ if($_COOKIE['pstbon']>=1){
     if(!$pid) $meta=threadformeta($tid); else $meta=postformeta($pid);
     //append thread's title to page title
     pageheader($thread[title],$thread[fid],$meta);
+	
+	// Print thread creation / edit messages (they lack a 'pid')
+	if (!$_REQUEST['pid']) print $cookiemsg;
 
     //mark thread as read // 2007-02-21 blackhole89
     if($log && $thread[lastdate]>$thread[frtime])
@@ -744,7 +733,8 @@ print "$modlinks
       $post[maxrevision]=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
     }
     if(can_edit_forum_posts($post[fid]) && $post[id]==$_GET[pin]) $post[deleted]=false;
-if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
+	// After a creating or editing a post
+	if ($post['id'] == $_REQUEST['pid']) print $cookiemsg;
 
     print "<br>
 ".         threadpost($post,0,$pthread);
@@ -797,7 +787,6 @@ if($post[id]==$_REQUEST['pid'] && $_COOKIE['pstbon']=="-1"){ print $rdmsg; }
       $quickreplydisplay = "";
     }
 
-  if($_COOKIE['pstbon']>=1){ print $rdmsg;}
     print "
 ".        "
 ".        "$L[TBL1] name=quickreply id=quickreply>

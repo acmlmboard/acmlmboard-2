@@ -39,23 +39,29 @@
 			if (!$_GET['id']) {
 				error("Error", "No item specified.<br> <a href=./>Back to main</a>");
 			}
+			
+			$_POST['cat']    = isset($_POST['cat'])    ? (int)$_POST['cat']    : 0;
+			
 			// Delete checkbox marked
 			if ($_GET['id'] != -1 && isset($_POST['delete']) && $_POST['delete']) {
-				if ($_GET['id']) { // Can't delete nothing
+				// Make sure the item exists before doing anything with it
+				$item = $sql->fetchq("SELECT id, name FROM items WHERE id = {$_GET['id']}");
+				if ($item) {
 					$sql->query("DELETE FROM items WHERE id = {$_GET['id']}");
 					// Remove deleted item from users' inventories
 					for ($i = 1; $i < 7; $i++)
 						$sql->query("UPDATE usersrpg SET `eq{$i}` = 0 WHERE `eq{$i}` = {$_GET['id']}");
+					redirect("shop.php?action=items&cat={$_POST['cat']}", "The item \"<b>{$item['name']}</b>\" has deleted!", "Item Deleted", 'the shop');
+				} else {
+					error("Nein", "You can't delete an item which does not exist.");
 				}
-				redirect("?", -5);
 			}
 			
-			// derp
+			// item settings
 			$_POST['name']   = isset($_POST['name'])   ? $_POST['name'] : "";
 			$_POST['desc']   = isset($_POST['desc'])   ? $_POST['desc'] : "";
 			$_POST['coins']  = isset($_POST['coins'])  ? (int)$_POST['coins']  : 0;
 			$_POST['coins2'] = isset($_POST['coins2']) ? (int)$_POST['coins2'] : 0;
-			$_POST['cat']    = isset($_POST['cat'])    ? (int)$_POST['cat']    : 0;
 			$_POST['hidden'] = isset($_POST['hidden']) ? (int)$_POST['hidden'] : 0;
 			
 			$realshop = $sql->resultq("SELECT COUNT(*) FROM itemcateg WHERE id = {$_POST['cat']}");
@@ -88,7 +94,7 @@
 				$id = $_GET['id'];
 			}
 			
-			redirect("shop.php?action=desc&id={$id}#{$id}", -4);
+			redirect("shop.php?action=desc&id={$id}#{$id}", "The item \"<b>{$vals[0]}</b>\" has been saved successfully!", "Item Saved", 'the shop');
 			break;
 		case 'buy':
 			check_token($_GET['auth'], TOKEN_SHOP);
@@ -112,9 +118,10 @@
 				
 				if ($config['ircshopnotice'])
 					sendirc("{irccolor-name}" . get_irc_displayname() . " {irccolor-base}is now equipped with {irccolor-title}$item[name]{irccolor-base}.");
-				redirect("shop.php", -2); // The {$item['name']} has been bought and equipped!, 'shop.php','the shop'
+				
+				redirect("shop.php", "\"<b>{$item['name']}</b>\" has been bought and equipped!", "Item Bought", 'the shop');
 			}
-			redirect("shop.php", -3);
+			redirect("shop.php", "You cannot buy this item. Either it doesn't exist or you don't have enough coins.", "Uh oh", 'the shop');
 			break;
 		case 'sell':
 			check_token($_GET['auth'], TOKEN_SHOP);
@@ -129,23 +136,10 @@
 					WHERE id = {$loguser['id']}
 				");
 			} else {
-				redirect("shop.php", -3); //error("uh oh", "No.");
+				redirect("shop.php", "Nice try, but you have to <i>buy</i> the item before you can unequip it.", "Uh oh", 'the shop');
 			}
-			redirect("shop.php", -1); // "The {$pitem['name']} has been unequipped and sold.", 'shop.php', 'the shop'
+			redirect("shop.php", "\"<b>{$pitem['name']}</b>\" has been unequipped and sold.", "Item Bought", 'the shop');
 			break;
-	}
-	
-	
-	// Cookie status messages
-	$rdmsg = "";
-	if (isset($_COOKIE['pstbon'])) {
-		switch ($_COOKIE['pstbon']) {
-			case -1: $rdmsg = cookiemsg("Item Sold", "The item has been unequipped and sold.");	break;
-			case -2: $rdmsg = cookiemsg("Item Bought", "The item has been bought and equipped!"); break;
-			case -3: $rdmsg = cookiemsg("uh oh", "You aren't allowed to do this."); break;
-			case -4: $rdmsg = cookiemsg("Item Saved", "The item data has been saved."); break;
-			case -5: $rdmsg = cookiemsg("Item Deleted", "The item has been deleted."); break;
-		}
 	}
 	
 	
@@ -189,7 +183,7 @@
 			}
 			
 			print "
-			{$rdmsg}
+			{$cookiemsg}
 			<br>
 			<table style='border-spacing: 0px'>
 				<tr>
@@ -212,9 +206,7 @@
 		case 'edit': //Added (Sukasa)
 			// Edit / add item
 			if (!$_GET['id']) {
-				noticemsg("Error", "No item specified.<br> <a href=./>Back to main</a>");
-				pagefooter();
-				die;
+				error("Error", "No item specified.<br> <a href=./>Back to main</a>");
 			}
 
 			// Create dummy item if a new one is being added
@@ -237,7 +229,7 @@
 			$statlist = itemrow($item, true); // Don't hide +0 / x1.00
 			
 			print "
-			<form action='shop.php?action=save&id={$item['id']}' method='POST'>
+			<form action='shop.php?action=save&cat={$item['cat']}&id={$item['id']}' method='POST'>
 			$L[TBL1]>$L[TR1]>$L[TD1c]><a href='shop.php'>Return to shop list</a> | <a href='shop.php?action=items&cat={$item['cat']}'>Return to item list</a> </tr>$L[TBLend]
 			<br>
 			<table style='width: 100%; border-spacing: 0px'>
@@ -295,9 +287,7 @@
 			if ($_GET['action'] != 'edit') {
 				$_GET['cat'] = $sql->resultq("SELECT cat FROM items WHERE id = {$_GET['id']}");
 				if (!$_GET['cat']) {
-					noticemsg("Error", "This item does not exist!");
-					pagefooter();
-					die;
+					error("Error", "This item does not exist!");
 				}
 			}
 		
@@ -311,9 +301,7 @@
 				// Default one, with unequipable items
 				$eqitem = false;
 			} else {
-				noticemsg("Error", "This category does not exist!");
-				pagefooter();
-				die;
+				error("Error", "This category does not exist!");
 			}
 			
 			$edit = "";
@@ -360,6 +348,7 @@
 			");
 			
 			print "
+			{$cookiemsg}
 			$L[TBL1]>
 				$L[TRh]>
 					$L[TDh] style='width: 150px'>Commands</td>
@@ -414,7 +403,7 @@
 			break;
 
 		default:
-			noticemsg("Error", "What do you think you're doing?");
+			error("Error", "What do you think you're doing?");
 	}
 
 	pagefooter();

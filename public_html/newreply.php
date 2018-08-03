@@ -233,26 +233,12 @@ print     "  $L[TR]>
     $c = rand(100, 500);
     $sql->query("UPDATE `usersrpg` SET `spent` = `spent` - '$c' WHERE `id` = '$userid'");
 
-   $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
+    $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
 
 
-sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
-
-/*if($loguser[redirtype]==0){ //Classical Redirect
-    $loguser['blocksprites']=1;
-    pageheader('New reply',$thread[forum]);
-    print "$top - Submit
-".        "<br><br>
-".        "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    Posted! (Gained $c bonus coins)<br>
-".        "    ".redirect("thread.php?pid=$pid#$pid",htmlval($thread[title]))."
-".        "$L[TBLend]
-";
-} else { //Modern redirect*/
-  redirect("thread.php?pid=$pid#$pid",$c);
-//}
-
+    sendirc("{irccolor-base}New reply by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[ftitle]{irccolor-url}: {irccolor-name}$thread[title]{irccolor-url} ({irccolor-base}\x02\x02$tid{irccolor-url}) ({irccolor-base}+$c{irccolor-url})){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$chan);
+    
+    redirect("thread.php?pid={$pid}#xwnd1","Post successful! (Gained {$c} bonus coins)", "Posted!", htmlval($thread['title']));
   }
 
   if($act!='Submit' && !$err && can_view_forum($thread)){

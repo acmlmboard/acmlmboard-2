@@ -70,19 +70,7 @@ VALUES (
 ".        "$L[TBLend]
 ";
 	} else if ($act == 'Save and finish') {
-        /*if($loguser[redirtype]==0){ //Classical Redirect
-       $loguser['blocksprites']=1;
-	pageheader('Post Radar');
-		print "$L[TBL1]>
-".        "  $L[TD1c]>
-".        "    <font color='#FF0000' style='font-weight: bold' />$error</font>
-".        "    Post Radar saved!<br>
-".        "    ".redirect("index.php",'the forum Index')."
-".        "$L[TBLend]
-";
-         } else { //Modern redirect*/
-              redirect("index.php",-1);
-         //}
+		redirect("index.php", "The Post Radar has been saved successfully.", "Post Radar saved!", "the forum index");
 	}
 	pagefooter();
 ?>

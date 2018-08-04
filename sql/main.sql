@@ -661,7 +661,7 @@ CREATE TABLE `misc` (
 
 LOCK TABLES `misc` WRITE;
 /*!40000 ALTER TABLE `misc` DISABLE KEYS */;
-INSERT INTO `misc` VALUES (5,0,0,'The board is currently unavailable. We apologize for any inconvenience.',0,'Registration is currently offline. We apologize for any inconvenience.','News','','emuz@address.com',0,0,0,0,0,0,'');
+INSERT INTO `misc` VALUES (0,0,0,'The board is currently unavailable. We apologize for any inconvenience.',0,'Registration is currently offline. We apologize for any inconvenience.','News','','admin@address.com',0,0,0,0,0,0,'');
 /*!40000 ALTER TABLE `misc` ENABLE KEYS */;
 UNLOCK TABLES;
 

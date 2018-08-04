@@ -21,20 +21,6 @@
     }
 
   loadsmilies();
-
-  //--
-   if(has_perm('track-deleted-posts')){
-     $deletedposts=
-     "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
-".   "       Your Deleted Posts</a> | <a href=thread.php?alldeletedposts>General Deleted Posts</a></div>";
-     $alldeletedposts=
-     "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
-".   "       <a href=thread.php?deletedposts>Your Deleted Posts</a> | General Deleted Posts</a></div>";
-     }else{
-     $deletedposts="";
-     $deletedposts="";
-     }
-  //--
   
   $page = $_REQUEST['page'];
 
@@ -69,16 +55,7 @@
     $announcefid = $_GET['announce'];
     checknumeric($announcefid);
     $viewmode = "announce";
-  }
-  //--
-  elseif(isset($_GET[deletedposts])) {
-    $viewmode = "deletedposts";
-  }
-  elseif(isset($_GET[alldeletedposts])) {
-    $viewmode = "alldeletedposts";
-  }
-  //--
-  
+  }  
   // "link" support (i.e., thread.php?pid=999whatever)
   elseif($pid=$_GET[pid]){
     checknumeric($pid);
@@ -355,57 +332,9 @@
                                   ."WHERE p.date>$mintime "
                       );
   }
-  elseif(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log){
- 
-    pageheader("Deleted Posts Tracker");
-    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
-                      ."FROM posts p "
-                      ."LEFT JOIN poststext pt ON p.id=pt.id "
-		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
-                      ."LEFT JOIN users u ON p.user=u.id "
-                      ."LEFT JOIN threads t ON p.thread=t.id "
-                      ."LEFT JOIN forums f ON f.id=t.forum "
-                      ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE p.user=$loguser[id] AND p.deleted=1 AND ISNULL(pt2.id) "
-                      ."ORDER BY p.id "
-                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
- 
-    $thread[replies]=$sql->resultq("SELECT count(*) "
-                                  ."FROM posts p "
-                                  ."LEFT JOIN threads t ON p.thread=t.id "
-                                  ."LEFT JOIN forums f ON f.id=t.forum "
-                                  ."LEFT JOIN categories c ON c.id=f.cat "
-                                  ."WHERE p.user=$loguser[id] AND p.deleted=1 ");
-  }
-  elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log){
- 
-    pageheader("Deleted Posts Tracker");
-    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum "
-                      ."FROM posts p "
-                      ."LEFT JOIN poststext pt ON p.id=pt.id "
-		      ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
-                      ."LEFT JOIN users u ON p.user=u.id "
-                      ."LEFT JOIN threads t ON p.thread=t.id "
-                      ."LEFT JOIN forums f ON f.id=t.forum "
-                      ."LEFT JOIN categories c ON c.id=f.cat "
-                      ."WHERE p.deleted=1 AND ISNULL(pt2.id) "
-                      ."ORDER BY p.id "
-                      ."LIMIT ".(($page-1)*$ppp).",".$ppp);
- 
-    $thread[replies]=$sql->resultq("SELECT count(*) "
-                                  ."FROM posts p "
-                                  ."LEFT JOIN threads t ON p.thread=t.id "
-                                  ."LEFT JOIN forums f ON f.id=t.forum "
-                                  ."LEFT JOIN categories c ON c.id=f.cat "
-                                  ."WHERE p.deleted=1 ");
-  }
-
-
-
-
-  else
+  else {
     pageheader();
-
+  }
   if($thread[replies]<$ppp){
     $pagelist=''; $pagebr='';
   }else{
@@ -421,10 +350,6 @@
         $pagelist.=" <a href=thread.php?time=$timeval&page=$p>$p</a>";
       elseif($viewmode == "announce")
         $pagelist.=" <a href=thread.php?announce=$announcefid&page=$p>$p</a>";
-      elseif($viewmode == "deletedposts")
-        $pagelist.=" <a href=thread.php?deletedposts&page=$p>$p</a>";
-      elseif($viewmode == "alldeletedposts")
-        $pagelist.=" <a href=thread.php?alldeletedposts&page=$p>$p</a>";
     $pagebr='<br>';
     $pagelist.='</div>';
   }
@@ -432,14 +357,18 @@
   if($viewmode=="thread"){
 
 	$faccess = $sql->fetch($sql->query("SELECT id,private,readonly FROM forums WHERE id=".(int)$thread['forum']));
-    if (can_create_forum_post($faccess)) {
-    if(can_create_locked_posts($thread['forum'], $thread['id']) && $thread[closed])
-      $newreply="<b><i>Thread closed</i></b> | <a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>"; //needs function to test for perm based on $faccess
-    elseif($thread[closed])
-      $newreply="Thread closed";
-    else
-      $newreply="<a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>";
-    }
+	$newreply = "";
+	if (can_create_forum_post($faccess)) {
+		if (has_perm('track-deleted-posts') && can_edit_forum_posts($thread['forum']))
+			$newreply .= "<a href='deletedposts.php?t={$tid}'>Deleted posts</a> | ";
+		
+		if (can_create_locked_posts($thread['forum'], $thread['id']) && $thread['closed'])
+			$newreply.="<b><i>Thread closed</i></b> | <a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>"; //needs function to test for perm based on $faccess
+		else if ($thread['closed'])
+			$newreply.="Thread closed";
+		else
+			$newreply.="<a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>";
+	}
     if($thread[ispoll])
     {
       $poll=
@@ -534,22 +463,7 @@ elseif($viewmode=="time"){
 ".        "$L[TBLend]
 ";
   }
-elseif(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log){
-    $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Deleted Posts Tracker</td>
-".        "$L[TDnr]>$deletedposts
-".        "$L[TBLend]
-";
-  }
-elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log){
-    $topbot=
-          "$L[TBL] width=100%>
-".        "  $L[TDn]><a href=./>Main</a> - Deleted Posts Tracker</td>
-".        "$L[TDnr]>$alldeletedposts
-".        "$L[TBLend]
-";
-  }else
+  else
   {
 	noticemsg("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
         pagefooter();
@@ -695,14 +609,6 @@ elseif(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $
   }
 
   print   "$topbot$userbar";
-         if(has_perm('deleted-posts-tracker') && $viewmode == "deletedposts" && $log && $thread['replies']==0) {
-         print "<br><br><br>"; 
-         noticemsg("Notice", "You have no deleted posts.");
-         }
-         if(has_perm('track-deleted-posts') && has_perm('deleted-posts-tracker') && $viewmode == "alldeletedposts" && $log && $thread['replies']==0) {
-         print "<br><br><br>";  
-         noticemsg("Notice", "There are no deleted posts on the board.");
-         }
 
   if($timeval) {
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">

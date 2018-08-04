@@ -20,21 +20,21 @@
   if($q = getenv("QUERY_STRING"))
     $url.="?$q";
 
-  require "lib/login.php";
+	require "lib/login.php";
 
-  $a = $sql->fetchq("SELECT `intval`,`txtval` FROM `misc` WHERE `field`='lockdown'");
+	// Anything useful globally, right here
+	$misc = $sql->fetchq("SELECT lockdown, views, botviews, maxpostsday, maxpostshour, maxusers, attention, attentiontitle FROM misc");
   
-  if($a['intval'])
-   {
-    //lock down
-    if(has_perm('bypass-lockdown'))
-    print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
-   else //Everyone else gets the wonderful lockdown page.
-    {
-     include "lib/locked.php";
-     die();
-    }
-   }
+	if ($misc['lockdown']) {
+		//lock down
+		if (has_perm('bypass-lockdown')) {
+			print "<h1><font color=\"red\"><center>LOCKDOWN!! LOCKDOWN!! LOCKDOWN!!</center></font></h1>";
+		} else { //Everyone else gets the wonderful lockdown page.
+			$misc['lockdowntext'] = $sql->resultq("SELECT lockdowntext FROM misc");
+			include "lib/locked.php";
+			die;
+		}
+	}
 
   if(!$log)
    {
@@ -171,27 +171,24 @@
                                           `urlto`='".addslashes($url)."', `ipaddr`='".$_SERVER['REMOTE_ADDR']."'");
     }
 
-   if (!$bot)
-    {
-    $sql->query("UPDATE `misc` SET `intval`=`intval`+1 WHERE `field`='views'");
-    }
-   else
-    {
-     $sql->query('UPDATE `misc` SET `intval`=`intval`+1 WHERE `field`="botviews"');
-    }
+	//--
+	if (!$bot) {
+		$sql->query("UPDATE `misc` SET `views`=`views`+1");
+		++$misc['views'];
+	} else {
+		$sql->query('UPDATE `misc` SET `botviews`=`botviews`+1');
+		++$misc['botviews'];
+	}
 
-    $views    = $sql->resultq("SELECT `intval` FROM `misc` WHERE `field`='views'");
-    $botviews = $sql->resultq("SELECT `intval` FROM `misc` WHERE `field`='botviews'");
-
-   if(($views+100)%1000000<=200)
-    {
-     $sql->query("INSERT INTO `views` SET `view`=$views, `user`='$loguser[id]', `time`='".ctime()."'");
-    if(($views+10)%1000000<=20)
-     {
-     if(!$bot)
-      sendirc("{irccolor-base}View {irccolor-title}$views{irccolor-base} by ".($log ? "{irccolor-name}".get_irc_displayname()."":"{irccolor-name}$userip")."{irccolor-base}");
-     }
-    }
+	if (($misc['views'] + 100) % 1000000 <= 200) {
+		$sql->query("INSERT INTO `views` SET `view` = {$misc['views']}, `user`='{$loguser['id']}', `time`='".ctime()."'");
+		if (($misc['views'] + 10) % 1000000 <= 20) {
+			if (!$bot) {
+				sendirc("{irccolor-base}View {irccolor-title}{$misc['views']}{irccolor-base} by ".($log ? "{irccolor-name}".get_irc_displayname()."":"{irccolor-name}$userip")."{irccolor-base}");
+			}
+		}
+	}
+	//--
   
 	$count = $sql->fetchq("	SELECT
 								(SELECT COUNT(*) FROM users) u,
@@ -199,7 +196,7 @@
 								(SELECT COUNT(*) FROM posts) p");
     $date       = date("m-d-y",ctime());
     $sql->query("REPLACE INTO `dailystats` (`date`, `users`, `threads`, `posts`, `views`)
-                 VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '$views')");
+                 VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '{$misc['views']}')");
 
      //2/21/2007 xkeeper - adding, uh, hourlyviews
     $sql->query("INSERT INTO `hourlyviews` (`hour`, `views`)
@@ -260,7 +257,7 @@
    // also changed the title to be "pagetitle - boardname" and not vice-versa
   function pageheader($pagetitle="", $fid=0, $metadata="Default")
    {
-    global $L, $dateformat, $sql, $log, $loguser ,$sqlpass, $views, $botviews, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
+    global $L, $dateformat, $sql, $log, $loguser, $misc, $sqluser, $boardtitle, $extratitle, $boardlogo, $homepageurl, $themefile,
            $logofile, $url, $config, $feedicons, $favicon, $showonusers, $count, $lastannounce, $lastforumannounce, $inactivedays;
 
    if (ini_get("register_globals"))
@@ -283,21 +280,19 @@
    if($pagetitle)
      $pagetitle .= " - ";
 
-   if(has_perm("edit-attentions-box"))
-     $ae = "(<a href=\"editattn.php\">edit</a>)";
-   else
-     $ae = "";
-
-    $extratitle = "
-                     $L[TBL1] width=\"100%\" align=\"center\">
-                       $L[TRh]>
-                          $L[TDh]>$config[atnname] $ae</td>
-                        $L[TR2] align=\"center\">
-                          $L[TDs]>".($t=$sql->resultq("SELECT `txtval` FROM `misc` WHERE `field`='attention'"))."
-                          </td>
-                     $L[TBLend]";
-   if($t=="")
-     $extratitle=$ae;
+	//--
+	// Attention box
+	$ae = has_perm("edit-attentions-box") ? "(<a href='editattn.php'>edit</a>)" : "";
+	if ($misc['attention']) {
+		$extratitle = "
+		$L[TBL1] width='100%' align='center'>
+			$L[TRh]>$L[TDh]>{$misc['attentiontitle']} $ae</td></tr>
+			$L[TR2] align='center'>$L[TDs]>{$misc['attention']}</td></tr>
+		$L[TBLend]";
+	} else {
+		$extratitle = $ae;
+	}
+	//--
 
    if($extratitle)
     {
@@ -362,7 +357,7 @@
         $L[TR2c]>
           $L[TD]>
           <div style=\"width: 150px\">Views: 
-          <span title=\"And ".number_format($botviews)." views by search engine spiders.\">".number_format($views)."</span></div></td>
+          <span title=\"And ".number_format($misc['botviews'])." views by search engine spiders.\">".number_format($misc['views'])."</span></div></td>
           $L[TD] width=\"100%\"><span style=\"float:right\">$feedicons$ssllnk</span>
             <a href=\"./\">Main</a>
           | <a href=\"faq.php\">FAQ</a>
@@ -639,26 +634,17 @@
        $onusercount++;
       }
 
-      $maxpostsday  = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="maxpostsday"');
-      $maxpostshour = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="maxpostshour"');
-      $maxusers     = $sql->resultq('SELECT `intval` FROM `misc` WHERE `field`="maxusers"');
-
-     if($count['d'] > $maxpostsday)
-      {
-       $sql->query("UPDATE `misc` SET `intval`='$count[d]' WHERE `field`='maxpostsday'");
-       $sql->query("UPDATE `misc` SET `intval`='".ctime()."' WHERE `field`='maxpostsdaydate'");
-      }
-     if($count['h'] > $maxpostshour)
-      {
-       $sql->query("UPDATE `misc` SET `intval`='$count[h]' WHERE `field`='maxpostshour'");
-       $sql->query("UPDATE `misc` SET `intval`='".ctime()."' WHERE `field`='maxpostshourdate'");
-      }
-     if($onusercount > $maxusers)
-      {
-       $sql->query("UPDATE `misc` SET `intval`='$onusercount' WHERE `field`='maxusers'");
-       $sql->query("UPDATE `misc` SET `intval`='".ctime()."' WHERE `field`='maxusersdate'");
-       $sql->query("UPDATE `misc` SET `txtval`='".addslashes($onuserlist)."' WHERE `field`='maxuserstext'");
-      }
+	  
+	// Update records
+	if ($count['d'] > $misc['maxpostsday']) {
+		$sql->query("UPDATE `misc` SET `maxpostsday` = '{$count['d']}', `maxpostsdaydate` = '".ctime()."'");
+	}
+	if ($count['h'] > $misc['maxpostshour']) {
+		$sql->query("UPDATE `misc` SET `maxpostshour` = '{$count['h']}', `maxpostshourdate` = '".ctime()."'");
+	}
+	if ($onusercount > $misc['maxusers']) {
+		$sql->prepare("UPDATE `misc` SET `maxusers` = ?, `maxusersdate` = ?, `maxuserstext` = ?", array($onusercount, ctime(), $onuserlist));
+	}
 
       $onuserlist="$onusercount user".($onusercount!=1?'s':'').' online'.($onusercount>0?': ':'').$onuserlist;
   

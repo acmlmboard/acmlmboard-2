@@ -454,6 +454,7 @@
 
     $userlinks = array();
     $ul = 0;
+	
 
 	if (!$log)
 	{
@@ -465,7 +466,12 @@
 	else
 	{
 		if (has_perm("logout")) 
-		  $userlinks[$ul++] = array('logout' => 1);
+			$userlinks[$ul++] = array('html' => '
+			<form method="POST" action="login.php" style="display: inline">
+				'.auth_tag("weird").'
+				<input type="hidden" name="action" value="logout">
+				<a href="#"><input type="submit" class="fakelink" value="Log out"></a>
+			</form>');
 	}
     if (has_perm("update-own-profile")) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
@@ -489,25 +495,11 @@
       $userlinks[$ul++] = $markread;
 
     $c = 0;
-
-    foreach ($userlinks as $k => $v)
-     {
-     if ($c > 0)
-      {
-       print " | ";
-      }
-      if($v[logout]){ print "<a href=\"\"><label for=\"lgout\">Log Out</label></a>"; } else { print "<a href=\"$v[url]\">$v[title]</a>"; }
-      $c++;
-     }
-	 // todo: remove this unnecessary extra mungling
-     print "
-               </td>
-               <form action=\"login.php\" method=\"post\" name=\"logout\" onsubmit=\"if(!confirm('Do you wish to log out?')){return false;} else {  document.getElementById('auth').value='".generate_token("weird")."'; }\">
-                 $L[INPh]=\"action\" value=\"logout\">
-                 <input type=\"submit\" id=\"lgout\" style=\"display: none;\">
-                 $L[INPh]=\"auth\" id=\"auth\" value=\"TurtlesTurtlesTurtles\">
-               </form>";
-    
+	foreach ($userlinks as $k => $v) {
+		if ($c++ > 0) print " | ";
+		print (isset($v['html']) ? $v['html'] : "<a href=\"{$v['url']}\">{$v['title']}</a>");
+	}
+	 
     if ($radar)
      {
       print " 

@@ -476,6 +476,7 @@ $fieldReq = $sql->query("SELECT * FROM `profileext`
                        $blocklayoutlink
                        ". (has_perm('create-pms') ? "| <a href=\"sendprivate.php?uid=".$user['id']."\">Send private message</a>":"") ."
                        ". (has_perm('view-user-pms') ? "| <a href=\"private.php?id=".$user['id']."\">View private messages</a>":"") ."
+                       ". (has_perm('track-deleted-posts') ? "| <a href=\"deletedposts.php?u=".$user['id']."\">View deleted posts</a>":"") ."
                        ". (has_perm('edit-moods') ? "| <a href=\"mood.php?user=".$user['id']."\">Edit mood avatars</a>":"") ."
                        ". (has_perm('edit-users') ? "| <a href=\"editprofile.php?id=".$user['id']."\">Edit user</a>":"") ."
                       ". $banuser." ". $editpermissions." ".$secondarygroups." ".$editbadges."

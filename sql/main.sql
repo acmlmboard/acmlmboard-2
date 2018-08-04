@@ -636,12 +636,23 @@ DROP TABLE IF EXISTS `misc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `misc` (
-  `field` varchar(255) NOT NULL,
-  `intval` int(11) NOT NULL DEFAULT '0',
-  `txtval` text NOT NULL,
-  `emailaddress` varchar(255) CHARACTER SET utf8 NOT NULL DEFAULT '0',
-  PRIMARY KEY (`field`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `views` int(11) NOT NULL DEFAULT '0',
+  `botviews` int(11) NOT NULL DEFAULT '0',
+  `lockdown` int(11) NOT NULL DEFAULT '0',
+  `lockdowntext` text COLLATE utf8_unicode_ci NOT NULL,
+  `regdisable` int(11) NOT NULL DEFAULT '0',
+  `regdisabletext` text COLLATE utf8_unicode_ci NOT NULL,
+  `attentiontitle` text COLLATE utf8_unicode_ci NOT NULL,
+  `attention` text COLLATE utf8_unicode_ci NOT NULL,
+  `boardemail` text COLLATE utf8_unicode_ci NOT NULL,
+  `maxpostsday` int(11) NOT NULL DEFAULT '0',
+  `maxpostsdaydate` int(11) NOT NULL DEFAULT '0',
+  `maxpostshour` int(11) NOT NULL DEFAULT '0',
+  `maxpostshourdate` int(11) NOT NULL DEFAULT '0',
+  `maxusers` int(11) NOT NULL DEFAULT '0',
+  `maxusersdate` int(11) NOT NULL DEFAULT '0',
+  `maxuserstext` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -650,7 +661,7 @@ CREATE TABLE `misc` (
 
 LOCK TABLES `misc` WRITE;
 /*!40000 ALTER TABLE `misc` DISABLE KEYS */;
-INSERT INTO `misc` VALUES ('views',0,'','0'),('maxpostsday',0,'','0'),('maxpostsdaydate',0,'','0'),('maxpostshour',0,'','0'),('maxpostshourdate',0,'','0'),('maxusers',0,'','0'),('maxusersdate',0,'','0'),('maxuserstext',0,'','0'),('botviews',0,'','0'),('lockdown',0,'The board is currently unavailable. We apologize for any inconvenience.','0'),('attention',0,'','0'),('regdisable',0,'Registration is currently offline. We apologize for any inconvenience.','0'),('hacksnews',0,'','0'),('emuz@address.com',0,'','0'),('trashid',2,'','0'),('boardtitle',0,'Acmlmboard 2','0'),('defaulttheme',0,'0','0'),('defaultfontsize',68,'','0'),('avatardimx',180,'','0'),('avatardimy',180,'','0'),('topposts',5000,'','0'),('topthreads',200,'','0'),('threadprevnext',0,'','0'),('memberlistcolorlinks',0,'','0'),('badgesystem',0,'','0'),('spritesystem',0,'','0'),('extendedprofile',0,'','0'),('displayname',0,'','0'),('perusercolor',0,'','0'),('usernamebadgeeffects',0,'','0'),('useshadownccss',0,'','0'),('nickcolorcss',0,'','0'),('userpgnum',0,'','0'),('userpgnumdefault',0,'','0'),('alwaysshowlvlbar',0,'','0'),('rpglvlbarwidth',96,'','0'),('atnname',0,'News','0');
+INSERT INTO `misc` VALUES (5,0,0,'The board is currently unavailable. We apologize for any inconvenience.',0,'Registration is currently offline. We apologize for any inconvenience.','News','','emuz@address.com',0,0,0,0,0,0,'');
 /*!40000 ALTER TABLE `misc` ENABLE KEYS */;
 UNLOCK TABLES;
 

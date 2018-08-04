@@ -168,9 +168,9 @@
 		else
 			$ncolors = '<small>(none set)</small>';
  
-		$misc = '-';
+		$dmisc = '-';
 		if ($deletedgroup['default'])
-			$misc = $deletedgroup['default'] == -1 ? 'For first user' : 'For all users';
+			$dmisc = $deletedgroup['default'] == -1 ? 'For first user' : 'For all users';
 			
         $bmisc = '-'; 
 		if ($deletedgroup['banned']) 
@@ -188,7 +188,7 @@
 			'descr' => htmlspecialchars($deletedgroup['description']),
 			'parent' => $deletedgroup['parenttitle'] ? htmlspecialchars($deletedgroup['parenttitle']) : '<small>(none)</small>',
 			'ncolors' => $ncolors,
-			'misc' => $misc,
+			'misc' => $dmisc,
 			'bmisc' => $bmisc, 
 			'actions' => RenderActions($actions,true),
 		);
@@ -313,9 +313,9 @@
 		else
 			$ncolors = '<small>(none set)</small>';
 		
-		$misc = '-';
+		$dmisc = '-';
 		if ($group['default'])
-			$misc = $group['default'] == -1 ? 'For first user' : 'For all users';
+			$dmisc = $group['default'] == -1 ? 'For first user' : 'For all users';
 			
 		$bmisc = '-'; 
 		if ($group['banned']) 
@@ -335,7 +335,7 @@
 			'descr' => htmlspecialchars($group['description']),
 			'parent' => $group['parenttitle'] ? htmlspecialchars($group['parenttitle']) : '<small>(none)</small>',
 			'ncolors' => $ncolors,
-			'misc' => $misc,
+			'misc' => $dmisc,
 			'bmisc' => $bmisc, 
 			'actions' => RenderActions($actions,true),
 		);

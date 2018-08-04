@@ -18,3 +18,17 @@
 
 ins { text-decoration: none; color: #40FF30; border: 1px dashed #208018; background: #10400C; }
 del { text-decoration: none; color: #FF4000; border: 1px dashed #802000; background: #401000; }
+
+.fakelink {
+	background:	none;
+	color:		inherit;
+	border:		none;
+	padding:	0px;
+	border:		0px;
+	font:		inherit;
+	cursor: 	pointer;
+}
+.fakelink::-moz-focus-inner {
+	padding: 0;
+	border: 0;
+}

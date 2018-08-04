@@ -5,11 +5,11 @@
 //	die("Anonymous does not succeed.");
 require 'lib/common.php';
 
-$regdis = $sql->fetchq("SELECT intval, txtval FROM misc WHERE field='regdisable'");
-if ($regdis['intval'] == 1)
+$regopt = $sql->fetchq("SELECT regdisable, regdisabletext, boardemail FROM misc");
+if ($regopt['regdisable'] == 1)
 {
   pageheader('Register');
-  if($regdis['txtval'] != "") $reason = $regdis['txtval'];
+  if($regopt['regdisabletext'] != "") $reason = $regopt['regdisabletext'];
   else $reason = "Registration is currently disabled.";
   print "$L[TBL1]>$L[TD1c]>
 ".         "  $L[TRh]>
@@ -24,17 +24,14 @@ if ($regdis['intval'] == 1)
 }
 
 
-$boardemailaddress=$sql->resultq("SELECT `emailaddress` FROM `misc` WHERE `field`='boardemail'");
 if (isProxy())
 {
   pageheader('Register');
-  if($regdis['txtval'] != "") $reason = $regdis['txtval'];
-  else $reason = "Security Check Failure";
   print "$L[TBL1]>$L[TD1c]>
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Registration is denied</td>
 ".         "  $L[TR]>
-".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins at ".($boardemailaddress).".</a></td></td>
+".         "    $L[TD1c] width=120>Our site has detected your IP is either a proxy, or listed as a known spammer. If you feel this is in error contact the board admins at {$regopt['boardemail']}.</a></td></tr>
 ".      "$L[TBLend]
 ";
   pagefooter();

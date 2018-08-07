@@ -178,10 +178,16 @@ function ytube($match){
     case 'v': $vid=$fid[1]; break;
     //Time has two possible results
     case 't': 
-    case 'start': $tid="?start=".$fid[1];break; 
+    case 'start': $tid="start=".$fid[1];break; 
+    //Show related Links at end
+    case 'rel': $tid.="&rel=".$fid[1]; break;
+    // Leaving these defined here for if they are ever requested to be enabled.
+    // Controls hides the controls, ShowInfo hides the title of the video.
+    //case 'controls': $tid.="&controls=".$fid[1]; break;
+    //case 'showinfo': $tid.="&showinfo=".$fid[1];  break;
     }
   }
-  return '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$vid.''.$tid.'" frameborder="0" allowfullscreen></iframe>';
+  return '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$vid.'?'.$tid.'" frameborder="0" allowfullscreen></iframe>';
 }
 
  function postfilter($msg, $nosmilies=0){

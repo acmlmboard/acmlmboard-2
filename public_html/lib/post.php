@@ -60,30 +60,13 @@ function securityfilter($data) {
 	$data=str_ireplace("expression", "ex<z>pression",$data);
 	$data=preg_replace("'filter\s:'si", 'filter&#58;>',$data);
 	$data=preg_replace("'transform\s:'si", 'transform&#58;>',$data);
-
-	
-	return $data;
-}
-/*
-  function securityfilter($msg)
-  {
-	$tags='script|iframe|embed|object|textarea|noscript|meta|xmp|plaintext|base';
-    $msg=preg_replace("'<(/?)({$tags})'si" ,"&lt;$1$2" ,$msg);
-
-	$msg = preg_replace('@(on)(\w+\s*)=@si', '$1$2&#x3D;', $msg);
-
-    $msg=preg_replace("'-moz-binding'si",' -mo<z>z-binding',$msg);
-    $msg=str_ireplace("expression","ex<z>pression",$msg);
-    $msg=preg_replace("'filter\s:'si",'filter&#58;>',$msg);
-    $msg=preg_replace("'transform\s:'si",'transform&#58;>',$msg);
-    $msg=preg_replace("'javascript\s:'si",'javascript&#58;>',$msg);
 //Block attempts to bypass the filter.
     $msg=str_replace('enc64href','href',$msg);
     $msg=str_replace('enc64src','src',$msg);
 	
-	return $msg;
-  }
-  */
+	return $data;
+}
+
   function nofilterchar($match)
   {
 	$code = htmlspecialchars($match[1]);

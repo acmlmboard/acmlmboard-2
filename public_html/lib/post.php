@@ -61,8 +61,8 @@ function securityfilter($data) {
 	$data=preg_replace("'filter\s:'si", 'filter&#58;>',$data);
 	$data=preg_replace("'transform\s:'si", 'transform&#58;>',$data);
 //Block attempts to bypass the filter.
-    $msg=str_replace('enc64href','href',$msg);
-    $msg=str_replace('enc64src','src',$msg);
+    $data=str_replace('enc64href','href',$data);
+    $data=str_replace('enc64src','src',$data);
 	
 	return $data;
 }

@@ -164,6 +164,34 @@ function securityfilter($data) {
 	return $match[1].$style.$match[3];
   }
 
+function ytube($match){
+  $msg=$match[1];
+  $msg=str_replace(array("http://","https://","www.","youtube.com/","watch?","youtu.be/","embed/"),"",$msg);
+  $msg=str_replace("?","&",$msg);
+  $vars=explode("&",$msg);
+  $tid='';
+  foreach($vars AS $vfind){
+    $fid=explode("=",$vfind);
+    if(!isset($vid)&&!isset($fid[1])) $vid=$fid[0]; //Orphaned variable is likely to be our Video ID.
+    switch($fid[0]){
+    //Video ID
+    case 'v': $vid=$fid[1]; break;
+    //Start time has two possible results
+    case 't': 
+    case 'start': $tid="start=".$fid[1]; break; 
+    //End time for specific sections
+    case 'end': $tid.="end=".$fid[1]; break; 
+    //Show related Links at end
+    case 'rel': $tid.="&rel=".$fid[1]; break;
+    // Leaving these defined here for if they are ever requested to be enabled.
+    // Controls hides the controls, ShowInfo hides the title of the video.
+    //case 'controls': $tid.="&controls=".$fid[1]; break;
+    //case 'showinfo': $tid.="&showinfo=".$fid[1]; break;
+    }
+  }
+  return '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$vid.'?'.$tid.'" frameborder="0" allowfullscreen></iframe>';
+}
+
  function postfilter($msg, $nosmilies=0){
     global $smilies, $L, $config, $sql, $swfid;
 
@@ -243,11 +271,8 @@ function securityfilter($data) {
     else $msg=str_replace($config['sslbase'],$config['base'],$msg);
 
 
-    //[KAWA] Youtube tag.
-    //Trimming filter to cut down the amount of broken tags.
-    $msg=str_replace('[youtube]https://www.youtube.com/watch?v=','[youtube]',$msg);
-    $msg=str_replace('[youtube]https://youtu.be/','[youtube]',$msg);
-    $msg = preg_replace("'\[youtube\]([\-0-9_a-zA-Z]*?)\[/youtube\]'si",'<iframe width="560" height="315" src="https://www.youtube.com/embed/\\1" frameborder="0" allowfullscreen></iframe>', $msg);
+    //Youtube tag. Updated from Kawa's initial version to now dissect urls. Adds support for timed starts.
+    $msg = preg_replace_callback("'\[youtube\](.*?)\[/youtube\]'si",'ytube', $msg);
     
     if ($htmlcomcolor = has_badge_perm("show-html-comments")) {
       if ($htmlcomcolor == "1") $htmlcomcolor = "#66ff66";

@@ -465,13 +465,14 @@
 	}
 	else
 	{
-		if (has_perm("logout")) 
-			$userlinks[$ul++] = array('html' => '
-			<form method="POST" action="login.php" style="display: inline">
+		if (has_perm("logout")) {
+			$userlinks[$ul++] = array('url' => "javascript:document.logout.submit()", 'title' => 'Log out');
+			print '
+			<form method="POST" name="logout" action="login.php" style="display: none">
 				'.auth_tag("weird").'
 				<input type="hidden" name="action" value="logout">
-				<a href="#"><input type="submit" class="fakelink" value="Log out"></a>
-			</form>');
+			</form>';
+		}
 	}
     if (has_perm("update-own-profile")) 
       $userlinks[$ul++] = array('url' => "editprofile.php", 'title' => 'Edit profile');
@@ -495,7 +496,8 @@
     $c = 0;
 	foreach ($userlinks as $k => $v) {
 		if ($c++ > 0) print " | ";
-		print (isset($v['html']) ? $v['html'] : "<a href=\"{$v['url']}\">{$v['title']}</a>");
+		print "<a href=\"{$v['url']}\">{$v['title']}</a>";
+		//print (isset($v['html']) ? $v['html'] : );
 	}
 	 
     if ($radar)

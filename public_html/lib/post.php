@@ -178,9 +178,9 @@ function ytube($match){
     case 'v': $vid=$fid[1]; break;
     //Start time has two possible results
     case 't': 
-    case 'start': $tid="start=".$fid[1]; break; 
+    case 'start': $tid.="&start=".$fid[1]; break; 
     //End time for specific sections
-    case 'end': $tid.="end=".$fid[1]; break; 
+    case 'end': $tid.="&end=".$fid[1]; break; 
     //Show related Links at end
     case 'rel': $tid.="&rel=".$fid[1]; break;
     // Leaving these defined here for if they are ever requested to be enabled.

@@ -71,7 +71,7 @@ function securityfilter($data) {
   {
 	$code = htmlspecialchars($match[1]);
 	$list = array("\r\n","[",":",")","_","@","-");
-	$list2 = array("<br>","&#91;&#8203;","&#58;","&#41;","&#95;","&#64;","&#45;"); //Added zero-width space behind [ to fix bbcode firing inside code/irc blocks
+	$list2 = array("<br>","&#91;&#8203;","&#58;&#8203;","&#41;","&#95;&#8203;","&#64;&#8203;","&#45;&#8203;"); //Added zero-width space behind bbcode & smilies firing inside code/irc blocks
 	return str_replace($list,$list2,$code);
   
   }

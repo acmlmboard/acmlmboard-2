@@ -22,7 +22,7 @@
       "<span $unclass style=\"color: #FFEA95; font-weight:bold;\">DJ Bouche</span>"   => "Created the permissions and group system, warp whistle reply, and many other things",
       "<span $unclass style=\"color: #C762F2; font-weight:bold;\">knuck</span>"       => "Implemented implemented post radar, many small fixes",
       "<span $unclass style=\"color: #C53A9E; font-weight:bold;\">Gywall</span>"      => "Revised mood avatar system, sprites random method, many many fixes",
-      "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">StapleButter</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
+      "<span $unclass style=\"color: #FF3399; font-weight:bold;\">StapleButter</span>"  => "Securty officer, permissons editors, globals fixing, many misc issues",
       "<span $unclass style=\"color: #33EDCB; font-weight:bold;\">Scrydan</span>"     => "Implemented ranks.php, core cleanup, many other small things (like this page here). Most of his work was on the now defunct 2.6 branch.",
       "<span $unclass style=\"color: #FF3399; font-weight:bold;\">SquidEmpress</span>"     => "Code contributions via GIT. Includes Administrator tools, Forum Jump. (See GIT Log for full contributions)",
       "<span $unclass style=\"color: #AFFABE; font-weight:bold;\">Schezo</span>"     => "Security advice, code contrubtions, and help making Kafuka 2.0 more secure. Keeper of the Acmlmboard Legacy.",

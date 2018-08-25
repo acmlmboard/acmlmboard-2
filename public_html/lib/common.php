@@ -194,7 +194,7 @@
 								(SELECT COUNT(*) FROM users) u,
 								(SELECT COUNT(*) FROM threads) t,
 								(SELECT COUNT(*) FROM posts) p");
-    $date       = date("m-d-y",ctime());
+    $date       = gmdate("m-d-y",ctime());
     $sql->query("REPLACE INTO `dailystats` (`date`, `users`, `threads`, `posts`, `views`)
                  VALUES ('$date', '$count[u]', '$count[t]', '$count[p]', '{$misc['views']}')");
 

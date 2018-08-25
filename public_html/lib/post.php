@@ -71,7 +71,7 @@ function securityfilter($data) {
   {
 	$code = htmlspecialchars($match[1]);
 	$list = array("\r\n","[",":",")","_","@","-");
-	$list2 = array("<br>","&#91;&#8203;","&#58;","&#41;","&#95;","&#64;","&#45;"); //Added zero-width space behind [ to fix bbcode firing inside code/irc blocks
+	$list2 = array("<br>","&#91;&#8203;","&#58;&#8203;","&#41;","&#95;&#8203;","&#64;&#8203;","&#45;&#8203;"); //Added zero-width space behind bbcode & smilies firing inside code/irc blocks
 	return str_replace($list,$list2,$code);
   
   }
@@ -178,9 +178,9 @@ function ytube($match){
     case 'v': $vid=$fid[1]; break;
     //Start time has two possible results
     case 't': 
-    case 'start': $tid="start=".$fid[1]; break; 
+    case 'start': $tid.="&start=".$fid[1]; break; 
     //End time for specific sections
-    case 'end': $tid.="end=".$fid[1]; break; 
+    case 'end': $tid.="&end=".$fid[1]; break; 
     //Show related Links at end
     case 'rel': $tid.="&rel=".$fid[1]; break;
     // Leaving these defined here for if they are ever requested to be enabled.

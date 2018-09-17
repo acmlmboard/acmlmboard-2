@@ -235,9 +235,16 @@ function renderdotrank($posts=0){
   }
 
   function randnickcolor(){
+  global $config;
+  if(!is_numeric($config['rainbowoffset'])){
+   $rainoff=5;
+  } else {
+    $rainoff=$config['rainbowoffset'];
+    if($rainoff<1) $rainoff=5; //Value must be above zero.
+ }
     /* OLD HACKISH CODE FOR APRIL 5 */
     $stime=gettimeofday();
-    $h=(($stime[usec]/5)%600);
+    $h=(($stime[usec]/$rainoff)%600);
     if($h<100){
       $r=255;
       $g=155+$h;
@@ -302,7 +309,7 @@ function userfields($tbl='', $pf='')
   }
 
   function userdisp($user,$u='',$usemini=''){
-    global $sql, $config, $usergroups, $userbirthdays, $usercnc;
+    global $sql, $config, $usergroups, $userbirthdays, $usercnc, $nccache;
 
    if($usemini) $user['showminipic'] = true;
 //Enable per theme nick colors & light theme nick shadows
@@ -314,7 +321,10 @@ function userfields($tbl='', $pf='')
       $unclass="<span class='needsshadow'>";
       $unspanend="</span>";
     }
-
+//Enable Caching of Name Colours for name-intensive pages.
+  if(isset($nccache[$user[$u.'id']])){
+    $nc=$nccache[$user[$u.'id']];
+  } else {
   if($config['nickcolorcss']) $nccss="class='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
 //Over-ride for custom colours [Gywall]
   if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config[perusercolor])
@@ -328,9 +338,12 @@ function userfields($tbl='', $pf='')
 		$nc = $group['nc'.$user[$u.'sex']];
 	}
   //Random Nick Color on Birthday
-  if (isset($userbirthdays[$user[$u.'id']]))
-    $nc = randnickcolor();
-	
+  if (isset($userbirthdays[$user[$u.'id']]) && !user_has_perm('banned',$user[$u.'id'],$group['id']))
+    $nc = "RANDOM";
+
+  $nccache[$user[$u.'id']]=$nc;
+  }
+  if($nc=="RANDOM") $nc = randnickcolor();
   $n = $user[$u.'name'];
 	if($user[$u.'displayname'] && $config['displayname'])
 		$n = $user[$u.'displayname'];

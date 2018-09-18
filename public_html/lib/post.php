@@ -69,9 +69,9 @@ function securityfilter($data) {
 
   function nofilterchar($match)
   {
-	$code = htmlspecialchars($match[1]);
+	$code = htmlspecialchars($match);
 	$list = array("\r\n","[",":",")","_","@","-");
-	$list2 = array("<br>","&#91;&#8203;","&#58;&#8203;","&#41;","&#95;&#8203;","&#64;&#8203;","&#45;&#8203;"); //Added zero-width space behind bbcode & smilies firing inside code/irc blocks
+	$list2 = array("<br>","&#91;","&#58;","&#41;","&#95;","&#64;","&#45;"); //Added zero-width space behind bbcode & smilies firing inside code/irc blocks
 	return str_replace($list,$list2,$code);
   
   }
@@ -87,16 +87,26 @@ function securityfilter($data) {
 	if(stripos($match[0],"src")!==false) $src="src";
 	return "$src=".base64_decode($match[1]);
   }
+  function makecode64($match)
+  {
+	global $L;
+	return "[code]".base64_encode($match[1])."[/code]";
+  }
+  function makeirc64($match)
+  {
+	global $L;
+	return "[irc]".base64_encode($match[1])."[/irc]";
+  }
   function makecode($match)
   {
 	global $L;
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]><td class=\"b cd\" style=\"background: #000;\"><code class=\"prettyprint\" style=\"font-size:9pt;\">".nofilterchar($match)."</code></table>";
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]><td class=\"b cd\" style=\"background: #000;\"><code class=\"prettyprint\" style=\"font-size:9pt;\">".nofilterchar(base64_decode($match[1]))."</code></table>";
   }
  
   function makeirc($match)
   {
     global $L;
-    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".nofilterchar($match)."</code></table>";
+    return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]>$L[TD3]><code style=\"font-size:9pt;\">".nofilterchar(base64_decode($match[1]))."</code></table>";
   } 
   function makesvg($match)
   {
@@ -195,10 +205,9 @@ function ytube($match){
  function postfilter($msg, $nosmilies=0){
     global $smilies, $L, $config, $sql, $swfid;
 
-    //[blackhole89] - [code] tag
-    $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
-    //[irc] variant of [code]
-    $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
+    //[code] tag, [irc] tag encoding
+    $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode64',$msg);
+    $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc64',$msg);
 
     //Moved [url] and [img] tags here to filter
     $msg=preg_replace("'\[url\](.*?)\[/url\]'si",'<a href=\\1>\\1</a>',$msg);
@@ -215,6 +224,9 @@ function ytube($match){
     // security filtering needs to be done before [svg] is parsed because [svg]
     // uses tags that are otherwise blacklisted
     $msg = securityfilter($msg);
+    //[code] tag, [irc] tag decoding
+    $msg=preg_replace_callback("'\[code\](.*?)\[/code\]'si",'makecode',$msg);
+    $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
     //Url filtering on href= or src=
     $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
     $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);

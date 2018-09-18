@@ -109,6 +109,7 @@
   $config['usernamebadgeeffects'] = false; //Allows badges to change username colors Requires badge system.
   $config['useshadownccss'] = false; //Enables use of a CSS class name to all user names (and other elements) that should get a shadow on light color themes
   $config['nickcolorcss'] = false; //Enables use of CSS to define per theme colors via a span id. Note: You may need to customise CSS to fit your board groups. 
+  $config['rainbowoffset'] = 5; //Offset for rainbow nick timing. Set this higher if the algorim repeats a shallow pool of colours.
 
   //The following are related to how RPG elements are displayed. All these options allow for legacy AB1 RPG style and elements
   $config['userpgnum'] = false; //Enables 'graphical' RPG stats in user's sidebars when themes have images incorporated in the themes/themename/rpg/ dir.

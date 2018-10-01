@@ -1324,9 +1324,24 @@ DROP TABLE IF EXISTS `spritecateg`;
 CREATE TABLE `spritecateg` (
   `id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Indexes for table `spritecateg`
+--
+ALTER TABLE `spritecateg`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `spritecateg`
+--
+ALTER TABLE `spritecateg`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 --
 -- Dumping data for table `spritecateg`
 --

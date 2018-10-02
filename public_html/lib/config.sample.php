@@ -16,8 +16,9 @@
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';
   
-  
-  $trashid=2; // Designates the id for your trash forum. 
+  // Designate the IDs for special forums. If not set, these features will be disabled.
+  $trashid=0; // Designates the id for your trash forum.
+  $showcaseid=0; //Designates the id for your "Display Case" forum.
 
   $boardtitle="Insert title here";// This is what will be displayed at the top of your browser window.
   $defaultlogo="theme/abII.png";// Replace with the logo of your choice. Note: This is used if a theme doesn't have it's own logo. It is replaced per theme depending on the theme used.

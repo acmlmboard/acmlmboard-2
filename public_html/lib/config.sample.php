@@ -95,6 +95,7 @@
   $config['topposts'] = '5000'; //Number of posts to set the goal to.
   $config['topthreads'] = '200'; //Number of threads created to set the goal to.
   $config['threadprevnext'] = false; //Enables a set of links on thread pages that allows you to go to the next or previous 'new' thread.
+  $config['quickreply']="Quick Reply"; //This defines the name of the Quick Reply box
 
   $config['memberlistcolorlinks'] = false; //Toggles the use of more color in memberlist.php. Group links will use respective colors to gender searched.
   $config['registrationpuzzle'] = true;

@@ -705,7 +705,7 @@ print "$modlinks
 ".        "$L[TBL1] name=quickreply id=quickreply>
 ".        " <form action=newreply.php method=post>
 ".        "  $L[TRh] onclick='togglequickreply();' style='cursor: pointer'>
-".        "    $L[TDh] colspan=2>Warp Whistle Reply</a></td>
+".        "    $L[TDh] colspan=2>".$config['quickreply']."</a></td>
 ";
 
      if($loguser[posttoolbar]!=1)

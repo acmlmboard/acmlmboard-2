@@ -100,8 +100,10 @@
     if($act=='open'   ) $action=',closed=0';
     if($act=='filter'  ) $action=',filter=1';
     if($act=='unfilter') $action=',filter=0';
-    if($act=='trash'  )
+    if($act=='trash' && $trashid>=1 )
       editthread($tid,'',$trashid,'',1);
+    if($act=='showcase' && $showcaseid>=1 )
+      editthread($tid,'',$showcaseid,'',1,0);
     if($act=='rename' )
       editthread($tid,$_POST[arg],0,'');
     if($act=='move'   )
@@ -491,12 +493,16 @@ elseif($viewmode=="time"){
         $filtr="| $link('unfilter')>Remove Filter</a>";
       else
         $filtr="| $link('filter')>Add Filter</a>";
-
+if($trashid>=1){ //Now only enabled if ID is a valid forum ID.
       if($thread[forum]!=$trashid)
-        $trash="| $link('trash')>Trash</a> |";
+        $trash="| $link('trash')>Trash</a> ";
+}
+if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
+      if($thread[forum]!=$showcaseid)
+        $showcase="| $link('showcase')>Showcase</a> |";
       else
-        $trash='| ';
-
+        $showcase='| ';
+}
       $edthr="| <a href=editthread.php?id=$tid>Edit Thread</a> ";
 
       $retag=sizeof($tags)?"<a href=javascript:showtbox()>Tag</a> | ":"";
@@ -524,7 +530,7 @@ elseif($viewmode=="time"){
       $opt="Moderating";
     } else {
       $fmovelinks="";
-      $close = $stick = $filtr = $edthr = $trash = "";
+      $close = $stick = $filtr = $edthr = $trash = $showcase = "";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
       if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')){
         $canrnbar="| ";
@@ -554,6 +560,7 @@ elseif($viewmode=="time"){
 ".        "    $stick
 ".        "    $close
 ".        "    $trash
+".        "    $showcase
 ".        "    $edit
 ".        "    $filtr
 ".        "    $edthr

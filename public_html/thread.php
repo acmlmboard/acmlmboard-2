@@ -725,6 +725,7 @@ print "$modlinks
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ><label for=nosmile>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
     print "     $L[INPc]=close id=close value=1 ><label for=close>Close thread</label>

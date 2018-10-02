@@ -42,7 +42,7 @@
 
   if (!$thread) $pid = 0;
 if($act!="Submit"){ //Classical Redirect
-  echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+  $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
   $toolbar= posttoolbar();
 
@@ -74,7 +74,7 @@ if($act!="Submit"){ //Classical Redirect
     ."- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> '
     .'- Edit post';
 
-  $res=$sql->query  ("SELECT u.id, p.user, p.mood, p.nolayout, pt.text "
+  $res=$sql->query  ("SELECT u.id, p.user, p.mood, p.nolayout, p.nosmile, pt.text "
                     ."FROM posts p "
                     ."LEFT JOIN poststext pt ON p.id=pt.id "
                     ."JOIN ("
@@ -96,11 +96,11 @@ if($act=="Submit" && $post['text']==$_POST[message]){
   if($err){
 if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[forum]); }
   pageheader('Edit post',$thread[forum]);
-    print "$top - Error";
+    print "$extjs $top - Error";
     noticemsg("Error", $err);
   }elseif(!$act){
   pageheader('Edit post',$thread[forum]);
-    print "$top
+    print "$extjs $top
 ".        "<br><br>
 ".        "$L[TBL1]>
 ".        " <form action=editpost.php method=post>
@@ -124,6 +124,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
     print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
@@ -143,6 +144,7 @@ print     "  $L[TR]>
     $post[num]=++$euser[posts];
     $post[mood]=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
     $post[nolayout]=$_POST[nolayout];
+    $post[nosmile]=$_POST[nosmile];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     $post[open]=$_POST[open];
@@ -153,7 +155,7 @@ print     "  $L[TR]>
     $post[ulastpost]=ctime();
 
   pageheader('Edit post',$thread[forum]);
-    print "$top - Preview
+    print "$extjs $top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
@@ -183,6 +185,7 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
     print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
@@ -202,8 +205,10 @@ print     "  $L[TR]>
     $rev=$rev[m];
     $mid=(isset($_POST[mid])?(int)$_POST[mid]:-1);
     $nolayout=$_POST['nolayout'];
+    $nosmile=$_POST['nosmile'];
     checknumeric($mid);
     checknumeric($nolayout);
+    checknumeric($nosmile);
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
@@ -216,7 +221,7 @@ print     "  $L[TR]>
     }
     ++$rev;
     $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
-    $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout' WHERE id='$pid'");
+    $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout',nosmile='$nosmile' WHERE id='$pid'");
     if(isset($modext)) $sql->query("UPDATE threads SET $modext WHERE id='$thread[id]'");
     
     if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes("post edit ".$pid." rev ".$rev)."')");

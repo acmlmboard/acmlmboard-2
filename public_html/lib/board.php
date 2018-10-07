@@ -4,10 +4,10 @@
   //xkeeper: fadding width/height to make it load better, adding align to move it away from the IP somewhat
   function flagip($ip, $flag = '', $onlyflag = false) {
     if (!$flag) {
-	  global $sql; 
-	  $flag = $sql->resultq("SELECT cc2 FROM ip2c WHERE inet_aton('{$ip}') between `ip_from` AND `ip_to`");
+	  global $sql;
+	  $flag = $sql->resultq("SELECT cc2 FROM ip2c WHERE inet_aton('{$ip}') between `ip_from` AND `ip_to` LIMIT 1");
 	}
-    return ($flag != '-' ?"<img src=\"img/flags/".strtolower($flag).".png\" title='{$flag}' style='width: 16px; height: 11px; float: right'>" : "") . ($onlyflag ? "" : $ip . " <small>[<a href='http://google.com/search?q={$ip}'>G</a>]</small> ");
+    return "[$tip[0] $tip[1] $tip[2] $tip[3] $ip]".($flag != '-' ?"<img src=\"img/flags/".strtolower($flag).".png\" title='{$flag}' style='width: 16px; height: 11px; float: right'>" : "") . ($onlyflag ? "" : $ip . " <small>[<a href='http://google.com/search?q={$ip}'>G</a>]</small> ");
   }
 
   function feedicon($icon,$para,$text="RSS feed"){

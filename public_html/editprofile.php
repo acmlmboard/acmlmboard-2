@@ -327,7 +327,7 @@
 
   if ($act=='Preview theme') {
     // No reason to ever use the non instant redirect here
-    redirect("./?theme={$_POST['theme']}", "This is a sample message you can click on to dismiss.", "Message");
+    redirect("./?theme={$_POST['theme']}", "This is a theme preview. Click any link to revert to you normal theme.", "Message");
   }
 
   pageheader('Edit profile');

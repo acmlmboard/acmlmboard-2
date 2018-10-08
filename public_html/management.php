@@ -16,10 +16,12 @@ if (has_perm("edit-calendar-events"))
   $mlinks[] = array('url' => "editevents.php", 'title' => 'Manage events');
 if (has_perm("edit-smilies")) 
   $mlinks[] = array('url' => "editsmilies.php", 'title' => 'Manage Smilies');
-if (has_perm("edit-sprites")) 
+if (has_perm("edit-sprites")){ 
   $mlinks[] = array('url' => "editsprites.php", 'title' => 'Manage sprites');
-if (has_perm("edit-sprites")) 
-  $mlinks[] = array('url' => "editspritecategories.php", 'title' => 'Manage sprite categories');
+  $mlinks[] = array('url' => "editspritecategories.php", 'title' => 'Manage sprite categories'); }
+if (has_perm("edit-ranks")){ 
+  $mlinks[] = array('url' => "editranks.php", 'title' => 'Manage ranks');
+  $mlinks[] = array('url' => "editrankset.php", 'title' => 'Manage ranksets'); }
 if (has_perm("edit-badges")) 
   $mlinks[] = array('url' => "editbadges.php", 'title' => 'Manage badges');
 if (has_perm("edit-groups")) 

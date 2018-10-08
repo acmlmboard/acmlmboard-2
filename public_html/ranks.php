@@ -6,7 +6,8 @@
     if (!is_numeric($getrankset)) $getrankset = 1; //Double checking.. 
     $totalranks = $sql->resultq("SELECT count(*) FROM `ranksets` WHERE id > '0';");
 
-    if ($getrankset < 1 || $getrankset > $totalranks) $getrankset = 1; //Should be made dynamic based on rank sets.
+    //Disabled this due to conflict made by management tools if a rank category is deleted.
+    //if ($getrankset < 1 || $getrankset > $totalranks) $getrankset = 1; //Should be made dynamic based on rank sets.
 
     $linkuser = array();
     $allusers = $sql->query("SELECT ".userfields().", `posts`, `minipic`, `lastview` FROM `users` WHERE `rankset` = ".$getrankset." ORDER BY `id`");
@@ -25,7 +26,7 @@
 
     $rankposts = array();
     
-   if (has_perm("view-allranks") || has_perm("edit-ranks"))
+   if (has_perm("view-allranks"))
     {
      $linktoggle = "1\">View";
     if ($_GET['viewall'] == 1)
@@ -36,23 +37,12 @@
      $linkviewall = " | <a href=\"ranks.php?rankset=$getrankset&viewall=$linktoggle All Hidden</a>";
     }
     $editlinks = "";
-   if (/*has_perm("edit-ranks")*/false)
-    {
-    if ($getrankset != 1)
-     {
-      $deletelink = " |  
-                   <a href=\"ranks.php?action=deleterankset&rankset=$getrankset&token=".securitytoken("deleterankset")."\">Delete Rank</a>";
-     }
-     $editlinks = " | 
-                   <a href=\"ranks.php?action=addrankset\">Add Rank</a> | 
-                   <a href=\"ranks.php?action=editrankset&rankset=$getrankset\">Edit Rank</a>$deletelink";
-    }
     
-    $allranks = $sql->query("SELECT * FROM `ranks` `r` LEFT JOIN `ranksets` `rs` ON `rs`.`id`=`r`.`rs`
+    $allranks = $sql->query("SELECT r.*, rs.* FROM `ranks` `r` LEFT JOIN `ranksets` `rs` ON `rs`.`id`=`r`.`rs`
                        ORDER BY `p`");
     $ranks    = $sql->query("SELECT * FROM `ranks` `r` LEFT JOIN `ranksets` `rs` ON `rs`.`id`=`r`.`rs`
                        WHERE `rs`='$getrankset' ORDER BY `p`");
-                       
+              
    while($rank = $sql->fetch($allranks))
     {
     if ($rank['rs'] == $getrankset)

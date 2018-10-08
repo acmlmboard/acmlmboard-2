@@ -991,6 +991,7 @@ CREATE TABLE `posts` (
   `num` mediumint(9) NOT NULL DEFAULT '0',
   `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `announce` int(1) NOT NULL,
+  `nosmile` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `threadid` (`thread`),
   KEY `date` (`date`),

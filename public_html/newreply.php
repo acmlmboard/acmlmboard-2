@@ -141,6 +141,7 @@
     if($act=='Preview') $post[moodlist]=moodlist($_POST[mid]);
     else $post[moodlist]=moodlist();
     $post[nolayout]=$_POST[nolayout];
+    $post[nosmile]=$_POST[nosmile];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     $post[open]=$_POST[open];
@@ -190,6 +191,7 @@ print     "  $L[TR]>
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".$post[moodlist]." 
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
 ";
     if(can_edit_forum_threads($thread[forum]))
     print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
@@ -203,6 +205,7 @@ print     "  $L[TR]>
 ";
   }elseif($act=='Submit'){
     checknumeric($_POST[nolayout]);
+    checknumeric($_POST[nosmile]);
 //Make sure these controls are only usable by those with moderation rights!
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
@@ -219,8 +222,8 @@ print     "  $L[TR]>
     $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
 
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
-    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout])");
+    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmile) "
+               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout],$_POST[nosmile])");
     $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
     $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id=$tid");

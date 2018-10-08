@@ -182,6 +182,7 @@ print     "  $L[TR]>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($_POST[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
 ".        "      $L[INPc]=filter id=filter value=1 ".($_POST[filter]?"checked":"")."><label for=filter>Flag as NSFW</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
@@ -202,6 +203,7 @@ print     "  $L[TR]>
     $post[text]=$_POST[message];
     $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
     $post[nolayout]=$_POST[nolayout];
+    $post[nosmile]=$_POST[nosmile];
     $post[close]=$_POST[close];
     $post[stick]=$_POST[stick];
     foreach($user as $field => $val)
@@ -291,6 +293,7 @@ print     "  $L[TR]>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist($_POST[mid])."
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
 ".        "      $L[INPc]=filter id=filter value=1 ".($_POST[filter]?"checked":"")."><label for=filter>Flag as NSFW</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
@@ -305,8 +308,10 @@ print     "  $L[TR]>
     if(!($iconurl=$_POST[iconurl]))
       $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
     $nolayout=$_POST['nolayout'];
+    $nosmile=$_POST['nosmile'];
     $filter=$_POST['filter'];
     checknumeric($nolayout);
+    checknumeric($nosmile);
     checknumeric($filter);
     if(can_edit_forum_threads($fid)){
     	checknumeric($_POST['close']);
@@ -336,8 +341,8 @@ print     "  $L[TR]>
     $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky,filter) "
                ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick,$filter)");
     $tid=$sql->insertid();
-    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce)");
+    $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce,nosmile) "
+               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce,$nosmile)");
     $pid=$sql->insertid();
     $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
 if (!$announce)   {

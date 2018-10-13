@@ -153,6 +153,7 @@ $form = array(
 );
 
 RenderForm($form);
+  pagefooter();
 } else {
 //Data Submitted for Rank Category.
   if(!is_numeric($_GET['id']))  error("Error","Invalid ID detected.");
@@ -168,5 +169,5 @@ RenderForm($form);
 }
 }
 }
-  pagefooter();
+
  ?>

@@ -22,12 +22,13 @@
 ".           "    $L[TDh]>Num.
 ".           "    $L[TDh]>Posted on
 ".           "    $L[TDh]>Thread title
+".(has_perm('view-post-ips')? " $L[TDh]>IP " : '')."
 ".           "  </tr>";
 
       $numposts=$sql->fetchq("SELECT COUNT(*) c FROM posts WHERE user=$id");
       $numposts=$numposts[c];
 
-      $p=$sql->query("SELECT p.id pid,p.num,p.date,t.title,t.forum,t.announce,f.id,f.private FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
+      $p=$sql->query("SELECT p.id pid,p.num,p.date,p.ip,t.title,t.forum,t.announce,f.id,f.private FROM (posts p LEFT JOIN threads t ON t.id=p.thread) "
                     ."LEFT JOIN forums f ON f.id=t.forum WHERE p.user=$id "
                     ."ORDER BY p.num DESC LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
 
@@ -40,6 +41,7 @@
 ".              "  $L[TDc]>#$post[num]
 ".              "  $L[TDc]>".cdate($dateformat,$post[date])."
 ".              "  $L[TD]>$tlink
+".(has_perm('view-post-ips')? " $L[TD]>$post[ip] " : '')."
 ".              "</tr>";
       }
       $print.="$L[TBLend]";

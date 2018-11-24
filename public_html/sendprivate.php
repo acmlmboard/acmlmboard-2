@@ -7,7 +7,7 @@
   needs_login(1);
 
   if($act!="Submit"){
-    echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
+    $js="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   }
 
   $top='<a href=./>Main</a> '
@@ -48,7 +48,7 @@
       $userto=$_POST[userto];
 
   pageheader('Send private message');
-    print "$top
+    print "$js $top
 ".        "<br><br>
 ".        "$L[TBL1]>
 ".        " <form action=sendprivate.php method=post>
@@ -95,7 +95,7 @@ print     "  $L[TR]>
     $post[ulastpost]=ctime();
 
   pageheader('Send private message');
-    print "$top - Preview
+    print "$js $top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>

@@ -398,7 +398,7 @@ function ytube($match){
            ."$L[TD2]>&nbsp;</td>"
            .posttoolbutton("message","ToolBarImg","IMG","img","")
            .posttoolbutton("message","ToolBarSvg","SVG","svg <WIDTH> <HEIGHT>","svg","sv")
-	   .posttoolbutton("message","ToolBarYt","YouTube","youtube","youtube","yt")
+	   .posttoolbutton("message","ToolBarYt","YouTube","youtube","","yt")
            ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>"
            ."$smiletxt";
   }

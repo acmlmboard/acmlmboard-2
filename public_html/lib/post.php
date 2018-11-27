@@ -370,13 +370,13 @@ function ytube($match){
     return $text;
   }
 
-  function posttoolbutton($e,$name,$title,$leadin,$leadout,$names=""){
+  function posttoolbutton($e,$upref,$name,$title,$leadin,$leadout,$names=""){
     global $L;
     if($names=="") $names=$name;
-    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:bbCode('$e','$leadin','$leadout')\"><font size='0.1'><input type=\"button\"  title='$title' class='Submit $name' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>";
+    return "$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:bbCode('$e','$leadin','$leadout',$upref)\"><font size='0.1'><input type=\"button\"  title='$title' class='Submit $name' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>";
   }
   
-  function posttoolbar()
+  function posttoolbar($upref)
   { 
 	global $smilies,$L;
 	//print_r($smilies);
@@ -385,20 +385,20 @@ function ytube($match){
           $smiletxt.="<div style=\"float:left; margin-right: 2px;\"><a href=\"javascript:bbCode('message','smilies','".addslashes($smilies[$i]['text'])."','')\"><font size='0.1'><button type=\"button\" class=\"button\" style=\"background: #000000; padding: 0px; width: 24px; height: 24px;\" title=\"".$smilies[$i]['text']."\"><img src=".$smilies[$i]['url']." style=\"max-width: 18px; max-height: 18px;\"></button></font></a></div>";
           //if($i%16==15 && $i!=$smilies[num]) $smiletxt.="</tr>$L[TR] class='toolbar'>";
         }
-	return posttoolbutton("message","ToolBarB","Bold","b","")
-           .posttoolbutton("message","ToolBarI","Italic","i","")
-           .posttoolbutton("message","ToolBarU","Underline","u","")
-           .posttoolbutton("message","ToolBarS","Strikethrough","s","")
+	return posttoolbutton("message",$upref,"ToolBarB","Bold","b","")
+           .posttoolbutton("message",$upref,"ToolBarI","Italic","i","")
+           .posttoolbutton("message",$upref,"ToolBarU","Underline","u","")
+           .posttoolbutton("message",$upref,"ToolBarS","Strikethrough","s","")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","ToolBarUrl","URL","url","")
-           .posttoolbutton("message","ToolBarSpoil","Spoiler","spoiler","","sp")
-           .posttoolbutton("message","ToolBarIrc","IRC","irc","")
-           .posttoolbutton("message","ToolBarQuote","Quote","quote","","qt")
-           .posttoolbutton("message","ToolBarCode","Code","code","","cd")
+           .posttoolbutton("message",$upref,"ToolBarUrl","URL","url","")
+           .posttoolbutton("message",$upref,"ToolBarSpoil","Spoiler","spoiler","","sp")
+           .posttoolbutton("message",$upref,"ToolBarIrc","IRC","irc","")
+           .posttoolbutton("message",$upref,"ToolBarQuote","Quote","quote","","qt")
+           .posttoolbutton("message",$upref,"ToolBarCode","Code","code","","cd")
            ."$L[TD2]>&nbsp;</td>"
-           .posttoolbutton("message","ToolBarImg","IMG","img","")
-           .posttoolbutton("message","ToolBarSvg","SVG","svg <WIDTH> <HEIGHT>","svg","sv")
-	   .posttoolbutton("message","ToolBarYt","YouTube","youtube","","yt")
+           .posttoolbutton("message",$upref,"ToolBarImg","IMG","img","")
+           .posttoolbutton("message",$upref,"ToolBarSvg","SVG","svg <WIDTH> <HEIGHT>","svg","sv")
+	   .posttoolbutton("message",$upref,"ToolBarYt","YouTube","youtube","","yt")
            ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>"
            ."$smiletxt";
   }

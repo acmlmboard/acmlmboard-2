@@ -659,7 +659,7 @@ print "$modlinks
 
   if($thread[id] && can_create_forum_post($faccess) && !$thread[closed]) {
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbar();
+  $toolbar= posttoolbar($loguser[posttoolbar]);
 
       //lol so hacky please organise this into the right place soon.
 

@@ -482,7 +482,7 @@ if ($config['alwaysshowlvlbar'])
 ".           fieldrow('EXP level bars', fieldoption('showlevelbar',$user['showlevelbar'],array('Show EXP bars', 'Disable EXP bars')))."
 ";
  print"
-".           fieldrow('Posting Toolbar', fieldoption('posttoolbar',$user['posttoolbar'],array('Show Toolbar', 'Hide Toolbar')))."
+".           fieldrow('Posting Toolbar', fieldoption('posttoolbar',$user['posttoolbar'],array(2=> 'Modern Toolbar', 0=>'Retro Toolbar', 1=> 'Hide Toolbar')))."
 ".
            catheader('&nbsp;')."
 ".        "  $L[TR1]>

@@ -1,5 +1,7 @@
 "use strict";
-function bbCode(element, tag, tag2) {
+var bState=new Array();
+
+function bbCode(element, tag, tag2, userpref) {
     var id = document.getElementById(element);
     var selection = id.value.substring(id.selectionStart, id.selectionEnd);
     var cursorPosition = id.selectionEnd;
@@ -7,7 +9,7 @@ function bbCode(element, tag, tag2) {
     
     if (!tag2) {tag2 = tag;} // if there is no closing tag, make it the same as the opening tag
     
-    if (tag === "url" && selection.substr(0, 4).toLowerCase() !== "http") {
+    if (tag === "url" && selection.substr(0, 4).toLowerCase() !== "http" && userpref !=0) { //Ignore this for Retro settings.
         var url = prompt("Enter the URL for the link:");
         if (url) {
             tag2 = "url";
@@ -23,8 +25,27 @@ function bbCode(element, tag, tag2) {
         } else {cursorPosition = id.selectionStart + tag2.length;}
         
     } else {
-        var selectionBB = "[" + tag + "]" + selection + "[/" + tag2 + "]";
-        cursorPosition += tag.length + 2;
+        if(userpref == 2) { // Modern Preference
+          var selectionBB = "[" + tag + "]" + selection + "[/" + tag2 + "]";
+          cursorPosition += tag.length + 2;
+        } else { // Retro Preference
+        if (isThereNoSelection) {
+		if(bState[tag]==1) {
+			var selectionBB = selection + "[/" + tag2 + "]";
+			bState[tag]=0;
+			document.getElementById(element).className="b n3";
+			cursorPosition += (tag.length * 2) + 2
+		} else {
+			var selectionBB = "[" + tag + "]" + selection;
+			bState[tag]=1;
+			document.getElementById(element).className="b n1";
+			cursorPosition += (tag.length * 2) + 3
+		}
+	} else {
+		var selectionBB = "[" + tag + "]" + selection + "[/" + tag2 + "]";
+		cursorPosition += (tag.length * 2) + 5
+	}
+        }
     }
     
     if (isThereNoSelection && id.selectionStart == 0 && id.length > 0) {

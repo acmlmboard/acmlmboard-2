@@ -44,7 +44,7 @@
 	
 if($act!="Submit"){
   $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbar();
+  $toolbar= posttoolbar($loguser[posttoolbar]);
 	 
 	if ($ispoll)
 	{

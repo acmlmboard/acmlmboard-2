@@ -44,7 +44,7 @@
 if($act!="Submit"){ //Classical Redirect
   $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
-  $toolbar= posttoolbar();
+  $toolbar= posttoolbar($loguser[posttoolbar]);
 
   if ($thread[closed] && !can_edit_forum_posts($thread[forum])) {
       $err="    You can't edit a post in closed threads!<br>

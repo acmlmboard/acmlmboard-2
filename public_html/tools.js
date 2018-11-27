@@ -1,45 +1,44 @@
-var bState=new Array();
-
-function wrapSelection(e,prefix,suffix)
-{
-	var el=document.getElementById(e);
-	if(document.selection) {
-		//IE-like
-		el.focus();
-		document.selection.createRange().text=prefix+document.selection.createRange().text+suffix;
-	} else if(typeof el.selectionStart != undefined) {
-		//FF-like
-		el.value=el.value.substring(0,el.selectionStart)+prefix+el.value.substring(el.selectionStart,el.selectionEnd)+suffix+el.value.substring(el.selectionEnd,el.value.length);
-		el.focus();
-	}
-}
-
-function selectionLength(e)
-{
-	var el=document.getElementById(e);
-	if(document.selection) return document.selection.createRange().text.length;
-	else if(typeof el.selectionStart != undefined) { return el.selectionEnd-el.selectionStart; }
-}
-
-function buttonProc(e,bk,leadin,leadout)
-{
-	if(selectionLength(e)>0) wrapSelection(e,leadin,leadout);
-	else {
-		if(bState[bk]==1) {
-			wrapSelection(e,"",leadout);
-			bState[bk]=0;
-			document.getElementById(bk).className="b n3";
-		} else {
-			wrapSelection(e,leadin,"");
-			bState[bk]=1;
-			document.getElementById(bk).className="b n1";
-		}
-	}
-}
-function buttonSmile(e,bk,leadin,leadout)
-{
-		wrapSelection(e,leadin,"");
-		document.getElementById(bk).className="b n1";
+"use strict";
+function bbCode(element, tag, tag2) {
+    var id = document.getElementById(element);
+    var selection = id.value.substring(id.selectionStart, id.selectionEnd);
+    var cursorPosition = id.selectionEnd;
+    var isThereNoSelection = (id.selectionEnd - id.selectionStart == 0);
+    
+    if (!tag2) {tag2 = tag;} // if there is no closing tag, make it the same as the opening tag
+    
+    if (tag === "url" && selection.substr(0, 4).toLowerCase() !== "http") {
+        var url = prompt("Enter the URL for the link:");
+        if (url) {
+            tag2 = "url";
+            tag = "url=" + url;
+        }
+    }
+    
+    if (tag === "smilies") {
+        
+        var selectionBB = tag2;
+        if (isThereNoSelection) {
+            cursorPosition += tag2.length;
+        } else {cursorPosition = id.selectionStart + tag2.length;}
+        
+    } else {
+        var selectionBB = "[" + tag + "]" + selection + "[/" + tag2 + "]";
+        cursorPosition += tag.length + 2;
+    }
+    
+    if (isThereNoSelection && id.selectionStart == 0 && id.length > 0) {
+        id.selectionStart = id.length;
+        id.selectionEnd = id.length;
+    }
+    
+    var string1 = id.value.substring(0, id.selectionStart);
+    var string2 = id.value.substring(id.selectionEnd);
+    id.value = string1 + selectionBB + string2;
+    
+    id.focus({preventScroll: true});
+    id.selectionEnd = cursorPosition;
+    id.selectionStart = cursorPosition;
 }
 function togglesmiles()
 {

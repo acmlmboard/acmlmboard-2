@@ -48,7 +48,7 @@
   if($act!="Submit"){
     $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
-  $toolbar= posttoolbar();
+  $toolbar= posttoolbar($loguser[posttoolbar]);
 
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 

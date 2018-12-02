@@ -590,6 +590,7 @@ function perms_for_x($xtype,$xid) {
 //Check if a user has a flagging permission. 
 function user_has_perm($permid,$uid,$gid) {
     global $sql;
+    if(!isset($gid)) $gid=1; //Failsafe if GID is invalid. Use the default base user group ID.
     $f = $sql->fetch($sql->query("SELECT * FROM `x_perm` WHERE `perm_id`='$permid' AND ((`x_id`=$gid AND `x_type`='Group') OR (`x_id`=$uid AND `x_type`='User'))"));
     if (!$f) return false; //Perm not found
     if ($f['revoke']) return false; //Perm is revoked

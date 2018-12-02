@@ -338,7 +338,7 @@ function userfields($tbl='', $pf='')
 		$nc = $group['nc'.$user[$u.'sex']];
 	}
   //Random Nick Color on Birthday
-  if (isset($userbirthdays[$user[$u.'id']]) && !user_has_perm('banned',$user[$u.'id'],$group['id']))
+  if (isset($userbirthdays[$user[$u.'id']]) && !user_has_perm('banned',$user[$u.'id'],$user[$u.'group_id']))
     $nc = "RANDOM";
 
   $nccache[$user[$u.'id']]=$nc;

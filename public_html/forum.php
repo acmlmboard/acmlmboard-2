@@ -6,20 +6,20 @@
   require 'lib/common.php';
 
 
-  $page=$_GET[page];
-  if(!$page)
+  if(isset($_GET['page'])) $page=$_GET['page'];
+  if(!isset($page))
     $page=1;
 
 
-  if($fid=$_GET[id]){
+  if($fid=$_GET['id']){
     checknumeric($fid);
 
     if($log){
       $forum=$sql->fetchq("SELECT f.*, r.time rtime FROM forums f "
                          ."LEFT JOIN forumsread r ON (r.fid=f.id AND r.uid=$loguser[id]) "
                          ."WHERE f.id=$fid AND f.id IN ".forums_with_view_perm());
-      if(!$forum[rtime])
-        $forum[rtime]=0;
+      if(!$forum['rtime'])
+        $forum['rtime']=0;
     }else
       $forum=$sql->fetchq("SELECT * FROM forums WHERE id=$fid AND id IN ".forums_with_view_perm());
 
@@ -36,7 +36,7 @@
     $feedicons.=feedicon("img/rss2.png","rss.php?forum=$fid","RSS feed for this section");
 
     //append the forum's title to the site title
-    pageheader($forum[title],$fid);
+    pageheader($forum['title'],$fid);
 
     //forum access control // 2007-02-19 blackhole89 // 2011-11-09 blackhole89 tokenisation (more than 4.5 years...)
     //2012-01-01 DJBouche Happy New Year!
@@ -99,7 +99,7 @@ if($loguser['id']!=0){
                   .($log?"LEFT JOIN threadsread r ON (r.tid=t.id AND r.uid=$loguser[id])":'')
                         ."WHERE t.forum=$fid AND t.announce=0 "
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
-                        ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
+                        ."LIMIT ".(($page-1)*$loguser['tpp']).",".$loguser['tpp']);
     $topbot=
         "$L[TBL] width=100%>
 ".      "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$fid>$forum[title]</a></td>
@@ -226,7 +226,7 @@ if($loguser['id']!=0){
   $showforum=$uid||$time;
 
   //Forum Jump - SquidEmpress
-  if(!$uid && !$time && !(isset($_GET[fav]))) {
+  if(!$uid && !$time && !(isset($_GET['fav']))) {
   $r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
 		$forumjumplinks="<table><td>$fonttag Forum jump: </td>
         <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
@@ -242,18 +242,18 @@ if($loguser['id']!=0){
                 $forumjumplinks.= "<optgroup label=\"".$d['ctitle']."\">";
 			}
             //Based off of the forum name code in 1.92.08. - SquidEmpress
-            $forumjumplinks.="<option value=forum.php?id=$d[id]".($forum[id]==$d[id]?' selected':'').">$d[title]";
+            $forumjumplinks.="<option value=forum.php?id=".$d['id'].($forum['id']==$d['id']?" selected":'').">".$d['title'];
 		}
 		$forumjumplinks.="</optgroup></select></table></form>";
 		$forumjumplinks=($forumjumplinks);
   }
 
-  if($forum[threads]<=$loguser[tpp]){
+  if($forum['threads']<=$loguser['tpp']){
     $fpagelist='<br>';
     $fpagebr='';
   }else{
     $fpagelist='<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">Pages:';
-    for($p=1;$p<=1+floor(($forum[threads]-1)/$loguser[tpp]);$p++)
+    for($p=1;$p<=1+floor(($forum['threads']-1)/$loguser['tpp']);$p++)
       if($p==$page)
         $fpagelist.=" $p";
       elseif($fid)
@@ -302,9 +302,9 @@ echo announcement_row($fid,3,4);
   $lsticky=0;
   for($i=1;$thread=$sql->fetch($threads);$i++){
     $pagelist='';
-    if($thread[replies]>=$loguser[ppp]){
-      for($p=1;$p<=($pmax=(1+floor($thread[replies]/$loguser[ppp])));$p++) {
-        if($loguser[longpages] || $p<7 || $p>($pmax-7) || !($p%10)) $pagelist.=" <a href=thread.php?id=$thread[id]&page=$p>$p</a>";
+    if($thread['replies']>=$loguser['ppp']){
+      for($p=1;$p<=($pmax=(1+floor($thread['replies']/$loguser['ppp'])));$p++) {
+        if($loguser['longpages'] || $p<7 || $p>($pmax-7) || !($p%10)) $pagelist.=" <a href=thread.php?id=".$thread['id']."&page=$p>$p</a>";
   else if(substr($pagelist,-1)!=".") $pagelist.=" ...";
       }
       $pagelist=" <font class=sfont>(pages: $pagelist)</font>";
@@ -312,44 +312,44 @@ echo announcement_row($fid,3,4);
 
     $status='';
     $statalt='';
-    if($thread[closed]){                $status.='o'; $statalt='OFF'; }
-    if($thread[replies]>=50){           $status.='!'; if(!$statalt) $statalt='HOT'; }
+    if($thread['closed']){                $status.='o'; $statalt='OFF'; }
+    if($thread['replies']>=50){           $status.='!'; if(!$statalt) $statalt='HOT'; }
 
     if($log){
-      if(!$thread[isread]){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
+      if(!$thread['isread']){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
     }else
-      if($thread[lastdate]>(ctime()-3600)){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
+      if($thread['lastdate']>(ctime()-3600)){ $status.='n'; if($statalt!='HOT') $statalt='NEW'; }
 
     if($status)
       $status=rendernewstatus($status);
     else
       $status='&nbsp;';
 
-    if(!$thread[title])
-      $thread[title]='?';
+    if(!$thread['title'])
+      $thread['title']='?';
 
-    if($thread[icon])
+    if($thread['icon'])
       $icon="<img src='$thread[icon]' style='max-height: 17px; max-width: 17px;'>";
     else
       $icon='&nbsp;';
 
-    if($thread[sticky])
+    if($thread['sticky'])
       $tr='TR1c';
     else
       $tr=($i%2?'TR2':'TR3').'c';
 
-    if(!$thread[sticky] && $lsticky)
+    if(!$thread['sticky'] && $lsticky)
       print
-          "  $L[TRg]>
-".        "    $L[TD] colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
+          "  ".$L['TRg'].">
+".        "    ".$L['TD']." colspan=".($showforum?8:7)." style='font-size:1px'>&nbsp;</td>
 ";
-    $lsticky=$thread[sticky];
+    $lsticky=$thread['sticky'];
 
     $taglist="";
     for($k=0;$k<sizeof($tags);++$k) {
       $t=$tags[$k];
-      if($thread[tags] & (1<<$t[bit])) {
-        if ($config[classictags]) {
+      if($thread['tags'] & (1<<$t['bit'])) {
+        if ($config['classictags']) {
 	  list($r,$g,$b) = sscanf($t[color],"%02X%02X%02X"); //updated to new php syntax, call by reference is now completely removed in PHP
           if($r<128 && $g<128) { $r+=32; $g+=32; }
           $t[color2]=sprintf("%02X%02X%02X",$r,$g,$b);
@@ -366,11 +366,11 @@ echo announcement_row($fid,3,4);
 ".        "    $L[TD]>$icon</td>
 ".($showforum?
           "    $L[TD]><a href=forum.php?id=$thread[fid]>$thread[ftitle]</a></td>":'')."
-".        "    $L[TDl] style=\"word-break: break-all;\">".($thread[ispoll]?"<img src=img/poll.gif height=10>":"").(($thread[thumbcount])?" (".$thread[thumbcount].") ":"")."<a href=\"thread.php?id=$thread[id]\">".htmlval($thread[title])."</a>$taglist$pagelist</td>
-".        "    $L[TD]>".userlink($thread,'u1',$config[startedbyminipic])."</td>
-".        "    $L[TD]>$thread[replies]</td>
-".        "    $L[TD]>$thread[views]</td>
-".        "    $L[TD]><nobr>".cdate($dateformat,$thread[lastdate])."</nobr><br><font class=sfont>by&nbsp;".userlink($thread,'u2',$config[forumminipic])."&nbsp;<a href='thread.php?pid=$thread[lastid]#$thread[lastid]'>&raquo;</a></font></td>
+".        "    $L[TDl] style=\"word-break: break-all;\">".($thread['ispoll']?"<img src=img/poll.gif height=10>":"").(($thread['thumbcount'])?" (".$thread['thumbcount'].") ":"")."<a href=\"thread.php?id=".$thread['id']."\">".htmlval($thread['title'])."</a>$taglist$pagelist</td>
+".        "    $L[TD]>".userlink($thread,'u1',$config['startedbyminipic'])."</td>
+".        "    $L[TD]>".$thread['replies']."</td>
+".        "    $L[TD]>".$thread['views']."</td>
+".        "    $L[TD]><nobr>".cdate($dateformat,$thread['lastdate'])."</nobr><br><font class=sfont>by&nbsp;".userlink($thread,'u2',$config['forumminipic'])."&nbsp;<a href=\"thread.php?pid=".$thread['lastid']."#".$thread['lastid']."\">&raquo;</a></font></td>
 ";
   }
   print "$L[TBLend]

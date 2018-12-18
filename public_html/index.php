@@ -19,7 +19,8 @@
   require 'lib/common.php';
 
   //mark forum read
-  if($log && $_GET['action']=='markread'){
+  if(isset($_GET['action'])){ $action=$_GET['action']; } else { $action=""; }
+  if($log && $action=='markread'){
     $fid=$_GET['fid'];
     if($fid!='all'){
       checknumeric($fid);

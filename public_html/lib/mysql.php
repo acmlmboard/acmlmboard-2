@@ -14,7 +14,8 @@ class mysql {
 	public function connect($host, $user, $pass) {
 		// allow debug setting from config
 		global $config;
-		self::$debug = $config['enablesqldebug'];
+		if(isset($config['enablesqldebug'])){ $sqldebug=$config['enablesqldebug']; } else { $sqldebug=0; } //Clear error notice
+		self::$debug = $sqldebug;
 		
 		// attempt to connect
 		$start     = microtime(true);

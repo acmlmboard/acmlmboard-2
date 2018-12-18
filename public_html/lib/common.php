@@ -163,7 +163,7 @@
      @$sql->query("INSERT DELAYED INTO `log` VALUES(UNIX_TIMESTAMP(),'$userip','$loguser[id]','".addslashes($_SERVER['HTTP_USER_AGENT'])." :: ".addslashes($url)." :: $postvars')");
     }
 
-    $ref  = $_SERVER['HTTP_REFERER'];
+    $ref  = (isset($_SERVER['HTTP_REFERER'])? $_SERVER['HTTP_REFERER'] : "");
     $ref2 = substr($ref, 0, 25);
    if($ref && !strpos($ref2, $config['address']))
     {
@@ -275,7 +275,7 @@
     }
     $timezone   = new DateTimeZone($loguser['timezone']);
     $tzoff      = $timezone->getOffset(new DateTime("now"));
-    $themefile .= "?tz=$tzoff&minover=".intval($_GET['minover']);
+    $themefile .= "?tz=$tzoff"; // "minover" removed, appears to be unused? [Epele]
 
    if($pagetitle)
      $pagetitle .= " - ";
@@ -555,11 +555,11 @@
        }
       }
       
-     if ($numguests)
+     if (isset($numguests))
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if ($numbots)
+     if (isset($numbots))
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }
@@ -592,7 +592,7 @@
        else $y = date("Y") - $b[2].")";
        $birthdays[] = userlink($user)." ".$p."".$y;
       }
-      
+     $birthdaybox=""; // Setting this blank to avoid PHP errors.
      if(count($birthdays))
       {
        $birthdaystoday = implode(", ", $birthdays);
@@ -643,6 +643,7 @@
       //[Scrydan] Changed from the commented code below to save a query.
       //NOTE: THIS CODE IS USED TWICE, WE SHOULD FIND A WAY TO REUSE THIS INSTEAD OF ADDING MORE LINES!
       $onlineguests = $sql->query("SELECT * FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
+     $numbots = $numguests = 0; //Initialise to reduce error notices. [Epele]
      while($chkonline = $sql->fetch($onlineguests))
       {
       if ($chkonline['bot'] == 1)

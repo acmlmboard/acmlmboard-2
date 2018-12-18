@@ -348,7 +348,7 @@ function userfields($tbl='', $pf='')
 	if($user[$u.'displayname'] && $config['displayname'])
 		$n = $user[$u.'displayname'];
 		
-	if($user[$u.'minipic'] && $user['showminipic']) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
+	if(isset($user[$u.'minipic']) && isset($user['showminipic'])) $minipic="<img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0> ";
 	else $minipic="";
 
   //Badge username manipulation

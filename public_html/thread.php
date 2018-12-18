@@ -542,12 +542,12 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
     $taglinks="";
     for($i=0;$i<sizeof($tags);++$i) {
       $t=$tags[$i];
-      if(!($thread[tags] & (1<<$t[bit]))) $taglinks.="<a href=javascript:submittag('$t[bit]')>$t[tag]</a> ";
+      if(!($thread['tags'] & (1<<$t['bit']))) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
     }
     $taglinks.="| Remove: ";
     for($i=0;$i<sizeof($tags);++$i) {
       $t=$tags[$i];
-      if($thread[tags] & (1<<$t[bit])) $taglinks.="<a href=javascript:submittag('$t[bit]')>$t[tag]</a> ";
+      if($thread['tag'] & (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
     }
     $taglinks=addslashes($taglinks);
 
@@ -633,17 +633,17 @@ print "$modlinks
 ".        "$poll
 ";
   while($post=$sql->fetch($posts)){
-    if ($post['fid']) {
+    if (isset($post['fid'])) {
       if (!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) continue;
     }
-    if($uid || $timeval){
-      $pthread[id]=$post[tid];
-      $pthread[title]=$post[ttitle];
+    if(isset($uid) || isset($timeval)){
+      $pthread['id']=$post['tid'];
+      $pthread['title']=$post['ttitle'];
     }
-    if($post[id]!=$_GET[pin]){
-      $post[maxrevision]=$post[revision]; // not pinned, hence the max. revision equals the revision we selected
+    if($post['id']!=$_GET['pin']){
+      $post['maxrevision']=$post['revision']; // not pinned, hence the max. revision equals the revision we selected
     } else {
-      $post[maxrevision]=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=$_GET[pin]");
+      $post['maxrevision']=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=".$_GET['pin']);
     }
     if(can_edit_forum_posts($post[fid]) && $post[id]==$_GET[pin]) $post[deleted]=false;
 	// After a creating or editing a post
@@ -657,7 +657,7 @@ print "$modlinks
   print   "$pagelist$pagebr
 ".        "<br>";
 
-  if($thread[id] && can_create_forum_post($faccess) && !$thread[closed]) {
+  if(isset($thread['id']) && can_create_forum_post($faccess) && !$thread['closed']) {
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
   $toolbar= posttoolbar($loguser[posttoolbar]);
 

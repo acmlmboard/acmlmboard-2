@@ -10,6 +10,7 @@
     $lnkex="?user=$edid";
   } else {
     $edid=$loguser['id'];
+    $lnkex="";
   }
   $edid = (int)$edid;
   if(!can_edit_user_moods($edid)){
@@ -116,7 +117,7 @@
 </script>";
 //Default Avatar.
   $u=$sql->fetch($sql->query("SELECT `usepic` FROM `users` WHERE `id`=".$edid));
-  if($u['usepic']>=1){ $aurl="gfx/userpic.php?id=".$edid."&r=".$u['usepic']; }
+  if($u['usepic']>=1){ $aurl="gfx/userpic.php?id=".$edid."&r=".$u['usepic']; } else { $aurl=""; }
   print "<div style=\"margin: 4px; float: left; display:inline-block;\">$L[TBL1]>
   $L[TRh]>
     $L[TDh]>Default</td>

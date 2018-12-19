@@ -5,9 +5,7 @@
         error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
     }
 //Various variables.
-  $past=$_GET[past];
-  checknumeric($past);
-    $time=86400;
+  $time=86400;
   $kcscap=10;
   $kcspoints=array(1=>10,7,5,3,1,0);
   function dtime($ktc) {
@@ -89,15 +87,15 @@
             print " -- <i>Total Posts: $pqry</i><table>";
  $q=1; $p=-1;
   for($i=1;$user=$sql->fetch($users);$i++){
-    if($user[num]!=$p) $q=$i;
+    if($user['num']!=$p) $q=$i;
     if($q<=5) {
     if($mday <= $day){
-	$uid=$user[id];
-	$points[$uid]=$points[$uid]+$kcspoints[$q];
+	$uid=$user['id'];
+	if(isset($points[$uid])) $points[$uid]=$points[$uid]+$kcspoints[$q]; else $points[$uid]=$kcspoints[$q];
     }
     print
 	"<tr><td>$q</td><td>".userlink($user)."</td><td>$user[num]</td></tr>";
-    $p=$user[num];
+    $p=$user['num'];
   }
 }
         print "</table></td>\n";
@@ -159,13 +157,13 @@ $report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-l
 //Results for posts
  $q=1; $p=-1;
   for($i=1;$user=$sql->fetch($users);$i++){
-    if($user[num]!=$p) $q=$i;
+    if($user['num']!=$p) $q=$i;
     if($q<=5) {
-    $usr=$user[id];
+    $usr=$user['id'];
     $dpur[$usr]=$kcspoints[$q];
     $report.="<tr><td>$q</td><td>[user=$usr]</td><td>$user[num]</td></tr>";
     print "<tr><td>$q</td><td>".userlink($user)."</td><td>$user[num]</td></tr>";
-    $p=$user[num];
+    $p=$user['num'];
   }
 }
 $report.="</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
@@ -192,7 +190,7 @@ foreach($points as $usr => $pnts){
 	if($pnts<$t) $r=$q;
     	$mpur = $sql->fetch($sql->query("SELECT ".userfields()." FROM users WHERE id=$usr"));
 	$report.="<tr><td>$r</td><td>[user=$usr]</td><td>$pnts</td></tr>";
-	print "<tr><td>$r</td><td>".userlink($mpur)."</td><td>$pnts $ico</td></tr>";
+	print "<tr><td>$r</td><td>".userlink($mpur)."</td><td>$pnts</td></tr>";
 	$t=$pnts;
 	$q++;
 }

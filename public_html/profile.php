@@ -30,7 +30,7 @@
     $tfound = $sql->resultq("SELECT count(*) FROM `threads` WHERE `user`='$uid'");
     $tavg   = sprintf('%1.02f',$user['threads'] / $days);
 
-    if($user[posts])
+    if($user['posts'])
       {
         $exp       = calcexp($user['posts'],(ctime()-$user['regdate'])/86400);
         $lvl       = calclvl($exp);
@@ -48,10 +48,10 @@
                             LEFT JOIN `posts` `p` ON `p`.`thread`=`t`.`id`
                             WHERE `p`.`date`='$user[lastpost]' AND p.user='$uid' AND `f`.`id` IN ".forums_with_view_perm());
 
-  if(!$config[topposts]) $topposts=5000;
-  else $topposts = $config[topposts];
-  if(!$config[topthreads]) $topthreads=200;
-  else $topthreads = $config[topthreads];
+  if(!$config['topposts']) $topposts=5000;
+  else $topposts = $config['topposts'];
+  if(!$config['topthreads']) $topthreads=200;
+  else $topthreads = $config['topthreads'];
 
   if($user['posts']) $pprojdate=ctime()+(ctime()-$user['regdate'])*($topposts-$user['posts'])/($user['posts']);
   if(!$user['posts'] or $user['posts']>=$topposts or $pprojdate>2000000000 or $pprojdate<ctime()) $pprojdate="";
@@ -172,6 +172,9 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
     {
      $post['u'.$field] = $val;
     }
+   //Sample data blanking so the post renderer has valid data.
+   $post['revision'] = $post['maxrevision'] = $post['id'] = $post['isannounce'] = $post['mood'] = $post['nosmile'] = $post['thread'] = 0;
+   $post['head'] = $post['uhead'] = $post['sign'] = "";
 
     $shoplist = "
          $L[TBL1] width=\"100%\">
@@ -321,7 +324,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
     $logtzoff  = $logtz->getOffset($now);
 
     $user['showminipic'] = 1;
-
+    if(!isset($u)) $u="";
     //User color override - Should be moved to a function.
     $group = $usergroups[$user[$u.'group_id']];
     $realnc = $group['nc'.$user[$u.'sex']];

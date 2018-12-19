@@ -4,7 +4,7 @@
 
   $tstats=$sql->query('SHOW TABLE STATUS');
   while($t=$sql->fetch($tstats))
-    $tbl[$t[Name]]=$t;
+    $tbl[$t['Name']]=$t;
 
   function sp($sz){
     $b=number_format($sz,0,'.',' ');

@@ -22,10 +22,11 @@ function usegfxnums()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx,$signsep;
     if($avatardimx>=180){ $sidewidth=$avatardimx; } else { $sidewidth=180; }
     $exp=calcexp($post['uposts'],(ctime()-$post['uregdate'])/86400);
 
+    if(!isset($loguser['signsep'])) $loguser['signsep']=0; //To-do, check why this doesn't work right.
     $post['head']=str_replace("<!--", "&lt;!--", $post['head']);
     $post['uhead']=str_replace("<!--", "&lt;!--", $post['uhead']);
 
@@ -52,14 +53,14 @@ function usegfxnums()
     //if($post[nolayout]) {
     //[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	$isBlocked = $blocklayouts[$post['uid']] || $post['nolayout'] || $loguser['blocklayouts'];
+	$isBlocked = isset($blocklayouts[$post['uid']]) || isset($post['nolayout']) || isset($loguser['blocklayouts']);
     if($isBlocked)
       $post['usign'] = $post['uhead'] = "";
     //}
 
 	$authval = auth_url($post['id']);
     //post has been deleted, display placeholder
-    if($post['deleted']) {
+    if(isset($post['deleted'])) {
       $postlinks="";
       if(can_edit_forum_posts(getforumbythread($post['thread']))) {
         $postlinks.="<a href=\"thread.php?pid={$post['id']}&amp;pin={$post['id']}&rev={$post['revision']}#{$post['id']}\">Peek</a> | ";
@@ -85,7 +86,8 @@ function usegfxnums()
     switch($type){
      case 0:
      case 1:
-      $postheaderrow = "";
+      $postheaderrow = $postlinks = "";
+
       if($pthread)
         $threadlink=", in <a href=\"thread.php?id={$pthread['id']}\">".htmlval($pthread['title'])."</a>";
 
@@ -104,7 +106,7 @@ function usegfxnums()
              </tr>
             ";
       } 
-      else if($post['thread'] && $loguser['id']!=0) {
+      else if(isset($post['thread']) && $loguser['id']!=0) {
           $postlinks.=($postlinks?' | ':'')."<a href=\"newreply.php?id={$post['thread']}&amp;pid={$post['id']}\">Reply</a>";
       }
 
@@ -141,6 +143,10 @@ $tbar1=($type==0 && !$isBlocked) ? "topbar".$post['uid']."_1" : "";
 $tbar2=($type==0 && !$isBlocked) ? "topbar".$post['uid']."_2" : "";
 $sbar=($type==0 && !$isBlocked) ? "sidebar".$post['uid'] : "";
 $mbar=($type==0 && !$isBlocked) ? "mainbar".$post['uid'] : "";
+
+//Check if undefined.
+if(!isset($threadlink)) $threadlink="";
+if(!isset($revisionstr)) $revisionstr="";
       $text="$L[TBL1] id=".$post['id'].">
 ".        "  $postheaderrow 
 ".        "  $L[TR]>

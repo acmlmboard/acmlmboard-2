@@ -315,7 +315,7 @@ function ytube($match){
     $s=str_replace("&rank&",$post['ranktext'],$s);
     $s=str_replace("&rankname&",preg_replace("'<(.*?)>'si","",$post['ranktext']),$s);
     $s=str_replace("&lvlbar&",drawrpglevelbar($exp, '166'),$s);
-    $s=str_replace("&mood&",$post['mood'],$s);
+    $s=str_replace("&mood&",(isset($post['mood'])?$post['mood']:"0"),$s);
     $s=str_replace("&postrank&",$sql->result($sql->query("SELECT count(*) FROM users WHERE posts>".$post['uposts']),0,0),$s); //Added by request of Acmlm
     //This one's from ABXD
     $s = preg_replace_callback('@&(\d+)&@si', function ($match) use ($post) { return max($match[1] - $post['num'], 0); }, $s);

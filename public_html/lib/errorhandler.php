@@ -5,7 +5,7 @@
 */
 
 // If the error handler is disabled, do not register any of the handlers
-if ($config['enableerrorhandler']) {
+if (isset($config['enableerrorhandler'])) {
 	$er_errors = array();
 	$er_hidden = 0;
 	set_error_handler('error_reporter');

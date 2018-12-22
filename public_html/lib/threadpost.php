@@ -60,7 +60,7 @@ function usegfxnums()
 
 	$authval = auth_url($post['id']);
     //post has been deleted, display placeholder
-    if(isset($post['deleted'])) {
+    if($post['deleted']) {
       $postlinks="";
       if(can_edit_forum_posts(getforumbythread($post['thread']))) {
         $postlinks.="<a href=\"thread.php?pid={$post['id']}&amp;pin={$post['id']}&rev={$post['revision']}#{$post['id']}\">Peek</a> | ";

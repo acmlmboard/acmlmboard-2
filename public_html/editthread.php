@@ -18,7 +18,7 @@
       error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
 if(has_perm('edit-thread') && $thread['owner']==$loguser['id']) $caneditown=1;
-if (!can_edit_forum_threads($thread[forum]) && !isset($caneditown)){
+if (!can_edit_forum_threads($thread['forum']) && !isset($caneditown)){
   $err="    You have no permissions to modify threads in this forum!";
 pageheader("Edit Thread");
     noticemsg("Error", $err);
@@ -92,11 +92,12 @@ pageheader("Edit Thread");
 pageheader("Edit Thread");
 //Thread icon code.
 $i=1;
+$iconlist="";
   $icons=$sql->query('SELECT * FROM posticons ORDER BY id');
   while($icon=$sql->fetch($icons)){
     if($thread['icon']==$icon['url']){ $ext="checked"; $match=$icon['url']; } else { $ext=""; }
     $iconlist.=
-          "      $L[INPr]=iconid value=$i $ext> <img src=$icon[url]>&nbsp; &nbsp;".(!($i++%10)?'<br>':'');
+          "      $L[INPr]=iconid value=$i $ext> <img src=".$icon['url'].">&nbsp; &nbsp;".(!($i++%10)?'<br>':'');
   }
   if(!isset($match)){
   $iconlist.=
@@ -119,10 +120,10 @@ if(!has_perm('rename-own-thread')){  $distitle=" disabled title=\"You do not hav
 ".        "    $L[TDh] colspan=2>Editing Thread - ".$thread['title']."</td>
 ";
     print "  $L[TR]>
-".        "    $L[TD1c]>$typecap title:</td>
+".        "    $L[TD1c]>Title:</td>
 ".        "    $L[TD2]>$L[INPt]=title value=\"".htmlentities($thread['title'])."\" size=100 maxlength=100$distitle></td>
 ".        "  $L[TR]>
-".        "    $L[TD1c]>$typecap icon:</td>
+".        "    $L[TD1c]>Icon:</td>
 ".        "    $L[TD2]>
 ".        "$iconlist
 ";

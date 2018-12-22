@@ -173,8 +173,8 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
      $post['u'.$field] = $val;
     }
    //Sample data blanking so the post renderer has valid data.
-   $post['revision'] = $post['maxrevision'] = $post['id'] = $post['isannounce'] = $post['mood'] = $post['nosmile'] = $post['thread'] = $post['deleted'] = 0;
-   $post['head'] = $post['uhead'] = $post['sign'] = "";
+   $post['revision'] = $post['maxrevision'] = $post['id'] = $post['isannounce'] = $post['mood'] = $post['nosmile'] = $post['thread'] = $post['deleted'] = $post['nolayout'] = 0;
+   $post['head'] = $post['sign'] = "";
 
     $shoplist = "
          $L[TBL1] width=\"100%\">

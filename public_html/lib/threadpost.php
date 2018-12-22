@@ -30,7 +30,7 @@ function usegfxnums()
     $post['head']=str_replace("<!--", "&lt;!--", $post['head']);
     $post['uhead']=str_replace("<!--", "&lt;!--", $post['uhead']);
 
-    $post['text']=$post['head'].$post['text'].$signsep[$loguser['signsep']].$post['sign'];
+    $post['text']=$post['head'].$post['text'].$post['sign'];
 
   //This allows config level enable or disable of syndromes.
   if($syndromenable == 1) $actsyn=@$sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);

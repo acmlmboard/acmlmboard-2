@@ -46,9 +46,6 @@
   $L['SEL']    = "<select name";
   $L['OPT']    = "<option value";
 
-  $signsep[0]  = "<br><br>--------------------<br>";
-  $signsep[1]  = "<br><br>____________________<br>";
-  $signsep[0]  = "<hr>";
 
   require_once "nlayout.php";
   

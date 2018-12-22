@@ -53,7 +53,7 @@ function usegfxnums()
     //if($post[nolayout]) {
     //[KAWA] Blocklayouts. Supports user/user ($blocklayouts), per-post ($post[nolayout]) and user/world (token).
 	LoadBlockLayouts(); //load the blocklayout data - this is just once per page.
-	$isBlocked = isset($blocklayouts[$post['uid']]) || isset($post['nolayout']) || isset($loguser['blocklayouts']);
+	$isBlocked = isset($blocklayouts[$post['uid']]) || $post['nolayout'] || $loguser['blocklayouts'];
     if($isBlocked)
       $post['usign'] = $post['uhead'] = "";
     //}

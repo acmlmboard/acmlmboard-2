@@ -27,15 +27,16 @@ function usegfxnums()
     $exp=calcexp($post['uposts'],(ctime()-$post['uregdate'])/86400);
 
     if(!isset($loguser['signsep'])) $loguser['signsep']=0; //To-do, check why this doesn't work right.
-    $post['head']=str_replace("<!--", "&lt;!--", $post['head']);
-    $post['uhead']=str_replace("<!--", "&lt;!--", $post['uhead']);
-
-    $post['text']=$post['head'].$post['text'].$post['sign'];
+    $post['head']=str_replace("<!--", "&lt;!--", checkvar('post','head'));
+    $post['uhead']=str_replace("<!--", "&lt;!--", checkvar('post','uhead'));
+    $post['utitle']=checkvar('post','utitle');
+    $post['usign']=checkvar('post','usign');
+    $post['text']=$post['head'].$post['text'].checkvar('post','sign');
 
   //This allows config level enable or disable of syndromes.
   if($syndromenable == 1) $actsyn=@$sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
   else $actsyn=0;
-
+  
   $post['ranktext'] = getrank($post['urankset'],$post['uposts']);
    $post['utitle'] = $post['ranktext']
                   .((strlen($post['ranktext'])>=1)?"<br>":"")
@@ -99,7 +100,7 @@ function usegfxnums()
         $revisionstr=" (rev. $post[revision] of ".cdate($dateformat,$post['ptdate'])." by ".userlink_by_id($post['ptuser']).")";
 
       // I have no way to tell if it's closed (or otherwise impostable (hah)) so I can't hide it in those circumstances...
-      if($post['isannounce']) {
+      if(isset($post['isannounce'])) {
           $postheaderrow =
             "$L[TRh]>
                $L[TD] colspan=2>".$post['ttitle']."</td>
@@ -114,7 +115,7 @@ function usegfxnums()
 	  if (can_edit_post($post) && $post['id'])
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}\">Edit</a>";
         
-      if (can_edit_post($post) && $post['id'] && $post['isannounce'])
+      if (can_edit_post($post) && $post['id'] && isset($post['isannounce']))
         $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid={$post['id']}\">Edit Title</a>";
 
       if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])))

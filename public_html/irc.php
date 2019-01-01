@@ -1,8 +1,8 @@
 <?php
 	require 'lib/common.php';
 	pageheader();
-	
-	$server = (int)$_GET['server'];
+	$guestmsg="";
+	if(isset($_GET['server'])){ $server = (int)$_GET['server']; } else { $server=0; }
 
 //	$servers[1]		= "irc.nolimitzone.com"; //the round robin is fucking up, apparently.
 	$servers[1]		= "akaneiro.irc.nolimitzone.com";
@@ -13,7 +13,7 @@
 	foreach ($servers as $num => $name) {
 		if ($num != 1) $serverlist .= " - ";
 		if ($server == $num) $serverlist .= "<u>";
-		$serverlist .= "<a href=\"irc.php?server=". $num . ($_GET['jul'] ? "&jul=1" : "") ."\">". $name ."</a>";
+		$serverlist .= "<a href=\"irc.php?server=". $num  ."\">". $name ."</a>";
 		if ($server == $num) $serverlist .= "</u>";
 		if ($num == 1) $serverlist .= " (preferred)";
 	}
@@ -58,7 +58,7 @@
 		<param name=\"authorizedleavelist\" value=\"all-$channel\">
 		<param name=\"authorizedjoinlist\" value=\"all-#nobodysworld-#knuck-#acmlm-#akane-#somethingwitty\">
 
-		<param name=\"quitmessage\" value=\"Java IRC @   ".$config[base]."/irc.php\">
+		<param name=\"quitmessage\" value=\"Java IRC @   ".$config['base']."/irc.php\">
 		<param name=\"autorejoin\" value=\"true\">
 		
 		<param name=\"style:bitmapsmileys\" value=\"false\">

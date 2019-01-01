@@ -26,16 +26,17 @@
   $mintime=time()-3*86400;
 
   if(isset($_GET['thread'])) {
+    $threadid=checknumeric($_GET['thread']);
     //This dosen't work as blackhole noted, we need to replace the SQL argument
     $posts=$sql->query("SELECT $fieldlist pt.*, p.*, t.title ttitle, f.id fid, f.title ftitle "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON pt.id=p.id "
                       ."LEFT JOIN poststext pt2 ON pt2.revision=(pt.revision+1) AND pt2.id=pt.id "
-                      ."LEFT JOIN threads t ON t.id=$_GET[thread] "
+                      ."LEFT JOIN threads t ON t.id=$threadid "
                       ."LEFT JOIN users u1 ON u1.id=t.user "
                       ."LEFT JOIN users u2 ON u2.id=p.user "
                       ."LEFT JOIN forums f ON f.id=t.forum "
-                      ."WHERE p.thread=$_GET[thread] "
+                      ."WHERE p.thread=$threadid "
                       .  "AND f.id IN ".forums_with_view_perm()." "
                       .  "AND ISNULL(pt2.id) "
                       ."ORDER BY p.id DESC "
@@ -71,12 +72,13 @@
 ";
     } while($p=$sql->fetch($posts));
   } else if(isset($_GET['forum'])){
+    $forumid=checknumeric($_GET['forum']);
     $threads=$sql->query("SELECT $fieldlist t.*, f.id fid, f.title ftitle "
                         ."FROM threads t "
                         ."LEFT JOIN users u1 ON u1.id=t.user "
                         ."LEFT JOIN users u2 ON u2.id=t.lastuser "
                         ."LEFT JOIN forums f ON f.id=t.forum "
-                        ."WHERE t.forum=$_GET[forum] "
+                        ."WHERE t.forum=$forumid "
                         .  "AND f.id IN ".forums_with_view_perm()." "
                         ."ORDER BY t.lastdate DESC "
                         ."LIMIT 20");

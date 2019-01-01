@@ -2,15 +2,15 @@
   require 'lib/common.php';
   pageheader('Memberlist');
 
-  $sort = $_REQUEST['sort'];
-  $sex = $_REQUEST['sex'];
-  $pow = $_REQUEST['pow'];
-  $ppp = $_REQUEST['ppp'];
-  $page = $_REQUEST['page'];
-  $mini = $_REQUEST['mini'];
-  $orderby = $_REQUEST['orderby'];
-  $customnc = $_REQUEST['customnc'];
-  $displayn = $_REQUEST['displayn'];
+  $sort = checkvar('_REQUEST','sort');
+  $sex = checkvar('_REQUEST','sex');
+  $pow = checkvar('_REQUEST','pow');
+  $ppp = checkvar('_REQUEST','ppp');
+  $page = checkvar('_REQUEST','page');
+  $mini = checkvar('_REQUEST','mini');
+  $orderby = checkvar('_REQUEST','orderby');
+  $customnc = checkvar('_REQUEST','customnc');
+  $displayn = checkvar('_REQUEST','displayn');
 
 
   if($ppp<1) $ppp=50;
@@ -178,11 +178,11 @@ $headers = array
 $data = array();
 for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++)
 {
-    $user[exp]=floor($user[exp]);
-    $user[level]=calclvl($user[exp]);
-    if($mini==1) $picture=($user[minipic]?"<center><img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0 ></center> "
+    $user['exp']=floor($user['exp']);
+    $user['level']=calclvl($user['exp']);
+    if($mini==1) $picture=($user['minipic']?"<center><img style='vertical-align:text-bottom' src='".$user[$u.'minipic']."' border=0 ></center> "
                            :'<img src=img/_.png width=16 height=16>');
-    else $picture=($user[usepic]?"<img src=gfx/userpic.php?id=$user[id] width=60 height=60>"
+    else $picture=($user['usepic']?"<img src=gfx/userpic.php?id=".$user['id']." width=60 height=60>"
                            :'<img src=img/_.png width=60 height=60>');
 
 	$data[] = array
@@ -190,10 +190,10 @@ for($i=($page-1)*$ppp+1; $user=$sql->fetch($users); $i++)
 		"id" => $user['id'].'.',
 		"pic" => $picture,
 		"name" => userlink($user),
-		"reg" => cdate($dateformat,$user[regdate]),
-		"posts" => $user[posts],
-		"lvl" => $user[level],
-		"exp" => $user[exp],
+		"reg" => cdate($dateformat,$user['regdate']),
+		"posts" => $user['posts'],
+		"lvl" => $user['level'],
+		"exp" => $user['exp'],
 	);
 }
 

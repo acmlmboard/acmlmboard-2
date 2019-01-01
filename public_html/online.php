@@ -51,10 +51,12 @@ $L[TBL1]>
 // Process users
 	for ($i = 1; $user = $sql->fetch($users); $i++) {
 		// HTTPS urls are marked by !
+		if($user['url']!=false){
 		$user['ssl'] = ($user['url'][0] == '!');
 		if ($user['ssl']) {
 			$user['url'] = substr($user['url'], 1);
 		}
+		} else { $user['ssl']=false; }
 		$user['url'] = urlformat($user['url']);
 		$tr = ($i % 2 ? 'TR2' : 'TR3').'c';
 		

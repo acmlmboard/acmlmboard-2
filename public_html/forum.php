@@ -11,7 +11,7 @@
     $page=1;
 
 
-  if($fid=$_GET['id']){
+  if($fid=checkvar('_GET','id')){
     checknumeric($fid);
 
     if($log){
@@ -106,7 +106,7 @@ if($loguser['id']!=0){
 ".      "  $L[TDnr]>".$editforumlink.$ignoreLink.(can_create_forum_thread($forum)?"| <a href=\"newthread.php?id=$fid\" class=\"newthread\">New thread</a> | <a href=\"newthread.php?id=$fid&ispoll=1\" class=\"newpoll\">New poll</a>":"")."</td>
 ".      "$L[TBLend]
 ";
-  }elseif($uid=$_GET[user]){
+  }elseif($uid=checkvar('_GET','user')){
     checknumeric($uid);
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$uid");
 
@@ -141,7 +141,7 @@ if($loguser['id']!=0){
 ".      "  $L[TDn]><a href=./>Main</a> - Threads by ".($user[displayname] ? $user[displayname] : $user[name])."</td>
 ".      "$L[TBLend]
 ";
-  }elseif($time=$_GET[time]){
+  }elseif($time=checkvar('_GET','time')){
     checknumeric($time);
     $mintime=ctime()-$time;
 
@@ -163,8 +163,8 @@ if($loguser['id']!=0){
                         ."WHERE t.lastdate>$mintime "
                         ."  AND f.id IN ".forums_with_view_perm()." "
       ."ORDER BY t.lastdate DESC "
-                        ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
-    $forum[threads]=$sql->resultq("SELECT count(*) "
+                        ."LIMIT ".(($page-1)*$loguser['tpp']).",".$loguser['tpp']);
+    $forum['threads']=$sql->resultq("SELECT count(*) "
                                  ."FROM threads t "
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
@@ -182,7 +182,7 @@ if($loguser['id']!=0){
 ".      "  $L[TDn]><a href=./>Main</a> - Latest posts</td>
 ".      "$L[TBLend]
 ";
-  }elseif(isset($_GET[fav]) && has_perm('view-favorites')){
+  }elseif(isset($_GET['fav']) && has_perm('view-favorites')){
 
     pageheader("Favorite Threads");
 
@@ -204,9 +204,9 @@ if($loguser['id']!=0){
                         ."WHERE th.uid=$loguser[id] "
                         .  "AND f.id IN ".forums_with_view_perm()." "
                         ."ORDER BY t.sticky DESC, t.lastdate DESC "
-                        ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
+                        ."LIMIT ".(($page-1)*$loguser['tpp']).",".$loguser['tpp']);
 
-    $forum[threads]=$sql->resultq("SELECT count(*) "
+    $forum['threads']=$sql->resultq("SELECT count(*) "
                                  ."FROM threads t "
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
@@ -223,12 +223,12 @@ if($loguser['id']!=0){
     error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");
   }
 
-  $showforum=$uid||$time;
+  $showforum=checkvar('uid')||checkvar('time');
 
   //Forum Jump - SquidEmpress
   if(!$uid && !$time && !(isset($_GET['fav']))) {
   $r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
-		$forumjumplinks="<table><td>$fonttag Forum jump: </td>
+		$forumjumplinks="<table><td>Forum jump: </td>
         <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
 		$c = -1;
 		while($d=$sql->fetch($r))
@@ -268,6 +268,7 @@ if($loguser['id']!=0){
 
   print $topbot;
   if($time) {
+    $tags=array();
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
           By Threads | <a href=thread.php?time=$time>By Posts</a></div><br>"; 
     print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">'.
@@ -374,7 +375,7 @@ echo announcement_row($fid,3,4);
 ";
   }
   print "$L[TBLend]
-".      "$forumjumplinks$fpagelist$fpagebr
+".      checkvar('forumjumplinks')."$fpagelist$fpagebr
 ".      "$topbot
 ";
   pagefooter();

@@ -2,7 +2,7 @@
   require 'lib/common.php';
   pageheader('Active users');
 
-  $time=$_GET[time];
+  $time=checkvar('_GET','time');
   checknumeric($time);
   if($time<1)
     $time=86400;
@@ -37,7 +37,7 @@
         "  $L[$tr]>
 ".      "    $L[TD]>$i.</td>
 ".      "    $L[TDl]>".userlink($user)."</td>
-".      "    $L[TD]>".cdate($dateformat,$user[regdate])."</td>
+".      "    $L[TD]>".cdate($dateformat,$user['regdate'])."</td>
 ".      "    $L[TD]><b>$user[num]</b></td>
 ".      "    $L[TD]>$user[posts]</b></td>
 ";

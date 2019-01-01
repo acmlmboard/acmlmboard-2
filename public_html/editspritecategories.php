@@ -44,7 +44,7 @@ $actions = array(
 'editspritecategories.php?action=edit&id='.$sc['id']),
   array('title' => 'Delete','href' => 
 'editspritecategories.php?action=del&id='.$sc['id'], 
-confirm => true),
+'confirm' => true),
 );
 		
 $data[] = array
@@ -65,7 +65,7 @@ RenderPageBar($pagebar);
 RenderTable($data, $headers);
 }
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
       if ($sql->prepare('DELETE FROM spritecateg WHERE id=?',array($id))) {
       $pagebar['message'] = "Sprite category successfully deleted.";
@@ -75,7 +75,7 @@ else {
 }
   }
 
- elseif ($r['action']=="edit" || $r['action']=="new") {
+ elseif (checkvar('r','action')=="edit" || checkvar('r','action')=="new") {
 if (!empty($r['act'])) {
       $spca =
 request_variables(array('name'));

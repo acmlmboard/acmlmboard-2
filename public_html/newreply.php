@@ -12,7 +12,7 @@
   loadsmilies();
 
   	//--
-	if ($act = $_POST['action']) {
+	if ($act = checkvar('_POST','action')) {
 		check_token($_POST['auth']);
 		$tid = (int) $_POST['tid'];
 	} else {
@@ -28,7 +28,7 @@
 
 
   if($act!='Submit'){
-    $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, u.regdate AS uregdate, u.rankset AS urankset, p.*, pt1.text, t.forum tforum "
                       .'FROM posts p '
 					  .'LEFT JOIN threads t ON t.id=p.thread '
                       .'LEFT JOIN poststext pt1 ON p.id=pt1.id '
@@ -40,7 +40,7 @@
                       ."LIMIT $loguser[ppp]");
   }
 
-  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly '
+  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly, f.cat cat, f.private cprivate, f.private private '
                       .'FROM threads t '
                       .'LEFT JOIN forums f ON f.id=t.forum '
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
@@ -48,7 +48,7 @@
   if($act!="Submit"){
     $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
-  $toolbar= posttoolbar($loguser[posttoolbar]);
+  $toolbar= posttoolbar($loguser['posttoolbar']);
 
   $threadlink="<a href=thread.php?id=$tid>Back to thread</a>";
 
@@ -57,11 +57,11 @@
     }
 
 
-     else if (!can_create_forum_post(array('id'=>$thread['forum'], 'private'=>$thread['fprivate'], 'readonly'=>$thread['readonly']))){
+     else if (!can_create_forum_post(array('id'=>$thread['forum'], 'private'=>$thread['fprivate'], 'readonly'=>$thread['freadonly']))){
 
        $err="    You have no permissions to create posts in this forum!<br>$forumlink";
     }
-  elseif($thread[closed] && !can_create_locked_posts($thread['forum'], $thread['id'])){
+  elseif($thread['closed'] && !can_create_locked_posts($thread['forum'], $thread['id'])){
       $err="    You can't post in closed threads!<br>
 ".         "    $threadlink";
   }//needs function to test for perm based on $faccess /*!has_perm('create-closed-forum-post')*/
@@ -91,13 +91,13 @@
 
   $top='<a href=./>Main</a> '
     ."- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> "
-    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> '
+    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread['title']).'</a> '
     .'- New reply';
 
 
-  if($pid=$_GET[pid]){
+  if($pid=checkvar('_GET','pid')){
     checknumeric($pid);  //nice way of adding security, really. int_val doesn't really do it (floats and whatnot), so heh
-    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, p.thread "
+    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, f.cat cat, p.thread "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
@@ -107,12 +107,12 @@
                       ."WHERE p.id=$pid AND ISNULL(pt2.id)");
   
   //does the user have reading access to the quoted post?
-  if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) { $post['name'] = 'your overlord'; $post[text]=""; }
+  if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate'], 'cprivate'=>$post['fprivate'], 'cat'=>$post['cat']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
-  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".$post[text]."[/quote]";
+  $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".$post['text']."[/quote]";
   }
 
-  if($err){
+  if(isset($err)){
     pageheader('New reply',$thread[forum]);
     print "$extjs $top - Error";
     noticemsg("Error", $err);
@@ -132,26 +132,26 @@
       }
 
 
-    $post[date]=ctime();
-    $post[ip]=$userip;
-    $post[num]=++$user[posts];
+    $post['date']=ctime();
+    $post['ip']=$userip;
+    $post['num']=++$user['posts'];
     if($act=='Preview') $post[text]=$prefix.$_POST[message].$postfix;
-    else $post[text]=$quotetext;
-    $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
-    if($act=='Preview') $post[moodlist]=moodlist($_POST[mid]);
-    else $post[moodlist]=moodlist();
-    $post[nolayout]=$_POST[nolayout];
-    $post[nosmile]=$_POST[nosmile];
-    $post[close]=$_POST[close];
-    $post[stick]=$_POST[stick];
-    $post[open]=$_POST[open];
-    $post[unstick]=$_POST[unstick];
+    else $post['text']=checkvar('quotetext');
+    $post['mood'] = (isset($_POST['mid']) ? (int)$_POST['mid'] : -1); // 2009-07 Sukasa: Newthread preview
+    if($act=='Preview') $post[moodlist]=moodlist($_POST['mid']);
+    else $post['moodlist']=moodlist();
+    $post['nolayout']=checkvar('_POST','nolayout');
+    $post['nosmile']=checkvar('_POST','nosmile');
+    $post['close']=checkvar('_POST','close');
+    $post['stick']=checkvar('_POST','stick');
+    $post['open']=checkvar('_POST','open');
+    $post['unstick']=checkvar('_POST','unstick');
     foreach($user as $field => $val)
-      $post[u.$field]=$val;
-    $post[ulastpost]=ctime();
+      $post['u'.$field]=$val;
+    $post['ulastpost']=ctime();
 
  if($act=='Preview') {
-    pageheader('New reply',$thread[forum]);
+    pageheader('New reply',$thread['forum']);
     print "$extjs $top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -162,7 +162,7 @@
 ".        "<br>
 "; 
 } else {
-    pageheader('New reply',$thread[forum]);
+    pageheader('New reply',$thread['forum']);
     print "$extjs $top 
 ".        "<br><br> 
 "; }
@@ -171,16 +171,16 @@ print
 ".        " <form action=newreply.php method=post>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Reply</td>
-".           $valid."
+".           checkvar('valid')."
 ";
-     if($loguser[posttoolbar]!=1)
+     if($loguser['posttoolbar']!=1)
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($post[text])."</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($post['text'])."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -189,23 +189,23 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newreply mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".$post[moodlist]." 
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
+          "      $L[INPl]=mid>".$post['moodlist']." 
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post['nolayout']?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post['nosmile']?"checked":"")."><label for=nosmile>Disable smilies</label>
 ";
-    if(can_edit_forum_threads($thread[forum]))
-    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
-                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
-                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
-                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+    if(can_edit_forum_threads($thread['forum']))
+    print "     ".(!$thread['closed'] ? "$L[INPc]=close id=close value=1 ".($post['close']?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread['sticky'] ? "$L[INPc]=stick id=stick value=1 ".($post['stick']?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread['closed'] ? "$L[INPc]=open id=open value=1 ".($post['open']?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread['sticky'] ? "$L[INPc]=unstick id=unstick value=1 ".($post['unstick']?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>
 ".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
-    checknumeric($_POST[nolayout]);
-    checknumeric($_POST[nosmile]);
+    checknumeric($_POST['nolayout']);
+    checknumeric($_POST['nosmile']);
 //Make sure these controls are only usable by those with moderation rights!
     if(can_edit_forum_threads($thread['forum'])){
     	checknumeric($_POST['close']);
@@ -218,8 +218,8 @@ print     "  $L[TR]>
  	if($_POST['unstick']) $modext.=",sticky=0";
     }
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
-    $user[posts]++;
-    $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
+    $user['posts']++;
+    $mid=(isset($_POST['mid']) ? (int)$_POST['mid'] : -1);
 
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmile) "
@@ -244,7 +244,7 @@ print     "  $L[TR]>
     redirect("thread.php?pid={$pid}#xwnd1","Post successful! (Gained {$c} bonus coins)", "Posted!", htmlval($thread['title']));
   }
 
-  if($act!='Submit' && !$err && can_view_forum($thread)){
+  if($act!='Submit' && !isset($err) && can_view_forum($thread)){
     print "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
@@ -252,11 +252,12 @@ print     "  $L[TR]>
 ".        "$L[TBLend]
 ";
     while($post=$sql->fetch($posts)){
-      $exp=calcexp($post[uposts],ctime()-$post[uregdate]);
+      $exp=calcexp($post['uposts'],ctime()-$post['uregdate']);
+      $post['revision'] = $post['maxrevision'] = 0;
       print threadpost($post,1);
     }
 
-    if($thread[replies]>=$loguser[ppp]){
+    if($thread['replies']>=$loguser['ppp']){
     print "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TR]>

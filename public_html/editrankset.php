@@ -6,6 +6,7 @@
 if(!isset($_GET['id'])){
   $js='onclick=\'if(!confirm("Are you sure you wish to delete?")){return false;}\'';
   $catq = $sql->query("SELECT * FROM `ranksets` WHERE `id`>=1"); //-1 is reserved for dots. 0 is None.
+  $rankcat="";
   for($i=1;$rankset=$sql->fetch($catq);$i++){
     $rankcat.="<a href=\"editrankset.php?id=".$rankset['id']."\">".$rankset['name']."</a>
     <small>[<a href=\"editrankset.php?id=".$rankset['id']."&del\" $js>Delete</a>]</small> | ";
@@ -29,8 +30,8 @@ if(isset($_GET['del'])){
 } else{
 if(!isset($_POST['name'])){
   pageheader("Edit Ranks");
-    $t=$sql->fetchp('SELECT * FROM `ranksets` WHERE id='.$_GET['id']);
-RenderPageBar($pagebar);
+    $t=$sql->fetchp('SELECT * FROM `ranksets` WHERE id='.$_GET['id'],array());
+if(isset($pagebar)) RenderPageBar($pagebar);
 $form = array(
   'action' =>
     urlcreate('editrankset.php', array(

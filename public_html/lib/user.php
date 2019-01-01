@@ -32,10 +32,10 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     
     $defaultgroup = $sql->resultq("SELECT id FROM `group` WHERE `default`=1");
     
-    if(!$loguser[id]) return false;
+    if(!$loguser['id']) return false;
     if (has_perm_revoked('edit-title')) return false;
     if ($uid == $loguser['id'] && has_perm('edit-title')) { 
-       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+       if ($loguser['group_id']!=$defaultgroup) return true;
        if ($loguser[posts]>=100) return true;
        if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
        return false;
@@ -52,7 +52,7 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     
     if (!$config["perusercolor"]) return false;
 
-    if(!$loguser[id]) return false;
+    if(!$loguser['id']) return false;
     if (has_perm_revoked('has-customusercolor')) return false;
     if ($uid == $loguser['id'] && has_perm('has-customusercolor')) return true;
     
@@ -74,10 +74,10 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     
     if (!$config["displayname"]) return false;
 
-    if(!$loguser[id]) return false;
+    if(!$loguser['id']) return false;
     if (has_perm_revoked('has-displayname')) return false;
     if ($uid == $loguser['id'] && has_perm('has-displayname')) { 
-       if ($loguser['group_id']!=$defaultgroup['id']) return true;
+       if ($loguser['group_id']!=$defaultgroup) return true;
       //Allow a custom displayname after a specific postcount/time.
        //if ($loguser[posts]>=100) return true;
        //if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
@@ -327,7 +327,7 @@ function userfields($tbl='', $pf='')
   } else {
   if($config['nickcolorcss']) $nccss="class='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
 //Over-ride for custom colours [Gywall]
-  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config[perusercolor])
+  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config['perusercolor'])
   { 
     $nc = $user[$u.'nick_color'];
     $nccss = "";

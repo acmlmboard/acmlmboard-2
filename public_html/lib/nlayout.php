@@ -33,13 +33,13 @@ function urlcreate($url,$query) {
 function RenderTable($data, $headers)
 {
   $zebra = 0;
-  $cols = count($header);
+  $cols = count(checkvar('header'));
 
   print "<table cellspacing=\"0\" class=\"c1\">\n";
   print "\t<tr class=\"h\">\n";
   foreach($headers as $headerID => $headerCell)
   {
-    if($headerCell['hidden'])
+    if(isset($headerCell['hidden']))
       continue;
 
     if(isset($headerCell['width']))
@@ -55,7 +55,7 @@ function RenderTable($data, $headers)
     print "\t<tr>\n";
     foreach($dataCell as $id => $value)
     {
-      if($headers[$id]['hidden'])
+      if(isset($headers[$id]['hidden']))
         continue;
 
       $color = $zebra + 1;
@@ -168,7 +168,8 @@ function rendernewstatus($type,$newcount='0'){
     break;
   }
 
-  $status="<div style='line-height:75%;padding: 0;'><img src=\"$imagepath$statusimg\" alt=\"$text\"><br/>";
+  $status="<div style='line-height:75%;padding: 0;'><img src=\"$imagepath$statusimg\" alt=\"".checkvar('text')."\"><br/>";
+  $imgstrings=false;
   if($newcount > '0')
   {
       for ($i = 0, $j = strlen($newcount); $i < $j; $i++) {
@@ -294,7 +295,7 @@ function RenderActions($actions,$ret = false) {
   $out = '';
   $i = 0;
   foreach ($actions as $action) {
-    if ($action['confirm']) 
+    if (isset($action['confirm'])) 
 	{
 	  if ($action['confirm'] === true)
 		$confirmmsg = 'Are you sure you want to '.$action['title'].'?';
@@ -522,7 +523,7 @@ function forumlist($name, $sel = 0, $jsurl = '') {
   function ranklist() {
     global $sql, $loguser;
     $r=$sql->query("SELECT * FROM ranksets ORDER BY id ASC");
-    while($d=$sql->fetch($r)) $rlist[$d[id]]=$d[name];
+    while($d=$sql->fetch($r)) $rlist[$d['id']]=$d['name'];
 
     return $rlist;
   }

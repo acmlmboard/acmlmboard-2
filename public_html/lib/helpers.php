@@ -6,6 +6,22 @@
     }
     return true;
   }
+//This function is for checking if a variable is set, and returning the value if set.
+//To check $test, use checkvar('test')
+//To check $test['name'], use checkvar('test','name')
+  function checkvar($var,$aridx=false){
+  global $$var;
+   if($aridx!=false){ 
+     if(isset(${$var}[$aridx])){ return ${$var}[$aridx]; }
+   } else {
+     if(isset($$var)){
+       if(is_array($$var)){
+         return "<span style=\"color:#ff0000;\">Array</span>";
+       } else { return $$var; }
+     }
+   }
+   return false;
+  }
 
   function getforumbythread($tid){
     global $sql;

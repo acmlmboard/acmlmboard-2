@@ -29,13 +29,14 @@ function usegfxnums()
     if(!isset($loguser['signsep'])) $loguser['signsep']=0; //To-do, check why this doesn't work right.
     $post['head']=str_replace("<!--", "&lt;!--", checkvar('post','head'));
     $post['uhead']=str_replace("<!--", "&lt;!--", checkvar('post','uhead'));
-
+    $post['utitle']=checkvar('post','utitle');
+    $post['usign']=checkvar('post','usign');
     $post['text']=$post['head'].$post['text'].checkvar('post','sign');
 
   //This allows config level enable or disable of syndromes.
   if($syndromenable == 1) $actsyn=@$sql->result($sql->query("SELECT COUNT(*) num FROM posts WHERE user=".$post['uid']." AND date>".(ctime()-86400)),0,0);
   else $actsyn=0;
-
+  
   $post['ranktext'] = getrank($post['urankset'],$post['uposts']);
    $post['utitle'] = $post['ranktext']
                   .((strlen($post['ranktext'])>=1)?"<br>":"")

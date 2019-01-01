@@ -168,7 +168,8 @@ function rendernewstatus($type,$newcount='0'){
     break;
   }
 
-  $status="<div style='line-height:75%;padding: 0;'><img src=\"$imagepath$statusimg\" alt=\"$text\"><br/>";
+  $status="<div style='line-height:75%;padding: 0;'><img src=\"$imagepath$statusimg\" alt=\"".checkvar('text')."\"><br/>";
+  $imgstrings=false;
   if($newcount > '0')
   {
       for ($i = 0, $j = strlen($newcount); $i < $j; $i++) {

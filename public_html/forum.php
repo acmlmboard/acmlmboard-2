@@ -223,12 +223,12 @@ if($loguser['id']!=0){
     error("Error", "Forum does not exist.<br> <a href=./>Back to main</a>");
   }
 
-  $showforum=$uid||$time;
+  $showforum=checkvar('uid')||checkvar('time');
 
   //Forum Jump - SquidEmpress
   if(!$uid && !$time && !(isset($_GET['fav']))) {
   $r=$sql->query("SELECT c.title ctitle,c.private cprivate,f.id,f.title,f.cat,f.private FROM forums f LEFT JOIN categories c ON c.id=f.cat ORDER BY c.ord,c.id,f.ord,f.id");
-		$forumjumplinks="<table><td>$fonttag Forum jump: </td>
+		$forumjumplinks="<table><td>Forum jump: </td>
         <td><form><select onchange=\"document.location=this.options[this.selectedIndex].value;\">";
 		$c = -1;
 		while($d=$sql->fetch($r))

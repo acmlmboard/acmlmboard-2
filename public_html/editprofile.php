@@ -47,12 +47,12 @@
       }
 
   
-  if($_POST[action]=='Edit profile')
+  if(checkvar('_POST','action')=='Edit profile')
   {
 	check_token($_POST['auth']);
 	
-	if ($_POST[pass]!='' && $_POST[pass]==$_POST[pass2]&&$targetuserid==$loguser[id])
-		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST[pass].$pwdsalt)),2147483647);
+	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']&&$targetuserid==$loguser['id'])
+		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST['pass'].$pwdsalt)),2147483647);
   }
 
 
@@ -73,21 +73,21 @@
   $userrpg = getstats($userrpgdata = $sql->fetchq('SELECT u.name, u.posts, u.regdate, r.* '
                                                  .'FROM users u '
                                                  .'LEFT JOIN usersrpg r ON u.id=r.id '
-                                                 ."WHERE u.id=$user[id]"));
+                                                 ."WHERE u.id=".$user['id']));
 
 
   //echo $userrpg['eq1'];
-  $act=$_POST[action];
+  $act=checkvar('_POST','action');
 
   if($act=='Edit profile')
   {
 	$error = '';
 	
-	if($_POST[pass] && $_POST[pass2] && $_POST[pass]!=$_POST[pass2])
+	if($_POST['pass'] && $_POST['pass2'] && $_POST['pass']!=$_POST['pass2'])
 		$error = "- The passwords you entered don't match.<br />";
 	
     $minipic='minipic';
-    if($fname=$_FILES[minipic][name]){
+    if($fname=$_FILES['minipic']['name']){
       $fext=strtolower(substr($fname,-4));
       if($fext!=".png" && $fext!=".gif") {
         $error.="- Invalid minipic file type; must be PNG or GIF.<br />";
@@ -109,7 +109,7 @@
         }
       }
     }
-    if($_POST['minipicdel']) $minipic="\"\"";
+    if(checkvar('_POST','minipicdel')) $minipic="\"\"";
     $usepic='usepic';
     $fname=$_FILES['picture'];
     if($fname['size']>0){
@@ -117,7 +117,7 @@
       if($ava_out!="OK!"){ $error.=$ava_out; }
 	  else $usepic = "usepic+1";
     }
-    if($_POST['picturedel']) $usepic=0;
+    if(checkvar('_POST','picturedel')) $usepic=0;
 
     //check for table breach
     if(tvalidate($_POST['head'].$_POST['sign'])!=0)
@@ -129,14 +129,14 @@
       $error.="- Table tag count mismatch in custom title.<br />";
     }
 
-    if($_POST[fontsize]<30)
-      $_POST[fontsize]=30;
-    if($_POST[fontsize]>999)
-      $_POST[fontsize]=999;
-    if($_POST[sex]<0)
-      $_POST[sex]=0;
-    if($_POST[sex]>2)
-      $_POST[sex]=2;
+    if($_POST['fontsize']<30)
+      $_POST['fontsize']=30;
+    if($_POST['fontsize']>999)
+      $_POST['fontsize']=999;
+    if($_POST['sex']<0)
+      $_POST['sex']=0;
+    if($_POST['sex']>2)
+      $_POST['sex']=2;
 
     $pass=$_POST[pass];
     if(!strlen($_POST[pass2])) $pass="";
@@ -345,8 +345,8 @@
       }
 
 
-    if($user[birth]!=-1){
-      $birthday=explode('-',$user[birth]);
+    if($user['birth']!=-1){
+      $birthday=explode('-',$user['birth']);
       $birthM=$birthday[0];
       $birthD=$birthday[1];
       $birthY=$birthday[2];
@@ -366,14 +366,10 @@
 ".        "      Day:   $L[INPt]=birthD size=2 maxlength=2 value=$birthD>
 ".        "      Year:  $L[INPt]=birthY size=4 maxlength=4 value=$birthY>
 ".        "    ";
-    $tzoffinput="
-".        "      $L[INPt]=tzoffH size=3 maxlength=3 value=".(int)($user[tzoff]/3600)."> :
-".        "      $L[INPt]=tzoffM size=2 maxlength=2 value=".floor(abs($user[tzoff]/60)%60).">
-".        "    ";
     //http://jscolor.com/try.php
     $colorinput="
 <script type=text/javascript src=jscolor/jscolor.js></script>
-".        "      $L[INPt]=nick_color class=color value=".$user['nick_color']."><input type=checkbox name=enablecolor value=1 id=enablecolor ".($user[enablecolor]?"checked":"")."><label for=enablecolor>Enable Color</label>
+".        "      $L[INPt]=nick_color class=color value=".$user['nick_color']."><input type=checkbox name=enablecolor value=1 id=enablecolor ".($user['enablecolor']?"checked":"")."><label for=enablecolor>Enable Color</label>
 ".        "    ";
 
     print "<form action='editprofile.php?id=$targetuserid' method='post' enctype='multipart/form-data'>
@@ -414,7 +410,7 @@ if (has_perm("edit-users"))
 
   print
            catheader('Personal information')."
-".           fieldrow('Sex'             ,fieldoption('sex',$user[sex],$listsex))."
+".           fieldrow('Sex'             ,fieldoption('sex',$user['sex'],$listsex))."
 ".           fieldrow('Real name'       ,fieldinput(40, 60,'realname'  ))."
 ".           fieldrow('Location'        ,fieldinput(40, 60,'location'  ))."
 ".           fieldrow('Birthday'        ,$birthinput                    )."
@@ -423,7 +419,7 @@ if (has_perm("edit-users"))
            catheader('Post layout')."
 ".           fieldrow('Header'          ,fieldtext ( 5, 80,'head'      ))."
 ".           fieldrow('Signature'       ,fieldtext ( 5, 80,'sign'      ))."
-".           fieldrow('Signature line'  ,fieldoption('signsep',$user[signsep],array('Display','Hide')))."
+".           fieldrow('Signature line'  ,fieldoption('signsep',$user['signsep'],array('Display','Hide')))."
 ".
            catheader('Contact information')."
 ".           fieldrow('Email address'   ,fieldinput(40, 60,'email'     ))."
@@ -456,7 +452,7 @@ if(checkcextendedprofile($targetuserid))
 ".           fieldrow('Timezone'      ,fieldselect('timezone',$user['timezone'],$listtimezones))."
 ".           fieldrow('Posts per page'  ,fieldinput( 3,  3,'ppp'       ))."
 ".           fieldrow('Threads per page',fieldinput( 3,  3,'tpp'       ))."
-".           fieldrow('Long pagelists'  ,fieldoption('longpages',$user[longpages],array('Abbreviate as needed','Always display in entirety')))."
+".           fieldrow('Long pagelists'  ,fieldoption('longpages',$user['longpages'],array('Abbreviate as needed','Always display in entirety')))."
 ".           fieldrow('Font size'       ,fieldinput( 3,  3,'fontsize'  ))."
 ".           fieldrow('Date format'     ,fieldinput(15, 15,'dateformat').' or preset: '.fieldselect('presetdate',-1,$datelist))."
 ".           fieldrow('Time format'     ,fieldinput(15, 15,'timeformat').' or preset: '.fieldselect('presettime',-1,$timelist))."

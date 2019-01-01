@@ -523,7 +523,7 @@ function forumlist($name, $sel = 0, $jsurl = '') {
   function ranklist() {
     global $sql, $loguser;
     $r=$sql->query("SELECT * FROM ranksets ORDER BY id ASC");
-    while($d=$sql->fetch($r)) $rlist[$d[id]]=$d[name];
+    while($d=$sql->fetch($r)) $rlist[$d['id']]=$d['name'];
 
     return $rlist;
   }

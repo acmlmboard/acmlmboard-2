@@ -141,13 +141,13 @@
      $homepage = $user['homeurl'];
    else
      $homepage = "";
-
+   if($user['url']!=false){
    if($user['url'][0] == "!")
     {
      $user['url'] = substr($user['url'], 1);
      $user['ssl'] = 1;
     }
-
+    }
     $post['date'] = ctime();
     $post['ip']   = $user['ip'];
     $post['num']  = 0; //$user[posts];  #2/26/2007 xkeeper - threadpost can hide "1/" now
@@ -175,6 +175,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
    //Sample data blanking so the post renderer has valid data.
    $post['revision'] = $post['maxrevision'] = $post['id'] = $post['isannounce'] = $post['mood'] = $post['nosmile'] = $post['thread'] = $post['deleted'] = $post['nolayout'] = 0;
    $post['head'] = $post['sign'] = $post['ttitle'] = "";
+   $post['user'] = $uid;
 
     $shoplist = "
          $L[TBL1] width=\"100%\">
@@ -335,9 +336,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
     //If user has a a displayname, a custom username color, or both, we need to show the realname field.
     if($config['perusercolor'] && $user['enablecolor']) $usercnickcolor = $user['nick_color'];
     if($config['displayname'] && $user['displayname']) $userdisplayname = true;
-    if($userdisplayname || $usercnickcolor){
-      $showrealnick = true;
-    }
+    if(isset($userdisplayname) || isset($usercnickcolor)){ $showrealnick = true; } else { $showrealnick=false; }
 	
 	// extra url mungling to remove token 
 	if ($user['url']) {

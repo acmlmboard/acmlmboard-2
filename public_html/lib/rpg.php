@@ -62,6 +62,7 @@
     for($i=1;$i<7;$i++){
       $item=$items[$u['eq'.$i]];
       for($k=0;$k<9;$k++){
+	$a[$k]=0;
         $is=$item['s'.$stat[$k]];
         if(substr($item['stype'],$k,1)=='m') $m[$k]*=$is/100;
         else $a[$k]+=$is;
@@ -70,10 +71,10 @@
     for($i=0;$i<9;$i++){
       $stats[$stat[$i]]=max(1,floor(basestat($p,$d,$i)*$m[$i])+$a[$i]);
     }
-    $stats['GP']=coins($p,$d)-$u[spent];
+    $stats['GP']=coins($p,$d)-$u['spent'];
     $stats['exp']=calcexp($p,$d);
-    $stats['lvl']=calclvl($stats[exp]);
-    $stats['gcoins']=$u[gcoins];
+    $stats['lvl']=calclvl($stats['exp']);
+    $stats['gcoins']=$u['gcoins'];
     return $stats;
   }
   function coins($p,$d){

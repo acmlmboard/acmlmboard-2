@@ -129,7 +129,7 @@ if($act!="Submit"){
     print "$top - Error";
     noticemsg("Error", $err);
   }elseif(!$act){
-    if(isset($ispoll)){
+    if(checkvar('$ispoll')){
       $pollin=
           "$L[TR]>
 ".        "  $L[TD1c]>Poll question:</td>

@@ -3,11 +3,11 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
-    $announce=$_REQUEST[announce];
+    $announce=checkvar('_REQUEST','announce');
     checknumeric($announce);
 
 	//--
-	if ($act = $_POST['action']) {
+	if ($act = checkvar('_POST','action')) {
 		check_token($_POST['auth']);
 		$fid = (int) $_POST['fid'];
 	} else {
@@ -25,7 +25,7 @@
     $type = "announcement";
     $typecap = "Announcement";
   }
-  elseif ($_GET[ispoll]) {
+  elseif (checkvar('_GET','ispoll')) {
     $type = "poll";
     $typecap = "Poll";
 	$ispoll = 1;
@@ -44,9 +44,9 @@
 	
 if($act!="Submit"){
   $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbar($loguser[posttoolbar]);
+  $toolbar= posttoolbar($loguser['posttoolbar']);
 	 
-	if ($ispoll)
+	if (checkvar('ispoll'))
 	{
 		$extjs.='<script type="text/javascript" src="jscolor/jscolor.js"></script><script type="text/javascript" src="polleditor.js"></script>';
 		$optfield = '<div><input type="text" name="opt[]" size=40 maxlength=40 value="%s"> - Color: <input class="color" name="col[]" value="%02X%02X%02X"> - <button class="submit" onclick="removeOption(this.parentNode);return false;">Remove</button></div>';
@@ -60,9 +60,9 @@ if($act!="Submit"){
 ".        "  $L[TD1c]>$typecap tags:</td>
 ".        "  $L[TD2]>
 ";
-    $tagsin.="<input type='checkbox' name='tag$tt[bit]' id='tag$tt[bit]' value='1' ".($_POST["tag$tt[bit]"]?"checked":"")."><label for='tag$tt[bit]'>$tt[name]</label> ";
+    $tagsin.="<input type='checkbox' name='tag$tt[bit]' id='tag$tt[bit]' value='1' ".(checkvar('_POST',"tag$tt[bit]")?"checked":"")."><label for='tag$tt[bit]'>$tt[name]</label> ";
   }
-  if($tagsin!="") $tags.="</tr>";
+  if($tagsin!="") $tagsin.="</tr>";
 
   $forumlink="<a href=forum.php?id=$fid>Back to forum</a>";
 
@@ -78,7 +78,7 @@ if($act!="Submit"){
   $err="    You have no permissions to create threads in this forum!<br>$forumlink";
   }
 
-  else if($user[lastpost]>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))
+  else if($user['lastpost']>ctime()-30 && $act=='Submit' && !has_perm('ignore-thread-time-limit'))
       $err="    Don't post threads so fast, wait a little longer.<br>
 ".         "    $forumlink";
 
@@ -114,6 +114,7 @@ if($act!="Submit"){
 
   $i=1;
   $icons=$sql->query('SELECT * FROM posticons ORDER BY id');
+  $iconlist="";
   while($icon=$sql->fetch($icons))
     $iconlist.=
           "      $L[INPr]=iconid value=$i> <img src=$icon[url]>&nbsp; &nbsp;".(!($i++%10)?'<br>':'')."
@@ -123,16 +124,16 @@ if($act!="Submit"){
 ".        "      Custom: $L[INPt]=iconurl size=40 maxlength=100>
 ";
 
-  if($err){
-    pageheader("New $type",$forum[id]);
+  if(isset($err)){
+    pageheader("New $type",$forum['id']);
     print "$top - Error";
     noticemsg("Error", $err);
   }elseif(!$act){
-    if($ispoll){
+    if(isset($ispoll)){
       $pollin=
           "$L[TR]>
 ".        "  $L[TD1c]>Poll question:</td>
-".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
+".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval(checkvar('_POST','question'))."\"></td>
 ".        "$L[TR]>
 ".        "  $L[TD1c]>Poll choices:</td>
 ".        "  $L[TD2]><div id=\"polloptions\">
@@ -145,7 +146,7 @@ if($act!="Submit"){
 ".             "  $L[TD2]>$L[INPc]=multivote value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable checked value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
     }
- pageheader("New $type",$forum[id]);
+ pageheader("New $type",$forum['id']);
     print "$extjs $top
 ".        "<br><br>
 ".        "<form action=newthread.php?ispoll=$ispoll method=post>
@@ -161,9 +162,9 @@ if($act!="Submit"){
 ".        "$iconlist
 ".        "    </td>
 ".$tagsin."
-".$pollin."
+".checkvar('pollin')."
 ";
-     if($loguser[posttoolbar]!=1)
+     if($loguser['posttoolbar']!=1)
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
@@ -181,47 +182,45 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
           "      $L[INPl]=mid>".moodlist()."
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($_POST[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      $L[INPc]=nosmile id=nosmile value=1 ".($_POST[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
-".        "      $L[INPc]=filter id=filter value=1 ".($_POST[filter]?"checked":"")."><label for=filter>Flag as NSFW</label>
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".(checkvar('_POST','nolayout')?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".(checkvar('_POST','nosmile')?"checked":"")."><label for=nosmile>Disable smilies</label>
+".        "      $L[INPc]=filter id=filter value=1 ".(checkvar('_POST','filter')?"checked":"")."><label for=filter>Flag as NSFW</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
-    print "     $L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     $L[INPc]=close id=close value=1 ".(checkvar('_POST','close')?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".(checkvar('_POST','stick')?"checked":"")."><label for=stick>Stick thread</label>
 ";
     print "    </td>
 ".        " $L[TBLend]
 ".        "</form>
 ";
   }elseif($act=='Preview'){
-    $_POST[title]  =stripslashes($_POST[title]);
-    $_POST[message]=stripslashes($_POST[message]);
+    $_POST['title']  =stripslashes($_POST['title']);
+    $_POST['message']=stripslashes($_POST['message']);
 
-    $post[date]=ctime();
-    $post[ip]=$userip;
-    $post[num]=++$user[posts];
-    $post[text]=$_POST[message];
-    $post[mood] = (isset($_POST[mid]) ? (int)$_POST[mid] : -1); // 2009-07 Sukasa: Newthread preview
-    $post[nolayout]=$_POST[nolayout];
-    $post[nosmile]=$_POST[nosmile];
-    $post[close]=$_POST[close];
-    $post[stick]=$_POST[stick];
+    $post['date']=ctime();
+    $post['ip']=$userip;
+    $post['num']=++$user['posts'];
+    $post['text']=$_POST['message'];
+    $post['mood'] = (isset($_POST['mid']) ? (int)$_POST['mid'] : -1); // 2009-07 Sukasa: Newthread preview
+    $post['nolayout']=checkvar('_POST','nolayout');
+    $post['nosmile']=checkvar('_POST','nosmile');
+    $post['close']=checkvar('_POST','close');
+    $post['stick']=checkvar('_POST','stick');
     foreach($user as $field => $val)
-      $post[u.$field]=$val;
-    $post[ulastpost]=ctime();
+      $post['u'.$field]=$val;
+    $post['ulastpost']=ctime();
 
     if($ispoll){
-      $_POST[question]=stripslashes($_POST[question]);
-      $numopts=$_POST[numopts];
-      checknumeric($numopts);
+      $_POST['question']=stripslashes($_POST['question']);
       $pollprev="<br>$L[TBL1]>
 ".        "  $L[TR1]>
-".        "    $L[TD1] colspan=2>".htmlval($_POST[question])."
+".        "    $L[TD1] colspan=2>".htmlval($_POST['question'])."
 ";
       $pollin=
           "$L[TR]>
 ".        "  $L[TD1c]>Poll question:</td>
-".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST[question])."\"></td>
+".        "  $L[TD2]>$L[INPt]=question size=100 maxlength=100 value=\"".htmlval($_POST['question'])."\"></td>
 ".        "$L[TR]>
 ".        "  $L[TD1c]>Poll choices:</td>
 ".        "  $L[TD2]><div id=\"polloptions\">
@@ -237,7 +236,7 @@ print     "  $L[TR]>
 			list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 			
 			$pollin .= "    ".sprintf($optfield, $text, $r, $g, $b)."\n";
-			$pollprev .= "$L[TR2]>$L[TD2]>{$text} $h$L[TD3]><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
+			$pollprev .= "$L[TR2]>$L[TD2]>{$text} $L[TD3]><img src=\"gfx/bargraph.php?z=1&n=1&r={$r}&g={$g}&b={$b}\">";
 
 		  }
 	  }
@@ -246,14 +245,15 @@ print     "  $L[TR]>
 ".             "  $L[BTTn]=addopt onclick=\"addOption();return false;\">Add choice</button></td>
 ".             "$L[TR]>
 ".             "  $L[TD1c]>Options:</td>
-".             "  $L[TD2]>$L[INPc]=multivote ".($_POST[multivote]?"checked":"")." value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable ".($_POST[changeable]?"checked":"")." value=1 id=ch><label for=ch>Allow changing one's vote</label>
+".             "  $L[TD2]>$L[INPc]=multivote ".(checkvar('_POST','multivote')?"checked":"")." value=1 id=mv><label for=mv>Allow multiple voting</label> | $L[INPc]=changeable ".(checkvar('_POST','changeable')?"checked":"")." value=1 id=ch><label for=ch>Allow changing one's vote</label>
 ";
 $pollprev.="$L[TBLend]";
     }
-
- pageheader("New $type",$forum[id]);
+$post['id'] = $post['deleted'] = $post['revision'] = $post['maxrevision'] = $post['thread'] = 0;
+$post['user'] = $loguser['id'];
+ pageheader("New $type",$forum['id']);
     print "$extjs $top - Preview
-".        "$pollprev<br>
+".        checkvar('pollprev')."<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Post preview
@@ -266,18 +266,18 @@ $pollprev.="$L[TBLend]";
 ".        "    $L[TDh] colspan=2>$typecap</td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>$typecap title:</td>
-".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST[title])."\"></td>
+".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value=\"".htmlval($_POST['title'])."\"></td>
 ".$tagsin."
-".$pollin."
+".checkvar('pollin')."
 ";
-     if($loguser[posttoolbar]!=1)
+     if($loguser['posttoolbar']!=1)
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
 ";
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Post:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST[message])."</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=10 cols=80>".htmlval($_POST['message'])."</textarea></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -291,33 +291,33 @@ print     "  $L[TR]>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
 ".        // 2009-07 Sukasa: Newthread mood selector, just in the place I put it in mine
-          "      $L[INPl]=mid>".moodlist($_POST[mid])."
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
-".        "      $L[INPc]=filter id=filter value=1 ".($_POST[filter]?"checked":"")."><label for=filter>Flag as NSFW</label>
+          "      $L[INPl]=mid>".moodlist($_POST['mid'])."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post['nolayout']?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post['nosmile']?"checked":"")."><label for=nosmile>Disable smilies</label>
+".        "      $L[INPc]=filter id=filter value=1 ".(checkvar('_POST','filter')?"checked":"")."><label for=filter>Flag as NSFW</label>
 ";
     if(can_edit_forum_threads($fid) && !$announce)
-    print "     $L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>
-".        "      $L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>
+    print "     $L[INPc]=close id=close value=1 ".($post['close']?"checked":"")."><label for=close>Close thread</label>
+".        "      $L[INPc]=stick id=stick value=1 ".($post['stick']?"checked":"")."><label for=stick>Stick thread</label>
 ";
     print "    </td>
 ".        " $L[TBLend]
 ".        "</form>
 ";
   }elseif($act=='Submit'){
-    if(!($iconurl=$_POST[iconurl]))
-      $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
-    $nolayout=$_POST['nolayout'];
-    $nosmile=$_POST['nosmile'];
-    $filter=$_POST['filter'];
+    if(!($iconurl=$_POST['iconurl']))
+      $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST['iconid']);
+    $nolayout=checkvar('_POST','nolayout');
+    $nosmile=checkvar('_POST','nosmile');
+    $filter=checkvar('_POST','filter');
     checknumeric($nolayout);
     checknumeric($nosmile);
     checknumeric($filter);
     if(can_edit_forum_threads($fid)){
     	checknumeric($_POST['close']);
     	checknumeric($_POST['stick']);
-        if($_POST['close']) $modclose="1";
-        if($_POST['stick']) $modstick="1";
+        if(checkvar('_POST','close')) $modclose="1";
+        if(checkvar('_POST','stick')) $modstick="1";
     }
 
     if(!$_POST['close']) $modclose="0";
@@ -326,12 +326,12 @@ print     "  $L[TR]>
     $iconurl=addslashes($iconurl);
 
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
-    $user[posts]++;
+    $user['posts']++;
 
     $tagsum=0;
-    for($i=0;$i<32;++$i) if($_POST["tag$i"]) $tagsum|=(1<<$i);
+    for($i=0;$i<32;++$i) if(isset($_POST["tag$i"])) $tagsum|=(1<<$i);
     
-    $mid=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
+    $mid=(isset($_POST['mid']) ? (int)$_POST['mid'] : -1);
     if($announce) {
     $modclose=$announce;
     }

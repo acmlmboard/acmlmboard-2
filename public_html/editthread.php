@@ -146,6 +146,7 @@ if(!has_perm('rename-own-thread')){  $distitle=" disabled title=\"You do not hav
 ".        "  $L[TD1c]>Poll choices:</td>
 ".        "  $L[TD2]><div id=\"polloptions\">";
 $p=$sql->query("SELECT * FROM `polloptions` WHERE `poll`=$tid ORDER BY `id`");
+$n=0;
 foreach($p as $poll){
   $pid=$poll['id'];
   $str="$optfield1".$pid."$optfield2".$pid."$optfield3";

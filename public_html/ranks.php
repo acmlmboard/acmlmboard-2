@@ -2,7 +2,7 @@
     require "lib/common.php";
     pageheader("Rankset Listing");
    
-    $getrankset = $_GET['rankset']; // Changed to allow the Kirby Rank to show.
+    $getrankset = checkvar('_GET','rankset'); // Changed to allow the Kirby Rank to show.
     if (!is_numeric($getrankset)) $getrankset = 1; //Double checking.. 
     $totalranks = $sql->resultq("SELECT count(*) FROM `ranksets` WHERE id > '0';");
 
@@ -29,7 +29,7 @@
    if (has_perm("view-allranks"))
     {
      $linktoggle = "1\">View";
-    if ($_GET['viewall'] == 1)
+    if (checkvar('_GET','viewall') == 1)
      {
       $blockunknown = false;
       $linktoggle = "0\">Hide";
@@ -47,17 +47,17 @@
     {
     if ($rank['rs'] == $getrankset)
       $rankposts[] = $rank['p'];
-    if (!$rankselection)
-      $rankselection .= "<a href=\"ranks.php?rankset=$rank[id]\">$rank[name]</a>";
+    if (!isset($rankselection))
+      $rankselection = "<a href=\"ranks.php?rankset=$rank[id]\">$rank[name]</a>";
     else
      {
-     if ($usedranks[$rank['rs']] != true)
+     if (checkvar('usedranks',$rank['rs']) != true)
       $rankselection .= " | <a href=\"ranks.php?rankset=$rank[id]\">$rank[name]</a>";
      }
      $usedranks[$rank['rs']] = true;
     }
     if($_GET['rankset']){
-	if(!$_GET['showinactive']) $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."&showinactive=1\">Show Inactive</a>";
+	if(!isset($_GET['showinactive'])) $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."&showinactive=1\">Show Inactive</a>";
 	else $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."\">Hide Inactive</a>";
     } else {
 	if(!$_GET['showinactive']) $inaclnk=" | <a href=\"ranks.php?showinactive=1\">Show Inactive</a>";
@@ -91,7 +91,7 @@
    while($rank = $sql->fetch($ranks))
     {
      $neededposts     = $rank['p'];
-     $nextneededposts = $rankposts[$i];
+     $nextneededposts = checkvar('rankposts',$i);
      $usercount       = 0;
      $idlecount       = 0;
   //$allusers = $sql->query('SELECT `id`, `name`, `displayname`, `posts` FROM `users` ORDER BY `id`');
@@ -110,17 +110,14 @@
       {
 //    if(!$_GET['showinactive']) $inact=" AND `lastview` > ".(time()-(86400 * $inactivedays)); else $inact="";
        //$usersonthisrank .= linkuser($user['id']).$climbingagain;
-    if($_GET['showinactive'] || $user['lastview']>(time()-(86400 * $inactivedays))){
-      if ($usersonthisrank)
-        $usersonthisrank .= ", ";
-        if($user['minipic']) $minpic = "<img style='vertical-align:text-bottom' src='".$user['minipic']."'/> ";
-        else $minpic = "";
-       $usersonthisrank .= $minpic.userlink_by_id($user['id']).$climbingagain;
+    if(isset($_GET['showinactive']) || $user['lastview']>(time()-(86400 * $inactivedays))){
+      if (isset($usersonthisrank)){ $usersonthisrank .= ", "; } else { $usersonthisrank=""; }
+       $usersonthisrank .= userlink_by_id($user['id']).$climbingagain;
     } else $idlecount++;
        $usercount++;
       }
      }
-    if ($rank['image'])
+    if (isset($rank['image']))
      {
       $rankimage .= "<img src=\"img/ranksets/$rank[dirname]/$rank[image]\">";
      }
@@ -129,7 +126,7 @@
                $L[TD1]>".(($usercount-$idlecount) || $blockunknown == false ? "$rank[str]" : "???")."</td>
                $L[TD2c]>".(($usercount-$idlecount) || $blockunknown == false ? "$neededposts" : "???")."</td>
                $L[TD2c]>$usercount</td>
-               $L[TD1c]>$usersonthisrank ".($idlecount?"($idlecount inactive)":"")."</td>
+               $L[TD1c]>".checkvar('usersonthisrank')." ".($idlecount?"($idlecount inactive)":"")."</td>
              </tr>";
 
      //"<!--$rankset[neededposts] $rankset[title] $rankimage<br>-->\n";

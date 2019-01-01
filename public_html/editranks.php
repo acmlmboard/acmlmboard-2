@@ -8,7 +8,7 @@ if(!isset($_GET['id'])){
   $js='onclick=\'if(!confirm("Are you sure you wish to delete?")){return false;}\'';
     pageheader("Rankset Listing");
    
-    $getrankset = $_GET['rankset']; // Changed to allow the Kirby Rank to show.
+    $getrankset = checkvar('_GET','rankset'); // Changed to allow the Kirby Rank to show.
     if (!is_numeric($getrankset)) $getrankset = 1; //Double checking.. 
     $totalranks = $sql->resultq("SELECT count(*) FROM `ranksets` WHERE id > '0';");
 
@@ -25,11 +25,11 @@ if(!isset($_GET['id'])){
     {
     if ($rank['rs'] == $getrankset)
       $rankposts[] = $rank['p'];
-    if (!$rankselection)
-      $rankselection .= "<a href=\"editranks.php?rankset=$rank[id]\">$rank[name]</a>";
+    if (!isset($rankselection))
+      $rankselection = "<a href=\"editranks.php?rankset=$rank[id]\">$rank[name]</a>";
     else
      {
-     if ($usedranks[$rank['rs']] != true)
+     if (checkvar('usedranks',$rank['rs']) != true)
       $rankselection .= " | <a href=\"editranks.php?rankset=$rank[id]\">$rank[name]</a>";
      }
      $usedranks[$rank['rs']] = true;
@@ -61,10 +61,10 @@ if(!isset($_GET['id'])){
    while($rank = $sql->fetch($ranks))
     {
      $neededposts     = $rank['p'];
-     $nextneededposts = $rankposts[$i];
+     $nextneededposts = checkvar('rankposts',$i);
      $rankid       = $rank['id'];
 
-    if ($rank['image'])
+    if (checkvar('rank','image'))
      {
       $rankimage .= "<img src=\"img/ranksets/$rank[dirname]/$rank[image]\">";
      }
@@ -72,7 +72,7 @@ if(!isset($_GET['id'])){
              $L[TR]>
                $L[TD1]>".$rank['str']."</td>
                $L[TD2c]>".$neededposts."</td>
-               $L[TD2c]><a href=\"editranks.php?id=".$rankid."\">Edit</a> | <a href=\"editranks.php?id=".$rankid."&rankset=".$_GET['rankset']."&del\" $js>Delete</a></td>
+               $L[TD2c]><a href=\"editranks.php?id=".$rankid."\">Edit</a> | <a href=\"editranks.php?id=".$rankid."&rankset=".checkvar('_GET','rankset')."&del\" $js>Delete</a></td>
              </tr>";
 
      unset($rankimage, $usersonthisrank);
@@ -104,8 +104,8 @@ if(!isset($_POST['str'])){
     $rankcateg[$allspcquery['id']]= $allspcquery['name'];
   
   }
-    $t=$sql->fetchp('SELECT * FROM `ranks` WHERE id='.$_GET['id']);
-RenderPageBar($pagebar);
+    $t=$sql->fetchp('SELECT * FROM `ranks` WHERE id='.$_GET['id'],array());
+if(isset($pagebar)) RenderPageBar($pagebar);
 $form = array(
   'action' =>
     urlcreate('editranks.php', array(

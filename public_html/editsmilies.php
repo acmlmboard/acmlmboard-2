@@ -10,9 +10,9 @@ require("lib/common.php");
 
   pageheader("Edit Smilies");
 
-  $id = $r['id'];
+  $id = checkvar('r','id');
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
         $smiliey=$sql->fetchp('SELECT * FROM smilies WHERE text=?',array($id));
         if (!$id) $pagebar['message'] = "Unable to delete smiley: invalid smiley code.";
@@ -49,7 +49,7 @@ $actions = array(
 'editsmilies.php?action=edit&id='.$sm['text']),
   array('title' => 'Delete','href' => 
 'editsmilies.php?action=del&id='.$sm['text'], 
-confirm => true),
+'confirm' => true),
 );
 		
 $data[] = array
@@ -149,7 +149,7 @@ $form = array(
   'action' =>
     urlcreate('editsmilies.php', array(
       'action' => $r['action'],
-      'id' => $t['text'],
+      'id' => checkvar('t','text'),
     )
     ),
   'method' => 'POST',
@@ -162,12 +162,12 @@ $form = array(
           'type' => 'text',
           'length' => 15,
           'size' => 10,
-'value' => $t['text'],
+'value' => checkvar('t','text'),
         ),
         'url' => array(
           'title' => 'URL',
           'type' => 'imgref',
-'value' => $t['url'],
+'value' => checkvar('t','url'),
         ),
       ),
     ),

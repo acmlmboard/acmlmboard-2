@@ -39,15 +39,15 @@
   }
   else $ppp = $loguser['ppp'];
 
-  if ($tid=$_REQUEST['id']) {
+  if ($tid=checkvar('_REQUEST','id')) {
     checknumeric($tid);
     $viewmode = "thread";
   }
-  elseif($uid=$_GET[user]) {
+  elseif($uid=checkvar('_GET','user')) {
     checknumeric($uid);
     $viewmode = "user";
   }
-  elseif($timeval=$_GET[time]) {
+  elseif($timeval=checkvar('_GET','time')) {
     checknumeric($timeval);
     $viewmode = "time";
   }
@@ -285,7 +285,7 @@
       pageheader('Announcements');
     }
 
-    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*, pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, t.title ttitle, t.forum tforum, p.announce isannounce, f.cat cat, c.private cprivate "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
                       ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr " //SQL barrel roll
@@ -299,7 +299,7 @@
 
 
 
-    $thread[replies]=$sql->resultq("SELECT count(*) "
+    $thread['replies']=$sql->resultq("SELECT count(*) "
                                   ."FROM posts p "
                                   ."LEFT JOIN threads t ON p.thread=t.id "
                                   ."LEFT JOIN forums f ON f.id=t.forum "
@@ -314,7 +314,7 @@
     pageheader('Latest posts');
 
 
-    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum "
+    $posts=$sql->query("SELECT ".userfields('u','u').",$fieldlist p.*,  pt.text, pt.date ptdate, pt.user ptuser, pt.revision, t.id tid, f.id fid, f.private fprivate, t.title ttitle, t.forum tforum, f.cat cat, c.private cprivate, f.private fprivate "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) $pinstr "
@@ -326,7 +326,7 @@
                       ."ORDER BY p.date DESC "
                       ."LIMIT ".(($page-1)*$ppp).",".$ppp);
 
-    $thread[replies]=$sql->resultq("SELECT count(*) "
+    $thread['replies']=$sql->resultq("SELECT count(*) "
                                   ."FROM posts p "
                                   ."LEFT JOIN threads t ON p.thread=t.id "
                                   ."LEFT JOIN forums f ON f.id=t.forum "
@@ -617,7 +617,7 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
   if(!isset($userbar)) $userbar="";
   print   "$topbot$userbar";
 
-  if(isset($timeval)) {
+  if(checkvar('timeval')) {
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
           <a href=forum.php?time=$timeval>By Threads</a> | By Posts</a></div><br>"; 
     print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">'.
@@ -634,7 +634,7 @@ print "$modlinks
 ";
   while($post=$sql->fetch($posts)){
     if (isset($post['fid'])) {
-      if (!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate']))) continue;
+      if (!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate'], 'cprivate'=>$post['cprivate'], 'cat'=>$post['cat']))) continue;
     }
     if(isset($uid) || isset($timeval)){
       $pthread['id']=$post['tid'];
@@ -648,9 +648,9 @@ print "$modlinks
     if(can_edit_forum_posts(checkvar('post','fid')) && $post['id']==$_GET['pin']) $post['deleted']=false;
 	// After a creating or editing a post
 	if ($post['id'] == checkvar('_REQUEST','pid')) print $cookiemsg;
-
+   if(!isset($pthread)) $pthread='';
     print "<br>
-".         threadpost($post,0,checkvar('pthread'));
+".         threadpost($post,0,$pthread);
   }
 
 

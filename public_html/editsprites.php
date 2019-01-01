@@ -20,7 +20,7 @@
   }
   $id = $r['id'];
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
     if ($id > 0) {
       if ($sql->prepare('DELETE FROM sprites WHERE id=?',array($id))) {
@@ -62,7 +62,7 @@ $actions = array(
 'editsprites.php?action=edit&id='.$mon['id']),
   array('title' => 'Delete','href' => 
 'editsprites.php?action=del&id='.$mon['id'], 
-confirm => true),
+'confirm' => true),
 );
 		
 $data[] = array
@@ -229,7 +229,7 @@ $form = array(
           'type' => 'text',
           'length' => 60,
           'size' => 40,
-'value' => $t['title'],
+'value' => checkvar('t','title'),
         ),
         'flavor' => array(
           'title' => 'Description',

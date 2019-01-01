@@ -163,8 +163,8 @@ if($loguser['id']!=0){
                         ."WHERE t.lastdate>$mintime "
                         ."  AND f.id IN ".forums_with_view_perm()." "
       ."ORDER BY t.lastdate DESC "
-                        ."LIMIT ".(($page-1)*$loguser[tpp]).",".$loguser[tpp]);
-    $forum[threads]=$sql->resultq("SELECT count(*) "
+                        ."LIMIT ".(($page-1)*$loguser['tpp']).",".$loguser['tpp']);
+    $forum['threads']=$sql->resultq("SELECT count(*) "
                                  ."FROM threads t "
                                  ."LEFT JOIN forums f ON f.id=t.forum "
                                  ."LEFT JOIN categories c ON f.cat=c.id "
@@ -268,6 +268,7 @@ if($loguser['id']!=0){
 
   print $topbot;
   if($time) {
+    $tags=array();
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
           By Threads | <a href=thread.php?time=$time>By Posts</a></div><br>"; 
     print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">'.

@@ -56,11 +56,11 @@
      }
      $usedranks[$rank['rs']] = true;
     }
-    if($_GET['rankset']){
+    if(checkvar('_GET','rankset')){
 	if(!isset($_GET['showinactive'])) $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."&showinactive=1\">Show Inactive</a>";
 	else $inaclnk=" | <a href=\"ranks.php?rankset=".$_GET['rankset']."\">Hide Inactive</a>";
     } else {
-	if(!$_GET['showinactive']) $inaclnk=" | <a href=\"ranks.php?showinactive=1\">Show Inactive</a>";
+	if(!checkvar('_GET','showinactive')) $inaclnk=" | <a href=\"ranks.php?showinactive=1\">Show Inactive</a>";
 	else $inaclnk=" | <a href=\"ranks.php\">Hide Inactive</a>";
     }
                           

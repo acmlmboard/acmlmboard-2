@@ -6,6 +6,15 @@
     }
     return true;
   }
+//This function is for checking if a variable is set, and returning the value if set.
+//To check $test, use checkvar('test')
+  function checkvar($var){
+  global $$var;
+    if(isset($$var)) {
+      return $$var;
+    }
+    return false;
+  }
 
   function getforumbythread($tid){
     global $sql;

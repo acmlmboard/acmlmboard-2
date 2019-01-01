@@ -33,13 +33,13 @@ function urlcreate($url,$query) {
 function RenderTable($data, $headers)
 {
   $zebra = 0;
-  $cols = count($header);
+  $cols = count(checkvar('header'));
 
   print "<table cellspacing=\"0\" class=\"c1\">\n";
   print "\t<tr class=\"h\">\n";
   foreach($headers as $headerID => $headerCell)
   {
-    if($headerCell['hidden'])
+    if(isset($headerCell['hidden']))
       continue;
 
     if(isset($headerCell['width']))
@@ -55,7 +55,7 @@ function RenderTable($data, $headers)
     print "\t<tr>\n";
     foreach($dataCell as $id => $value)
     {
-      if($headers[$id]['hidden'])
+      if(isset($headers[$id]['hidden']))
         continue;
 
       $color = $zebra + 1;

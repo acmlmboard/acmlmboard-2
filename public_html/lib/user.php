@@ -327,7 +327,7 @@ function userfields($tbl='', $pf='')
   } else {
   if($config['nickcolorcss']) $nccss="class='nc".$user[$u.'sex'].$user[$u.'group_id']."'";
 //Over-ride for custom colours [Gywall]
-  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config[perusercolor])
+  if($user[$u.'nick_color'] && $user[$u.'enablecolor'] && $config['perusercolor'])
   { 
     $nc = $user[$u.'nick_color'];
     $nccss = "";

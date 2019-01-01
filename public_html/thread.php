@@ -22,7 +22,7 @@
 
   loadsmilies();
   
-  $page = $_REQUEST['page'];
+  $page = checkvar('_REQUEST','page');
 
   if(!$page)
     $page=1;
@@ -34,7 +34,7 @@
 
 //  [DJ Bouche] What the fuck?
 //  if($tid=($_POST[id]?$_POST[id]:$_GET[id])) {
-  if ($ppp=$_REQUEST['ppp']) {
+  if ($ppp=checkvar('_REQUEST','ppp')) {
   checknumeric($ppp);
   }
   else $ppp = $loguser['ppp'];
@@ -51,13 +51,13 @@
     checknumeric($timeval);
     $viewmode = "time";
   }
-  elseif(isset($_GET[announce])) {
+  elseif(isset($_GET['announce'])) {
     $announcefid = $_GET['announce'];
     checknumeric($announcefid);
     $viewmode = "announce";
   }  
   // "link" support (i.e., thread.php?pid=999whatever)
-  elseif($pid=$_GET[pid]){
+  elseif($pid=$_GET['pid']){
     checknumeric($pid);
         $numpid =$sql->fetchq("SELECT t.id tid FROM posts p LEFT JOIN threads t ON p.thread=t.id WHERE p.id=$pid");
         if (!$numpid) {
@@ -90,7 +90,7 @@
   //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
   if($tid && (can_edit_forum_threads(getforumbythread($tid)) ||
      ($loguser[id] == $threadcreator && $_POST[action] == "rename" && has_perm('rename-own-thread')))) {
-    $act=$_POST[action];
+    $act=checkvar('_POST','action');
 	if ($act) {
       check_token($_POST['auth'], "qmod");
     }
@@ -114,11 +114,11 @@
     if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes($act." ".$tid." ".$_POST[arg])."')");
   }
 
-  checknumeric($_GET[pin]);
-  checknumeric($_GET[rev]);
+  checknumeric($_GET['pin']);
+  checknumeric($_GET['rev']);
   //determine string for revision pinning
-  if($_GET[pin] && $_GET[rev] && can_view_forum_post_history(getforumbythread($tid))) {
-    $pinstr="AND (pt2.id<>$_GET[pin] OR pt2.revision<>($_GET[rev]+1)) ";
+  if($_GET['pin'] && $_GET['rev'] && can_view_forum_post_history(getforumbythread($tid))) {
+    $pinstr="AND (pt2.id<>".$_GET['pin']." OR pt2.revision<>(".$_GET['rev']."+1)) ";
   } else $pinstr="";
 
   if($viewmode == "thread"){
@@ -133,7 +133,7 @@
 		  	."LEFT JOIN polls p ON p.id=t.id "
                         ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
-    if(!isset($thread[id]))
+    if(!isset($thread['id']))
     {
       error("Error", "Thread does not exist. <br> <a href=./>Back to main</a>");
     }
@@ -164,7 +164,7 @@
       
     
 
-	if($thread[ispoll])
+	if($thread['ispoll'])
     {
       if($_GET['act']=="vote" && $log)
       {
@@ -201,15 +201,15 @@
     $feedicons.=feedicon("img/rss3.png","rss.php?thread=$thread[id]","RSS feed for this thread");
     $feedicons.=feedicon("img/rss2.png","rss.php?forum=$thread[forum]","RSS feed for this section");
     
-    if(!$pid) $meta=threadformeta($tid); else $meta=postformeta($pid);
+    if(!isset($pid)) $meta=threadformeta($tid); else $meta=postformeta($pid);
     //append thread's title to page title
-    pageheader($thread[title],$thread[fid],$meta);
+    pageheader($thread['title'],$thread['fid'],$meta);
 	
 	// Print thread creation / edit messages (they lack a 'pid')
-	if (!$_REQUEST['pid']) print $cookiemsg;
+	if (!isset($_REQUEST['pid'])) print $cookiemsg;
 
     //mark thread as read // 2007-02-21 blackhole89
-    if($log && $thread[lastdate]>$thread[frtime])
+    if($log && $thread['lastdate']>$thread['frtime'])
       $sql->query("REPLACE INTO threadsread VALUES ($loguser[id],$thread[id],".ctime().")");
 
     //check for having to mark the forum as read too
@@ -221,7 +221,7 @@
 			     ."GROUP BY ((NOT ISNULL(r.time)) OR t.lastdate<'$thread[frtime]') ORDER BY n ASC");
       //if $readstate[n] is 1, MySQL did not create a group for threads where ((NOT ISNULL(r.time)) OR t.lastdate<'$thread[frtime]') is 0;
       //thus, all threads in the forum are read. Mark it as such.
-      if($readstate[n] == 1) $sql->query("REPLACE INTO forumsread VALUES ($loguser[id],$thread[fid],".ctime().')');
+      if($readstate['n'] == 1) $sql->query("REPLACE INTO forumsread VALUES (".$loguser['id'].",".$thread['fid'].",".ctime().')');
     }
 
     //select top revision // 2007-03-08 blackhole89
@@ -337,7 +337,7 @@
   else {
     pageheader();
   }
-  if($thread[replies]<$ppp){
+  if($thread['replies']<$ppp){
     $pagelist=''; $pagebr='';
   }else{
     $pagelist='<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">Pages:';
@@ -371,7 +371,7 @@
 		else
 			$newreply.="<a href=\"newreply.php?id=$tid\" class=\"newreply\">New reply</a>";
 	}
-    if($thread[ispoll])
+    if($thread['ispoll'])
     {
       $poll=
           "<br>$L[TBL1]>
@@ -427,7 +427,7 @@ if ($thumbCount) $thumbsUp .= " (".$thumbCount.")";
 
     $topbot=
           "$L[TBL] width=100%>$L[TR]>
-".        "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread[title])." $thumbsUp</td>
+".        "  $L[TDn]><a href=./>Main</a> - <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> - ".htmlval($thread['title'])." $thumbsUp</td>
 ".        "  $L[TDnr]>
 ".        "  $newreply
 ".        "  </td>
@@ -475,30 +475,30 @@ elseif($viewmode=="time"){
   
   $modlinks='<br>';
   if($tid && 
-    (can_edit_forum_threads($thread[forum]) || 
-      ($loguser[id] == $thread[user] && !$thread[closed] && (has_perm('edit-thread') || has_perm('rename-own-thread'))))) {
+    (can_edit_forum_threads($thread['forum']) || 
+      ($loguser['id'] == $thread['user'] && !$thread['closed'] && (has_perm('edit-thread') || has_perm('rename-own-thread'))))) {
     $link="<a href=javascript:submitmod";
-    if (can_edit_forum_threads($thread[forum])) {
-      if($thread[sticky])
+    if (can_edit_forum_threads($thread['forum'])) {
+      if($thread['sticky'])
         $stick="$link('unstick')>Unstick</a>";
       else
         $stick="$link('stick')>Stick</a>";
 
-      if($thread[closed])
+      if($thread['closed'])
         $close="| $link('open')>Open</a>";
       else
         $close="| $link('close')>Close</a>";
 
-      if($thread[filter])
+      if($thread['filter'])
         $filtr="| $link('unfilter')>Remove Filter</a>";
       else
         $filtr="| $link('filter')>Add Filter</a>";
 if($trashid>=1){ //Now only enabled if ID is a valid forum ID.
-      if($thread[forum]!=$trashid)
+      if($thread['forum']!=$trashid)
         $trash="| $link('trash')>Trash</a> ";
 }
 if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
-      if($thread[forum]!=$showcaseid)
+      if($thread['forum']!=$showcaseid)
         $showcase="| $link('showcase')>Showcase</a> |";
       else
         $showcase='| ';
@@ -547,7 +547,7 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
     $taglinks.="| Remove: ";
     for($i=0;$i<sizeof($tags);++$i) {
       $t=$tags[$i];
-      if($thread['tag'] & (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
+      if(isset($thread['tag']) & (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
     }
     $taglinks=addslashes($taglinks);
 
@@ -566,7 +566,7 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
 ".        "    $edthr
 ".        "    </span>
 ".        "    <span id=mappend>
-".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread[title],ENT_COMPAT | ENT_HTML401,'UTF-8')."\" maxlength=100>
+".        "    <input type=hidden name=tmp style='width:80%!important;border-width:0px!important;padding:0px!important' onkeypress=\"submit_on_return(event,'rename')\" value=\"".htmlentities($thread['title'],ENT_COMPAT | ENT_HTML401,'UTF-8')."\" maxlength=100>
 ".        "    </span>
 ".        "    <script type=text/javascript>
 ".        "      function submitmod(act){
@@ -614,10 +614,10 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
 ".        "$L[TBLend]
 ";
   }
-
+  if(!isset($userbar)) $userbar="";
   print   "$topbot$userbar";
 
-  if($timeval) {
+  if(isset($timeval)) {
     print "<div style=\"margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block\">
           <a href=forum.php?time=$timeval>By Threads</a> | By Posts</a></div><br>"; 
     print '<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">'.
@@ -630,7 +630,7 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
 
 print "$modlinks
 ".        "$pagelist
-".        "$poll
+".        checkvar('poll')."
 ";
   while($post=$sql->fetch($posts)){
     if (isset($post['fid'])) {
@@ -645,12 +645,12 @@ print "$modlinks
     } else {
       $post['maxrevision']=$sql->resultq("SELECT MAX(revision) FROM poststext WHERE id=".$_GET['pin']);
     }
-    if(can_edit_forum_posts($post[fid]) && $post[id]==$_GET[pin]) $post[deleted]=false;
+    if(can_edit_forum_posts(checkvar('post','fid')) && $post['id']==$_GET['pin']) $post['deleted']=false;
 	// After a creating or editing a post
-	if ($post['id'] == $_REQUEST['pid']) print $cookiemsg;
+	if ($post['id'] == checkvar('_REQUEST','pid')) print $cookiemsg;
 
     print "<br>
-".         threadpost($post,0,$pthread);
+".         threadpost($post,0,checkvar('pthread'));
   }
 
 
@@ -659,7 +659,7 @@ print "$modlinks
 
   if(isset($thread['id']) && can_create_forum_post($faccess) && !$thread['closed']) {
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
-  $toolbar= posttoolbar($loguser[posttoolbar]);
+  $toolbar= posttoolbar($loguser['posttoolbar']);
 
       //lol so hacky please organise this into the right place soon.
 
@@ -708,13 +708,13 @@ print "$modlinks
 ".        "    $L[TDh] colspan=2>".$config['quickreply']."</a></td>
 ";
 
-     if($loguser[posttoolbar]!=1)
+     if($loguser['posttoolbar']!=1)
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR] class='toolbar'>$toolbar$L[TBLend]";
     print "  $L[TR] $quickreplydisplay >
 ".        "    $L[TD1c] width=120>Reply:</td>
-".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>$quotetext</textarea></td>
+".        "    $L[TD2]>$L[TXTa]=message id='message' rows=8 cols=80>".checkvar('quotetext')."</textarea></td>
 ".        "  $L[TR1] $quickreplydisplay >
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>
@@ -727,10 +727,10 @@ print "$modlinks
 ".        "      $L[INPc]=nolayout id=nolayout value=1 ><label for=nolayout>Disable post layout</label>
 ".        "      $L[INPc]=nosmile id=nosmile value=1 ><label for=nosmile>Disable smilies</label>
 ";
-    if(can_edit_forum_threads($thread[forum]))
+    if(can_edit_forum_threads($thread['forum']))
     print "     $L[INPc]=close id=close value=1 ><label for=close>Close thread</label>
-                ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1><label for=stick>Stick thread</label>" : "")."
-                ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
+                ".(!$thread['sticky'] ? "$L[INPc]=stick id=stick value=1><label for=stick>Stick thread</label>" : "")."
+                ".($thread['sticky'] ? "$L[INPc]=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        " </form>

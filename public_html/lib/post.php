@@ -399,7 +399,7 @@ function ytube($match){
            .posttoolbutton("message",$upref,"ToolBarImg","IMG","img","")
            .posttoolbutton("message",$upref,"ToolBarSvg","SVG","svg <WIDTH> <HEIGHT>","svg","sv")
 	   .posttoolbutton("message",$upref,"ToolBarYt","YouTube","youtube","","yt")
-           ."$L[TD3] id='tbk$names' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>"
+           ."$L[TD3] id='tbk' style='width:16px;text-align:center'><a href=\"javascript:togglesmiles()\"><font size='0.1'><input type=\"button\" title='Smilies' class='Submit ToolBarSmile' tabindex=\"-1\" style=\"width: 24px; height: 24px;\"></font></a></td>"
            ."$smiletxt";
   }
   
@@ -416,7 +416,7 @@ function ytube($match){
     $moods = $sql->query("select '-Normal Avatar-' label, -1 id union select label, id from mood where user=$moodset");
     $moodst="";
     while ($mood=$sql->fetch($moods))
-      $moodst.= "<option value=\"$mood[id]\"".($mood[id]==$mid?"selected=\"selected\"":"").">".stripslashes($mood[label])."</option>";
+      $moodst.= "<option value=\"$mood[id]\"".($mood['id']==$mid?"selected=\"selected\"":"").">".stripslashes($mood['label'])."</option>";
     $moodst.= "</select>";
     return $moodst;
   }

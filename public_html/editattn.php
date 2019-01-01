@@ -43,7 +43,7 @@
     pageheader("Edit attention box");
 	
     print "
-{$cookiemsg}{$mockboardlogo}
+{$cookiemsg}".checkvar('mockboardlogo')."
 <form method='POST' action='editattn.php'>
 $L[TBL1]>
 	$L[TRh]>$L[TDh] colspan='2'>Edit Attention Box</td></tr>

@@ -1,7 +1,7 @@
 <?php
     include("lib/common.php");
     pageheader("Acmlmboard Credits");
-  
+    $programmerlist = $gitcontributorlist = $contributorlist = ""; //Initialising variables.
     //[Scrydan] Basic credits page. The footer was getting too long, haha.
     //There might be some work done on this later but you get the idea. A few people weren't on the list and I added them.
     //Feel free to make this more up to date.

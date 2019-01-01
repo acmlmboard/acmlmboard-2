@@ -17,7 +17,7 @@
     $monthnames = array(1=>'January',  'February','March',   'April',
                            'May',      'June',   'July',    'August',
                            'September','October','November','December');
-    
+    $monthlen = array(1=>31,28,31,30,31,30,31,31,30,31,30,31);
     $today = getdate(ctime());
     
     if (isset($_REQUEST['m']) && is_numeric($_REQUEST['m'])) {
@@ -35,14 +35,16 @@
     } else if ($year == $today['year'] && $month == $today['mon']) {
         $day = $today['mday'];
     } else {
-        $day = 31;
+        $day = 32; //We'll correct this after checking if the year is a leap year.
     }
         
     
     $mtstamp = mktime(0,0,0,$month,1,$year);
     $mdays = intval(date('t', $mtstamp));
     $wday = intval(date('w', $mtstamp));
-    
+    $monthlen[2]+=intval(date('L', $mtstamp)); //Check for Leap Year
+    if($day==32) $day=$monthlen[$month];
+
     pageheader('Forum Rankings');
     print "$L[TBL] width=\"100%\">
 ".        "    $L[TR]>
@@ -169,7 +171,7 @@ $report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-l
 $report.="</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
 print "</table><br><br>Daily Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
 //Daily Points
-if($dpur){
+if(isset($dpur)){
 arsort($dpur);
 $r=0; $q=1; $t=9999;
 foreach($dpur as $usr => $pnts){
@@ -183,7 +185,7 @@ foreach($dpur as $usr => $pnts){
 //Monthly Points
 $report.="</table><br><br>Monthly Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
 print "</table><br><br>Monthly Points<hr style=\"width: 100px; margin-left: 0px;\"><table cellspacing=0>";
-if($points){
+if(isset($points)){
 arsort($points);
 $r=0; $q=1; $t=9999;
 foreach($points as $usr => $pnts){

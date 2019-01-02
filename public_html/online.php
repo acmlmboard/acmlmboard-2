@@ -95,12 +95,23 @@ $L[TBL1]>
 ";
 
 // Process guests and bots
+	$n=0;
 	$onbot = false;
 	for ($i = 1; $guest = $sql->fetch($guests); $i++) {
 		// Guests come first, then all bots
 		if (!$onbot && $guest['bot']) {
 			$onbot = true;
-			print "$L[TRg]>$L[TDg] colspan=5>Bots</td></tr>";
+			$n=1;
+			print "$L[TBLend]
+<br>
+$L[TBL1]>
+	$L[TRg]>$L[TDg] colspan=5>Bots</td></tr>	$L[TRh]>
+		$L[TDh] style='width: 30px'>#</td>
+		$L[TDh] style='width: 70px; min-width: 150px'>User agent (Browser)</td>
+		$L[TDh] style='width: 70px'>Last view</td>
+		$L[TDh]>URL</td>
+".($showip ? "$L[TDh] style='width: 170px'>IP</td>":'')."
+	</tr>";
 		}
 		
 		// HTTPS urls are marked by !
@@ -123,7 +134,7 @@ $L[TBL1]>
 		
 		print "
 	$L[$tr]>
-		$L[TD1]>{$i}.</td>
+		$L[TD1]>".($n!=0?$n:$i)."</td>
 		$L[TDl]>{$useragent}</td>
 		$L[TD]>".cdate($loguser['timeformat'], $guest['date'])."</td>
 		$L[TDl]>
@@ -136,6 +147,7 @@ $L[TBL1]>
 			<small>".($guest['ipbanned'] ? "(<a href='ipbans.php?ip={$guest['ip']}'>IP banned</a>)" : "<a href='ipbans.php?newip={$guest['ip']}&newreason=online.php%20ban#addban'>IP Ban</a>")."</small>
 		</td>" : '')."
 	</tr>";
+	if($n!=0) $n++;
 	}
 	print "$L[TBLend]";
 

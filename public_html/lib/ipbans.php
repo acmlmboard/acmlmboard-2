@@ -20,6 +20,7 @@
 			//	  header("Location: http://banned.ytmnd.com/");
 			//	  header("Location: http://board.acmlm.org/");
 			//    fuck this shit
+			header("HTTP/1.1 403 Forbidden");
 			die("Sorry, but your IP address appears to be banned from this board.");
 		}
 

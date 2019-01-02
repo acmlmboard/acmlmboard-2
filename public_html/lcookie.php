@@ -6,9 +6,9 @@
     needs_login(1);
   }
 
-  if($_POST[action]=="update") {
+  if(checkvar('_POST','action')=="update") {
     $err="";
-    if(!preg_match("/^([0-9|.|,|\*]*)$/",$_POST[ranges]))
+    if(!preg_match("/^([0-9|.|,|\*]*)$/",$_POST['ranges']))
       $err="      Range string contains illegal characters.
 ".         "      <a href=''>Go back</a> or <a href='index.php'>give up</a>.";
 
@@ -18,31 +18,35 @@
       pagefooter();
       die();
     }else{
-      $_COOKIE[pass]=packlcookie(unpacklcookie($_COOKIE[pass]),$_POST[ranges]);
-      setcookie('pass',$_COOKIE[pass],2147483647);
+      switch($_POST['duration']){
+        case 1: $dstr=strtotime('+1 Week'); break;
+        case 2: $dstr=strtotime('+1 Month'); break;
+        case 3: $dstr=strtotime('+1 Year'); break;
+        case 4: $dstr=2147483647; break; //Legacy value
+        default: $dstr=0;
+      }
+      $_COOKIE['pass']=packlcookie(unpacklcookie($_COOKIE['pass']),$_POST['ranges']);
+      setcookie('pass',$_COOKIE['pass'],$dstr);
     }
   }
 
   pageheader('Advanced login cookie setup');
 
-  $d=explode(",",decryptpwd($_COOKIE[pass]));
+  $d=explode(",",decryptpwd($_COOKIE['pass']));
 
-  $data.="$L[TBL1] style='width:200px!important'>
+  $data="$L[TBL1] style='width:200px!important'>
 ".       "  $L[TRh]>
 ".       "    $L[TDh] colspan=2>Current data
 ".       "  $L[TRh]>
 ".       "    $L[TDh]>Field
 ".       "    $L[TDh]>Value
 ".       "  $L[TR1]>
-".       "    $L[TD1c]>generating IP
-".       "    $L[TD2c]>$d[0]
-".       "  $L[TR1]>
-".       "    $L[TD1c]>password hash
-".       "    $L[TD2c]><i>*snip*</i>";
-  for($i=2;strlen($d[$i]);++$i) {
+".       "    $L[TD1c]>Current IP
+".       "    $L[TD2c]>$d[0]";
+  for($i=2;strlen(checkvar('d',$i));++$i) {
     $data.="  $L[TR1]>
-".         "    $L[TD1c]>allowed range
-".         "    $L[TD2c]>".$d[$i];
+".         "    $L[TD1c]>Current range
+".         "    $L[TD2c]>".checkvar('d',$i);
   }
   $data.="$L[TBLend]<br>";
 
@@ -50,12 +54,19 @@
 ".      "<form action='lcookie.php' method='post'>$L[INPh]='action' value='update'>
 ".      "$L[TBL1]>
 ".      "  $L[TRh]>
-".      "    $L[TDh]>Modify allowed ranges
+".      "    $L[TDh] colspan=2>Modify allowed ranges
 ".      "  $L[TR1]>
-".      "    $L[TD2]>$L[INPt]='ranges' value='".implode(",",array_slice($d,2))."' style='width:80%'>$L[INPs] value='Update'>
-".      "            <br><font class='sfont'>Data must be provided as comma-separated IPs without spaces,
-".      "            each potentially ending in a single * wildcard. (e.g. <font color='#C0C020'>127.*,10.0.*,1.2.3.4</font>)
-".      "            Faulty data might result in instant self-destruction of your login cookie.</font>
+".      "    $L[TD1]>Range
+".      "    $L[TD2]>$L[INPt]='ranges' value='".implode(",",array_slice($d,2))."' style='width:120px'>
+".      "  $L[TR1]>
+".           fieldrow('Duration', fieldoption('duration',0,array(0=> 'Session', '1 Week', '1 Month', '1 Year')))."
+".      "  $L[TR1]>
+".      "    $L[TD1]>
+".      "    $L[TD2]>
+".      "            <span class='sfont'>Data must be provided as comma-separated IPs without spaces,
+".      "            each potentially ending in a single * wildcard. (e.g. <span style='color:#C0C020;'>127.*,10.0.*,1.2.3.4</span>)<br>
+".      "            Incorrect data will instantly log you out.</span><br>
+".      "  $L[INPs] value='Update'>
 ".      "$L[TBLend]</form>";
 
   pagefooter();

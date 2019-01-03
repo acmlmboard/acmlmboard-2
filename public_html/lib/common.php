@@ -67,9 +67,9 @@
   require "lib/timezone.php";
   dobirthdays(); //Called here to account for timezone bugs.
 
-  if($loguser['ppp'] < 1)
+  if(checkvar('loguser','ppp') < 1)
    $loguser['ppp'] = 20;
-  if($loguser['tpp'] < 1)
+  if(checkvar('loguser','tpp') < 1)
    $loguser['tpp'] = 20;
 
    // Moved here since the ipbans page would call pageheader() with themes uninitialized otherwise
@@ -443,7 +443,7 @@
      }
     }
     
-    print $pmsgbox;
+    print checkvar('pmsgbox');
 
     //mark forum read
     checknumeric($fid);
@@ -500,7 +500,7 @@
 		//print (isset($v['html']) ? $v['html'] : );
 	}
 	 
-    if ($radar)
+    if (isset($radar))
      {
       print " 
              $L[TR]>

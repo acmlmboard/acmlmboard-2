@@ -5,7 +5,7 @@ require("lib/common.php");
 
   $r = request_variables(array('id','action','act'));
   $pagebar = array();
-
+  if($config['extendedprofile']==0) error("Feature Disabled","Extended profile support is not enabled.<br> <a href=./>Back to main</a>");
   if(!has_perm('edit-profileext')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
   pageheader("Edit Extended Profile Fields");

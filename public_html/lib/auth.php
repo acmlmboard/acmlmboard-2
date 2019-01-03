@@ -75,7 +75,7 @@
   }
   function generate_token($var = '') {
     global $pwdsalt, $pwdsalt2, $loguser;
-	return md5($pwdsalt2 . $loguser['pass'] . $var . $pwdsalt);
+	return md5($pwdsalt2 . checkvar('loguser','pass') . $var . $pwdsalt);
 	// Leaving this alternate hash commented for consistency with other md5 token checks. It can still be enabled just fine.
     //return hash('sha256', $pwdsalt2 . $loguser['pass'] . $_SERVER['REMOTE_ADDR'] . $var . $pwdsalt);
   }

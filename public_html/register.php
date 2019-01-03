@@ -49,9 +49,9 @@ if (isProxy())
     return $str;
   }
 
-  $act=$_POST[action];
+  $act=checkvar('_POST','action');
   if($act=='Register'){
-    $name=trim(stripslashes($_POST[name]));
+    $name=trim(stripslashes($_POST['name']));
 
     $cname=str_replace(array(' ',"\xC2\xA0"),'',$name);
 	$cname=strtolower($cname);
@@ -80,7 +80,7 @@ if (isProxy())
 	  $name = $sql->escape($name);
 	  
       $res = $sql->query("INSERT INTO users (name,pass,regdate,lastview,ip,sex,timezone,fontsize,theme) VALUES "
-                 ."('{$name}','".md5($pwdsalt2.$_POST[pass].$pwdsalt)."',"
+                 ."('{$name}','".password_hash($_POST['pass'],PASSWORD_DEFAULT)."',"
                  .ctime().",".ctime().",'{$userip}',{$sex},'{$timezone}',{$defaultfontsize},'{$defaulttheme}')");
 	  if ($res)
 	  {
@@ -153,7 +153,7 @@ if (isProxy())
       }
 
     $cap=encryptpwd($_SERVER['REMOTE_ADDR'].",".($str=randstr(6)));
- if($err) noticemsg("Error", $err);
+ if(isset($err)) noticemsg("Error", $err);
   print "$L[TBL1]>
 ".         " <form action=register.php method=post>
 ".         "  $L[TRh]>

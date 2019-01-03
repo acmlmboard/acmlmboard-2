@@ -10,7 +10,7 @@
                    ."WHERE u.id='$u'");
  $p=$user['posts'];
  $d=(ctime()-$user['regdate'])/86400;
- if(isset($user['displayname'])){ $username=$user['displayname']; } else { $username=$user['name']; }
+ if(strlen(checkvar('user','displayname'))>=1){ $username=$user['displayname']; } else { $username=$user['name']; }
  $it=checkvar('_GET','it');
  checknumeric($it);
 

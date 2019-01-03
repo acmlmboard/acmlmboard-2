@@ -10,8 +10,8 @@
   $sqluser='sqlusername';
 
   $spritesalt='please change me!';
-  $pwdsalt='Please change me!';
-  $pwdsalt2='Addtional Salt. Please Change me!';
+  $pwdsalt='Please change me!'; //Salt value used for generating tokens.
+  $pwdsalt2='Addtional Salt. Please Change me!'; //Secondary salt value for generating tokens
 
   $sqlpass='sqlpassword';
   $sqldb  ='sqldatabase';
@@ -53,6 +53,7 @@
   $config['path']   = "/";// If you run your copy in a specific path (ie: http://www.example.gov/board) than this would be 'board/''
   $config['showssl'] = false; // Shows a link/icon to allow a user to switch to ssl. Enable if you are using on a https server.
   $config['forcessl'] = false; // Bounces users using HTTP to HTTPS if enabled.
+  $config['legacylogin'] = false; // Allows users to login using legacy method. Only enable if your board has old passwords stored in the database.
 
   /* Default metadata for when a page does not provide any 
      This content is used by bots (I.E. Discord, Slack, Google, Bing). */

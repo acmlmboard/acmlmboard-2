@@ -51,8 +51,10 @@
   {
 	check_token($_POST['auth']);
 	
-	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']&&$targetuserid==$loguser['id'])
-		setcookie('pass',packlcookie(md5($pwdsalt2.$_POST['pass'].$pwdsalt)),2147483647);
+	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']&&$targetuserid==$loguser['id']){
+		$passhash=password_hash($_POST['pass'],PASSWORD_DEFAULT);
+		setcookie('pass',packlcookie($passhash),2147483647);
+	}
   }
 
 
@@ -269,7 +271,7 @@
 	if (!$error)
 	{
 		$sql->query('UPDATE users SET '
-               . ($pass?'pass="'.md5($pwdsalt2.$pass.$pwdsalt).'",':'')
+               . ($pass?'pass="'.$passhash.'",':'')
                . (checkcdisplayname($targetuserid)?(setfield('displayname')   .','):'')
                . (checkcusercolor($targetuserid)?(setfield('nick_color')   .','):'')
                . (checkcusercolor($targetuserid)?(setfield('enablecolor')     .','):'')

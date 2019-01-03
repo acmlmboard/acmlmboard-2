@@ -141,7 +141,7 @@ switch ($action) {
 			if($change_request != null) {
 				$user = $sql->fetchp("SELECT `pass` FROM `users` WHERE `id` = ?", array($change_request['user']));
 				if($user != null) {
-					$salted_password = md5($pwdsalt2 . $pass . $pwdsalt);
+					$salted_password = password_hash($pass,PASSWORD_DEFAULT);
 					$sql->prepare( "UPDATE `users` SET `pass` = ? WHERE `id` = ?;", 
 							array($salted_password, $change_request['user']) );
 					$sql->prepare( "UPDATE `resetpass` SET `oldpass` = ?, `newpass` = ?, `completed` = 1 WHERE `token` = ?;", 

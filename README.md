@@ -2,7 +2,7 @@
 # Acmlmboard II
 In this repository you will find the code for Acmlmboard II. This is the version that was forked off for use with the web board that powers Kafuka.
 
-This software is as-is and has no gurentees.
+This software is as-is and has no guarantees.
 
 Branches
 -------

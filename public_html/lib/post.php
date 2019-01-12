@@ -42,7 +42,7 @@ function securityfilter($data) {
 	#$data = preg_replace('#(<[^>]+?[\x00-\x20"\'])(?:on|xmlns)[^>]*+>#iu', '$1>', $data);
 	do {
 		$old_data   = $data;
-		$data       = preg_replace('#(<[A-Za-z][^>]*?[\x00-\x20"\'])(on|xmlns)([^>]*+)>#iu', '$1DISABLED_$2$3>', $data);
+		$data       = preg_replace('#(<[A-Za-z][^>]*?[\x00-\x20\x2F"\'])(on|xmlns)[A-Za-z]*=([^>]*+)>#iu', '$1DISABLED_$2$3>', $data);
 	} while ($old_data !== $data);
 	// Remove javascript: and vbscript: protocols
 	$data = preg_replace('#([a-z]*)[\x00-\x20]*=[\x00-\x20]*([`\'"]*)[\x00-\x20]*j[\x00-\x20]*a[\x00-\x20]*v[\x00-\x20]*a[\x00-\x20]*s[\x00-\x20]*c[\x00-\x20]*r[\x00-\x20]*i[\x00-\x20]*p[\x00-\x20]*t[\x00-\x20]*:#iu', '$1=$2nojavascript...', $data);

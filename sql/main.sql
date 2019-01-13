@@ -1861,4 +1861,31 @@ INSERT INTO `x_perm` (`id`, `x_id`, `x_type`, `perm_id`, `permbind_id`, `bindval
 INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`)
 VALUES
 	('view-debugger', 'Display Debug Messages', 'Shows error handler messages when enabled', 3, '');
+/* New Edit Ranks */
+ALTER TABLE `ranks` ADD `id` INT(32) NOT NULL AUTO_INCREMENT , ADD PRIMARY KEY (`id`) , ADD UNIQUE (`id`) ; 
+ALTER TABLE `ranksets` ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`);
+ALTER TABLE `ranksets` CHANGE `id` `id` INT(10) NOT NULL AUTO_INCREMENT;
+UPDATE `ranksets` SET `id` = '0' WHERE `name` = "None";
+INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('edit-ranks', 'Edit Ranks', '', '3', '');
 
+/* Sprite Category Fix */
+
+--
+-- Indexes for table `spritecateg`
+--
+ALTER TABLE `spritecateg`
+ ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `id` (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `spritecateg`
+--
+ALTER TABLE `spritecateg`
+MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
+
+/* Password Field Update */
+
+ALTER TABLE `users` CHANGE `pass` `pass` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

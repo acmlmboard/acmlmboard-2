@@ -14,10 +14,15 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
 }
 
   function checkuser($name,$pass){
-    global $sql;
-    $id=$sql->resultq("SELECT id FROM users WHERE (name='$name' OR displayname='$name') AND pass='$pass'");
-    if(!$id) $id=0;
-    return $id;
+    global $sql,$pwdsalt,$pwdsalt2,$config;
+    $islegacy=0;
+    $hash=$sql->resultq("SELECT pass FROM users WHERE (name='$name' OR displayname='$name')");
+    $result=password_verify($pass,$hash);
+    if($config['legacylogin']==true && $hash==md5($pwdsalt2.$pass.$pwdsalt)){ $result=true; $islegacy=1; }
+    if($result==false) return array(0,0,0); //Password verification has failed at this point.
+    $id=$sql->resultq("SELECT id FROM users WHERE (name='$name' OR displayname='$name') AND pass='$hash'");
+    if(!$id) return array(0,0,0);
+    return array($id,$hash,$islegacy);
   }
 
   function checkuid($userid,$pass){
@@ -116,7 +121,7 @@ function queryURL($url)
     curl_setopt($page, CURLOPT_TIMEOUT, 10);
     curl_setopt($page, CURLOPT_CONNECTTIMEOUT, 10);
     curl_setopt($page, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($page, CURLOPT_USERAGENT, 'Acmlmboard/'.BLARG_VERSION); //Changed to say Acmlmboard/ but keeping the BLARG_VERSION for 'reasons' -Emuz
+    curl_setopt($page, CURLOPT_USERAGENT, 'Acmlmboard/');
 
    $result = curl_exec($page);
     curl_close($page);
@@ -134,7 +139,7 @@ function queryURL($url)
 
 function isProxy()
 {
-  if ($_SERVER['HTTP_X_FORWARDED_FOR'] && $_SERVER['HTTP_X_FORWARDED_FOR'] != $_SERVER['REMOTE_ADDR'])
+  if (checkvar('_SERVER','HTTP_X_FORWARDED_FOR') && checkvar('_SERVER','HTTP_X_FORWARDED_FOR') != $_SERVER['REMOTE_ADDR'])
     return true;
 
   $result = queryURL('http://www.stopforumspam.com/api?ip='.urlencode($_SERVER['REMOTE_ADDR']));

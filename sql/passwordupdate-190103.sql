@@ -1,0 +1,1 @@
+ALTER TABLE `users` CHANGE `pass` `pass` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;

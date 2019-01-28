@@ -443,7 +443,7 @@
      }
     }
     
-    print checkvar('pmsgbox');
+    if(isset($pmsgbox)) print $pmsgbox;
 
     //mark forum read
     checknumeric($fid);
@@ -555,11 +555,11 @@
        }
       }
       
-     if (isset($numguests))
+     if (checkvar('numguests'))
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if (isset($numbots))
+     if (checkvar('numbots'))
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }

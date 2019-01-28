@@ -40,9 +40,10 @@
                       ."LIMIT $loguser[ppp]");
   }
 
-  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly, f.cat cat, f.private cprivate, f.private private '
+  $thread=$sql->fetchq('SELECT t.*, f.title ftitle, f.private fprivate, f.readonly freadonly, f.cat cat, f.private private, c.private cprivate '
                       .'FROM threads t '
                       .'LEFT JOIN forums f ON f.id=t.forum '
+                      .'LEFT JOIN categories c ON c.id=f.cat '
                       ."WHERE t.id=$tid AND t.forum IN ".forums_with_view_perm());
 
   if($act!="Submit"){
@@ -97,17 +98,18 @@
 
   if($pid=checkvar('_GET','pid')){
     checknumeric($pid);  //nice way of adding security, really. int_val doesn't really do it (floats and whatnot), so heh
-    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, f.cat cat, p.thread "
+    $post=$sql->fetchq("SELECT IF(u.displayname='',u.name,u.displayname) name, p.user, pt.text, f.id fid, f.private fprivate, f.cat cat, p.thread, c.private cprivate "
                       ."FROM posts p "
                       ."LEFT JOIN poststext pt ON p.id=pt.id "
           ."LEFT JOIN poststext pt2 ON pt2.id=pt.id AND pt2.revision=(pt.revision+1) "
                       ."LEFT JOIN users u ON p.user=u.id "
           ."LEFT JOIN threads t ON t.id=p.thread "
           ."LEFT JOIN forums f ON f.id=t.forum "
+          ."LEFT JOIN categories c ON c.id=f.cat "
                       ."WHERE p.id=$pid AND ISNULL(pt2.id)");
   
   //does the user have reading access to the quoted post?
-  if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate'], 'cprivate'=>$post['fprivate'], 'cat'=>$post['cat']))) { $post['name'] = 'your overlord'; $post[text]=""; }
+  if(!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate'], 'cprivate'=>$post['cprivate'], 'cat'=>$post['cat']))) { $post['name'] = 'your overlord'; $post[text]=""; }
 
   $quotetext="[quote=\"$post[name]\" id=\"$pid\"]".$post['text']."[/quote]";
   }
@@ -243,8 +245,8 @@ print     "  $L[TR]>
     
     redirect("thread.php?pid={$pid}#xwnd1","Post successful! (Gained {$c} bonus coins)", "Posted!", htmlval($thread['title']));
   }
-
-  if($act!='Submit' && !isset($err) && can_view_forum($thread)){
+  
+  if($act!='Submit' && !isset($err) && can_view_forum(array('id'=>$thread['forum'], 'private'=>$thread['private'], 'cprivate'=>$thread['cprivate'], 'cat'=>$thread['cat']))){
     print "<br>
 ".        "$L[TBL1]>
 ".        "  $L[TRh]>

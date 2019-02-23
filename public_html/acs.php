@@ -2,9 +2,10 @@
   require 'lib/common.php';
   pageheader('Active users (server time day blocks)');
 
-  $time = $_GET['time'];
-  $past = $_GET['past'];
-  $easymode = $_GET['easymode'];
+  $time = checkvar('_GET','time');
+  $past = checkvar('_GET','past');
+  $easymode = checkvar('_GET','easymode');
+
   checknumeric($time);
   checknumeric($past);
   if($time < 1)
@@ -39,9 +40,15 @@
         $L[TBL1]>
           $L[TR]>
              $L[TD2]><input type=\"submit\" value=\"Show\">: $L[INPt]=\"past\" size=\"3\" maxlength=\"4\" value=\"$past\"> days ago
-                    | $L[INPc]=\"easymode\" id=\"emode\" ".(isset($easymode)?"checked":"")."><label for=\"emode\" title=\"Without this, at most 5 posts per day in any single thread are counted.\">EASY MODE</label>
-        $L[TBLend]</form>";
+                    | $L[INPc]=\"easymode\" id=\"emode\" ".(checkvar('easymode')?"checked":"")."><label for=\"emode\" title=\"Without this, at most 10 posts per day in any single thread are counted.\">EASY MODE</label>
+        $L[TBLend]</form><br>";
 
+  if(!has_perm('view-current-acs') && $past==0){
+    print "$L[TBL1]>
+           $L[TRh]>$L[TDh]>Notice
+               $L[TR1c]>
+                 $L[TD]>Current day results are unavailable for viewing.";
+  } else {
   print "Active users on ".cdate($loguser['dateformat'], ctime() - $past * 86400).":
          $L[TBL1]>
            $L[TRh]>
@@ -54,7 +61,7 @@
   $q = 1;
   $p =- 1;
   for($i=1;$user=$sql->fetch($users);$i++){
-    if($p!=$user[num]) {
+    if($p!=$user['num']) {
       if($q<=5 && $i>5) {
         print "
                $L[TR1c]>
@@ -79,6 +86,7 @@
              $L[$tdtype]>$user[posts]</b></td>
 ";
     $p = $user['num'];
+  }
   }
   print "$L[TBLend]";
 

@@ -4,6 +4,7 @@
 
   $time = checkvar('_GET','time');
   $past = checkvar('_GET','past');
+  if(!has_perm('view-current-acs') && !isset($_GET['past'])) $past=1;
   $easymode = checkvar('_GET','easymode');
 
   checknumeric($time);

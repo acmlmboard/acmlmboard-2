@@ -37,7 +37,8 @@
     } else {
         $day = 32; //We'll correct this after checking if the year is a leap year.
     }
-        
+    //Current day timing for incomplete day notice.
+    $curday=(ctime() - (dtime(ctime())%86400));
     
     $mtstamp = mktime(0,0,0,$month,1,$year);
     $mdays = intval(date('t', $mtstamp));
@@ -86,21 +87,31 @@
   $users=$sql->query($query);
   $pqry=@$sql->result($sql->query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
 
-            print " -- <i>Total Posts: $pqry</i><table>";
- $q=1; $p=-1;
-  for($i=1;$user=$sql->fetch($users);$i++){
-    if($user['num']!=$p) $q=$i;
-    if($q<=5) {
-    if($mday <= $day){
-	$uid=$user['id'];
-	if(isset($points[$uid])) $points[$uid]=$points[$uid]+$kcspoints[$q]; else $points[$uid]=$kcspoints[$q];
-    }
-    print
-	"<tr><td>$q</td><td>".userlink($user)."</td><td>$user[num]</td></tr>";
-    $p=$user['num'];
+
+  print " -- <i>Total Posts: $pqry</i>";
+  $viewday=$dstr-(dtime($dstr)%86400);
+  $viewcur=0;
+  if(!($curday < $viewday) && !($curday > $viewday)){
+    print "<br><i>Day currently in progress.</i><br>";
+    $viewcur=1;
   }
-}
-        print "</table></td>\n";
+  if(has_perm('view-current-acs') || $viewcur==0){
+    print "<table>";
+    $q=1; $p=-1;
+    for($i=1;$user=$sql->fetch($users);$i++){
+      if($user['num']!=$p) $q=$i;
+      if($q<=5) {
+        if($mday <= $day){
+          $uid=$user['id'];
+          if(isset($points[$uid])) $points[$uid]=$points[$uid]+$kcspoints[$q]; else $points[$uid]=$kcspoints[$q];
+        }
+        print "<tr><td>$q</td><td>".userlink($user)."</td><td>$user[num]</td></tr>";
+        $p=$user['num'];
+      }
+    }
+    print "</table></td>\n";
+  }
+
         
     }
     

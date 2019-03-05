@@ -160,12 +160,20 @@
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);
   $pqry=@$sql->result($sql->query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
+//Check that the report is not day-in-progress.
+  $viewday=$dstr-(dtime($dstr)%86400);
+  $viewcur=0;
+  if(!($curday > $viewday)){ $viewcur=1; }
+
+if(has_perm('view-current-acs') || $viewcur==0){
 	print "$L[TBL] width=\"100%\">
 ".        "    $L[TRh]>
-".        "        $L[TDc] colspan=2>KCS Report for $monthnames[$month] $year</td>
+".        "        $L[TDc] colspan=2>Forum Rankings report for $monthnames[$month] $year</td>
 ".        "    </tr>
 ".        "    $L[TR]>
-$L[TD2l]>".strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
+$L[TD2l] style=\"vertical-align: top\">";
+  if($viewcur==1){ print "<i>Day is currently in progress. Results may vary.</i><br>"; }
+  print strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
 $report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
 //Results for posts
  $q=1; $p=-1;
@@ -213,5 +221,15 @@ foreach($points as $usr => $pnts){
 ".        "<textarea style=\"width: 100%; height: 400px;\" readonly=\"readonly\">$report</textarea></td>
 ".        "    </tr>
 ".         $L['TBLend'];
+} else {
+	print "$L[TBL] width=\"100%\">
+".        "    $L[TRh]>
+".        "        $L[TDc]>Forum Rankings report for $monthnames[$month] $year</td>
+".        "    </tr>
+".        "    $L[TR]>
+$L[TD2l]>Results for selected date are unavailable.<br>This may be due to the day being in progress, or a future date has been selected.
+".        "    </tr>
+".         $L['TBLend'];
+}
     pagefooter();
 ?>

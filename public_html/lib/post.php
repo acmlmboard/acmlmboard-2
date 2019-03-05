@@ -77,7 +77,7 @@ function securityfilter($data) {
   }
   function filterurl($match)
   {
-	$src=str_replace(array('=','\'','"',$match[1]),'',$match[0]);
+	$src=str_replace(array($match[1],'=','\'','"'),'',$match[0]);
 	return "enc64$src=".base64_encode($match[1]);
   }
   function unfilterurl($match)

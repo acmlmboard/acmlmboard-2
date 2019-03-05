@@ -37,7 +37,8 @@
     } else {
         $day = 32; //We'll correct this after checking if the year is a leap year.
     }
-        
+    //Current day timing for incomplete day notice.
+    $curday=(ctime() - (dtime(ctime())%86400));
     
     $mtstamp = mktime(0,0,0,$month,1,$year);
     $mdays = intval(date('t', $mtstamp));
@@ -86,21 +87,31 @@
   $users=$sql->query($query);
   $pqry=@$sql->result($sql->query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
 
-            print " -- <i>Total Posts: $pqry</i><table>";
- $q=1; $p=-1;
-  for($i=1;$user=$sql->fetch($users);$i++){
-    if($user['num']!=$p) $q=$i;
-    if($q<=5) {
-    if($mday <= $day){
-	$uid=$user['id'];
-	if(isset($points[$uid])) $points[$uid]=$points[$uid]+$kcspoints[$q]; else $points[$uid]=$kcspoints[$q];
-    }
-    print
-	"<tr><td>$q</td><td>".userlink($user)."</td><td>$user[num]</td></tr>";
-    $p=$user['num'];
+
+  print " -- <i>Total Posts: $pqry</i>";
+  $viewday=$dstr-(dtime($dstr)%86400);
+  $viewcur=0;
+  if(!($curday < $viewday) && !($curday > $viewday)){
+    print "<br><i>Day currently in progress.</i><br>";
+    $viewcur=1;
   }
-}
-        print "</table></td>\n";
+  if(has_perm('view-current-acs') || $viewcur==0){
+    print "<table>";
+    $q=1; $p=-1;
+    for($i=1;$user=$sql->fetch($users);$i++){
+      if($user['num']!=$p) $q=$i;
+      if($q<=5) {
+        if($mday <= $day){
+          $uid=$user['id'];
+          if(isset($points[$uid])) $points[$uid]=$points[$uid]+$kcspoints[$q]; else $points[$uid]=$kcspoints[$q];
+        }
+        print "<tr><td>$q</td><td>".userlink($user)."</td><td>$user[num]</td></tr>";
+        $p=$user['num'];
+      }
+    }
+    print "</table></td>\n";
+  }
+
         
     }
     
@@ -149,12 +160,20 @@
 	.') inter GROUP BY id ORDER BY num DESC';
   $users=$sql->query($query);
   $pqry=@$sql->result($sql->query("SELECT count(*) FROM posts WHERE date>".($dstr-(dtime($dstr)%86400))." AND date<".($dstr-(dtime($dstr)%86400-86400))),0,0);
+//Check that the report is not day-in-progress.
+  $viewday=$dstr-(dtime($dstr)%86400);
+  $viewcur=0;
+  if(!($curday > $viewday)){ $viewcur=1; }
+
+if(has_perm('view-current-acs') || $viewcur==0){
 	print "$L[TBL] width=\"100%\">
 ".        "    $L[TRh]>
-".        "        $L[TDc] colspan=2>KCS Report for $monthnames[$month] $year</td>
+".        "        $L[TDc] colspan=2>Forum Rankings report for $monthnames[$month] $year</td>
 ".        "    </tr>
 ".        "    $L[TR]>
-$L[TD2l]>".strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
+$L[TD2l] style=\"vertical-align: top\">";
+  if($viewcur==1){ print "<i>Day is currently in progress. Results may vary.</i><br>"; }
+  print strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
 $report=strtoupper($monthnames[$month])." $day<hr style=\"width: 100px; margin-left: 0px;\">Total amount of posts: $pqry<br><br><table cellspacing=0>";
 //Results for posts
  $q=1; $p=-1;
@@ -202,5 +221,15 @@ foreach($points as $usr => $pnts){
 ".        "<textarea style=\"width: 100%; height: 400px;\" readonly=\"readonly\">$report</textarea></td>
 ".        "    </tr>
 ".         $L['TBLend'];
+} else {
+	print "$L[TBL] width=\"100%\">
+".        "    $L[TRh]>
+".        "        $L[TDc]>Forum Rankings report for $monthnames[$month] $year</td>
+".        "    </tr>
+".        "    $L[TR]>
+$L[TD2l]>Results for selected date are unavailable.<br>This may be due to the day being in progress, or a future date has been selected.
+".        "    </tr>
+".         $L['TBLend'];
+}
     pagefooter();
 ?>

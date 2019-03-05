@@ -1,0 +1,1 @@
+INSERT INTO `perm` (`id`, `title`, `description`, `permcat_id`, `permbind_id`) VALUES ('view-current-acs', 'View current ACS Day', 'Enables the user to live preview the current ACS day.', '2', '');

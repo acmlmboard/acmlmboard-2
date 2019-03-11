@@ -26,6 +26,7 @@
         default: $dstr=0;
       }
       $_COOKIE['pass']=packlcookie(unpacklcookie($_COOKIE['pass']),$_POST['ranges']);
+      setcookie('user',$_COOKIE['user'],$dstr);
       setcookie('pass',$_COOKIE['pass'],$dstr);
     }
   }

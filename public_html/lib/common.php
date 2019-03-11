@@ -540,7 +540,7 @@
       
       $fname      = $sql->resultq("SELECT `title` FROM `forums` WHERE `id`='$fid'");
       $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? ": " : "").$onuserlist;
-      
+      $numguests = $numbots = 0;
       //[Scrydan] Changed from the commented code below to save a query.
       $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
      while($chkonline = $sql->fetch($onlineguests))
@@ -554,12 +554,12 @@
         $numguests++;
        }
       }
-      
-     if (checkvar('numguests'))
+
+     if ($numguests>=1)
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if (checkvar('numbots'))
+     if ($numbots>=1)
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }
@@ -655,12 +655,12 @@
         $numguests++;
        }
       }
-      
-     if (isset($numguests))
+
+     if ($numguests>=1)
       {
        $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
       }
-     if (isset($numbots))
+     if ($numbots>=1)
       {
        $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
       }
@@ -676,7 +676,7 @@
       
       $activeusers   = $sql->resultq("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '". (ctime() - 86400) ."'");
       $activethreads = $sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '". (ctime() - 86400) ."'");
-      
+      if(!isset($oldpmsgbox)) $oldpmsgbox=''; //Error catch for logged out users.
       print "
 	     $L[TBL1]>$birthdaybox
            $L[TR]>

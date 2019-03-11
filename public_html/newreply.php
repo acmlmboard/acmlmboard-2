@@ -169,8 +169,7 @@
 ".        "<br><br> 
 "; }
 print 
-        "$L[TBL1]> 
-".        " <form action=newreply.php method=post>
+        " <form action=newreply.php method=post>$L[TBL1]> 
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Reply</td>
 ".           checkvar('valid')."
@@ -202,8 +201,8 @@ print     "  $L[TR]>
                  ".($thread['sticky'] ? "$L[INPc]=unstick id=unstick value=1 ".($post['unstick']?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
-".        " </form>
 ".        "$L[TBLend]
+".        " </form>
 ";
   }elseif($act=='Submit'){
     checknumeric($_POST['nolayout']);

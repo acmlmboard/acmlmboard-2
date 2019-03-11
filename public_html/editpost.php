@@ -102,8 +102,8 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
   pageheader('Edit post',$thread[forum]);
     print "$extjs $top
 ".        "<br><br>
-".        "$L[TBL1]>
 ".        " <form action=editpost.php method=post>
+".        "$L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Edit Post</td>
 ".        "    ".auth_tag();
@@ -133,8 +133,8 @@ print     "  $L[TR]>
                  ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($_POST[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
-".        " </form>
 ".        "$L[TBLend]
+".        " </form>
 ";
   }elseif($act=='Preview'){
     $_POST[message]=stripslashes($_POST[message]);
@@ -163,8 +163,8 @@ print     "  $L[TR]>
 ".        "$L[TBLend]
 ".         threadpost($post,0)."
 ".        "<br>
-".        "$L[TBL1]>
 ".        " <form action=editpost.php method=post>
+".        "$L[TBL1]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Post</td>
 ";
@@ -194,8 +194,8 @@ print     "  $L[TR]>
                  ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
-".        " </form>
 ".        "$L[TBLend]
+".        " </form>
 ";
   }elseif($act=='Submit'){
     $message = $_POST['message'];

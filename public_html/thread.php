@@ -552,8 +552,8 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
     $taglinks=addslashes($taglinks);
 
     $modlinks=
-          "$L[TBL2]>$L[TR2]>
-".        "  <form action=thread.php method=post name=mod>
+          "<form action=thread.php method=post name=mod>
+".        "$L[TBL2]>$L[TR2]>
 ".        "  $L[TD3]>
 ".        "    <span id=moptions>
 ".        "    $opt options:
@@ -610,8 +610,8 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
 ".        "    <input type=hidden name=action value=''>
 ".        "    ".auth_tag("qmod")."
 ".        "  </td>
-".        "  </form>
 ".        "$L[TBLend]
+".        "  </form>
 ";
   }
   if(!isset($userbar)) $userbar="";
@@ -637,8 +637,8 @@ print "$modlinks
       if (!can_view_forum(array('id'=>$post['fid'], 'private'=>$post['fprivate'], 'cprivate'=>$post['cprivate'], 'cat'=>$post['cat']))) continue;
     }
     if(isset($uid) || isset($timeval)){
-      $pthread['id']=$post['tid'];
-      $pthread['title']=$post['ttitle'];
+      $pthread['id']=checkvar('post','tid');
+      $pthread['title']=checkvar('post','ttitle');
     }
     if($post['id']!=$_GET['pin']){
       $post['maxrevision']=$post['revision']; // not pinned, hence the max. revision equals the revision we selected
@@ -702,8 +702,8 @@ print "$modlinks
 
     print "
 ".        "
-".        "$L[TBL1] name=quickreply id=quickreply>
 ".        " <form action=newreply.php method=post>
+".        "$L[TBL1] name=quickreply id=quickreply>
 ".        "  $L[TRh] onclick='togglequickreply();' style='cursor: pointer'>
 ".        "    $L[TDh] colspan=2>".$config['quickreply']."</a></td>
 ";
@@ -733,8 +733,8 @@ print "$modlinks
                 ".($thread['sticky'] ? "$L[INPc]=unstick id=unstick value=1><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
-".        " </form>
 ".        "$L[TBLend]<br>
+".        " </form>
 ";
   }
 

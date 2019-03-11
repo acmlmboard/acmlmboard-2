@@ -21,7 +21,7 @@ require("lib/common.php");
   }
   $id = $r['id'];
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
     if ($id > 0) {
       if ($sql->prepare('DELETE FROM events WHERE id=?',array($id))) {
@@ -63,7 +63,7 @@ $actions = array(
 'editevents.php?action=edit&id='.$event['id']),
   array('title' => 'Delete','href' => 
 'editevents.php?action=del&id='.$event['id'], 
-confirm => true),
+'confirm' => true),
 );
 		
 $data[] = array
@@ -91,7 +91,7 @@ elseif ($r['action']=="edit" || $r['action']=="new") {
 if (!empty($r['act'])) {
       $e =
 request_variables(array('month','day','year','user','private','event_title'));
-$e['user']=$_POST[user];
+$e['user']=$_POST['user'];
 
 
 if ($r['action']=="edit" && $id > 0) {

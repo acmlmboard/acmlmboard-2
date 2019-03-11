@@ -249,7 +249,7 @@ function renderdotrank($posts=0){
  }
     /* OLD HACKISH CODE FOR APRIL 5 */
     $stime=gettimeofday();
-    $h=(($stime[usec]/$rainoff)%600);
+    $h=(($stime['usec']/$rainoff)%600);
     if($h<100){
       $r=255;
       $g=155+$h;

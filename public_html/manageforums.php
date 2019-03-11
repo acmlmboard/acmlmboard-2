@@ -8,7 +8,7 @@ if (!has_perm('edit-forums'))
 }
 
 
-if ($_GET['ajax'])
+if (isset($_GET['ajax']))
 {
 	$ajax = $_GET['ajax'];
 	if ($ajax == 'localmodRow')
@@ -33,7 +33,7 @@ if ($_GET['ajax'])
 
 $error = '';
 
-if ($_POST['savecat'])
+if (isset($_POST['savecat']))
 {
 	// save new/existing category
 	
@@ -68,7 +68,7 @@ if ($_POST['savecat'])
 		die(header('Location: manageforums.php?cid='.$cid));
 	}
 }
-else if ($_POST['delcat'])
+else if (isset($_POST['delcat']))
 {
 	// delete category
 	
@@ -78,7 +78,7 @@ else if ($_POST['delcat'])
 	deleteperms('categories', $cid);
 	die(header('Location: manageforums.php'));
 }
-else if ($_POST['saveforum'])
+else if (isset($_POST['saveforum']))
 {
 	// save new/existing forum
 
@@ -173,7 +173,7 @@ else if ($_POST['saveforum'])
 		die(header('Location: manageforums.php?fid='.$fid));
 	}
 }
-else if ($_POST['delforum'])
+else if (isset($_POST['delforum']))
 {
 	// delete forum
 	
@@ -200,7 +200,7 @@ if ($error)
         noticemsg("Error", $error);
 }
 
-if ($cid = $_GET['cid'])
+if ($cid = checkvar('_GET','cid'))
 {
 	// category editor
 	
@@ -247,7 +247,7 @@ if ($cid = $_GET['cid'])
 	print 	"</form>
 ";
 }
-else if ($fid = $_GET['fid'])
+else if ($fid = checkvar('_GET','fid'))
 {
 	// forum editor
 	
@@ -516,7 +516,7 @@ function permtable($bind, $id)
 		foreach ($perms as $pid => $ptitle)
 		{
 			if ($doinherit) $check = ' disabled="disabled"';
-			else $check = $permdata[$gid][$pid] ? ' checked="checked"':'';
+			else $check = isset($permdata[$gid][$pid]) ? ' checked="checked"':'';
 			
 			$permlist .= "<label>$L[INPc]=\"perm[{$gid}][{$pid}]\" value=1 class=\"perm_{$gid}\"{$check}> {$ptitle}</label> ";
 		}

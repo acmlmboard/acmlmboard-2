@@ -1,6 +1,6 @@
 <?php
   require 'lib/common.php'; 
-  
+
   if(checkvar('_POST','action') == 'Login'){
     $userid=checkuser($_POST['name'],$_POST['pass']);
     if($userid[0]!=0){
@@ -33,8 +33,7 @@
 	pageheader('Login');
 	print $cookiemsg;
 	if(isset($err)) noticemsg("Error", $err);
-	print "$L[TBL1]>
-<form action=login.php method=post>
+	print "<form action=login.php method=post>$L[TBL1]>
 ".         "  $L[TRh]>
 ".         "    $L[TDh] colspan=2>Login</td>
 ".         "  $L[TR]>
@@ -48,7 +47,7 @@
 ".         "  $L[TR1]>
 ".         "    $L[TD]>&nbsp;</td>
 ".         "    $L[TD]>$L[INPs]=action value=Login></td>
-".         " </form>
 ".      "$L[TBLend]
+".         " </form>
 ";
 	pagefooter();

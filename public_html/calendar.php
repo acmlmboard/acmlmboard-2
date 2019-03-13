@@ -67,7 +67,7 @@
     $eventres = $sql->query("SELECT * FROM events e LEFT JOIN users u ON u.id=e.user WHERE year = '$year' AND month = $month");
 
     while ($eventarr = $sql->fetch($eventres)) {
-        $text = $eventarr['event_title']." - ".userlink($eventarr);
+        $text = "<i>".$eventarr['event_title']."</i>".($eventarr['private']?"":" - ".userlink($eventarr));
         $eventtext[$eventarr['day']] = $text;
     }
 

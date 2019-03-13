@@ -540,29 +540,16 @@
       
       $fname      = $sql->resultq("SELECT `title` FROM `forums` WHERE `id`='$fid'");
       $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? ": " : "").$onuserlist;
-      
+      $numguests = $numbots = 0;
       //[Scrydan] Changed from the commented code below to save a query.
-      $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
+      $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE ".(isset($fid)?"":"`lastforum`='$fid' AND ")." `date` > '".(ctime()-300)."'");
      while($chkonline = $sql->fetch($onlineguests))
       {
-      if ($chkonline['bot'] == 1)
-       {
-        $numbots++;
-       }
-      else
-       {
-        $numguests++;
-       }
+       if ($chkonline['bot'] == 1){ $numbots++; } else { $numguests++; }
       }
-      
-     if (checkvar('numguests'))
-      {
-       $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
-      }
-     if (checkvar('numbots'))
-      {
-       $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
-      }
+
+     if ($numguests>=1){ $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": ""); }
+     if ($numbots>=1){   $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": ""); }
 
       print "$L[TBL1]>
                $L[TR1]>
@@ -642,41 +629,19 @@
   
       //[Scrydan] Changed from the commented code below to save a query.
       //NOTE: THIS CODE IS USED TWICE, WE SHOULD FIND A WAY TO REUSE THIS INSTEAD OF ADDING MORE LINES!
-      $onlineguests = $sql->query("SELECT * FROM `guests` WHERE `lastforum`='$fid' AND `date` > '".(ctime()-300)."'");
+     $onlineguests = $sql->query("SELECT * FROM `guests` WHERE ".(isset($fid)?"":"`lastforum`='$fid' AND ")."`date` > '".(ctime()-300)."'");
      $numbots = $numguests = 0; //Initialise to reduce error notices. [Epele]
-     while($chkonline = $sql->fetch($onlineguests))
-      {
-      if ($chkonline['bot'] == 1)
-       {
-        $numbots++;
-       }
-      else
-       {
-        $numguests++;
-       }
-      }
+     while($chkonline = $sql->fetch($onlineguests)){
+      if ($chkonline['bot'] == 1){ $numbots++; } else { $numguests++; }
+     }
+
+     if ($numguests>=1) { $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": ""); }
+     if ($numbots>=1)   { $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": ""); }
       
-     if (isset($numguests))
-      {
-       $onuserlist .= " | $numguests guest".($numguests != 1 ? "s": "");
-      }
-     if (isset($numbots))
-      {
-       $onuserlist .= " | $numbots bot".($numbots != 1 ? "s": "");
-      }
-      
-      /*
-      $numguests  = $sql->resultq("SELECT count(*) FROM `guests` WHERE `lastforum`='$fid' AND `bot`='0' AND `date` > '".(ctime()-300)."'");
-      if($numguests)
-        $onuserlist.=" | $numguests guest".($numguests != 1 ? "s": "");
-      $numbots=$sql->resultq("SELECT count(*) FROM `guests` WHERE `lastforum`='$fid' AND `bot`='1' AND date > '".(ctime()-300)."'");
-      if($numbots)
-        $onuserlist.=" | $numbots bot".($numbots != 1 ? "s": "");
-      */
       
       $activeusers   = $sql->resultq("SELECT COUNT(*) FROM `users` WHERE `lastpost` > '". (ctime() - 86400) ."'");
       $activethreads = $sql->resultq("SELECT COUNT(*) FROM `threads` WHERE `lastdate` > '". (ctime() - 86400) ."'");
-      
+      if(!isset($oldpmsgbox)) $oldpmsgbox=''; //Error catch for logged out users.
       print "
 	     $L[TBL1]>$birthdaybox
            $L[TR]>

@@ -77,15 +77,13 @@ function securityfilter($data) {
   }
   function filterurl($match)
   {
-	if(stripos($match[0],"href")!==false) $src="href";
-	if(stripos($match[0],"src")!==false) $src="src";
+	$src=str_replace(array($match[1],'=','\'','"'),'',$match[0]);
 	return "enc64$src=".base64_encode($match[1]);
   }
   function unfilterurl($match)
   {
-	if(stripos($match[0],"href")!==false) $src="href";
-	if(stripos($match[0],"src")!==false) $src="src";
-	return "$src=".base64_decode($match[1]);
+	$src=str_replace(array($match[1],'=','\'','"','enc64'),'',$match[0]);
+	return "$src=\"".base64_decode($match[1])."\"";
   }
   function makecode64($match)
   {
@@ -229,7 +227,7 @@ function ytube($match){
     $msg=preg_replace_callback("'\[irc\](.*?)\[/irc\]'si",'makeirc',$msg);
     //Url filtering on href= or src=
     $msg=preg_replace_callback('/href=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
-    $msg=preg_replace_callback('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
+    $msg=preg_replace_callback ('/src=["\']?([^"\s\'>]+)["\']?/','filterurl',$msg);
 
     //[blackhole89] - [svg] tag
     $msg=preg_replace_callback("'\[svg ([0-9]+) ([0-9]+)\](.*?)\[/svg\]'si",'makesvg',$msg);
@@ -243,7 +241,7 @@ function ytube($match){
 
     //Unfilter URLs now we've passed the smilies.
     $msg=preg_replace_callback('/enc64href=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
-    $msg=preg_replace_callback('/enc64src=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
+    $msg=preg_replace_callback ('/enc64src=["\']?([^"\s\'>]+)["\']?/','unfilterurl',$msg);
 
     //Relocated here due to conflicts with specific smilies.
     $msg = preg_replace("@(</?(?:table|caption|col|colgroup|thead|tbody|tfoot|tr|th|td|ul|ol|li|div|p|style|link).*?>)\r?\n@si", '$1', $msg);

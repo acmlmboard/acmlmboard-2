@@ -368,9 +368,9 @@ function RenderPageBar($pagebar) {
 //  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 
-    function fieldinputprofile($avatarsize,$max,$field,$userprof){
+    function fieldinputprofile($avatarsize,$max,$field,$userprof=""){
     global $L,$user;
-    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userprof[$field])."\">";
+    return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".str_replace("\"", "&quot;", $userprof)."\">";
 //  return "$L[INPt]=$field size=$avatarsize maxlength=$max value=\"".htmlval($loguser[$field])."\">";
   }
 

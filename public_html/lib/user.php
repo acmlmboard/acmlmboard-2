@@ -100,7 +100,7 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     
     if (!$config["extendedprofile"]) return false;
 
-    if(!$loguser[id]) return false;
+    if(!$loguser['id']) return false;
     if (has_perm_revoked('update-own-extended-profile')) return false;
     if ($uid == $loguser['id'] && has_perm('update-own-extended-profile')) return true;
     

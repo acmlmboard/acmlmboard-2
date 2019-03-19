@@ -393,7 +393,7 @@ if (\$whateverthislongstupidvariable == \$anotherstupidlylongnamedvariable) //Ep
 if($config['extendedprofile'])
 {
 $fieldReq = $sql->query("SELECT * FROM `profileext`
-                       RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
+                       RIGHT JOIN `user_profileext` ON `profileext`.`service` = `user_profileext`.`field_id`
                        WHERE `user_profileext`.`user_id`='$uid'");
   while($pfield = $sql->fetch($fieldReq))
   {

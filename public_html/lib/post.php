@@ -98,7 +98,7 @@ function securityfilter($data) {
   function makecode($match)
   {
 	global $L;
-	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]><td class=\"b cd\" style=\"background: #000;\"><code class=\"prettyprint\" style=\"font-size:9pt;\">".nofilterchar(base64_decode($match[1]))."</code></table>";
+	return "$L[TBL] style=\"width: 90%; min-width: 90%;\">$L[TR]><td class=\"b cd\" style=\"background: #000;\"><code class=\"prettyprint\" style=\"font-size:9pt;white-space: PRE;\">".nofilterchar(base64_decode($match[1]))."</code></table>";
   }
  
   function makeirc($match)

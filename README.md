@@ -1,8 +1,8 @@
 
 # Acmlmboard II
-In this repository you will find the code for Acmlmboard II. This is the version that was forked off for use with the web board that powers Kafuka.
+In this repository you will find the code for Acmlmboard II. This is the version that was forked off for use at Kafuka. Acmlmboard II is the second in a series of web forum software systems originally designed and coded by Acmlm. Over the years it has since been added to and maintained by passionate users and developers.
 
-This software is as-is and has no gurentees.
+This software is as-is and has no guarantees.
 
 Branches
 -------
@@ -37,7 +37,7 @@ These requirements are based on our development environment's specifications. Wh
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
 - MySQL5+/MariaSQL
-- PHP >=v5.6 (old versions may work, but are unsupported.**Note:** As of commit f92315e on develop 5.6 is **REQUIRED** )
+- PHP v5.7+ (old versions may work, but are unsupported. **Note:** PHP 7 support is currently *experimental* )
 - PHP-GD
 - mcrypt and the module for PHP
 - phpmyadmin or DB tool of your choice.

@@ -51,9 +51,9 @@
   {
 	check_token($_POST['auth']);
 	
-	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']&&$targetuserid==$loguser['id']){
+	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']){
 		$passhash=password_hash($_POST['pass'],PASSWORD_DEFAULT);
-		setcookie('pass',packlcookie($passhash),2147483647);
+		if($targetuserid==$loguser['id']) setcookie('pass',packlcookie($passhash),2147483647);
 	}
   }
 

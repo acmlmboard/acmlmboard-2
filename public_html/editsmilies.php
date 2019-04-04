@@ -14,9 +14,9 @@ require("lib/common.php");
 
   if (checkvar('r','action') == "del") {
     unset($r['action']);
-        $smiliey=$sql->fetchp('SELECT * FROM smilies WHERE text=?',array($id));
+        $smiliey=$sql->fetchp('SELECT * FROM smilies WHERE id=?',array($id));
         if (!$id) $pagebar['message'] = "Unable to delete smiley: invalid smiley code.";
-     else if ($sql->prepare('DELETE FROM smilies WHERE text=?',array($id))) {
+     else if ($sql->prepare('DELETE FROM smilies WHERE id=?',array($id))) {
       $pagebar['message'] = "Smiley successfully deleted.";
  }
   }
@@ -46,9 +46,9 @@ while($sm = $sql->fetch($smReq))
 		$pic = $pics[0];
 $actions = array(
   array('title' => 'Edit','href' => 
-'editsmilies.php?action=edit&id='.$sm['text']),
+'editsmilies.php?action=edit&id='.$sm['id']),
   array('title' => 'Delete','href' => 
-'editsmilies.php?action=del&id='.$sm['text'], 
+'editsmilies.php?action=del&id='.$sm['id'], 
 'confirm' => true),
 );
 		
@@ -126,7 +126,7 @@ $pagebar['breadcrumb'] = array(
 
 
 if ($id && $id!=-1) {
-    $t=$sql->fetchp('SELECT * FROM smilies WHERE text=?',array($id));
+    $t=$sql->fetchp('SELECT * FROM smilies WHERE id=?',array($id));
   if (!$t && !$_POST['text']) { noticemsg("Notice", "Invalid smiley code"); pagefooter(); die();
   } else {
 $pagebar['title'] = $t['text'].' Smiley';
@@ -149,7 +149,7 @@ $form = array(
   'action' =>
     urlcreate('editsmilies.php', array(
       'action' => $r['action'],
-      'id' => checkvar('t','text'),
+      'id' => checkvar('t','id'),
     )
     ),
   'method' => 'POST',

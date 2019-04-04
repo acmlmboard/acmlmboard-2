@@ -51,9 +51,9 @@
   {
 	check_token($_POST['auth']);
 	
-	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']&&$targetuserid==$loguser['id']){
+	if ($_POST['pass']!='' && $_POST['pass']==$_POST['pass2']){
 		$passhash=password_hash($_POST['pass'],PASSWORD_DEFAULT);
-		setcookie('pass',packlcookie($passhash),2147483647);
+		if($targetuserid==$loguser['id']) setcookie('pass',packlcookie($passhash),2147483647);
 	}
   }
 
@@ -140,27 +140,27 @@
     if($_POST['sex']>2)
       $_POST['sex']=2;
 
-    $pass=$_POST[pass];
-    if(!strlen($_POST[pass2])) $pass="";
-    $tztotal=$_POST[tzoffH]*3600+$_POST[tzoffM]*60*($_POST[tzoffH]<0?-1:1);
+    $pass=$_POST['pass'];
+    if(!strlen($_POST['pass2'])) $pass="";
+    $tztotal=$_POST['tzoffH']*3600+$_POST['tzoffM']*60*($_POST['tzoffH']<0?-1:1);
     //Validate birthday values.
-    if(!$_POST[birthM] || !$_POST[birthD]) //Reject if any are missing.
+    if(!$_POST['birthM'] || !$_POST['birthD']) //Reject if any are missing.
       $birthday=-1;
     else {
-      if(!is_numeric($_POST[birthM]) || !is_numeric($_POST[birthD])) //Reject if not numeric.
+      if(!is_numeric($_POST['birthM']) || !is_numeric($_POST['birthD'])) //Reject if not numeric.
         $birthday=-1;
     }
     if ($_POST['birthM'] > 12 || $_POST['birthD'] > 31) // fixes a small bug where if the fields are above a certain value, the profile fails to load
     $birthday = -1;
-    $year=$_POST[birthY];
-    if(!$_POST[birthY] || !is_numeric($_POST[birthY])) $year=-1;
-    if($birthday!=-1 && $_POST[birthM]!="" && $_POST[birthD]!="")
-      $birthday=str_pad($_POST[birthM],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST[birthD],2,"0",STR_PAD_LEFT).'-'.$year;
+    $year=$_POST['birthY'];
+    if(!$_POST['birthY'] || !is_numeric($_POST['birthY'])) $year=-1;
+    if(checkvar('birthday')!=-1 && $_POST['birthM']!="" && $_POST['birthD']!="")
+      $birthday=str_pad($_POST['birthM'],2,"0",STR_PAD_LEFT).'-'.str_pad($_POST['birthD'],2,"0",STR_PAD_LEFT).'-'.$year;
     else
       $birthday=-1;
 
-    $dateformat=($_POST[presetdate]?$_POST[presetdate]:$_POST[dateformat]);
-    $timeformat=($_POST[presettime]?$_POST[presettime]:$_POST[timeformat]);
+    $dateformat=($_POST['presetdate']?$_POST['presetdate']:$_POST['dateformat']);
+    $timeformat=($_POST['presettime']?$_POST['presettime']:$_POST['timeformat']);
 
     if (has_perm("edit-users")) {
       
@@ -213,7 +213,7 @@
           while ($allfieldsgquery = $sql->fetch($qallfields))
           {
 
-              $pdata = addslashes($_POST[$allfieldsgquery['id']]);
+              $pdata = addslashes($_POST[$allfieldsgquery['service']]);
               
               if($pdata)
               {
@@ -252,13 +252,13 @@
           if ($sql->prepare('DELETE FROM `user_profileext` WHERE user_id=?',array($targetuserid))) {} //Until multiples of each filed are enabled, wipe the slate.
           while ($allfieldsgquery = $sql->fetch($qallfields))
           {
-              if (substr(setfield($allfieldsgquery['id']), -3) != "=''")//Should be replated with a better method.
+              if (substr(setfield($allfieldsgquery['service']), -3) != "=''")//Should be replated with a better method.
               {
-                $pdata = addslashes($_POST[$allfieldsgquery['id']]);
+                $pdata = addslashes($_POST[$allfieldsgquery['service']]);
                 if (      $sql->prepare('INSERT INTO `user_profileext` SET
                 user_id=?,field_id=?,data=? ;', array(
                 $targetuserid,
-                $allfieldsgquery['id'],
+                $allfieldsgquery['service'],
                 $pdata,
                 )
                 )) {}
@@ -430,7 +430,7 @@ if (has_perm("edit-users"))
 if(checkcextendedprofile($targetuserid))
 {
   $fieldReq = $sql->query("SELECT * FROM `profileext`
-                         RIGHT JOIN `user_profileext` ON `profileext`.`id` = `user_profileext`.`field_id`
+                         RIGHT JOIN `user_profileext` ON `profileext`.`service` = `user_profileext`.`field_id`
                          WHERE `user_profileext`.`user_id`='$targetuserid'");
   $userprof = array();
   while($pfield = $sql->fetch($fieldReq))
@@ -441,7 +441,8 @@ if(checkcextendedprofile($targetuserid))
   $qallfields = $sql->query("SELECT * FROM `profileext`");
   while ($allfieldsgquery = $sql->fetch($qallfields))
   { 
-    print fieldrow($allfieldsgquery['title']."<br /><small>".$allfieldsgquery['description']." (IE: <b>".$allfieldsgquery['example']."</b>)</small>"    ,fieldinputprofile(40,200,$allfieldsgquery['id'],$userprof   ));
+    $service=$allfieldsgquery['service'];
+    print fieldrow($allfieldsgquery['title']."<br /><small>".$allfieldsgquery['description']." (IE: <b>".$allfieldsgquery['example']."</b>)</small>"    ,fieldinputprofile(40,200,$service,checkvar('userprof',$service) ));
 
   }
 

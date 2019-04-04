@@ -42,10 +42,10 @@ while($sp = $sql->fetch($spReq))
 {
 $actions = array(
   array('title' => 'Edit','href' => 
-'editspiders.php?action=edit&id='.$sp['bot_name']),
+'editspiders.php?action=edit&id='.$sp['id']),
   array('title' => 'Delete','href' => 
-'editspiders.php?action=del&id='.$sp['bot_name'], 
-confirm => true),
+'editspiders.php?action=del&id='.$sp['id'], 
+'confirm' => true),
 );
 		
 $data[] = array
@@ -67,7 +67,7 @@ RenderTable($data, $headers);
 elseif ($r['action']=="edit" || $r['action']=="new") {
 if (!empty($r['act'])) {
       $s =
-request_variables(array('bot_name','bot_agent'));
+request_variables(array('bot_name','bot_agent','id'));
 
 
 if ($r['action']=="edit" && $id) {
@@ -78,7 +78,7 @@ if (empty($s['bot_name']) || empty($s['bot_agent'])) {
 } else {
 
 if(      $sql->prepare('UPDATE robots SET 
-bot_agent=?, bot_name=? WHERE bot_name=?;', array(
+bot_agent=?, bot_name=? WHERE id=?;', array(
 $s['bot_agent'], $s['bot_name'],
 $id,
 )
@@ -118,7 +118,7 @@ $pagebar['breadcrumb'] = array(
 
 
 if ($id) {
-    $t=$sql->fetchp('SELECT * FROM robots WHERE bot_name=?',array($id));
+    $t=$sql->fetchp('SELECT * FROM robots WHERE id=?',array($id));
   if (!$t && !$_POST['bot_name']) { noticemsg("Notice", "Invalid spider name"); pagefooter(); die();
   } else {
 $pagebar['title'] = $t['bot_name'];
@@ -144,7 +144,7 @@ $form = array(
   'action' =>
     urlcreate('editspiders.php', array(
       'action' => $r['action'],
-      'id' => $t['bot_name'],
+      'id' => $t['id'],
     )
     ),
   'method' => 'POST',

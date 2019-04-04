@@ -3,18 +3,18 @@
 
 require("lib/common.php");
 
-  $r = request_variables(array('id','action','act'));
+  $r = request_variables(array('service','action','act'));
   $pagebar = array();
   if($config['extendedprofile']==0) error("Feature Disabled","Extended profile support is not enabled.<br> <a href=./>Back to main</a>");
   if(!has_perm('edit-profileext')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
   pageheader("Edit Extended Profile Fields");
 
-  $id = $r['id'];
+  $id = $r['service'];
 
   if ($r['action'] == "del") {
     unset($r['action']);
-        $profileext=$sql->fetchp('SELECT * FROM profileext WHERE id=?',array($id));
+        $profileext=$sql->fetchp('SELECT * FROM profileext WHERE service=?',array($id));
         if (!$id) $pagebar['message'] = "Unable to delete extended profile field: invalid extended profile field ID.";
      else if ($sql->prepare('DELETE FROM profileext WHERE id=?',array($id))) {
       $pagebar['message'] = "Extended profile field successfully deleted.";
@@ -26,7 +26,7 @@ require("lib/common.php");
 
 $headers = array
 (
-	"id" => array //Entry key is used in $data to bind fields
+	"service" => array //Entry key is used in $data to bind fields
 	(
 		"caption" => "ID",
 		"width" => "32px",
@@ -51,17 +51,17 @@ while($exf = $sql->fetch($exfReq))
 {
 $actions = array(
   array('title' => 'Edit','href' => 
-'editprofileext.php?action=edit&id='.$exf['id']),
+'editprofileext.php?action=edit&service='.$exf['service']),
   array('title' => 'Delete','href' => 
-'editprofileext.php?action=del&id='.$exf['id'], 
-confirm => true),
+'editprofileext.php?action=del&service='.$exf['service'], 
+'confirm' => true),
 );
 	
 $format = array("%%%VAL%%%", "<", ">");
 $format2 = array("<b><i>%%%VAL%%%</i></b>","&lt;","&gt;"); 	
 $data[] = array
 		(
-			"id" => $exf['id'],
+			"id" => $exf['service'],
 			"title" => str_replace("%%%VAL%%%", "<b><i>%%%VAL%%%</i></b>", $exf['title']),
 			"sortorder" => $exf['sortorder'],
 			"fmt" => str_replace($format, $format2, $exf['fmt']),
@@ -86,19 +86,19 @@ RenderTable($data, $headers);
 elseif ($r['action']=="edit" || $r['action']=="new") {
 if (!empty($r['act'])) {
       $s =
-request_variables(array('id','title','sortorder','fmt','description','icon','validation','example','extrafield','parser',));
+request_variables(array('service','title','sortorder','fmt','description','icon','validation','example','extrafield','parser',));
 
 
 if ($r['action']=="edit" && $id) {
 
-if (empty($s['id']) || empty($s['title']) || empty($s['fmt']) || empty($s['description']) || empty($s['validation']) || empty($s['example'])) {
+if (empty($s['service']) || empty($s['title']) || empty($s['fmt']) || empty($s['description']) || empty($s['validation']) || empty($s['example'])) {
       $pagebar['message'] = "The ID, title, sortorder, format, description, validation, example, and/or extra field for this extended profile field cannot be empty.";
 
 } else {
 
 if(      $sql->prepare('UPDATE profileext SET 
-id=?, title=?, sortorder=?, fmt=?, description=?, icon=?, validation=?, example=?, extrafield=?, parser=? WHERE id=?;', array(
-$s['id'], $s['title'], $s['sortorder'], $s['fmt'], $s['description'], $s['icon'], $s['validation'], $s['example'], $s['extrafield'], $s['parser'],
+service=?, title=?, sortorder=?, fmt=?, description=?, icon=?, validation=?, example=?, extrafield=?, parser=? WHERE service=?;', array(
+$s['service'], $s['title'], $s['sortorder'], $s['fmt'], $s['description'], $s['icon'], $s['validation'], $s['example'], $s['extrafield'], $s['parser'],
 $id,
 )
 )){
@@ -113,13 +113,13 @@ else {
 }
 
 elseif ($r['action']=="new"){
-if (empty($s['id']) || empty($s['title']) || empty($s['fmt']) || empty($s['description']) || empty($s['validation']) || empty($s['example'])) {
+if (empty($s['service']) || empty($s['title']) || empty($s['fmt']) || empty($s['description']) || empty($s['validation']) || empty($s['example'])) {
       $pagebar['message'] = "The ID, title, sortorder, format, description, validation, example, and/or extra field for this extended profile field cannot be empty.";
 
 } else {
 if(      $sql->prepare('INSERT INTO profileext SET 
-id=?, title=?, sortorder=?, fmt=?, description=?, icon=?, validation=?, example=?, extrafield=?, parser=? ;', array(
-$s['id'], $s['title'], $s['sortorder'], $s['fmt'], $s['description'], $s['icon'], $s['validation'], $s['example'], $s['extrafield'], $s['parser'],
+service=?, title=?, sortorder=?, fmt=?, description=?, icon=?, validation=?, example=?, extrafield=?, parser=? ;', array(
+$s['service'], $s['title'], $s['sortorder'], $s['fmt'], $s['description'], $s['icon'], $s['validation'], $s['example'], $s['extrafield'], $s['parser'],
 )
 )) {
 $r['action'] = "edit";
@@ -137,8 +137,8 @@ $pagebar['breadcrumb'] = array(
 
 
 if ($id) {
-    $t=$sql->fetchp('SELECT * FROM profileext WHERE id=?',array($id));
-  if (!$t && !$_POST['id']) { noticemsg("Notice", "Invalid extended profile field ID"); pagefooter(); die();
+    $t=$sql->fetchp('SELECT * FROM profileext WHERE service=?',array($id));
+  if (!$t && !$_POST['service']) { noticemsg("Notice", "Invalid extended profile field ID"); pagefooter(); die();
   } else {
 $pagebar['title'] = $t['title'];
 $pagebar['actions'] = array(
@@ -160,7 +160,7 @@ $form = array(
   'action' =>
     urlcreate('editprofileext.php', array(
       'action' => $r['action'],
-      'id' => $t['id'],
+      'service' => $t['service'],
     )
     ),
   'method' => 'POST',
@@ -168,12 +168,12 @@ $form = array(
     'metadata' => array(
       'title' => 'Extended Profile Field Metadata',
       'fields' => array(
-        'id' => array(
-          'title' => 'ID',
+        'service' => array(
+          'title' => 'Service ID',
           'type' => 'text',
           'length' => 60,
           'size' => 40,
-'value' => $t['id'],
+'value' => $t['service'],
         ),
         'title' => array(
           'title' => 'Title',

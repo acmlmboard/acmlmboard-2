@@ -77,7 +77,7 @@
   if(isset($err)){
     noticemsg("Notice", $err);
   }
-  if(isset($linkex)){ $ajax="&x_ajax=1"; } else { $ajax="?x_ajax=1"; }
+  if(isset($lnkex)){ $ajax="&x_ajax=1"; } else { $ajax="?x_ajax=1"; }
   print "<script language=\"javascript\">
 	function edit(av_id, av_lab, av_url)
 	{

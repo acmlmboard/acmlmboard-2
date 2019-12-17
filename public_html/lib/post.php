@@ -174,7 +174,7 @@ function securityfilter($data) {
 
 function ytube($match){
   $msg=$match[1];
-  $msg=str_replace(array("http://","https://","m.youtube.com/","youtube.com/","watch?","youtu.be/","embed/"),"",$msg);
+  $msg=str_replace(array("http://","https://","www.youtube.com/","m.youtube.com/","youtube.com/","watch?","youtu.be/","embed/"),"",$msg);
   $msg=str_replace("?","&",$msg);
   $vars=explode("&",$msg);
   $tid='';

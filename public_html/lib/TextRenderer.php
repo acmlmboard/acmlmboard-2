@@ -28,7 +28,7 @@ SPECIAL CHARACTER LIST:
 \x19 [X] [Y]: Set cursor to X,Y in characters - 16-bit words
 */
 
-function RenderText($Text, $WidthPixels = 1048576) {/*
+function RenderText($Text, $WidthPixels = 1048576) {
 	$CharacterSheets = array(Image::LoadPNG("./gfx/fonts/defaultf.png"), Image::LoadPNG("./gfx/fonts/tempredf.png"), 
 							 Image::LoadPNG("./gfx/fonts/large.png"));
 
@@ -40,8 +40,8 @@ function RenderText($Text, $WidthPixels = 1048576) {/*
 	$Sheet = $CharacterSheets[0];
 
 	for ($StringIndex = 0; $StringIndex < strlen($Text); $StringIndex++) {
-		if (in_array($Text{$StringIndex}, $SheetCodes)) {
-			$Sheet = $CharacterSheets[ord($Text{$StringIndex}) - ord($SheetCodes[0])];
+		if (in_array($Text[$StringIndex], $SheetCodes)) {
+			$Sheet = $CharacterSheets[ord($Text[$StringIndex]) - ord($SheetCodes[0])];
 			break;
 		}
 	}
@@ -54,27 +54,27 @@ function RenderText($Text, $WidthPixels = 1048576) {/*
 	$WordIndex = 0;
 
 	for($StringIndex = 0; $StringIndex < strlen($Text); $StringIndex++) {
-		switch(ord($Text{$StringIndex})) {
+		switch(ord($Text[$StringIndex])) {
 			case 0x20:
 				$WordIndex++;
-				continue;
+				break;
 			case 0x17:
 			case 0x19:
-				$Words[$WordIndex].=$Text{$StringIndex};
-				$Words[$WordIndex].=$Text{$StringIndex + 1};
-				$Words[$WordIndex].=$Text{$StringIndex + 2};
-				$Words[$WordIndex].=$Text{$StringIndex + 3};
-				$Words[$WordIndex].=$Text{$StringIndex + 4};
+				$Words[$WordIndex].=$Text[$StringIndex];
+				$Words[$WordIndex].=$Text[$StringIndex + 1];
+				$Words[$WordIndex].=$Text[$StringIndex + 2];
+				$Words[$WordIndex].=$Text[$StringIndex + 3];
+				$Words[$WordIndex].=$Text[$StringIndex + 4];
 
 				$StringIndex += 4;
-				continue;
+				break;
 			case 0x18:
-				$Words[$WordIndex].=$Text{$StringIndex};
-				$Words[$WordIndex].=$Text{$StringIndex + 1};
+				$Words[$WordIndex].=$Text[$StringIndex];
+				$Words[$WordIndex].=$Text[$StringIndex + 1];
 				$StringIndex ++;
-				continue;
+				break;
 			default:
-				$Words[$WordIndex].=$Text{$StringIndex};
+				$Words[$WordIndex].=$Text[$StringIndex];
 		}
 	}
 
@@ -95,7 +95,7 @@ function RenderText($Text, $WidthPixels = 1048576) {/*
 
 		$WordWidth = 0;
 		for ($StringIndex = 0; $StringIndex < strlen($Word); $StringIndex++) {
-			$WordWidth += $CharacterWidths[$CurrentSheet][ord($Word{$StringIndex})];
+			$WordWidth += $CharacterWidths[$CurrentSheet][ord($Word[$StringIndex])];
 		}
 
 		if ($DrawX + $WordWidth >= $WidthPixels && $DrawX > 0) {
@@ -106,11 +106,11 @@ function RenderText($Text, $WidthPixels = 1048576) {/*
 		}
 
 		for ($StringIndex = 0; $StringIndex < strlen($Word); $StringIndex++) {	
-			$CharacterCode = ord($Word{$StringIndex});
+			$CharacterCode = ord($Word[$StringIndex]);
 
-			if (in_array($Word{$StringIndex}, $SheetCodes)) {
+			if (in_array($Word[$StringIndex], $SheetCodes)) {
 				$CurrentSheet = $CharacterCode - ord($SheetCodes[0]);
-				continue;
+				break;
 			}	
 
 			if ($CharacterCode == 0x0A || $DrawX >= $WidthPixels) { //Special Character and extra-long-word support
@@ -118,63 +118,63 @@ function RenderText($Text, $WidthPixels = 1048576) {/*
 				$DrawY = $DrawnHeight + $LineSpacing;
 				$DrawnHeight = 0;
 				$DrawHeightAdd = 0;
-				continue;
+				break;
 			}
 
 			switch($CharacterCode) { //Special Character support
 				case 0x0B:
 					$DrawX += $CharacterSheets[$CurrentSheet]->Size[0] / 16;
-					continue;
+					break;
 				case 0x0C:
 					$DrawX -= $CharacterSheets[$CurrentSheet]->Size[0] / 16;
-					continue;
+					break;
 				case 0x0D:
 					$DrawX = 0;
-					continue;
+					break;
 				case 0x0E:
 					$DrawX++;
-					continue;
+					break;
 				case 0x0F:
 					$DrawX--;
-					continue;
+					break;
 				case 0x10:
 					$DrawY++;
-					continue;
+					break;
 				case 0x11:
 					$DrawY--;
-					continue;
+					break;
 				case 0x12:
 					$DrawY += ($LineSpacing + $CharacterSheets[$CurrentSheet]->Size[1] / 16);
-					continue;
+					break;
 				case 0x13:
 					$DrawY -= ($LineSpacing + $CharacterSheets[$CurrentSheet]->Size[1] / 16);
-					continue;
+					break;
 				case 0x14:
 					$StoredX = $DrawX;
 					$StoredY = $DrawY;
-					continue;
+					break;
 				case 0x15:
 					$DrawX = $StoredX;
 					$DrawY = $StoredY;
-					continue;
+					break;
 				case 0x16:
 					$DrawX = 0;
 					$DrawY = 0;
-					continue;
+					break;
 				case 0x17:
-					$DrawX = (ord($Word{$StringIndex + 1}) << 8) + ord($Word{$StringIndex + 2});
-					$DrawY = (ord($Word{$StringIndex + 3}) << 8) + ord($Word{$StringIndex + 4});
+					$DrawX = (ord($Word[$StringIndex + 1]) << 8) + ord($Word[$StringIndex + 2]);
+					$DrawY = (ord($Word[$StringIndex + 3]) << 8) + ord($Word[$StringIndex + 4]);
 					$StringIndex += 4;
-					continue;
+					break;
 				case 0x18:
-					$LineSpacing = ord($Word{$StringIndex + 1});
+					$LineSpacing = ord($Word[$StringIndex + 1]);
 					$StringIndex++;
-					continue;
+					break;
 				case 0x19:
-					$DrawX = (ord($Word{$StringIndex + 1}) << 8) + ord($Word{$StringIndex + 2}) * ($CharacterSheets[$CurrentSheet]->Size[0] / 16);
-					$DrawY = (ord($Word{$StringIndex + 3}) << 8) + ord($Word{$StringIndex + 4}) * ($CharacterSheets[$CurrentSheet]->Size[1] / 16);
+					$DrawX = (ord($Word[$StringIndex + 1]) << 8) + ord($Word[$StringIndex + 2]) * ($CharacterSheets[$CurrentSheet]->Size[0] / 16);
+					$DrawY = (ord($Word[$StringIndex + 3]) << 8) + ord($Word[$StringIndex + 4]) * ($CharacterSheets[$CurrentSheet]->Size[1] / 16);
 					$StringIndex += 4;
-					continue;
+					break;
 				default:
 			}		
 
@@ -205,8 +205,7 @@ function RenderText($Text, $WidthPixels = 1048576) {/*
 	foreach($CharacterSheets as $Sheet)
 		$Sheet->Dispose();
 
-	return $Image;*/
-return 0; //Broken for now.
+	return $Image;
 }
 
 function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY, $CharWidth) {

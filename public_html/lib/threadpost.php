@@ -89,7 +89,7 @@ function usegfxnums()
      case 1:
       $postheaderrow = $postlinks = "";
 
-      if($pthread['id'])
+      if(isset($pthread['id']))
         $threadlink=", in <a href=\"thread.php?id={$pthread['id']}\">".htmlval($pthread['title'])."</a>";
 
       if($post['id'])

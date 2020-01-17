@@ -28,7 +28,7 @@ SPECIAL CHARACTER LIST:
 \x19 [X] [Y]: Set cursor to X,Y in characters - 16-bit words
 */
 
-function RenderText($Text, $WidthPixels = 1048576) {
+function RenderText($Text, $WidthPixels = 1048576) {/*
 	$CharacterSheets = array(Image::LoadPNG("./gfx/fonts/defaultf.png"), Image::LoadPNG("./gfx/fonts/tempredf.png"), 
 							 Image::LoadPNG("./gfx/fonts/large.png"));
 
@@ -205,7 +205,8 @@ function RenderText($Text, $WidthPixels = 1048576) {
 	foreach($CharacterSheets as $Sheet)
 		$Sheet->Dispose();
 
-	return $Image;
+	return $Image;*/
+return 0; //Broken for now.
 }
 
 function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY, $CharWidth) {
@@ -219,8 +220,8 @@ function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY, $CharWidt
 function loadvwfdata($Filename) {
 	$Data = array();
 	$Str = file_get_contents($Filename);
-	for ($x = 0; $x < strlen($Str); $x++)
-		$Data[$x] = ord($Str{$x}) - ord("A");
+//	for ($x = 0; $x < strlen($Str); $x++)
+//		$Data[$x] = ord($Str{$x}) - ord("A");
 	return $Data;
 }
 

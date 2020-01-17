@@ -3,16 +3,18 @@
 
  function encryptpwd($pass){
     global $config;
-    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+    /*$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
     $iv      = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-    return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $config['ckey'], $pass, MCRYPT_MODE_ECB, $iv)));
+    return trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $config['ckey'], $pass, MCRYPT_MODE_ECB, $iv)));*/
+    return trim(base64_encode($pass));
   }
 
   function decryptpwd($pass){
     global $config;
-    $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
+    /*$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
     $iv      = mcrypt_create_iv($iv_size, MCRYPT_RAND);
-    return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $config['ckey'], base64_decode($pass), MCRYPT_MODE_ECB, $iv));
+    return trim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $config['ckey'], base64_decode($pass), MCRYPT_MODE_ECB, $iv));*/
+    return trim(base64_decode($pass));
   }
 
   function packlcookie($pass){

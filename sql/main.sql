@@ -1889,3 +1889,10 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1;
 /* Password Field Update */
 
 ALTER TABLE `users` CHANGE `pass` `pass` VARCHAR(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL;
+/*Smiles and profile update */
+
+ALTER TABLE `smilies` ADD `id` INT(16) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+ALTER TABLE `robots` ADD `id` INT(16) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+
+# This is an alteration for future-proofing purposes.
+ALTER TABLE `profileext` CHANGE `id` `service` VARCHAR(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';

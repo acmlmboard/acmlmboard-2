@@ -2,15 +2,17 @@
 # Acmlmboard II
 In this repository you will find the code for Acmlmboard II. This is the version that was forked off for use at Kafuka. Acmlmboard II is the second in a series of web forum software systems originally designed and coded by Acmlm. Over the years it has since been added to and maintained by passionate users and developers.
 
-This software is as-is and has no guarantees.
+This software is as-is and has no guarantees. You may find some advice if you ask at Kafuka's forums or IRC channels. It is strongly recommended you know your way around PHP and MySQL before continuing as this is older software that is 'less than user friendly' at times.
 
 Branches
 -------
-**develop** - This is the main branch. It is the most up to date and usually stable. Since this is also the development branch it is recommended you test before using on live.
+**stable** - This is the stable development branch. It is the most up to date, and generally stable enough to work fine without major problems. The branch contains a pretty much 'known working' snapshot of the software which we have tested in advance and use in production. Since this is also the development branch it is recommended you test it before using in your own production enviroment. This was created during our process to update to PHP7 and supersedes our develop branch. 
 
-**stable** - This is the branch is a snapshot of develop where most things are working and should install and run without any major issues.
+**master** - This is the branch is a snapshot of develop where most things are working and should install and run without any major issues.
 
-**experimental** - This branch was started be xenons and includes the start of fundamental improvements for the board. If you fork the board I would recommend starting here and building on it.
+**develop** - This is the main branch of developement. Currently is is extremly **UNSTABLE** and should not be used in production. We are currently in the process of adding PHP 7 support.
+
+**experimental** - This branch was started by xenons and includes the start of fundamental improvements for the board. If you fork the board for extensive development I would recommend starting here and building on it.
 
 Tags
 -------
@@ -22,7 +24,7 @@ Tags
 
 **v2.5.2** - Point Release #2
 
-**v2.5.3** - Point Release #3; Includes all fixes that were in the kafuka branch that did not make it to public. Newly genned main.sql.
+**v2.5.3** - Point Release #3; Includes all fixes that were in the kafuka branch that did not make it to public. Newly genned/rebased main.sql.
 
 **v2.5.4** - Point Release #4; Lots of minor fixes and enhancements. Stable updated to 2.5.4.
 
@@ -36,7 +38,7 @@ Requirements
 These requirements are based on our development environment's specifications. While older versions may work since the code is mostly wrote for 2005, our new components take advantage of more modern functioning. It is recommended you use the requirements provided for best results.
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
-- MySQL5+/MariaSQL
+- MySQL5+/MariaSQL (strict mode disabled)
 - PHP v5.7+ (old versions may work, but are unsupported. **Note:** PHP 7 support is currently *experimental* )
 - PHP-GD
 - mcrypt and the module for PHP
@@ -45,15 +47,15 @@ These requirements are based on our development environment's specifications. Wh
 Installation
 ############
 1. Clone the git repository. Make sure you are on **develop** (or download the tarball and extract it)
-2. If you haven't done so make a MySQL DB and create a MySQL user for the board to use. It is **required** you provide this use CREATE TEMPORARY TABLE privilege or the tag generator will not work.
-3. change to the public_html dir. You may need to change the permissions to allow your httpd to read the board. It is recommended to change the owner and group to your httpd's user account/group. Make sure that themes_serial.txt is writable by the server. This file is the cache used for the theme system. Make sure the directories ./userpics and gfx/tags are present and are writable by the httpd as well. 
-4. Using mysql (or phpmyadmin) you will need to load the schema + basic data (sql/main.sql) into your database. (mysql -u **dbuser** -p **database** < main.sql). 
-5. If there are any optional features you wish to use (sprites, shop/items, more ranks, ip location, and more [See "Optional Databases"] you may load them now the same way you loading the main database.
+2. If you haven't done so, create a MySQL DB and create a MySQL user for the board to use. It is **required** that you provide the CREATE TEMPORARY TABLE privilege or the tag generator will not work.
+3. Change to the public_html dir. You may need to change the permissions to allow your httpd to read the board files/directories. It is recommended to change the owner and group to your apache/httpd's user account/group. Make sure that themes_serial.txt is writable by the server. This file is the cache used for the theme system. Make sure the directories ./userpics and gfx/tags are present and are writable by the apache/httpd as well. (**Note:** if you install to user acmlmboard on a debian system, the chown will be "chown acmlmboard:www_data") As a general guide, chmod folders to 755 and files to 644. With Apache+MPM-ITK (or PHP-FPM), you can also assign the script to run as the user/group you want.
+4. Using mysql a.k.a. The MySQL Command Line Interface (or GUI tool such as phpMyAdmin) you will need to load the schema + basic data (sql/main.sql) into your database. (mysql -u **dbuser** -p **database** < main.sql). 
+5. If there are any optional features you wish to use (sprites, shop/items, more ranks, ip location, and more [See "Optional Databases"] you may load them afterwards using the same way you loading the main database.
 6. In the public_html/lib/ dir you will find the location of the board configuration. copy or rename **config.sample.php** to **config.php**. Edit it in your favorite editor. See **Configuring ABII** for more details
 7. Open up the board in your browser. Register your first user. In the future this user will automatically become **Root Administrator** via an interactive installer. 
-8. Open up phpmyadmin (or other mysql tool) and open up the user table. Change your login's group_id to 6 and power to 4. This will make your account a member of the Root Admin group (6) and the legacy power level to 4 (root).
-9. Use the Manage Forums link at the top to make come catagories and some forums.
-10. The Permissions system, hidden forums, and other actions will have to be manually set in the database. Please see **Managing Permissions Manually**
+8. **OPTIONAL/LEGACY STEP FOR OLDER VERSIONS**Open up your MySQL tool of choice, and open up the user table. Change your login's group_id to 6 and power to 4. This will make your account a member of the Root Admin group (6) and the legacy power level to 4 (root). (**NOTE:** As stated this is only needed for version between 2.5.1 and 2.5.2, however if you run into a strange permissions issue as a Root Administrator change this setting and if it work let the development team know.)
+9. Use the Manage Forums link at the top to make create some catagories and some forums.
+10. The Permissions system, hidden forums, and other actions will have to be manually set in the database. Please see **Managing Permissions Manually** (Coming soon)
 
 Optional Databases
 ##################

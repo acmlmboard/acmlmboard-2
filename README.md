@@ -6,9 +6,11 @@ This software is as-is and has no guarantees. You may find some advice if you as
 
 Branches
 -------
-**develop** - This is the main branch of developement. It is the most up to date, and generally stable enough to work fine without major problems. The branch contains a pretty much 'known working' snapshot of the software which we have tested in advance and use in production. Since this is also the development branch it is recommended you test it before using in your own production enviroment.
+**stable** - This is the stable development branch. It is the most up to date, and generally stable enough to work fine without major problems. The branch contains a pretty much 'known working' snapshot of the software which we have tested in advance and use in production. Since this is also the development branch it is recommended you test it before using in your own production enviroment. This was created during our process to update to PHP7 and supersedes our develop branch. 
 
-**stable** - This is the branch is a snapshot of develop where most things are working and should install and run without any major issues.
+**master** - This is the branch is a snapshot of develop where most things are working and should install and run without any major issues.
+
+**develop** - This is the main branch of developement. Currently is is extremly **UNSTABLE** and should not be used in production. We are currently in the process of adding PHP 7 support.
 
 **experimental** - This branch was started by xenons and includes the start of fundamental improvements for the board. If you fork the board for extensive development I would recommend starting here and building on it.
 Tags

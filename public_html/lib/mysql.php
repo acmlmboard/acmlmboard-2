@@ -1,4 +1,7 @@
 <?php
+if (!extension_loaded('mysqli')) { //Catch function for if mysqli is not supported. Prevents leaking of sql login.
+    die('Fatal Error: mysqli has failed to initialise. ');
+}
 class mysql {
 	public $queries = 0;
 	public $rowsf = 0;

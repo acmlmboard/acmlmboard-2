@@ -54,7 +54,7 @@
    }
   
   $flocalmod=$sql->fetchq("SELECT `uid` FROM `forummods`");
-  if($loguser['id'] == $flocalmod['uid'])
+  if(checkvar('loguser','id') == checkvar('flocalmod','uid'))
    {
     $loguser['modforums']=array();
     $modf=$sql->query("SELECT `fid` FROM `forummods` WHERE `uid`='$loguser[id]'");

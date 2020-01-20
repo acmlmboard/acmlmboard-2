@@ -49,7 +49,7 @@
         }
       }
     } else { $err="Bad id"; }
-  if(!$err){ $err="Mood avatar updated."; }
+  if(!isset($err)){ $err="Mood avatar updated."; }
   }
   if(isset($_POST['id']) && $_POST['a']=="Delete"){
     if(is_numeric($_POST['id'])){

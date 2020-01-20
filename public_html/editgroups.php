@@ -6,7 +6,7 @@
 	error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
   }
   
-  $act = $_GET['act'];
+  $act = checkvar('_GET','act');
   $errmsg = '';
   $caneditperms = has_perm('edit-permissions');
   

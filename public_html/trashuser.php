@@ -213,7 +213,7 @@ $L[TBL2]>
 	print "
 	$L[TR1]>
 		$L[TD1] colspan=9>
-			$L[INPs]='dotrash' value='Trash selected'> - Set group to: ".fieldselect("destgroup", $user['group_id'], $bannedgroups)."
+			$L[INPs]='dotrash' value='Trash selected'> - Set group to: ".fieldselect("destgroup", checkvar('user','group_id'), $bannedgroups)."
 			".auth_tag(TOKEN_USERDEL)."
 		</td>
 	</tr>

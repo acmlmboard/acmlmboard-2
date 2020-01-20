@@ -12,12 +12,10 @@ function request_id() {
 }
 
 function request_variables($varlist) {
-  $quoted = false;
   $out = array();
   foreach ($varlist as $key) {
     if (isset($_REQUEST[$key])) {
-      $out[$key] = ($quoted) ? 
-      (stripslashes($_REQUEST[$key])) : ($_REQUEST[$key]);
+      $out[$key] = stripslashes($_REQUEST[$key]);
     }
   }
   return $out;

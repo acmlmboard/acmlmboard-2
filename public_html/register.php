@@ -69,11 +69,11 @@ if (isProxy())
       $err='The username must not be empty, please choose one.';
     elseif(($sql -> resultq("SELECT COUNT(*) FROM `users` WHERE `ip` = '". $_SERVER['REMOTE_ADDR'] ."'")) >= 3)
       $err='Too many users with this IP address.';
-    elseif(strlen($_POST[pass])<4)
+    elseif(strlen($_POST['pass'])<4)
       $err='Your password must be at least 4 characters long.';
-    elseif($_POST[pass]!=$_POST[pass2])
+    elseif($_POST['pass']!=$_POST['pass2'])
       $err="The two passwords you entered don't match.";
-    elseif($config['registrationpuzzle'] && $_POST[puzzle]!=$puzzleAnswer)
+    elseif($config['registrationpuzzle'] && $_POST['puzzle']!=$puzzleAnswer)
       $err="You are either a bot or very bad at simple mathematics.";
 
     if(!$err){
@@ -115,18 +115,18 @@ if (isProxy())
 		  /* count matches for IP and hash */
 		  //hash
 		  $a=$sql->fetchq("SELECT COUNT(*) as c FROM users WHERE pass='".md5($pwdsalt2.$_POST[pass].$pwdsalt)."'");
-		  $m_hash=$a[c]-1;
+		  $m_hash=$a['c']-1;
 		  //split the IP
 		  $ipparts=explode(".",$userip);
 		  // /32 matches
 		  $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip='$userip'");
-		  $m_ip32=$a[c]-1;
+		  $m_ip32=$a['c']-1;
 		  // /24
 		  $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].$ipparts[2].%'");
-		  $m_ip24=$a[c]-1;
+		  $m_ip24=$a['c']-1;
 		  // /16
 		  $a=$sql->fetchq("SELECT count(*) as c FROM users WHERE ip LIKE '$ipparts[0].$ipparts[1].%'");
-		  $m_ip16=$a[c]-1;
+		  $m_ip16=$a['c']-1;
 
 		  //fancy colouring (if matches exist, make it red); references to make foreach not operate on copies
 		  $clist = array(&$m_hash, &$m_ip32, &$m_ip24, &$m_ip16);

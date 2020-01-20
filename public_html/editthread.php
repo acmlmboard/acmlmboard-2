@@ -62,6 +62,9 @@ pageheader("Edit Thread");
   $iconurl=addslashes($iconurl);
   $sql->query("UPDATE threads SET $title`icon`='$iconurl' WHERE `id`=$tid");
   if(isset($ispoll)){
+     //Sanity checks against discarded POST method data.
+     if(!isset($_POST['multivote']))  $_POST['multivote']=false;
+     if(!isset($_POST['changeable'])) $_POST['changeable']=false;
      $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
      $oldchoices = $sql->getresultsbykey("SELECT id, 1 val FROM polloptions WHERE poll = {$tid}", 'id', 'val');
      foreach ($_POST['opt'] as $id => $_text)

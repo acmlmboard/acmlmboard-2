@@ -10,9 +10,9 @@ require("lib/common.php");
 
   pageheader("Edit Spiders");
 
-  $id = $r['id'];
+  $id = checkvar('r','id');
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
         $bot=$sql->fetchp('SELECT * FROM robots WHERE bot_name=?',array($id));
         if (!$bot) $pagebar['message'] = "Unable to delete spider: invalid spider name.";
@@ -144,7 +144,7 @@ $form = array(
   'action' =>
     urlcreate('editspiders.php', array(
       'action' => $r['action'],
-      'id' => $t['id'],
+      'id' => checkvar('t','id'),
     )
     ),
   'method' => 'POST',
@@ -157,14 +157,14 @@ $form = array(
           'type' => 'text',
           'length' => 255,
           'size' => 80,
-'value' => $t['bot_name'],
+'value' => checkvar('t','bot_name'),
         ),
         'bot_agent' => array(
           'title' => 'Agent',
           'type' => 'text',
           'length' => 255,
           'size' => 80,
-'value' => $t['bot_agent'],
+'value' => checkvar('t','bot_agent'),
         ),
       ),
     ),

@@ -68,15 +68,15 @@
   }//needs function to test for perm based on $faccess /*!has_perm('create-closed-forum-post')*/
 
   if($act=='Submit'){
-    $message = $_POST[message];
+    $message = $_POST['message'];
     if(strlen($message)>60000)  // Protection against huge posts getting cut off
       $err="    This post is too long. Maximum length: 60000 characters. <br>
 ".         "    $threadlink";
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
+    if($thread['lastuser']==$userid && $thread['lastdate']>=(ctime()-86400) && !can_post_consecutively($thread['forum']))  // admins can double post all they want
       $err="    You can't double post until it's been at least one day!<br>
 ".         "    $threadlink";
-    if($thread[lastuser]==$userid && $thread[lastdate]>=(ctime()-$config[secafterpost]) && can_post_consecutively($thread['forum']))  // Protection against double-submit
-      $err="    You must wait $config[secafterpost] seconds before posting consecutively.<br>
+    if($thread['lastuser']==$userid && $thread['lastdate']>=(ctime()-$config['secafterpost']) && can_post_consecutively($thread['forum']))  // Protection against double-submit
+      $err="    You must wait ".$config['secafterpost']." seconds before posting consecutively.<br>
 ".         "    $threadlink";
     //2007-02-19 //blackhole89 - table breakdown protection
     if(($tdepth=tvalidate($message))!=0)
@@ -85,14 +85,14 @@
     if(strlen(trim($message))==0)
       $err="    Your post is empty! Enter a message and try again.<br>
 ".         "    $threadlink";
-    if($user[regdate]>(ctime()-$config[secafterpost]))
-      $err="    You must wait $config[secafterpost] seconds before posting on a freshly registered account.<br>
+    if($user['regdate']>(ctime()-$config['secafterpost']))
+      $err="    You must wait ".$config['secafterpost']." seconds before posting on a freshly registered account.<br>
 ".         "    $threadlink";
   }
 
   $top='<a href=./>Main</a> '
-    ."- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> "
-    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread['title']).'</a> '
+    ."- <a href=forum.php?id=".$thread['forum'].">".$thread['ftitle']."</a> "
+    ."- <a href=thread.php?id=".$thread['id'].">".htmlval($thread['title']).'</a> '
     .'- New reply';
 
 
@@ -221,6 +221,7 @@ print     "  $L[TR]>
     $user=$sql->fetchq("SELECT * FROM users WHERE id=$userid");
     $user['posts']++;
     $mid=(isset($_POST['mid']) ? (int)$_POST['mid'] : -1);
+    if(!isset($modext)) $modext="";
 
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmile) "

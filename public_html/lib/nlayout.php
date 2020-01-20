@@ -33,7 +33,7 @@ function urlcreate($url,$query) {
 function RenderTable($data, $headers)
 {
   $zebra = 0;
-  if(checkvar('header')){  $cols = count($header); } else { $cols=0; }
+  if(checkvar('headers')){  $cols = count($headers); } else { $cols=0; }
 
   print "<table cellspacing=\"0\" class=\"c1\">\n";
   print "\t<tr class=\"h\">\n";

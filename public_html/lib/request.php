@@ -12,7 +12,7 @@ function request_id() {
 }
 
 function request_variables($varlist) {
-  $quoted = get_magic_quotes_gpc();
+  $quoted = false;
   $out = array();
   foreach ($varlist as $key) {
     if (isset($_REQUEST[$key])) {

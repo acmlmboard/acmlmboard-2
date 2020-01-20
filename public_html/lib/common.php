@@ -11,8 +11,8 @@
   
   //[Scrydan] Added these three variables to make editing quicker.
   $boardprog = "Acmlm, Emuz, <a href='credits.php'>et al</a>.";
-  $abdate    = "01/19/2020";
-  $abversion = "2.5.4 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span><span style=\"color: #EE4444; font-weight: bold;\"> UNSTABLE</span";
+  $abdate    = "01/20/2020";
+  $abversion = "2.5.4 <span style=\"color: #BCDE9A; font-style: italic;\">Development</span><span style=\"color: #EE4444; font-weight: bold;\"> UNSTABLE</span>";
 
   $userip  = $_SERVER['REMOTE_ADDR'];
   $userfwd = addslashes(getenv('HTTP_X_FORWARDED_FOR')); //We add slashes to that because the header is under users' control

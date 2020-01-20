@@ -142,7 +142,7 @@
 
     $pass=$_POST['pass'];
     if(!strlen($_POST['pass2'])) $pass="";
-    $tztotal=$_POST['tzoffH']*3600+$_POST['tzoffM']*60*($_POST['tzoffH']<0?-1:1);
+    $tztotal=1;
     //Validate birthday values.
     if(!$_POST['birthM'] || !$_POST['birthD']) //Reject if any are missing.
       $birthday=-1;
@@ -270,6 +270,7 @@
 
 	if (!$error)
 	{
+		if(!isset($_POST['enablecolor'])) $_POST['enablecolor']=false;
 		$sql->query('UPDATE users SET '
                . ($pass?'pass="'.$passhash.'",':'')
                . (checkcdisplayname($targetuserid)?(setfield('displayname')   .','):'')

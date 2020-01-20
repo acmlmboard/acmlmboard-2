@@ -219,8 +219,8 @@ function CharacterCodeTo($TargetImage, $Sheet, $ASCII, $DestX, $DestY, $CharWidt
 function loadvwfdata($Filename) {
 	$Data = array();
 	$Str = file_get_contents($Filename);
-//	for ($x = 0; $x < strlen($Str); $x++)
-//		$Data[$x] = ord($Str{$x}) - ord("A");
+	for ($x = 0; $x < strlen($Str); $x++)
+		$Data[$x] = ord($Str[$x]) - ord("A");
 	return $Data;
 }
 

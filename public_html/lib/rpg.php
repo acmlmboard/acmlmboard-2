@@ -59,13 +59,11 @@
     $p=$u['posts'];
     $d=(ctime()-$u['regdate'])/86400;
     for($i=0;$i<9;$i++) $m[$i]=1;
-    /* This block is broken in PHP7. Does not function as intended.
-       Recode may be required for functionality to be restored. [Epele] */
     if($items!=0){
       for($i=1;$i<7;$i++){
         $item=$items[$u['eq'.$i]];
         for($k=0;$k<9;$k++){
-	  $a[$k]=0; 
+	  if(!isset($a[$k])) $a[$k]=0; 
           $is=$item['s'.$stat[$k]];
           if(substr($item['stype'],$k,1)=='m') $m[$k]*=$is/100;
           else $a[$k]+=$is;

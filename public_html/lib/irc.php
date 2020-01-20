@@ -227,45 +227,45 @@ function set_irc_style($fcolor,$bcolor="",$style=""){
 }
 function get_irc_displayname(){
 	global $loguser, $config, $sql, $irccolor;
-	$q = $sql->fetch($sql->query("SELECT `char`,`color` FROM `group` WHERE id=$loguser[group_id]"));
-    $group_prefix = $q[char];
-    $group_color = $q[color];
+	$q = $sql->fetch($sql->query("SELECT `char`,`color` FROM `group` WHERE id=".$loguser['group_id']));
+    $group_prefix = $q['char'];
+    $group_color = $q['color'];
 
     //Since $loguser[sex] give me nothing..
-    $qu = $sql->fetch($sql->query("SELECT `sex` FROM users WHERE id=$loguser[id]"));
-    $sex = $qu[sex];
+    $qu = $sql->fetch($sql->query("SELECT `sex` FROM users WHERE id=".$loguser['id']));
+    $sex = $qu['sex'];
 
-    if ($group_prefix && $config[ircnickprefix]) {
+    if ($group_prefix && $config['ircnickprefix']) {
     	$name = get_irc_style("bold");
     	if ($group_color) $name .=get_irc_color($group_color,"");
     	$name .= "$group_prefix".get_irc_style("normal");
     	$name .="{irccolor-name}";
     }
     
-    if ($group_color && $config[ircnickcolor]){
+    if ($group_color && $config['ircnickcolor']){
 		$name .=get_irc_color($group_color);
     }
-    elseif ($config[ircnicksex]){
+    elseif ($config['ircnicksex']){
     	switch ($sex)
     	{
     		case "0":
-    			$name .=get_irc_color($irccolor[male]);
+    			$name .=get_irc_color($irccolor['male']);
     			break;
     		case "1":
-    			$name .=get_irc_color($irccolor[female]);
+    			$name .=get_irc_color($irccolor['female']);
     			break;
     	}
     }
 
-	$name .= zero_width_name(($loguser[displayname]?$loguser[displayname]:$loguser[name]));
+	$name .= zero_width_name(($loguser['displayname']?$loguser['displayname']:$loguser['name']));
 	return ($name);
 }
 
 function get_irc_usercolor(){
 	//Note: This should/will be used to return more than just the logged in user. 
 	global $loguser, $config, $sql;
-	$q = $sql->fetch($sql->query("SELECT `color` FROM `group` WHERE id=$loguser[group_id]"));
-    $group_color = $q[color];
+	$q = $sql->fetch($sql->query("SELECT `color` FROM `group` WHERE id=".$loguser['group_id']));
+    $group_color = $q['color'];
     
     if ($group_color){
 		return get_irc_color($group_color);
@@ -296,7 +296,7 @@ function sendirc($text,$channel=null){
   $text=str_replace('{irccolor-no}',set_irc_style($irccolor['no']),$text);
 
   if ($channel != null) $chan = $channel;
-  else $chan = $config[pubchan];
+  else $chan = $config['pubchan'];
 
   send_to_ircbot($text,$chan);
 }

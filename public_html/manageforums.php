@@ -571,12 +571,11 @@ function saveperms($bind, $id)
 	// apply the new perms
 	foreach ($usergroups as $gid=>$group)
 	{
-		if (!isset($_POST['inherit'][$gid])){
+		if (isset($_POST['inherit'][$gid])){
 			continue; }
 			
-		if(isset($_POST['perm'][$gid])){ $myperms = $_POST['perm'][$gid]; } else { $myperms=false; }
 	 	foreach ($perms as $perm){
-			if(checkvar('myperms',$perm)!=false){ 
+			if(isset($_POST['perm'][$gid][$perm])){ 
 				$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, 0));
 			} else {
 				$sql->prepare("DELETE FROM `x_perm` WHERE `x_id`=? AND `x_type`=? AND `perm_id`=? AND `bindvalue`=?", array($gid,'group',$perm,$bind));

@@ -7,11 +7,11 @@
 
 	if (!can_edit_user($targetuserid)) $targetuserid = 0;
 
-	if ($targetuserid == 0 || $act && ($act != 'Save and continue' || $act != 'Save and finish')) {
+	if ($targetuserid == 0 || isset($act) && ($act != 'Save and continue' || $act != 'Save and finish')) {
 		error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 	}
 	
-	$act=$_POST[action];
+	$act=checkvar('_POST','action');
 	if ($act == 'Save and continue' || $act == 'Save and finish') {
 	
 	    //Prevent SQLi

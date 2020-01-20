@@ -13,7 +13,7 @@ require("lib/common.php");
 
   $id = $r['id'];
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
     if ($id > 0) {
       if ($sql->prepare('DELETE FROM badges WHERE id=?',array($id))) {
@@ -56,7 +56,7 @@ $actions = array(
 'editbadges.php?action=edit&id='.$bdg['id']),
   array('title' => 'Delete','href' => 
 'editbadges.php?action=del&id='.$bdg['id'], 
-confirm => true),
+'confirm' => true),
 );
 		
 $data[] = array
@@ -64,7 +64,7 @@ $data[] = array
 			"id" => $bdg['id'],
 			"image" => "<img src=\"".$pic."\" alt=\"\" />",
 			"name" => str_replace("%%%VAL%%%", "<b><i>%%%VAL%%%</i></b>", $bdg['name']),//$bdg['name'],
-			"description" => str_replace("%%%VAL%%%", "<b><i>%%%VAL%%%</i></b>", $bdg['description']),
+			"description" => str_replace("%%%VAL%%%", "<b><i>%%%VAL%%%</i></b>", checkvar('bdg','description')),
 			"type" => $bdg['type'],
       "priority" => $bdg['priority'],
       "edit" => RenderActions($actions,1),

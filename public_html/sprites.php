@@ -86,7 +86,7 @@ $data = array();
 $monReq = $sql->query("SELECT * FROM sprites ORDER BY id ASC");
 while($mon = $sql->fetch($monReq))
 {
-	if($captures[$mon['id']])
+	if(isset($captures[$mon['id']]))
 	{
 		$pics = explode("|", $mon['pic']);
 		$pic = $pics[0];

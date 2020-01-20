@@ -89,7 +89,7 @@
   $action='';
   //Sukasa 2009-14-09: Laid some of the groundwork to allow users to rename their own threads
   if($tid && (can_edit_forum_threads(getforumbythread($tid)) ||
-     ($loguser[id] == $threadcreator && $_POST[action] == "rename" && has_perm('rename-own-thread')))) {
+     ($loguser['id'] == $threadcreator && checkvar('_POST','action') == "rename" && has_perm('rename-own-thread')))) {
     $act=checkvar('_POST','action');
 	if ($act) {
       check_token($_POST['auth'], "qmod");
@@ -532,11 +532,11 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
       $fmovelinks="";
       $close = $stick = $filtr = $edthr = $trash = $showcase = "";
       $retag = sizeof($tags) ? "<a href=javascript:showtbox()>Tag</a> | " : "";
-      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('rename-own-thread')){
+      if($loguser['id'] == $thread['user'] && !$thread['closed'] && has_perm('rename-own-thread')){
         $canrnbar="| ";
         $edit = "<a href=javascript:showrbox()>Rename</a>";
       }
-      if($loguser[id] == $thread[user] && !$thread[closed] && has_perm('edit-thread')) $edthr="$canrnbar <a href=editthread.php?id=$tid>Edit ".(($thread[ispoll]==1)? 'Poll' : 'Icon')."</a> ";
+      if($loguser['id'] == $thread['user'] && !$thread['closed'] && has_perm('edit-thread')) $edthr="$canrnbar <a href=editthread.php?id=$tid>Edit ".(($thread['ispoll']==1)? 'Poll' : 'Icon')."</a> ";
       $opt = "Thread";
     }
     $taglinks="";

@@ -365,9 +365,9 @@
 
     $passinput="$L[INPp]=pass size=13 maxlength=32> / Retype: $L[INPp]=pass2 size=13 maxlength=32>";
     $birthinput="
-".        "      Month: $L[INPt]=birthM size=2 maxlength=2 value=$birthM>
-".        "      Day:   $L[INPt]=birthD size=2 maxlength=2 value=$birthD>
-".        "      Year:  $L[INPt]=birthY size=4 maxlength=4 value=$birthY>
+".        "      Month: $L[INPt]=birthM size=2 maxlength=2 value=".checkvar('birthM').">
+".        "      Day:   $L[INPt]=birthD size=2 maxlength=2 value=".checkvar('birthD').">
+".        "      Year:  $L[INPt]=birthY size=4 maxlength=4 value=".checkvar('birthY').">
 ".        "    ";
     //http://jscolor.com/try.php
     $colorinput="
@@ -379,7 +379,7 @@
 ".        " $L[TBL1]>
 ".
            catheader('Login information')."
-".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user[name]                 ))."
+".           (has_perm("edit-users") ? fieldrow('Username'        ,fieldinput(40,255,'name'     )) : fieldrow('Username'        ,$user['name']                 ))."
 ".(checkcdisplayname($targetuserid) ? fieldrow('Display name',fieldinput(40,255,'displayname')) : "" )."
 ".           fieldrow('Password'        ,$passinput                     )."
 ";

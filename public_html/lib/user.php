@@ -41,8 +41,8 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
     if (has_perm_revoked('edit-title')) return false;
     if ($uid == $loguser['id'] && has_perm('edit-title')) { 
        if ($loguser['group_id']!=$defaultgroup) return true;
-       if ($loguser[posts]>=100) return true;
-       if ($loguser[posts]>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
+       if ($loguser['posts']>=100) return true;
+       if ($loguser['posts']>50 && $loguser[regdate]<(time()-3600*24*60)) return true;
        return false;
     }
 

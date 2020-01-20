@@ -384,7 +384,7 @@
       while($opt=$sql->fetch($opts))
       {
         $h=$opt['s']?"*":"";
-	$cond=$log&&(($thread['multivote']&&!$opt[s])||$thread['changeable']||!$mytotal);
+	$cond=$log&&(($thread['multivote']&&!$opt['s'])||$thread['changeable']||!$mytotal);
         $poll.="$L[TR2]>$L[TD2]>".($cond?("<a href=thread.php?id=$tid&act=vote&vote={$opt['id']}".auth_url("{$tid}_{$opt['id']}").">"):"").htmlval($opt['option']).($cond?"</a>":"")." $h$L[TD3]><img src=\"gfx/bargraph.php?z=$opt[c]&n=$total&r=$opt[r]&g=$opt[g]&b=$opt[b]\">";
       }
       $poll.=

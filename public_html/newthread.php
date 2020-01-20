@@ -353,6 +353,9 @@ if (!$announce)   {
 
     if($ispoll)
     {
+//Quick sanity check on these, as PHP is discarding unticked boxes upon submitting.
+      if(!isset($_POST['multivote']))  $_POST['multivote']=false;
+      if(!isset($_POST['changeable'])) $_POST['changeable']=false;
       $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'{$_POST['question']}','{$_POST['multivote']}','{$_POST['changeable']}')");
 	  
       foreach ($_POST['opt'] as $id => $_text)
@@ -390,7 +393,7 @@ else if ($announce) {
 }
 else {
      
-     sendirc("{irccolor-base}New $type by {irccolor-name}".get_irc_displayname()."{irccolor-base} in {irccolor-title}".$forum[title]."{irccolor-url}: {irccolor-name}".stripslashes($_POST[title])."{irccolor-base} - {irccolor-url}"."{boardurl}?$shortlink{irccolor-base}",$chan);
+     sendirc("{irccolor-base}New $type by {irccolor-name}".get_irc_displayname()."{irccolor-base} in {irccolor-title}".$forum['title']."{irccolor-url}: {irccolor-name}".stripslashes($_POST['title'])."{irccolor-base} - {irccolor-url}"."{boardurl}?$shortlink{irccolor-base}",$chan);
 
 }
     redirect($viewlink, $message, "Posted", "the {$type}");

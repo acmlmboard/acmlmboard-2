@@ -10,9 +10,9 @@ require("lib/common.php");
 
   pageheader("Edit Extended Profile Fields");
 
-  $id = $r['service'];
+  $id = checkvar('r','service');
 
-  if ($r['action'] == "del") {
+  if (checkvar('r','action') == "del") {
     unset($r['action']);
         $profileext=$sql->fetchp('SELECT * FROM profileext WHERE service=?',array($id));
         if (!$id) $pagebar['message'] = "Unable to delete extended profile field: invalid extended profile field ID.";
@@ -159,8 +159,8 @@ RenderPageBar($pagebar);
 $form = array(
   'action' =>
     urlcreate('editprofileext.php', array(
-      'action' => $r['action'],
-      'service' => $t['service'],
+      'action' => checkvar('r','action'),
+      'service' => checkvar('t','service'),
     )
     ),
   'method' => 'POST',
@@ -173,61 +173,61 @@ $form = array(
           'type' => 'text',
           'length' => 60,
           'size' => 40,
-'value' => $t['service'],
+'value' => checkvar('t','service'),
         ),
         'title' => array(
           'title' => 'Title',
           'type' => 'text',
           'length' => 60,
           'size' => 40,
-'value' => $t['title'],
+'value' => checkvar('t','title'),
         ),
         'sortorder' => array(
           'title' => 'Sortorder',
           'type' => 'numeric',
           'length' => 2,
-'value' => $t['sortorder'],
+'value' => checkvar('t','sortorder'),
         ),
         'fmt' => array(
           'title' => 'Format',
           'type' => 'text',
           'length' => 255,
           'size' => 80,
-'value' => $t['fmt'],
+'value' => checkvar('t','fmt'),
         ),
         'description' => array(
           'title' => 'Description',
           'type' => 'text',
           'length' => 255,
           'size' => 80,
-'value' => $t['description'],
+'value' => checkvar('t','description'),
         ),
         'icon' => array(
           'title' => 'Icon',
           'type' => 'text',
           'length' => 60,
           'size' => 40,
-'value' => $t['icon'],
+'value' => checkvar('t','icon'),
         ),
         'validation' => array(
           'title' => 'Validation',
           'type' => 'text',
           'length' => 255,
           'size' => 80,
-'value' => $t['validation'],
+'value' => checkvar('t','validation'),
         ),
         'example' => array(
           'title' => 'Example',
           'type' => 'text',
           'length' => 60,
           'size' => 40,
-'value' => $t['example'],
+'value' => checkvar('t','example'),
         ),
         'extrafield' => array(
           'title' => 'Extra Field',
           'type' => 'numeric',
           'length' => 2,
-'value' => $t['extrafield'],
+'value' => checkvar('t','extrafield'),
         ),
         'parser' => array(
           'title' => 'Parser',
@@ -236,7 +236,7 @@ $form = array(
               '' => '',
               'email' => 'email',
               ),
-'value' => $t['parser'],
+'value' => checkvar('t','parser'),
         ),
       ),
     ),

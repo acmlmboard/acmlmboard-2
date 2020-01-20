@@ -87,9 +87,9 @@ else if (isset($_POST['saveforum']))
 	$title = autodeslash($_POST['title']);
 	$descr = autodeslash($_POST['descr']);
 	$ord = (int)$_POST['ord'];
-	$private = $_POST['private'] ? 1:0;
-	$trash = $_POST['trash'] ? 1:0;
-	$readonly = $_POST['readonly'] ? 1:0;
+	$private = checkvar('_POST','private') ? 1:0;
+	$trash = checkvar('_POST','trash') ? 1:0;
+	$readonly = checkvar('_POST','readonly') ? 1:0;
 	$announcechan_id = (int)$_POST['announcechan_id'];
 	
 	if (!trim($title))
@@ -122,19 +122,20 @@ else if (isset($_POST['saveforum']))
 		while ($mod = $sql->fetch($qmods))
 			$oldmods[$mod['uid']] = 1;
 		
-		$newmods = $_POST['localmod'];
+		$newmods = checkvar('_POST','localmod');
 		
 		foreach ($oldmods as $uid=>$blarg)
 		{
 			if (!$newmods[$uid])
 				$sql->prepare("DELETE FROM forummods WHERE fid=? AND uid=?", array($fid, $uid));
 		}
-		foreach ($newmods as $uid=>$blarg)
+		if($newmods!=false){
+foreach ($newmods as $uid=>$blarg)
 		{
 			if (!$oldmods[$uid])
 				$sql->prepare("INSERT INTO forummods (fid,uid) VALUES (?,?)", array($fid, $uid));
 		}
-		
+		}
 		// save tags
 		
 		$oldtags = array();
@@ -142,7 +143,7 @@ else if (isset($_POST['saveforum']))
 		while ($tag = $sql->fetch($qtags))
 			$oldtags[$tag['bit']] = $tag;
 		
-		$newtags = $_POST['tag'];
+		$newtags = checkvar('_POST','tag');
 
 		foreach ($oldtags as $rbit=>$blarg)
 		{
@@ -150,6 +151,7 @@ else if (isset($_POST['saveforum']))
 			if (!$newtags[$bit])
 				$sql->prepare("DELETE FROM tags WHERE fid=? AND bit=?", array($fid, $bit));
 		}
+		if($newtags!=false){
 		foreach ($newtags as $rbit=>$rdata)
 		{
 			$bit = (int)$rbit;
@@ -166,6 +168,7 @@ else if (isset($_POST['saveforum']))
 			// create the new tag image if needed
 			if (!$oldtags[$bit] || $oldtags[$bit]['tag'] != $tag || $oldtags[$bit]['color'] != $color)
 				renderTag($tag, $fid, $bit, $color);
+		}
 		}
 		
 		saveperms('forums', $fid);
@@ -568,12 +571,12 @@ function saveperms($bind, $id)
 	// apply the new perms
 	foreach ($usergroups as $gid=>$group)
 	{
-		if ($_POST['inherit'][$gid])
-			continue;
+		if (!isset($_POST['inherit'][$gid])){
+			continue; }
 			
-		$myperms = $_POST['perm'][$gid];
-		foreach ($perms as $perm){
-			if($myperms[$perm]==1){
+		if(isset($_POST['perm'][$gid])){ $myperms = $_POST['perm'][$gid]; } else { $myperms=false; }
+	 	foreach ($perms as $perm){
+			if(checkvar('myperms',$perm)!=false){ 
 				$sql->prepare("INSERT INTO `x_perm` (`x_id`,`x_type`,`perm_id`,`permbind_id`,`bindvalue`,`revoke`) VALUES (?,?,?,?,?,?)", array($gid, 'group', $perm, $bind, $id, 0));
 			} else {
 				$sql->prepare("DELETE FROM `x_perm` WHERE `x_id`=? AND `x_type`=? AND `perm_id`=? AND `bindvalue`=?", array($gid,'group',$perm,$bind));

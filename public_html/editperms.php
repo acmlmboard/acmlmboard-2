@@ -126,7 +126,7 @@
 	  'breadcrumb' => array(array('href'=>'./', 'title'=>'Main')),
 	  'title' => 'Edit permissions',
 	  'actions' => array(),
-  	  'message' => $msg
+  	  'message' => checkvar('msg')
   );
 	
   RenderPageBar($pagebar);

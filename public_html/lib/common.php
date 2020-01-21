@@ -542,7 +542,7 @@
       $onuserlist = "$onusercount user".($onusercount != 1 ? "s" : "")." currently in $fname".($onusercount>0? ": " : "").$onuserlist;
       $numguests = $numbots = 0;
       //[Scrydan] Changed from the commented code below to save a query.
-      $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE ".(isset($fid)?"":"`lastforum`='$fid' AND ")." `date` > '".(ctime()-300)."'");
+      $onlineguests = $sql->query("SELECT bot FROM `guests` WHERE ".(isset($fid)?"`lastforum`='$fid' AND ":"")." `date` > '".(ctime()-300)."'");
      while($chkonline = $sql->fetch($onlineguests))
       {
        if ($chkonline['bot'] == 1){ $numbots++; } else { $numguests++; }

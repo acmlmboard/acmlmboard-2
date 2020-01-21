@@ -63,7 +63,7 @@
 	if(!checkvar('_GET','showinactive')) $inaclnk=" | <a href=\"ranks.php?showinactive=1\">Show Inactive</a>";
 	else $inaclnk=" | <a href=\"ranks.php\">Hide Inactive</a>";
     }
-                          
+    if(!isset($linkviewall)) $linkviewall="";
     print "$L[TBL]>
              $L[TR]>
                <td>

@@ -292,6 +292,9 @@
 	} else {
 		$extratitle = $ae;
 	}
+	// Internal config version check.
+	// This value should be updated whenever a new config setting is added. [Epele]
+	if(has_perm("manage-board") && $config['version']!=1) $extratitle.="<br><b>Notice: Configuration file mismatch detected.</b>";
 	//--
 
    if($extratitle)

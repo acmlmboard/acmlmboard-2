@@ -5,6 +5,9 @@
   For the settings that call SQL resultp query functions, 
   Please look into the Administrator Tools page on your board to configure them.
 */
+ /*** Update version check for config file.
+ If the board reports a mismatch, please check the updated config.sample.ini for new settings before updating this value. */
+  $config['version']=1; // Config file version.
 
   $sqlhost='localhost';
   $sqluser='sqlusername';

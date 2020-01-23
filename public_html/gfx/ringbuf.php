@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(0);
 class ringbuf {
 	var $size=1;
 	var $fill=0;

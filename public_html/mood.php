@@ -40,9 +40,10 @@
         if(strlen($_POST['url'])>0) {
           $img_data=getimagesize($_POST['url']); 
           $ftypes=array("png","jpeg","jpg","gif");
+          if($config['avatarwebp']==true) $ftypes[]="webp";
           if($img_data[0]>$avatardimx){ $err="Image linked is too wide.<br>"; }
-          if($img_data[1]>$avatardimy){ $err.="Image linked is too tall.<br>"; }
-          if(!in_array(str_replace("image/","",$img_data['mime']),$ftypes)){ $err.="Image linked is not a gif, jpg or png file.<br>";}
+          if($img_data[1]>$avatardimy){ $err=checkvar('err')."Image linked is too tall.<br>"; }
+          if(!in_array(str_replace("image/","",$img_data['mime']),$ftypes)){ $err=checkvar('err')."Image linked is not a gif, jpg or png file.<br>Image is detected as <i>".$img_data['mime']."</i> type.";}
           if(!isset($err)){ $sql->query("REPLACE INTO `mood` VALUES (".$_POST['id'].",".$edid.",'".addslashes($_POST['label'])."',0,'".addslashes($_POST['url'])."')"); }
         } else {//No url specified.
           $sql->query("UPDATE `mood` SET `label`='".addslashes($_POST['label'])."' WHERE `id`=".$_POST['id']." AND `user`=".$edid);

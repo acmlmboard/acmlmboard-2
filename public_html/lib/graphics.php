@@ -151,6 +151,7 @@ class Image {
 }
 function img_upload($fname,$img_targ,$img_x,$img_y,$img_size){
   $ftypes=array("png","jpeg","jpg","gif");
+  if($config['avatarwebp']==true) $ftypes[]="webp";
   $img_data=getimagesize($fname['tmp_name']);
   $err=0; $oerr="";
   if($img_data[0]>$img_x){ $oerr.="<br>Too wide."; $err=1; }

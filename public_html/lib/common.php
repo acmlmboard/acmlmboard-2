@@ -752,7 +752,7 @@
   function pagefooter()
    {
     //Used for Affiliates, buttons, links, and navigational tools -Emuz
-    global $L, $abversion, $abdate, $boardprog, $misc, $sql;
+    global $L, $abversion, $abdate, $boardprog, $misc, $sql, $config;
     //pagestats();
 //Injecting SQL self-updater here.
 //Updater must run after a page has finished rendering else it generates numerous errors [Epele]

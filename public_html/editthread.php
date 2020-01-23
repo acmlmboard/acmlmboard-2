@@ -58,21 +58,21 @@ pageheader("Edit Thread");
   if(!($iconurl=$_POST[iconurl]))
     $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
   //If the user is not a moderator and has their perm to 
-  if(!has_perm('rename-own-thread') && !can_edit_forum_threads($thread[forum])){ $title=""; } else { $title = "`title`='".$_POST[title]."',"; }
+  if(!has_perm('rename-own-thread') && !can_edit_forum_threads($thread[forum])){ $title=""; } else { $title = "`title`='".addslashes($_POST[title])."',"; }
   $iconurl=addslashes($iconurl);
   $sql->query("UPDATE threads SET $title`icon`='$iconurl' WHERE `id`=$tid");
   if(isset($ispoll)){
      //Sanity checks against discarded POST method data.
      if(!isset($_POST['multivote']))  $_POST['multivote']=false;
      if(!isset($_POST['changeable'])) $_POST['changeable']=false;
-     $sql->query("UPDATE polls SET `id`=$tid,`question`='{$_POST['question']}',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
+     $sql->query("UPDATE polls SET `id`=$tid,`question`='".addslashes($_POST['question'])."',`multivote`='{$_POST['multivote']}',`changeable`='{$_POST['changeable']}' WHERE `id`=$tid");  
      $oldchoices = $sql->getresultsbykey("SELECT id, 1 val FROM polloptions WHERE poll = {$tid}", 'id', 'val');
      foreach ($_POST['opt'] as $id => $_text)
 	  {
 	    $color = stripslashes($_POST['col'][$id]);
 		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 		$text = $sql->escape($_text);
-//        $sql->query("UPDATE polloptions SET `option`='{$text}',r=".(int)$r.",g=".(int)$g.",b=".(int)$b." WHERE id=$id AND `poll`=$tid");
+//        $sql->query("UPDATE polloptions SET `option`='".addslashes($text)."',r=".(int)$r.",g=".(int)$g.",b=".(int)$b." WHERE id=$id AND `poll`=$tid");
 		if (isset($oldchoices[$id])) { // Update existing option
 			unset($oldchoices[$id]);
 			$insid = $id;

@@ -220,7 +220,7 @@ print     "  $L[TR]>
 	if($_POST['unstick']){ if(isset($modext)){ $modext.=",sticky=0"; } else { $modext="sticky=0"; } }
     }
     ++$rev;
-    $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'$message',$rev,$userid,".ctime().")");
+    $sql->query("INSERT INTO poststext (id,text,revision,user,date) VALUES ($pid,'".addslashes($message)."',$rev,$userid,".ctime().")");
     $sql->query("UPDATE posts SET mood='$mid',nolayout='$nolayout',nosmile='$nosmile' WHERE id='$pid'");
     if(isset($modext)) $sql->query("UPDATE threads SET $modext WHERE id='$thread[id]'");
     
@@ -228,8 +228,8 @@ print     "  $L[TR]>
 
     $chan = $sql->resultp("SELECT a.chan FROM forums f LEFT JOIN announcechans a ON f.announcechan_id=a.id WHERE f.id=?",array($thread['forum']));
 
-    if ($thread[announce]) {
-      if ($thread[forum] == 0) {
+    if ($thread['announce']) {
+      if ($thread['forum'] == 0) {
     sendirc("{irccolor-base}Announcement edited by {irccolor-name}".get_irc_displayname()."{irccolor-url} ({irccolor-title}$thread[title]{irccolor-url}){irccolor-base} - {irccolor-url}{boardurl}?p=$pid{irccolor-base}",$config['pubchan']);
       }
       else {

@@ -32,7 +32,7 @@
 
   if(checkvar('_GET','action')=="del") {
     $owner=$sql->resultq("SELECT user$fieldn2 FROM pmsgs WHERE id=$id");
-    if(has_perm('delete-user-pms') || ($owner==$loguser[id] && has_perm('delete-own-pms')) ) {
+    if(has_perm('delete-user-pms') || ($owner==$loguser['id'] && has_perm('delete-own-pms')) ) {
       $sql->query($q="UPDATE pmsgs SET del_$fieldn2=".((int)!$showdel)." WHERE id=$id");
     } else {
       error("Error", "You are not allowed to (un)delete that message.<br> <a href=./>Back to main</a>");
@@ -42,7 +42,7 @@
 
   $ptitle='Private messages'.($sent?' (sent)':'');
   if($id && has_perm('view-user-pms')){
-    $user=$sql->fetchq("SELECT id,name,sex,group_id FROM users WHERE id=$id");
+    $user=$sql->fetchq("SELECT ".userfields()." FROM users WHERE id=$id");
     pageheader($user['name']."'s ".strtolower($ptitle));
     $title=userlink($user)."'s ".strtolower($ptitle);
   }else{

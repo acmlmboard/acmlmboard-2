@@ -57,7 +57,15 @@ class mysql {
 	public function numrows($resultset) {
 		return $resultset->num_rows;
 	}
-	
+	public function multi_query($query) {
+		if ($res = $this->db->multi_query($query)) {
+			return "Success.";
+		} else {
+			$error = str_replace("You have an error in your SQL syntax; check the manual that corresponds to your {$this->server_name} server version for the right syntax to use", "SQL syntax error", $this->db->error);
+			trigger_error($error, E_USER_NOTICE);
+			return "Error.";
+		}
+	}
 	public function query($query) {
 		$start   = microtime(true);
 		$error   = "";

@@ -23,7 +23,7 @@
 	require "lib/login.php";
 
 	// Anything useful globally, right here
-	$misc = $sql->fetchq("SELECT lockdown, views, botviews, maxpostsday, maxpostshour, maxusers, attention, attentiontitle FROM misc");
+	$misc = $sql->fetchq("SELECT lockdown, views, botviews, maxpostsday, maxpostshour, maxusers, attention, attentiontitle, sqlversion FROM misc");
   
 	if ($misc['lockdown']) {
 		//lock down
@@ -752,9 +752,27 @@
   function pagefooter()
    {
     //Used for Affiliates, buttons, links, and navigational tools -Emuz
-    global $L, $abversion, $abdate, $boardprog;
+    global $L, $abversion, $abdate, $boardprog, $misc, $sql;
     //pagestats();
-
+//Injecting SQL self-updater here.
+//Updater must run after a page has finished rendering else it generates numerous errors [Epele]
+  if(has_perm('no-restrictions')){
+    $dir=opendir("../sql");
+    $exclusions=array(".","..","old","static","main.sql");
+    while($fn = readdir($dir)){
+      if(!in_array($fn,$exclusions)){
+        $sn=str_split($fn,8);
+        if($sn[0]<=$misc['sqlversion']){
+          $old=true;
+        } else {
+          $qlist=file_get_contents("../sql/".$fn);
+          $qry=$sql->multi_query($qlist);
+          $old=false;
+        }
+      if($old==false) $boardprog.="<br><b>Sql update applied: $fn ($qry)</b>";
+      }
+    }
+  }
     print "<br>
            $L[TBL2]>$L[TRc]>$L[TD2l]><center><a href=\"https://github.com/acmlmboard/acmlmboard-2\" title=\"Acmlmboard 2\"><img src=\"img/poweredbyacmlm.PNG\"></a><br>
              Acmlmboard v$abversion ($abdate)<br>

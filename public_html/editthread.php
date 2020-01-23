@@ -55,10 +55,10 @@ pageheader("Edit Thread");
     noticemsg("Error", $err);
 } else {
   //No Errors detected
-  if(!($iconurl=$_POST[iconurl]))
-    $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST[iconid]);
+  if(!($iconurl=$_POST['iconurl']))
+    $iconurl=$sql->resultq("SELECT url FROM posticons WHERE id=".(int)$_POST['iconid']);
   //If the user is not a moderator and has their perm to 
-  if(!has_perm('rename-own-thread') && !can_edit_forum_threads($thread[forum])){ $title=""; } else { $title = "`title`='".addslashes($_POST[title])."',"; }
+  if(!has_perm('rename-own-thread') && !can_edit_forum_threads($thread['forum'])){ $title=""; } else { $title = "`title`='".addslashes($_POST['title'])."',"; }
   $iconurl=addslashes($iconurl);
   $sql->query("UPDATE threads SET $title`icon`='$iconurl' WHERE `id`=$tid");
   if(isset($ispoll)){

@@ -342,9 +342,9 @@ print     "  $L[TR]>
                ."VALUES ('".addslashes($_POST[title])."',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick,$filter)");
     $tid=$sql->insertid();
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce,nosmile) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce,$nosmile)");
+               ."VALUES ($userid,$tid,".ctime().",'$userip',".$user['posts'].",$mid,$nolayout,$announce,$nosmile)");
     $pid=$sql->insertid();
-    $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
+    $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'".addslashes($message)."')");
 if (!$announce)   {
    $sql->query("UPDATE forums SET threads=threads+1,posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid "
                ."WHERE id=$fid");
@@ -356,7 +356,7 @@ if (!$announce)   {
 //Quick sanity check on these, as PHP is discarding unticked boxes upon submitting.
       if(!isset($_POST['multivote']))  $_POST['multivote']=false;
       if(!isset($_POST['changeable'])) $_POST['changeable']=false;
-      $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'{$_POST['question']}','{$_POST['multivote']}','{$_POST['changeable']}')");
+      $sql->query("INSERT INTO polls (id,question,multivote,changeable) VALUES ($tid,'".addslashes($_POST['question'])."','{$_POST['multivote']}','{$_POST['changeable']}')");
 	  
       foreach ($_POST['opt'] as $id => $_text)
 	  {
@@ -364,7 +364,7 @@ if (!$announce)   {
 		list($r,$g,$b) = sscanf(strtolower($color), '%02x%02x%02x');
 		$text = $sql->escape($_text);
 		
-        $sql->query("INSERT INTO polloptions (`poll`,`option`,r,g,b) VALUES ($tid,'{$text}',".(int)$r.",".(int)$g.",".(int)$b.")");
+        $sql->query("INSERT INTO polloptions (`poll`,`option`,r,g,b) VALUES ($tid,'".addslashes($text)."',".(int)$r.",".(int)$g.",".(int)$b.")");
 	  }
     }
 

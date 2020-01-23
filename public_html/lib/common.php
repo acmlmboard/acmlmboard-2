@@ -294,7 +294,7 @@
 	}
 	// Internal config version check.
 	// This value should be updated whenever a new config setting is added. [Epele]
-	if(has_perm("manage-board") && $config['version']!=1) $extratitle.="<br><b>Notice: Configuration file mismatch detected.</b>";
+	if(has_perm("manage-board") && $config['version']!=2) $extratitle.="<br><b>Notice: Configuration file mismatch detected.</b>";
 	//--
 
    if($extratitle)
@@ -756,7 +756,7 @@
     //pagestats();
 //Injecting SQL self-updater here.
 //Updater must run after a page has finished rendering else it generates numerous errors [Epele]
-  if(has_perm('no-restrictions')){
+  if(has_perm('no-restrictions') && $config['sqlselfupdate']==true){
     $dir=opendir("../sql");
     $exclusions=array(".","..","old","static","main.sql");
     while($fn = readdir($dir)){

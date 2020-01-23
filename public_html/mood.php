@@ -148,7 +148,7 @@
   $L[TR]>
     $L[TD2]><div style=\"padding: 0px; margin: 0px; width: ".$avax."px; height: ".$avay."px; background: url(".$aurl.") no-repeat center;\"></div>
   </tr>$L[TR]>
-    $L[TD1]><a href=\"#\" onclick=\"edit(".$mav['id'].",'".htmlspecialchars($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".htmlspecialchars($mav['label'])."')\">Delete</a></td>
+    $L[TD1]><a href=\"#editpane\" onclick=\"edit(".$mav['id'].",'".htmlspecialchars($mav['label'])."', '".$mav['url']."')\">Edit</a> | <a href=\"#\" onclick=\"del(".$mav['id'].",'".htmlspecialchars($mav['label'])."')\">Delete</a></td>
   </tr>
 </table></div>";
 }
@@ -159,7 +159,7 @@ if($fid<=$avatarmoods){
     $L[TDh] style=\"width:180px;\">&nbsp</td>
   </tr>
   </tr>$L[TR]>
-    $L[TD1]><a href=\"#\" onclick=\"edit(".$fid.",'(Label)', '')\">Add New</a></td>
+    $L[TD1]><a href=\"#editpane\" onclick=\"edit(".$fid.",'(Label)', '')\">Add New</a></td>
   </tr>
 </table></div>";
 }

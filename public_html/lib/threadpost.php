@@ -22,7 +22,7 @@ function usegfxnums()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx,$signsep;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx,$avatardimy,$signsep;
     if($avatardimx>=180){ $sidewidth=$avatardimx; } else { $sidewidth=180; }
     $exp=calcexp($post['uposts'],(ctime()-$post['uregdate'])/86400);
 
@@ -172,7 +172,7 @@ if(!isset($revisionstr)) $revisionstr="";
         if($post['mood'] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
           $mood = $sql->fetchq("select `url`, `local`, 1 `existing` from `mood` where `user` = {$post['uid']} and `id` = {$post['mood']} union select '' `url`, 0 `local`, 0 `existing`");
           if ($mood['existing']) {
-            $picture = (!$mood['local'] ? "<img src=\"".htmlval($mood['url'])."\">" : "<img src=\"gfx/userpic.php?id=".$post['uid']."_".$post['mood']."\">" );
+            $picture = (!$mood['local'] ? "<img src=\"".htmlval($mood['url'])."\" style=\"max-height: ".$avatardimy."; max-width: ".$avatardimx.";\">" : "<img src=\"gfx/userpic.php?id=".$post['uid']."_".$post['mood']."\">" );
           }
         }
 

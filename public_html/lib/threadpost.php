@@ -84,9 +84,6 @@ function usegfxnums()
       return $text;
     }
 
-    switch($type){
-     case 0:
-     case 1:
       $postheaderrow = $postlinks = "";
 
       if(isset($pthread['id']))
@@ -107,18 +104,18 @@ function usegfxnums()
              </tr>
             ";
       } 
-      else if(isset($post['thread']) && $loguser['id']!=0) {
+      else if(isset($post['thread']) && $loguser['id']!=0 && $type==1) {
           $postlinks.=($postlinks?' | ':'')."<a href=\"newreply.php?id={$post['thread']}&amp;pid={$post['id']}\">Reply</a>";
       }
 
       // "Edit" link for admins or post owners, but not banned users
-	  if (can_edit_post($post) && $post['id'])
+	  if (can_edit_post($post) && $post['id'] && $type==1)
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}\">Edit</a>";
         
       if (can_edit_post($post) && $post['id'] && isset($post['isannounce']))
         $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid={$post['id']}\">Edit Title</a>";
 
-      if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])))
+      if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])) && $type==1)
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}{$authval}&amp;act=delete\">Delete</a>";
 
       if($post['id'])
@@ -233,7 +230,6 @@ else $text.=      "      <br>Level: ".calclvl($exp)."
 ".        "    <td class=\"b n2 $mbar\" id=\"post_".$post['id']."\">".postfilter(amptags($post,$post['uhead']). $post['text'] .amptags($post,$post['usign']),checkvar('post','nosmile'))."</td>
 ".        "$L[TBLend]
 ";
-    }
     return $text;
   }
 ?>

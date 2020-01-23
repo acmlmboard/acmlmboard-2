@@ -339,7 +339,7 @@ print     "  $L[TR]>
     $sql->query("UPDATE users SET posts=posts+1,threads=threads+1,lastpost=".ctime()." "
                ."WHERE id=$userid");
     $sql->query("INSERT INTO threads (title,forum,user,lastdate,lastuser,icon,tags,announce,closed,sticky,filter) "
-               ."VALUES ('$_POST[title]',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick,$filter)");
+               ."VALUES ('".addslashes($_POST[title])."',$fid,$userid,".ctime().",$userid,'$iconurl',$tagsum,$announce,$modclose,$modstick,$filter)");
     $tid=$sql->insertid();
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,announce,nosmile) "
                ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$nolayout,$announce,$nosmile)");

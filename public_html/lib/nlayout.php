@@ -340,7 +340,7 @@ function RenderPageBar($pagebar) {
 
 
   function setfield($field){
-    return "$field='$_POST[$field]'";
+    return "$field='".addslashes($_POST[$field])."'";
   }
 
   function catheader($title){

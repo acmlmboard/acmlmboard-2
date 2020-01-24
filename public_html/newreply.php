@@ -225,11 +225,11 @@ print     "  $L[TR]>
 
     $sql->query("UPDATE users SET posts=posts+1,lastpost=".ctime()." WHERE id=$userid");
     $sql->query("INSERT INTO posts (user,thread,date,ip,num,mood,nolayout,nosmile) "
-               ."VALUES ($userid,$tid,".ctime().",'$userip',$user[posts],$mid,$_POST[nolayout],$_POST[nosmile])");
+               ."VALUES ($userid,$tid,".ctime().",'$userip',".$user['posts'].",$mid,".$_POST['nolayout'].",".$_POST['nosmile'].")");
     $pid=$sql->insertid();
-    $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'$message')");
+    $sql->query("INSERT INTO poststext (id,text) VALUES ($pid,'".addslashes($message)."')");
     $sql->query("UPDATE threads SET replies=replies+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid$modext WHERE id=$tid");
-    $sql->query("UPDATE forums SET posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=$thread[forum]");
+    $sql->query("UPDATE forums SET posts=posts+1,lastdate=".ctime().",lastuser=$userid,lastid=$pid WHERE id=".$thread['forum']);
 
     //2007-02-21 //blackhole89 - nuke entries of this thread in the "threadsread" table
     $sql->query("DELETE FROM threadsread WHERE tid='$thread[id]' AND NOT (uid='$userid')");

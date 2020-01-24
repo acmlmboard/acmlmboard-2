@@ -22,7 +22,7 @@ function usegfxnums()
 }
 
   function threadpost($post,$type,$pthread=''){
-    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx,$signsep;
+    global $L,$dateformat,$loguser,$sql,$blocklayouts,$syndromenable,$config,$avatardimx,$avatardimy,$signsep;
     if($avatardimx>=180){ $sidewidth=$avatardimx; } else { $sidewidth=180; }
     $exp=calcexp($post['uposts'],(ctime()-$post['uregdate'])/86400);
 
@@ -84,9 +84,6 @@ function usegfxnums()
       return $text;
     }
 
-    switch($type){
-     case 0:
-     case 1:
       $postheaderrow = $postlinks = "";
 
       if(isset($pthread['id']))
@@ -107,18 +104,18 @@ function usegfxnums()
              </tr>
             ";
       } 
-      else if(isset($post['thread']) && $loguser['id']!=0) {
+      else if(isset($post['thread']) && $loguser['id']!=0 && $type==1) {
           $postlinks.=($postlinks?' | ':'')."<a href=\"newreply.php?id={$post['thread']}&amp;pid={$post['id']}\">Reply</a>";
       }
 
       // "Edit" link for admins or post owners, but not banned users
-	  if (can_edit_post($post) && $post['id'])
+	  if (can_edit_post($post) && $post['id'] && $type==1)
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}\">Edit</a>";
         
       if (can_edit_post($post) && $post['id'] && isset($post['isannounce']))
         $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid={$post['id']}\">Edit Title</a>";
 
-      if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])))
+      if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])) && $type==1)
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}{$authval}&amp;act=delete\">Delete</a>";
 
       if($post['id'])
@@ -175,7 +172,7 @@ if(!isset($revisionstr)) $revisionstr="";
         if($post['mood'] > 0) { // 2009-07 Sukasa: This entire if block.  Assumes $post[uid] and $post[mood] were checked before the function call
           $mood = $sql->fetchq("select `url`, `local`, 1 `existing` from `mood` where `user` = {$post['uid']} and `id` = {$post['mood']} union select '' `url`, 0 `local`, 0 `existing`");
           if ($mood['existing']) {
-            $picture = (!$mood['local'] ? "<img src=\"".htmlval($mood['url'])."\">" : "<img src=\"gfx/userpic.php?id=".$post['uid']."_".$post['mood']."\">" );
+            $picture = (!$mood['local'] ? "<img src=\"".htmlval($mood['url'])."\" style=\"max-height: ".$avatardimy."; max-width: ".$avatardimx.";\">" : "<img src=\"gfx/userpic.php?id=".$post['uid']."_".$post['mood']."\">" );
           }
         }
 
@@ -230,10 +227,9 @@ else $text.=      "      <br>Level: ".calclvl($exp)."
 }
       $text.=
           "    </td>
-".        "    <td class=\"b n2 $mbar\" id=\"post_".$post['id']."\">".postfilter(amptags($post,$post['uhead']). $post['text'] .amptags($post,$post['usign']),$post['nosmile'])."</td>
+".        "    <td class=\"b n2 $mbar\" id=\"post_".$post['id']."\">".postfilter(amptags($post,$post['uhead']). $post['text'] .amptags($post,$post['usign']),checkvar('post','nosmile'))."</td>
 ".        "$L[TBLend]
 ";
-    }
     return $text;
   }
 ?>

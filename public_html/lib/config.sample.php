@@ -5,6 +5,11 @@
   For the settings that call SQL resultp query functions, 
   Please look into the Administrator Tools page on your board to configure them.
 */
+/*** Update version check for config file.
+ If the board reports a mismatch, please check the updated config.sample.ini for new settings before updating this value.
+***/
+  $config['version']=2; // Config file version.
+  $config['sqlselfupdate']=true; //Enables sql self-updating feature. Recommended to be left on.
 
   $sqlhost='localhost';
   $sqluser='sqlusername';
@@ -74,6 +79,7 @@
   $avatardimys=60;// Avatar Y Scale (Scaled Down) **CURRENTLY DISABLED**
   $avatarsize=2*30720;// The Avatar size in bytes. The default is to 60kb.
   $avatarmoods=64; //Limit to uploaded mood avatars
+  $config['avatarwebp']=false; //Set to True to enable supporting webp format for uploaded/linked avatars.
 
   // The following settings allow you to enable minipics in various parts of the board. Currently they are specific but they may be simplifed in the future.
   $config['showminipic'] = false; // Show minipics in many generic places that don't need to be specifically controlled.

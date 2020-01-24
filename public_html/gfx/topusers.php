@@ -1,10 +1,10 @@
 <?php
  require 'gfxlib.php';
 
- $t=$_GET[t];
- $u=$_GET[u];
- if(!$n=$_GET[n]) $n=50;
- if(!$s=$_GET[s]) $s=1;
+ $t=checkvar('_GET','t');
+ $u=checkvar('_GET','u');
+ if(!$n=checkvar('_GET','n')) $n=50;
+ if(!$s=checkvar('_GET','s')) $s=1;
  if(!is_numeric($u) || !is_numeric($s) || !is_numeric($n)) die("Invalid");
 
  $val='posts';
@@ -19,29 +19,29 @@
    if($s<1) $s=1;
  }
 
- $users=$sql->query("SELECT id, name, $val val "
+ $users=$sql->query("SELECT id, displayname, name, $val val "
                    ."FROM users "
                    ."ORDER BY val DESC, (id='$u') DESC "
                    ."LIMIT ".($s-1).",$n");
 
  Header('Content-type:image/png');
  $img=ImageCreate(512,($n+2)*8);
- $c[bg]    =ImageColorAllocate($img, 40, 40, 90);
- $c[bxb0]  =ImageColorAllocate($img,  0,  0,  0);
- $c[bxb1]  =ImageColorAllocate($img,200,170,140);
- $c[bxb2]  =ImageColorAllocate($img,155,130,105);
- $c[bxb3]  =ImageColorAllocate($img,110, 90, 70);
+ $c['bg']    =ImageColorAllocate($img, 40, 40, 90);
+ $c['bxb0']  =ImageColorAllocate($img,  0,  0,  0);
+ $c['bxb1']  =ImageColorAllocate($img,200,170,140);
+ $c['bxb2']  =ImageColorAllocate($img,155,130,105);
+ $c['bxb3']  =ImageColorAllocate($img,110, 90, 70);
  for($i=0;$i<100;$i++)
    $c[$i]   =ImageColorAllocate($img, 60+$i/2, 10, 16);
 //$c[$i]  =ImageColorAllocate($img, 10, 16, 60+$i/2);
- $c[bar][1]=ImageColorAllocate($img,255,189,222);
- $c[bar][2]=ImageColorAllocate($img,231,  0, 90);
- $c[bar][3]=ImageColorAllocate($img,255,115,181);
- $c[bar][4]=ImageColorAllocate($img,255,115, 99);
- $c[bar][5]=ImageColorAllocate($img,255,156, 57);
- $c[bar][6]=ImageColorAllocate($img,255,231,165);
- $c[bar][7]=ImageColorAllocate($img,173,231,255);
- $c[hlit]  =ImageColorAllocate($img, 47, 63,191);
+ $c['bar'][1]=ImageColorAllocate($img,255,189,222);
+ $c['bar'][2]=ImageColorAllocate($img,231,  0, 90);
+ $c['bar'][3]=ImageColorAllocate($img,255,115,181);
+ $c['bar'][4]=ImageColorAllocate($img,255,115, 99);
+ $c['bar'][5]=ImageColorAllocate($img,255,156, 57);
+ $c['bar'][6]=ImageColorAllocate($img,255,231,165);
+ $c['bar'][7]=ImageColorAllocate($img,173,231,255);
+ $c['hlit']  =ImageColorAllocate($img, 47, 63,191);
  ImageColorTransparent($img,0);
 
  box(0,0,64,$n+2);
@@ -62,28 +62,28 @@
  $sc[8]=99999999;
 
  for($i=$s;$user=$sql->fetch($users);$i++){
-   if($user[val]!=$rval){
+   if($user['val']!=checkvar('rval')){
      $rank=$i;
-     $rval=$user[val];
+     $rval=$user['val'];
    }
    if($i==$s){
      $rank=$sql->resultq("SELECT count(*) FROM users WHERE $val>$user[val] AND id!=$user[id]")+1;
-     for($sn=1;($user[val]/$sc[$sn])>320;$sn++);
+     for($sn=1;($user['val']/$sc[$sn])>320;$sn++);
      $div=$sc[$sn];
      if(!$div) $div=1;
    }
    $y=$i-$s+1;
-   if($user[id]==$u){
-     ImageFilledRectangle($img,8,$y*8,503,$y*8+7,$c[hlit]);
+   if($user['id']==$u){
+     ImageFilledRectangle($img,8,$y*8,503,$y*8+7,$c['hlit']);
      $fontu=$fontY;
    }else
      $fontu=$fontB;
    twrite($fontW, 0,$y,4,$rank);
-   twrite($fontu, 5,$y,0,substr($user[name],0,12));
-   twrite($fontY,16,$y,6,floor($user[val]));
-   if(($sx=$user[val]/$div)>=1){
-     ImageFilledRectangle($img,185,$y*8+1,184+$sx,$y*8+7,$c[bxb0]);
-     ImageFilledRectangle($img,184,$y*8  ,183+$sx,$y*8+6,$c[bar][$sn]);
+   twrite($fontu, 5,$y,0,substr(($user['displayname']?$user['displayname']:$user['name']),0,12));
+   twrite($fontY,16,$y,6,floor($user['val']));
+   if(($sx=$user['val']/$div)>=1){
+     ImageFilledRectangle($img,185,$y*8+1,184+$sx,$y*8+7,$c['bxb0']);
+     ImageFilledRectangle($img,184,$y*8  ,183+$sx,$y*8+6,$c['bar'][$sn]);
    }
  }
 
@@ -115,11 +115,11 @@ function box($x,$y,$w,$h){
   $y*=8;
   $w*=8;
   $h*=8;
-  ImageRectangle($img,$x+0,$y+0,$x+$w-1,$y+$h-1,$c[bxb0]);
-  ImageRectangle($img,$x+1,$y+1,$x+$w-2,$y+$h-2,$c[bxb3]);
-  ImageRectangle($img,$x+2,$y+2,$x+$w-3,$y+$h-3,$c[bxb1]);
-  ImageRectangle($img,$x+3,$y+3,$x+$w-4,$y+$h-4,$c[bxb2]);
-  ImageRectangle($img,$x+4,$y+4,$x+$w-5,$y+$h-5,$c[bxb0]);
+  ImageRectangle($img,$x+0,$y+0,$x+$w-1,$y+$h-1,$c['bxb0']);
+  ImageRectangle($img,$x+1,$y+1,$x+$w-2,$y+$h-2,$c['bxb3']);
+  ImageRectangle($img,$x+2,$y+2,$x+$w-3,$y+$h-3,$c['bxb1']);
+  ImageRectangle($img,$x+3,$y+3,$x+$w-4,$y+$h-4,$c['bxb2']);
+  ImageRectangle($img,$x+4,$y+4,$x+$w-5,$y+$h-5,$c['bxb0']);
   for($i=5;$i<$h-5;$i++){
     $n=(1-$i/$h)*100;
     ImageLine($img,$x+5,$y+$i,$x+$w-6,$y+$i,$c[$n]);

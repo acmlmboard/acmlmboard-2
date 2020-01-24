@@ -39,9 +39,10 @@ These requirements are based on our development environment's specifications. Wh
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
 - MySQL5+/MariaSQL (strict mode disabled)
-- PHP v5.7+ (old versions may work, but are unsupported. **Note:** PHP 7 support is currently *experimental* )
+- PHP v5.6+ for Stable Branch, PHP 7+ for Development branch.
 - PHP-GD
-- mcrypt and the module for PHP
+- mcrypt and the module for PHP (Stable branch)
+- OpenSSL and the module for PHP (Development branch)
 - phpmyadmin or DB tool of your choice.
 
 Installation

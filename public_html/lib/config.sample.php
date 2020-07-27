@@ -6,7 +6,7 @@
   Please look into the Administrator Tools page on your board to configure them.
 */
 /*** Update version check for config file.
- If the board reports a mismatch, please check the updated config.sample.ini for new settings before updating this value.
+ If the board reports a mismatch, please check the updated config.sample.php for new settings before updating this value.
 ***/
   $config['version']=2; // Config file version.
   $config['sqlselfupdate']=true; //Enables sql self-updating feature. Recommended to be left on.

@@ -10,7 +10,7 @@ Branches
 
 **master** - This is the branch is a snapshot of develop where most things are working and should install and run without any major issues.
 
-**develop** - This is the main branch of developement. Currently is is extremly **UNSTABLE** and should not be used in production. We are currently in the process of adding PHP 7 support.
+**develop** - This is the main branch of developement. It is currently **UNTESTED** in a live environment and should not be used in production just yet. We have added support for PHP 7+ in this branch.
 
 **experimental** - This branch was started by xenons and includes the start of fundamental improvements for the board. If you fork the board for extensive development I would recommend starting here and building on it.
 
@@ -28,6 +28,8 @@ Tags
 
 **v2.5.4** - Point Release #4; Lots of minor fixes and enhancements. Stable updated to 2.5.4.
 
+**v2.5.5 *(unreleased;Beta)*** - Point Release #5; Adds support for PHP 7, and upgrade versioning.
+
 Note: This board is not guaranteed to work out of the box. Not much support remains these days. You will need to get your hands dirty.
 Please feel free to fork this and improve on it!
 # Installing Acmlmboard II
@@ -39,10 +41,10 @@ These requirements are based on our development environment's specifications. Wh
 
 - Apache httpd ver >= 2.2.21 (Should work on earlier versions)
 - MySQL5+/MariaSQL (strict mode disabled)
-- PHP v5.6+ for Stable Branch, PHP 7+ for Development branch.
+- PHP v5.6+ for Stable Branch *(up to v2.5.4)*, PHP 7+ for Development Branch *(v2.5.5+)*.
 - PHP-GD
-- mcrypt and the module for PHP (Stable branch)
-- OpenSSL and the module for PHP (Development branch)
+- mcrypt and the module for PHP (Stable branch *\[up to v2.5.4)\]*)
+- OpenSSL and the module for PHP (Development branch *\[v2.5.5+\]*)
 - phpmyadmin or DB tool of your choice.
 
 Installation
@@ -67,3 +69,5 @@ Optional Databases
 - **ip2c.sql:**  Contains all the ip to country information. It's recommended to load this when you setup your board, but it is not required. 
 - **robots.sql:** Contains a default set of known web bots/spiders. This is not required, but is recommended to load this when you setup your board.
 - **sprites.sql:**  Contains the spriteset used at Kafuka. If you wish you use sprites you may want to use the set. If you don't wish to use sprites, or to provide your own than you do not need this. The sprite files from Kafuka are included. The default database does not contain any sprites.
+
+**Last Updated 1/26/2020**

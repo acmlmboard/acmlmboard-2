@@ -547,7 +547,7 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
     $taglinks.="| Remove: ";
     for($i=0;$i<sizeof($tags);++$i) {
       $t=$tags[$i];
-      if(isset($thread['tag']) && (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
+      if(isset($thread['tags']) && (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
     }
     $taglinks=addslashes($taglinks);
 

@@ -109,7 +109,7 @@
     if($act=='move'   )
       editthread($tid,'',$_POST[arg],'');
     if($act=='tag'    )
-      $action=',tags=tags^'.(1<<$_POST[arg]);
+      $action=',tags=tags^'.(1<<$_POST['arg']);
 
     if($config['log'] >= '2') $sql->query("INSERT INTO log VALUES(UNIX_TIMESTAMP(),'".$_SERVER['REMOTE_ADDR']."','$loguser[id]','ACTION: ".addslashes($act." ".$tid." ".$_POST[arg])."')");
   }
@@ -547,7 +547,7 @@ if($showcaseid>=1){ //Only enabled if ID is a valid forum ID.
     $taglinks.="| Remove: ";
     for($i=0;$i<sizeof($tags);++$i) {
       $t=$tags[$i];
-      if(isset($thread['tag']) & (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
+      if(isset($thread['tags']) && (1<<$t['bit'])) $taglinks.="<a href=javascript:submittag('".$t['bit']."')>".$t['tag']."</a> ";
     }
     $taglinks=addslashes($taglinks);
 

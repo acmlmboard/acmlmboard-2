@@ -353,6 +353,9 @@ else if ($fid = checkvar('_GET','fid'))
 ";
 	
 	// tags
+  // Putting a safeguard against excessive tagging. [Epele]
+  // Tags to be capped at a maximum of 30. (Current DB supports maximum 31 tags)
+  $tagcount=@$sql->result($sql->query("SELECT count(*) FROM tags WHERE fid=".$fid),0,0);
 
 	print 	"	$L[TBL1]>
 ".			"		$L[TRh]>$L[TDh] colspan=2>Thread tags</td></tr>
@@ -362,7 +365,8 @@ else if ($fid = checkvar('_GET','fid'))
 ".			"				Name: $L[INPt]=\"tag_name\" id=\"tag_name\" size=20 maxlength=64><br>
 ".			"				Tag text: $L[INPt]=\"tag_tag\" id=\"tag_tag\" size=10 maxlength=20><br>
 ".			"				Color: <input class=\"color {pickerFaceColor:'black',pickerBorder:0,pickerInsetColor:'black'}\" value=\"808080\" name=\"tag_color\" id=\"tag_color\" size=6 maxlength=6><br>
-".			"				$L[BTTn]=\"newtag\" onclick=\"newTag();\">New tag</button> $L[BTTn]=\"savetag\" onclick=\"saveTag('{$fid}');\">Save tag</button>
+".($tagcount<=30?"$L[BTTn]=\"newtag\" onclick=\"newTag();\">New tag</button>":"Cannot create new tag: Maximum 30 tags reached.<br>")
+			."				 $L[BTTn]=\"savetag\" onclick=\"saveTag('{$fid}');\">Save tag</button>
 ".			"			</td>
 ".			"			$L[TD] id=\"taglist\" style=\"vertical-align:top;\">
 ";

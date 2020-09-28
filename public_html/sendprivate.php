@@ -16,7 +16,7 @@
 
   $toolbar= posttoolbar($loguser['posttoolbar']);
 
-  if (!has_perm('create-pms')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
+  if (!has_perm('create-pms') && !has_perm('create-admin-pms')) error("Error", "You have no permissions to do this!<br> <a href=./>Back to main</a>");
 
   if(isset($err)){
     print "$top - Error
@@ -134,52 +134,45 @@ print     "  $L[TR]>
 ".        "$L[TBLend]
 ";
   }elseif($act=='Submit'){
+//Sanity checks to start
+    $msg="";
     $userto=$sql->resultq("SELECT id FROM users WHERE name LIKE '".addslashes($_POST['userto'])."' OR displayname LIKE '".addslashes($_POST['userto'])."'");
-
-    if($userto && isset($_POST['message'])){
+    if(!isset($userto) || strlen($_POST['userto'])<1){
+      $msg.="    That user doesn't exist!<br>";
+    }
+    if(strlen($_POST['message'])<1){
+      $msg.="    You can't send a blank message!<br>";
+    }
     if(strlen($_POST['message'])>60000){  // Protection against huge posts getting cut off
-      $msg="    This post is too long. Maximum length: 60000 characters. <br>
-".         "    Go back or <a href='sendprivate.php'>try again</a>";
-} else {
-      //[blackhole89] 2007-07-26
-      $recentpms=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-30) AND userfrom='$loguser[id]'");
-      $secafterpm=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-$config[secafterpost]) AND userfrom='$loguser[id]'");
-    if(($sql->numrows($recentpms)>0)&&(!has_perm('consecutive-posts'))) 
-    {
-        $msg="You can't send more than one PM within 30 seconds!<br>
-".           "Go back or <a href=sendprivate.php>try again</a>";
-      } else if(($sql->numrows($secafterpm)>0)&&(has_perm('consecutive-posts'))) {
-        $msg="You can't send more than one PM within $config[secafterpost] seconds!<br>
-".           "Go back or <a href=sendprivate.php>try again</a>";
-      } else {
-          checknumeric($_POST['nolayout']);
-          checknumeric($_POST['mid']);   
-        $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout) "
+      $msg.="    This post is too long. Maximum length: 60000 characters. <br>";
+    }
+// System for user-approval enabling waiting-approval members to only PM staff.
+    if (!has_perm('create-pms') && has_perm('create-admin-pms')){ //Nesting the check that target is staff inside to reduce load. [Epele]
+      if(!user_has_perm('staff',$userto)) $msg.="You have no permissions to message this user!";
+    }
+// Consecutive PMs check.
+    $recentpms=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-30) AND userfrom='$loguser[id]'");
+    $secafterpm=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-$config[secafterpost]) AND userfrom='$loguser[id]'");
+    if(($sql->numrows($recentpms)>0)&&(!has_perm('consecutive-posts'))) {
+      $msg="You can't send more than one PM within 30 seconds!<br>";
+    } else if(($sql->numrows($secafterpm)>0)&&(has_perm('consecutive-posts'))) {
+      $msg="You can't send more than one PM within $config[secafterpost] seconds!<br>";
+    }
+    if(strlen($msg)>1){
+      pageheader('Send private message');
+      print "$top - Error";
+      noticemsg("Error", $msg."
+    Go back or <a href='sendprivate.php'>try again</a>");
+      pagefooter();
+      die();
+    }
+    checknumeric($_POST['nolayout']);
+    checknumeric($_POST['mid']);   
+    $sql->query("INSERT INTO pmsgs (date,ip,userto,userfrom,unread,title,mood,nolayout) "
                    ."VALUES ('".ctime()."','$userip',$userto,$loguser[id],1,'".addslashes($_POST['title'])."',".$_POST['mid'].",".$_POST['nolayout'].")");
-        $pid=$sql->insertid();
-        $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'".addslashes($_POST['message'])."')");
-        redirect("private.php", "The private message has been sent successfully.", "Sent!", "the private message box");
-      }
+    $pid=$sql->insertid();
+    $sql->query("INSERT INTO pmsgstext (id,text) VALUES ($pid,'".addslashes($_POST['message'])."')");
+    redirect("private.php", "The private message has been sent successfully.", "Sent!", "the private message box");
+
 }
-    }elseif(!$userto){
-      $msg="    That user doesn't exist!<br>
-".         "    Go back or <a href=sendprivate.php>try again</a>
-";
-    }elseif(!$_POST[message]){
-      $msg="    You can't send a blank message!<br>
-".         "    Go back or <a href=sendprivate.php>try again</a>
-";
-    }else{
-      $msg="    Someone set up us the unexpected error!!<br>
-".         "    Go back or <a href='sendprivate.php'>try again</a>
-";
-  }
-
-  pageheader('Send private message');
-    print "$top - Error";
-    noticemsg("Error", $msg);
-
-  }
-
-  pagefooter();
 ?>

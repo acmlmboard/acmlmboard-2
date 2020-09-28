@@ -148,7 +148,8 @@ print     "  $L[TR]>
     }
 // System for user-approval enabling waiting-approval members to only PM staff.
     if (!has_perm('create-pms') && has_perm('create-admin-pms')){ //Nesting the check that target is staff inside to reduce load. [Epele]
-      if(!user_has_perm('staff',$userto)) $msg.="You have no permissions to message this user!";
+      $usergrp=$sql->resultq("SELECT group_id FROM users WHERE id=$userto");
+      if(!user_has_perm('staff',$userto,$usergrp)) $msg.="You have no permissions to message this user!";
     }
 // Consecutive PMs check.
     $recentpms=$sql->query("SELECT date FROM pmsgs WHERE date>=(UNIX_TIMESTAMP()-30) AND userfrom='$loguser[id]'");

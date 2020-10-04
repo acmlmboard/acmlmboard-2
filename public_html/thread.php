@@ -341,7 +341,7 @@
     $pagelist=''; $pagebr='';
   }else{
     $pagelist='<div style="margin-left: 3px; margin-top: 3px; margin-bottom: 3px; display:inline-block">Pages:';
-    for($p=1;$p<=1+floor($thread[replies]/$ppp);$p++)
+    for($p=1;$p<=1+floor($thread['replies']/$ppp);$p++)
       if($p==$page)
         $pagelist.=" $p";
       elseif($viewmode == "thread")
@@ -650,7 +650,7 @@ print "$modlinks
 	if ($post['id'] == checkvar('_REQUEST','pid')) print $cookiemsg;
    if(!isset($pthread)) $pthread='';
     print "<br>
-".         threadpost($post,0,$pthread);
+".         threadpost($post,1,$pthread);
   }
 
 

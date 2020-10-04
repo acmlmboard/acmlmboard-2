@@ -35,7 +35,7 @@
                         ."LEFT JOIN users u ON p.userfrom=u.id "
                         ."WHERE p.id=$pid".(!has_perm('view-user-pms')?" AND (p.userfrom=".$loguser['id']." OR p.userto=".$loguser['id'].")":''));
       if($post){
-        $quotetext="[reply=\"".$post['name']."\" id=\"$pid\"]".$post['text']."[/reply]\n";
+        $quotetext="[reply=\"".$post['name']."\" id=\"$pid\"]".$post['text']."[/quote]\n";
         $title="Re: ".$post['title'];
         $userto=$post['name'];
       }

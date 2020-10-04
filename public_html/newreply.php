@@ -120,7 +120,7 @@
     noticemsg("Error", $err);
   }elseif($act=='Preview' || !$act){
     if($act=='Preview'){
-    $_POST[message]=stripslashes($_POST[message]);
+    $_POST['message']=stripslashes($_POST['message']);
 
     $postfix=""; $prefix=""; $valid="";
     if(($a=tvalidate($message))>0) {
@@ -137,10 +137,10 @@
     $post['date']=ctime();
     $post['ip']=$userip;
     $post['num']=++$user['posts'];
-    if($act=='Preview') $post[text]=$prefix.$_POST[message].$postfix;
+    if($act=='Preview') $post['text']=$prefix.$_POST['message'].$postfix;
     else $post['text']=checkvar('quotetext');
     $post['mood'] = (isset($_POST['mid']) ? (int)$_POST['mid'] : -1); // 2009-07 Sukasa: Newthread preview
-    if($act=='Preview') $post[moodlist]=moodlist($_POST['mid']);
+    if($act=='Preview') $post['moodlist']=moodlist($_POST['mid']);
     else $post['moodlist']=moodlist();
     $post['nolayout']=checkvar('_POST','nolayout');
     $post['nosmile']=checkvar('_POST','nosmile');

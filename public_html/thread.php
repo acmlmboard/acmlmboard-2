@@ -650,7 +650,7 @@ print "$modlinks
 	if ($post['id'] == checkvar('_REQUEST','pid')) print $cookiemsg;
    if(!isset($pthread)) $pthread='';
     print "<br>
-".         threadpost($post,1,$pthread);
+".         threadpost($post,0,$pthread);
   }
 
 

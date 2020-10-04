@@ -16,6 +16,7 @@ function dobirthdays(){ //Function for calling after we get the timezone for the
   function checkuser($name,$pass){
     global $sql,$pwdsalt,$pwdsalt2,$config;
     $islegacy=0;
+    $name=addslashes($name);
     $hash=$sql->resultq("SELECT pass FROM users WHERE (name='$name' OR displayname='$name')");
     $result=password_verify($pass,$hash);
     if($config['legacylogin']==true && $hash==md5($pwdsalt2.$pass.$pwdsalt)){ $result=true; $islegacy=1; }

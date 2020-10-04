@@ -104,7 +104,7 @@ function usegfxnums()
              </tr>
             ";
       } 
-      else if(isset($post['thread']) && $loguser['id']!=0 && $type==0) {
+      else if(isset($post['thread']) && $loguser['id']!=0 && $post['id'] && $type==0) {
           $postlinks.=($postlinks?' | ':'')."<a href=\"newreply.php?id={$post['thread']}&amp;pid={$post['id']}\">Reply</a>";
       }
 

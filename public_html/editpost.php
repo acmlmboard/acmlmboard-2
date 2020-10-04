@@ -12,7 +12,8 @@
   require 'lib/threadpost.php';
   loadsmilies();
 
-  if($act=$_POST['action']) {
+  if(isset($_POST['action'])) {
+  $act=$_POST['action'];
     check_token($_POST['auth']);
 	$pid = (int) $_POST['pid'];  
   } else {
@@ -23,7 +24,7 @@
   $user = $loguser;
  // $pass = md5($pwdsalt2.$loguser['pass'].$pwdsalt);
 
-	if ($_GET['act'] == 'delete' || $_GET['act'] == 'undelete') {
+	if (checkvar('_GET','act') == 'delete' || checkvar('_GET','act') == 'undelete') {
 		$act = $_GET['act'];
 		check_token($_GET['auth'], $pid);
 		//$pid=unpacksafenumeric($pid);
@@ -41,12 +42,12 @@
 
 
   if (!$thread) $pid = 0;
-if($act!="Submit"){ //Classical Redirect
+if(checkvar('act')!="Submit"){ //Classical Redirect
   $extjs="<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
-  $toolbar= posttoolbar($loguser[posttoolbar]);
+  $toolbar= posttoolbar($loguser['posttoolbar']);
 
-  if ($thread[closed] && !can_edit_forum_posts($thread[forum])) {
+  if ($thread['closed'] && !can_edit_forum_posts($thread['forum'])) {
       $err="    You can't edit a post in closed threads!<br>
 ".         "    $threadlink";
   }
@@ -59,7 +60,7 @@ if($act!="Submit"){ //Classical Redirect
   }
 
   if($act=='Submit'){
-    $message = $_POST[message];
+    $message = $_POST['message'];
     if(strlen($message)>60000)  // Protection against huge posts getting cut off
       $err="    This post is too long. Maximum length: 60000 characters. <br>
 ".         "    $threadlink";
@@ -71,7 +72,7 @@ if($act!="Submit"){ //Classical Redirect
 
   $top='<a href=./>Main</a> '
     ."- <a href=forum.php?id=$thread[forum]>$thread[ftitle]</a> "
-    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread[title]).'</a> '
+    ."- <a href=thread.php?id=$thread[id]>".htmlval($thread['title']).'</a> '
     .'- Edit post';
 
   $res=$sql->query  ("SELECT u.id, p.user, p.mood, p.nolayout, p.nosmile, pt.text "
@@ -87,19 +88,19 @@ if($act!="Submit"){ //Classical Redirect
     $err="    That post does not exist.";
 
   $post=$sql->fetch($res);
-  $quotetext=htmlval($post[text]);
-if($act=="Submit" && $post['text']==$_POST[message]){
+  $quotetext=htmlval($post['text']);
+if($act=="Submit" && $post['text']==$_POST['message']){
       $err="    No changes detected.<br>
 ".         "    $threadlink";
 }
 
-  if($err){
-if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[forum]); }
-  pageheader('Edit post',$thread[forum]);
+  if(isset($err)){
+if($loguser['redirtype']==1 && $act=="Submit"){ pageheader('Edit post',$thread['forum']); }
+  pageheader('Edit post',$thread['forum']);
     print "$extjs $top - Error";
     noticemsg("Error", $err);
   }elseif(!$act){
-  pageheader('Edit post',$thread[forum]);
+  pageheader('Edit post',$thread['forum']);
     print "$extjs $top
 ".        "<br><br>
 ".        " <form action=editpost.php method=post>
@@ -108,7 +109,7 @@ if($loguser[redirtype]==1 && $act=="Submit"){ pageheader('Edit post',$thread[for
 ".        "    $L[TDh] colspan=2>Edit Post</td>
 ".        "    ".auth_tag();
 
-    if($loguser[posttoolbar]!=1)
+    if($loguser['posttoolbar']!=1)
     print "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
@@ -122,39 +123,40 @@ print     "  $L[TR]>
 ".        "      $L[INPh]=pid value=$pid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
-".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
+".        "      $L[INPl]=mid>".moodlist($post['mood'], $post['user'])."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post['nolayout']?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post['nosmile']?"checked":"")."><label for=nosmile>Disable smilies</label>
 ";
-    if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
-    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($_POST[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
-                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($_POST[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
-                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($_POST[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
-                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($_POST[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+    if(can_edit_forum_threads($thread['forum']) && !$thread['announce'])
+    print "     ".(!$thread['closed'] ? "$L[INPc]=close id=close value=1 ".($_POST['close']?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread['sticky'] ? "$L[INPc]=stick id=stick value=1 ".($_POST['stick']?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread['closed'] ? "$L[INPc]=open id=open value=1 ".($_POST['open']?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread['sticky'] ? "$L[INPc]=unstick id=unstick value=1 ".($_POST['unstick']?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        "$L[TBLend]
 ".        " </form>
 ";
   }elseif($act=='Preview'){
-    $_POST[message]=stripslashes($_POST[message]);
+    $_POST['message']=stripslashes($_POST['message']);
     $euser=$sql->fetchq("SELECT * FROM users WHERE id=$post[id]");
-    $post[date]=ctime();
-    $post[ip]=$userip;
-    $post[num]=++$euser[posts];
-    $post[mood]=(isset($_POST[mid]) ? (int)$_POST[mid] : -1);
-    $post[nolayout]=$_POST[nolayout];
-    $post[nosmile]=$_POST[nosmile];
-    $post[close]=$_POST[close];
-    $post[stick]=$_POST[stick];
-    $post[open]=$_POST[open];
-    $post[unstick]=$_POST[unstick];
-    $post[text]=$_POST[message];
+    $post['date']=ctime();
+    $post['ip']=$userip;
+    $post['num']=++$euser['posts'];
+    $post['mood']=(isset($_POST['mid']) ? (int)$_POST['mid'] : -1);
+    $post['nolayout']=$_POST['nolayout'];
+    $post['nosmile']=$_POST['nosmile'];
+    $post['close']=$_POST['close'];
+    $post['stick']=$_POST['stick'];
+    $post['open']=$_POST['open'];
+    $post['unstick']=$_POST['unstick'];
+    $post['text']=$_POST['message'];
     foreach($euser as $field => $val)
-      $post[u.$field]=$val;
-    $post[ulastpost]=ctime();
+      $post['u'.$field]=$val;
+    $post['ulastpost']=ctime();
+    unset($post['id']);
 
-  pageheader('Edit post',$thread[forum]);
+  pageheader('Edit post',$thread['forum']);
     print "$extjs $top - Preview
 ".        "<br>
 ".        "$L[TBL1]>
@@ -168,7 +170,7 @@ print     "  $L[TR]>
 ".        "  $L[TRh]>
 ".        "    $L[TDh] colspan=2>Post</td>
 ";
-     if($loguser[posttoolbar]!=1)
+     if($loguser['posttoolbar']!=1)
 print     "  $L[TR]>
 ".        "    $L[TD1c] width=120>Format:</td>
 ".        "    $L[TD2]>$L[TBL]>$L[TR]>$toolbar$L[TBLend]
@@ -183,15 +185,15 @@ print     "  $L[TR]>
 ".        "      $L[INPh]=pid value=$pid>
 ".        "      $L[INPs]=action value=Submit>
 ".        "      $L[INPs]=action value=Preview>
-".        "      $L[INPl]=mid>".moodlist($post[mood], $post[user])."
-".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post[nolayout]?"checked":"")."><label for=nolayout>Disable post layout</label>
-".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post[nosmile]?"checked":"")."><label for=nosmile>Disable smilies</label>
+".        "      $L[INPl]=mid>".moodlist($post['mood'], $post['user'])."
+".        "      $L[INPc]=nolayout id=nolayout value=1 ".($post['nolayout']?"checked":"")."><label for=nolayout>Disable post layout</label>
+".        "      $L[INPc]=nosmile id=nosmile value=1 ".($post['nosmile']?"checked":"")."><label for=nosmile>Disable smilies</label>
 ";
-    if(can_edit_forum_threads($thread[forum]) && !$thread[announce])
-    print "     ".(!$thread[closed] ? "$L[INPc]=close id=close value=1 ".($post[close]?"checked":"")."><label for=close>Close thread</label>" : "")."
-                 ".(!$thread[sticky] ? "$L[INPc]=stick id=stick value=1 ".($post[stick]?"checked":"")."><label for=stick>Stick thread</label>" : "")."
-                 ".($thread[closed] ? "$L[INPc]=open id=open value=1 ".($post[open]?"checked":"")."><label for=open>Open thread</label>" : "")."
-                 ".($thread[sticky] ? "$L[INPc]=unstick id=unstick value=1 ".($post[unstick]?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
+    if(can_edit_forum_threads($thread['forum']) && !$thread['announce'])
+    print "     ".(!$thread['closed'] ? "$L[INPc]=close id=close value=1 ".($post['close']?"checked":"")."><label for=close>Close thread</label>" : "")."
+                 ".(!$thread['sticky'] ? "$L[INPc]=stick id=stick value=1 ".($post['stick']?"checked":"")."><label for=stick>Stick thread</label>" : "")."
+                 ".($thread['closed'] ? "$L[INPc]=open id=open value=1 ".($post['open']?"checked":"")."><label for=open>Open thread</label>" : "")."
+                 ".($thread['sticky'] ? "$L[INPc]=unstick id=unstick value=1 ".($post['unstick']?"checked":"")."><label for=unstick>Unstick thread</label>" : "")."
 ";
     print "    </td>
 ".        "$L[TBLend]

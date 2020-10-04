@@ -104,18 +104,18 @@ function usegfxnums()
              </tr>
             ";
       } 
-      else if(isset($post['thread']) && $loguser['id']!=0 && $type==1) {
+      else if(isset($post['thread']) && $loguser['id']!=0 && $post['id'] && $type==0) {
           $postlinks.=($postlinks?' | ':'')."<a href=\"newreply.php?id={$post['thread']}&amp;pid={$post['id']}\">Reply</a>";
       }
 
       // "Edit" link for admins or post owners, but not banned users
-	  if (can_edit_post($post) && $post['id'] && $type==1)
+	  if (can_edit_post($post) && $post['id'] && $type==0)
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}\">Edit</a>";
         
       if (can_edit_post($post) && $post['id'] && isset($post['isannounce']))
         $postlinks.=($postlinks?' | ':'')."<a href=\"editannouncetitle.php?pid={$post['id']}\">Edit Title</a>";
 
-      if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])) && $type==1)
+      if($post['id'] && can_delete_forum_posts(getforumbythread($post['thread'])) && $type==0)
         $postlinks.=($postlinks?' | ':'')."<a href=\"editpost.php?pid={$post['id']}{$authval}&amp;act=delete\">Delete</a>";
 
       if($post['id'])

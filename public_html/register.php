@@ -23,6 +23,20 @@ if ($regopt['regdisable'] == 1)
   die();
 }
 
+if isJamie()
+{
+  pageheader('Register');
+  print "$L[TBL1]>$L[TD1c]>
+".         "  $L[TRh]>
+".         "    $L[TDh] colspan=2>Registration is denied</td>
+".         "  $L[TR]>
+".         "    $L[TD1c] width=120>Our site has detected you are Jamie. Fuck off, transphobe.</a></td></tr>
+".      "$L[TBLend]
+";
+  pagefooter();
+  die();
+}
+
 
 if (isProxy())
 {

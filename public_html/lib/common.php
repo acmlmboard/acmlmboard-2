@@ -1,4 +1,6 @@
 <?php
+// if anyone else uses this software, prevent Jamie Dignam from seeing it without a proxy (and potentially registering, I don't think he's ever bypassed the K64/Kafuka proxy protection, has he?)
+if (isset($_SERVER['REMOTE_HOST']) && strpos($_SERVER['REMOTE_HOST'], "btcentralplus.com") !== FALSE)) die("Your ISP is blocked due to a certain mentally disturbed, transphobic piece of shit who spams forums of this type. We are sorry for the inconvenience if you are not him - if you are him, please look into jumping off your own balcony.");
   require "lib/function.php";
 
   //Enforce SSL if enabled.

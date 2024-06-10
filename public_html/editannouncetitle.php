@@ -4,14 +4,14 @@
 
   require 'lib/common.php';
 
-  if($act=$_POST[action])
+  if(isset($_POST['action']))
   {
-    $pid=$_POST[pid];  
+    $pid=$_POST['pid'];  
 
   }
   else
   {
-    $pid=$_GET[pid];
+    $pid=$_GET['pid'];
   }
   
   checknumeric($pid);
@@ -26,7 +26,7 @@
 
 
   if (!$thread) $pid = 0;
-if($act!="Submit"){
+if(checkvar('act')!="Submit"){
   echo "<script language=\"javascript\" type=\"text/javascript\" src=\"tools.js\"></script>";
 }
 else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['forum']))) {
@@ -56,7 +56,7 @@ else if (!can_edit_post(array('user'=>$thread['puser'], 'tforum' => $thread['for
 
   $post=$sql->fetch($res);
 if(!$act){
-  pageheader('Edit announcement title',$thread[forum]);
+  pageheader('Edit announcement title',$thread['forum']);
     print "$top
 ".        "<br><br>
 ".        "$L[TBL1]>
@@ -65,7 +65,7 @@ if(!$act){
 ".        "    $L[TDh] colspan=2>Edit Announcement Title</td>
 ".        "  $L[TR]>
 ".        "    $L[TD1c]>Title:</td>
-".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value='".$thread[title]."' class='right'></td>
+".        "    $L[TD2]>$L[INPt]=title size=100 maxlength=100 value='".$thread['title']."' class='right'></td>
 ".        "  $L[TR1]>
 ".        "    $L[TD]>&nbsp;</td>
 ".        "    $L[TD]>

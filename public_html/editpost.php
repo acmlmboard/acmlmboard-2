@@ -255,7 +255,7 @@ print     "  $L[TR]>
     }
   }
   //Shamelessly taken from newreply.php - SquidEmpress
-  if($act!='Submit' && $act!='delete' && $act!='undelete' && !$err && !$thread[announce] && can_view_forum($thread)){
+  if(checkvar('act')!='Submit' && $act!='delete' && $act!='undelete' && !isset($err) && !$thread['announce'] && can_view_forum($thread)){
     $posts=$sql->query("SELECT ".userfields('u','u').",u.posts AS uposts, p.*, pt1.text, t.forum tforum "
                       .'FROM posts p '
 					  .'LEFT JOIN threads t ON t.id=p.thread '

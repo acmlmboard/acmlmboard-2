@@ -1661,7 +1661,7 @@ CREATE TABLE `users` (
   `id` mediumint(9) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
   `displayname` varchar(32) NOT NULL,
-  `pass` varchar(32) NOT NULL,
+  `pass` varchar(255) NOT NULL,
   `posts` mediumint(9) NOT NULL DEFAULT '0',
   `threads` mediumint(9) NOT NULL DEFAULT '0',
   `regdate` int(11) NOT NULL DEFAULT '0',
